@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.contain-content {
+  contain: content
+}
+
+.contain-strict {
+  contain: strict
+}
+
+.htmx-indicator {
+  @apply hidden;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  @apply block
+}
+
+.htmx-request .htmx-default,
+.htmx-request.htmx-default {
+  @apply hidden
+}
+

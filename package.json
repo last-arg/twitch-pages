@@ -1,0 +1,25 @@
+{
+  "name": "twitch-filter-htmx-alpine",
+  "version": "1.0.0",
+  "description": "Twitch alternative page with htmx and alpine",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@alpinejs/persist": "^3.2.4",
+    "alpinejs": "^3.2.4",
+    "htmx.org": "^1.5.0"
+  },
+  "devDependencies": {
+    "@leanadmin/alpine-typescript": "^0.1.25",
+    "autoprefixer": "^10.3.1",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.7",
+    "typescript": "^4.3.2",
+    "vite": "^2.4.4",
+    "vite-plugin-compression": "^0.3.5",
+    "vite-plugin-cross-origin-isolation": "^0.1.1"
+  }
+}

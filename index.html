@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitch Alternative</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="fixed top-0 w-full z-10">
+        <div x-data="sidebar" class="bg-gray-700 flex shadow-md justify-between">
+          <h1>
+            <a href="/" x-on:click.prevent="$dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})">Home</a>
+          </h1>
+          <div class="flex flex-nowrap">
+            <div>
+              <input
+                x-on:focus="state = 'search'"
+                x-on:blur="if ($el.value.length === 0) state = 'closed'"
+                x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
+                x-ref="searchInput"
+                x-model="searchValue"
+                type="search"
+                class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 px-1 align-top"
+                placeholder="Search for game"
+              />
+              <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50" type="button" title="Search" x-on:click="$refs.searchInput.focus()">
+                looking-class
+              </button>
+              <button class="hidden" type="reset">Clear</button>
+            </div>
+            <button
+              x-on:click="toggleSidebar('games')"
+              class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+              title="Games"
+            >
+              game-controller
+            </button>
+            <button
+              x-on:click="toggleSidebar('streams')"
+              class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+              title="Streams"
+            >
+              people
+            </button>
+          </div>
+          <div x-show="state !== 'closed'" class="absolute top-0 right-0 mt-12 bg-blue-300">
+            <div class="flex items-center justify-between">
+              <p x-text="title"></p>
+              <button type="button" x-on:click="state = 'closed'">Close</button>
+            </div>
+            <div x-show="state === 'search'">
+              <div>
+                <p x-text="searchValue"></p>
+                <ul>
+                  <template x-for="game in searchResults">
+                    <li class="flex">
+                      <a class="flex items-center flex-grow"
+                        :href="`/directory/games/${game.name}`"
+                        x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})"
+                      >
+                        <img class="w-16"
+                          :src="getImageSrc(game.name, $el.width, $el.height)"
+                          alt="" width="104" height="144"
+                        />
+                        <p x-text="game.name">game title</p>
+                      </a>
+                      <div class="flex flex-col justify-between">
+                        <button x-data="{text: 'Follow'}"
+                          x-on:click="text = $store.games.toggle(game.id, game.name) ? 'Unfollow' : 'Follow'"
+                          x-effect="text = $store.games.hasId(game.id) ? 'UnFollow' : 'Follow'"
+                          type="button"
+                          :title="text"
+                          x-text="text"
+                        >un/follow</button>
+                        <a href="`https://www.twitch.tv/directory/games/${game.name}`" title="Open in Twitch">
+                          External
+                        </a>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+            <ul x-show="state === 'games'">
+              <template x-for="game in $store.games.data">
+                <li class="flex">
+                  <a class="flex items-center flex-grow"
+                    :href="`/directory/game/${game.name}`"
+                    x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                    <img class="w-16" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                    <span x-text="game.name"></span>
+                  </a>
+                  <div class="flex flex-col justify-between">
+                    <button x-on:click="$store.games.remove(game.id)" type="button" title="Unfollow">
+                      Unfollow
+                    </button>
+                    <a :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                      External
+                    </a>
+                  </div>
+                </li>
+              </template>
+            </ul>
+            <ul x-show="state === 'streams'">
+              <template x-for="stream in $store.streams.data">
+                <li class="flex">
+                  <a class="flex items-center flex-grow"
+                    :href="`/${stream.user_login}/videos`"
+                    x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user_videos.html'})">
+                    <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
+                    <span x-text="stream.user_name"></span>
+                  </a>
+                  <div class="flex flex-col justify-between">
+                    <button type="button"
+                      x-on:click="$store.streams.remove(stream.user_id)"
+                      aria-label="Unfollow"
+                    >Unfollow</button>
+                    <a :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
+                      External
+                    </a>
+                  </div>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <main class="mt-10">
+        <div class="hidden text-center mt-8">
+          <a class="js-twitch-login bg-violet-700 text-gray-50 px-3 py-2 rouned-sm hover:underline" href="#">Login with Twitch</a>
+        </div>
+        <div id="main-content"
+          x-data="pathContent"
+          x-html="html"
+        ></div>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
