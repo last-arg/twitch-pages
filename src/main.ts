@@ -1,6 +1,5 @@
 import Alpine from 'alpinejs'
 import {addScopeToNode} from '../node_modules/alpinejs/src/scope.js'
-import persist from '@alpinejs/persist'
 import './style.css'
 
 declare function addScopeToNode(node: Node, data: any, referenceNode: any): () => void
@@ -419,7 +418,6 @@ function beforeAlpine(token: string) {
   })
 }
 
-// @ts-ignore
 const twitchCategoryImageSrc = (name: string, width: number, height: number): string => {
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
@@ -441,7 +439,6 @@ const init = async () => {
   // Init
   if (token) {
     beforeAlpine(token)
-    Alpine.plugin(persist as ((alpineRoot: AlpineRoot) => void))
     Alpine.start()
   } else {
     // initLogin()

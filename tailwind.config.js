@@ -10,7 +10,14 @@ module.exports = {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
-      }
+      },
+      borderWidth: {
+        "5": "5px",
+        "6": "6px",
+      },
+      zIndex: {
+        "-10": "-10",
+      },
     }
   },
   variants: {}

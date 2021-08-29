@@ -7,12 +7,16 @@
           <img :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">
           <p x-text="game.name"></p>
         </a>
-        <button x-data="{text: 'Follow'}"
-          x-effect="text = $store.games.hasId(game.id) ? 'UnFollow' : 'Follow'"
+        <button x-data="{followed: false}"
+          x-effect="followed = $store.games.hasId(game.id)"
           x-on:click="$store.games.toggle(game.id, game.name)"
-          :title="text"
-          x-text="text"
-        >Follow</button>
+          :aria-label="followed ? 'UnFollow' : 'Follow'"
+        >
+          <svg class="fill-current w-5 h-5">
+            <use xlink:href="/src/assets/icons.svg#star-empty"></use>
+            <use x-show="followed" xlink:href="/src/assets/icons.svg#star-full"></use>
+          </svg>
+        </button>
         <a :href="'https://www.twitch.tv/directory/games/' + game.name" title="Open link in Twitch">Twitch</a>
       </li>
     </template>
