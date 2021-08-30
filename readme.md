@@ -5,7 +5,10 @@
 Non-hash (pathname) variant should be possible also
 [Htmx routing](https://htmx.org/attributes/hx-push-url/)
 hx-push-url should probably be used with [hx-history-elt](https://htmx.org/attributes/hx-history-elt/)
+Swapping multiple elements in htmx with hx-swap-oob (response text contains the attribute)
 
 
 ## TODO
 * Make own script of htmx without global factory. Problem is as soon htmx is loaded it is also started.
+* Explore options for html over the wire: htmx, twinspark.js, ...
+* Could implement html over the wire in alpine?

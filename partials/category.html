@@ -6,10 +6,17 @@
         <p x-text="name"></p>
       </a>
     </h2>
-    <button class="ml-6" type="button"
-      x-text="id && $store.games.hasId(id) ? 'UnFollow' : 'Follow'"
+    <button x-data="{followed: false}"
+      x-effect="followed = $store.games.hasId(id)"
+      class="ml-6" type="button"
+      aria-label="followed ? 'UnFollow' : 'Follow'"
       x-on:click="$store.games.toggle(id, name)"
-    >Follow</button>
+    >
+      <svg class="fill-current w-5 h-5">
+        <use href="/src/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+      </svg>
+    </button>
   </div>
   <ul class="flex flex-wrap">
     <template x-for="video in videos">
@@ -36,8 +43,13 @@
                 x-text="$store.streams.hasId(video.user_id) ? 'Unfollow' : 'Follow'"
               >Follow</button>
             </div>
-            <a :href="`https://www.twitch.tv/${video.user_login}/videos`">
-              Twitch videos
+            <a class="flex items-center"
+              :href="`https://www.twitch.tv/${video.user_login}/videos`"
+            >
+              <p>Go to Twitch videos</p>
+              <svg class="fill-current w-5 h-5">
+                <use href="/src/assets/icons.svg#external-link"></use>
+              </svg>
             </a>
           </div>
         </div>

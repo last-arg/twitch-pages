@@ -374,7 +374,6 @@ function beforeAlpine(token: string) {
       },
       async fetchProfileImages(user_ids: string[]): Promise<void> {
         if (user_ids.length === 0) return
-        console.log("fetch images")
         const last_access = Date.now()
         const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
 
@@ -390,18 +389,18 @@ function beforeAlpine(token: string) {
             }
           }
           this.data = {...this.data, ...new_data}
-          console.log("fetch length", Object.keys(this.data).length)
         }
       },
       clean(excludeIds: string[] = []) {
-        // Remove images that haven't been accessed more than a week
-        const weekInMilliseconds = 518400000
+        // Remove images that haven't been accessed more than maxAge
+        // const maxAge = 518400000 // week in milliseconds
+        const maxAge = 86400000 // day in milliseconds
         const nowDate = Date.now()
         const timePassedSinceLast = nowDate - this.lastUpdate
-        if (timePassedSinceLast >= weekInMilliseconds) {
+        if (timePassedSinceLast >= maxAge) {
           const images = Object.keys(this.data).filter((id) => !excludeIds.includes(id))
           for (let user_id of images) {
-            if ((nowDate - this.data[user_id].last_access) > weekInMilliseconds) {
+            if ((nowDate - this.data[user_id].last_access) > maxAge) {
               delete this.data[user_id]
             }
           }
@@ -413,8 +412,6 @@ function beforeAlpine(token: string) {
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
-
-
   })
 }
 
