@@ -1,27 +1,68 @@
 <h2>Top games</h2>
-<div x-data="topGames">
-  <ul class="flex flex-wrap">
-    <template>
-      <li>
-        <a class="js-internal" :href="`/directory/game/${game.name}`" x-on:click.prevent="$dispatch('set-main', { path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
-          <img :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">
-          <p x-text="game.name"></p>
-        </a>
-        <button x-data="{followed: false}"
-          x-effect="followed = $store.games.hasId(game.id)"
-          x-on:click="$store.games.toggle(game.id, game.name)"
-          :aria-label="followed ? 'UnFollow' : 'Follow'"
-        >
-          <svg class="fill-current w-5 h-5">
-            <use href="/src/assets/icons.svg#star-empty"></use>
-            <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-          </svg>
-        </button>
-        <a :href="'https://www.twitch.tv/directory/games/' + game.name" title="Open link in Twitch">Twitch</a>
+<div class="mt-5" x-data="topGames">
+  <ul class="js-topgames flex-1 flex flex-wrap -ml-4 -mt-6">
+    <template x-for="game in games">
+      <li class="flex w-1/3 pl-4 pt-6 transition duration-300 opacity-0"
+        x-init="$nextTick(() => $el.classList.add('opacity-100'))"
+      >
+        <div class="flex w-full border-2 border-white">
+          <a class="flex flex-grow items-center bg-white
+              hover:text-violet-700
+              hover:underline
+            "
+            :href="`/directory/game/${game.name}`"
+            x-on:click.prevent="$dispatch('set-main', { path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})"
+          >
+            <img class="w-16" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">
+            <p class="ml-2 text-lg" x-text="game.name"></p>
+          </a>
+          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+            <button x-data="{followed: false}"
+              class="hover:text-violet-700"
+              x-effect="followed = $store.games.hasId(game.id)"
+              x-on:click="$store.games.toggle(game.id, game.name)"
+              :aria-label="followed ? 'UnFollow' : 'Follow'"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+              </svg>
+            </button>
+            <a class="hover:text-violet-700"
+              :href="'https://www.twitch.tv/directory/games/' + game.name" aria-label="Open game in Twitch"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use href="/src/assets/icons.svg#external-link"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
       </li>
     </template>
+    <template x-for="i in fetchCount">
+      <li x-show="loading" aria-hidden="true" class="flex w-1/3 pl-4 pt-6 transition duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+      >
+        <div class="flex bg-white w-full border-2 border-white">
+          <div class="flex-1 flex items-center">
+            <div class="bg-trueGray-100">
+              <img class="opacity-0 w-16" alt="" width="104" height="144"/>
+            </div>
+            <p class="ml-2 text-lg text-trueGray-400 rounded">Loading...</p>
+          </div>
+          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+            <svg class="fill-current w-5 h-5">
+              <use href="/src/assets/icons.svg#star-empty"></use>
+            </svg>
+            <svg class="fill-current w-5 h-5">
+              <use href="/src/assets/icons.svg#external-link"></use>
+            </svg>
+          </div>
+        </div>
+       </li>
+    </template>
   </ul>
-
   <div class="text-center my-10">
     <button
       x-show="!loading && cursor !== ''"

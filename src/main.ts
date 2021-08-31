@@ -77,8 +77,8 @@ function beforeAlpine(token: string) {
   document.addEventListener("alpine:initializing", () => {
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        // state: "closed",
-        state: "games",
+        state: "closed",
+        // state: "games",
         title: "",
         searchValue: "",
         searchResults: [] as Search[],
@@ -135,6 +135,7 @@ function beforeAlpine(token: string) {
         name: "",
         videos: [] as Video[],
         cursor: "",
+        loading: false,
         async init() {
           Alpine.effect(() => {
             if (this.videos.length > 0) {
@@ -146,6 +147,7 @@ function beforeAlpine(token: string) {
           const pathArr = location.pathname.split("/")
           const name = decodeURIComponent(pathArr[pathArr.length - 1])
           this.name = name
+          this.loading = true
           const url = `https://api.twitch.tv/helix/games?name=${name}`;
           const data = (await (await fetch(url, {method: "GET", headers})).json()).data;
           if (data && data[0]) {
@@ -157,11 +159,13 @@ function beforeAlpine(token: string) {
 
         },
         async fetchVideos() {
+          this.loading = true
           const count = 5
           const url = `https://api.twitch.tv/helix/streams?game_id=${this.id}&first=${count}&after=${this.cursor}`;
           const resp = await (await fetch(url, {method: "GET", headers})).json();
           this.videos= [...this.videos, ...resp.data]
           this.cursor= resp.pagination?.cursor ?? ""
+          this.loading = false
         },
         getImageSrc(name: string, width: number, height: number): string {
           return twitchCategoryImageSrc(name, width, height)
@@ -215,34 +219,22 @@ function beforeAlpine(token: string) {
       const templ = this.$el?.querySelector('template')!
       const container = templ.parentElement!
       return {
+        fetchCount: 5,
         games: [] as TopGame[],
         cursor: "",
         loading: false,
         async init() {
           this.moreGames()
         },
-        // TODO?: try to make for-append directive
-        appendCategories(items: TopGame[]) {
-          const tempContainer = document.createDocumentFragment()
-          for (const item of items) {
-            let categoryEl = document.importNode(templ.content, true).firstElementChild!
-            addScopeToNode(categoryEl, {game: item}, templ)
-            tempContainer.appendChild(categoryEl)
-            Alpine.initTree(categoryEl)
-          }
-          Alpine.mutateDom(() => {
-            container.appendChild(tempContainer)
-          })
-        },
         async moreGames(): Promise<void> {
           this.loading = true
           const r = await this.fetchCategories()
-          this.appendCategories(r.data)
+          this.games = [...this.games, ...r.data]
           this.cursor = r.pagination?.cursor ?? ""
           this.loading = false
         },
         async fetchCategories(): Promise<{data: TopGame[]}> {
-          const url = `https://api.twitch.tv/helix/games/top?first=5&after=${this.cursor}`
+          const url = `https://api.twitch.tv/helix/games/top?first=${this.fetchCount}&after=${this.cursor}`
           const r = await fetch(url, { method: "GET", headers: headers })
           return await r.json()
         },

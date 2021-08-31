@@ -6,13 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Twitch Alternative</title>
   </head>
-  <body>
+  <body class="bg-trueGray-50">
     <div id="app">
       <header class="fixed top-0 w-full z-10">
         <div x-data="sidebar" class="bg-gray-700 flex shadow-md justify-between">
           <h1>
             <a href="/"
-              class="ml-5 bg-gray-900 text-gray-50 block px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 hover:text-gray-50 focus:text-gray-50 hover:border-violet-700 focus:border-violet-700"
+              class="block ml-5 px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
+                border-b-5 border-gray-900
+                hover:text-gray-50 hover:border-violet-700
+                focus:border-violet-700 focus:text-gray-50
+              "
               x-on:click.prevent="$dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})"
             >Home</a>
           </h1>
@@ -55,14 +59,19 @@
               <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#people"></use></svg>
             </button>
           </div>
-          <div x-show="state !== 'closed'" class="pb-2 pt-11 h-screen absolute top-0 right-0 max-w-xs w-full -z-10">
+          <div x-show="state !== 'closed'"
+            class="pb-2 pt-11 h-screen absolute top-0 right-0 max-w-xs w-full -z-10 transition duration-300 transform"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="translate-x-full"
+          >
             <div class="bg-gray-700 text-gray-100 shadow-md flex flex-col h-full pb-4">
               <div class="flex justify-between mb-4">
                 <div class="flex items-center bg-violet-700 px-3 py-1 font-bold">
                   <svg class="fill-current w-4 h-4 mr-2">
                     <use href="/src/assets/icons.svg#people"></use>
                   </svg>
-                  <p x-text="title"></p>
+                  <h2 x-text="title"></h2>
                 </div>
                 <button type="button" aria-label="Close sidebar"
                   class="block bg-violet-700 px-2.5 text-gray-50 opacity-70 hover:opacity-100 focus:opacity-100"
@@ -109,8 +118,8 @@
                 <ul class="shadow-md -mt-4" x-show="state === 'games'">
                   <template x-for="game in $store.games.data">
                     <li class="flex mt-4">
-                      <a class="flex items-center flex-grow pl-1 bg-gray-800
-                          border-l-4 border-transparent
+                      <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                          border-l-6 border-transparent
                           hover:text-gray-50 hover:border-violet-700
                           focus:text-gray-50 focus:border-violet-700
                         "
@@ -163,7 +172,7 @@
         </div>
       </header>
 
-      <main class="mt-11">
+      <main class="mt-14 px-3">
         <div class="hidden text-center mt-8">
           <a class="js-twitch-login bg-violet-700 text-gray-50 px-3 py-2 rouned-sm hover:underline" href="#">Login with Twitch</a>
         </div>
