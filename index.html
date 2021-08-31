@@ -88,29 +88,36 @@
               <div class="overflow-y-auto ">
                 <div x-show="state === 'search'">
                   <div>
-                    <ul>
+                    <ul class="-mt-4">
                       <template x-for="game in searchResults">
-                        <li class="flex">
-                          <a class="flex items-center flex-grow"
-                            :href="`/directory/games/${game.name}`"
-                            x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})"
-                          >
-                            <img class="w-16"
-                              :src="getImageSrc(game.name, $el.width, $el.height)"
-                              alt="" width="104" height="144"
-                            />
-                            <p x-text="game.name">game title</p>
+                        <li class="flex mt-4">
+                          <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                              text-trueGray-300
+                              border-l-6 border-transparent
+                              hover:text-gray-50 hover:border-violet-700
+                              focus:text-gray-50 focus:border-violet-700
+                            "
+                            :href="`/directory/game/${game.name}`"
+                            x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                            <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                            <span x-text="game.name"></span>
                           </a>
-                          <div class="flex flex-col justify-between">
-                            <button x-data="{text: 'Follow'}"
-                              x-on:click="text = $store.games.toggle(game.id, game.name) ? 'Unfollow' : 'Follow'"
-                              x-init="text = $store.games.hasId(game.id) ? 'UnFollow' : 'Follow'"
-                              type="button"
-                              :title="text"
-                              x-text="text"
-                            >un/follow</button>
-                            <a href="`https://www.twitch.tv/directory/games/${game.name}`" title="Open in Twitch">
-                              External
+                          <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                            <button x-data="{followed: false}"
+                              class="hover:text-violet-500"
+                              x-effect="followed = $store.games.hasId(game.id)"
+                              x-on:click="$store.games.toggle(game.id)" type="button"
+                              :aria-label="followed ? 'UnFollow' : 'Follow'"
+                            >
+                              <svg class="fill-current w-5 h-5">
+                                <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                                <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+                              </svg>
+                            </button>
+                            <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                              <svg class="fill-current w-5 h-5">
+                                <use href="/src/assets/icons.svg#external-link"></use>
+                              </svg>
                             </a>
                           </div>
                         </li>
@@ -118,7 +125,7 @@
                     </ul>
                   </div>
                 </div>
-                <ul class="shadow-md -mt-4" x-show="state === 'games'">
+                <ul class="-mt-4" x-show="state === 'games'">
                   <template x-for="game in $store.games.data">
                     <li class="flex mt-4">
                       <a class="flex items-center flex-grow pl-1.5 bg-gray-800
@@ -130,7 +137,7 @@
                         :href="`/directory/game/${game.name}`"
                         x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
                         <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                        <span x-text="game.name"></span>
+                        <p x-text="game.name"></p>
                       </a>
                       <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
                         <button class="hover:text-violet-500"
@@ -151,20 +158,30 @@
                 </ul>
                 <ul x-show="state === 'streams'">
                   <template x-for="stream in $store.streams.data">
-                    <li class="flex">
-                      <a class="flex items-center flex-grow"
+                    <li class="flex mt-4">
+                      <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                          text-trueGray-300
+                          border-l-6 border-transparent
+                          hover:text-gray-50 hover:border-violet-700
+                          focus:text-gray-50 focus:border-violet-700
+                        "
                         :href="`/${stream.user_login}/videos`"
                         x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user_videos.html'})">
-                        <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
-                        <span x-text="stream.user_name"></span>
+                        <img class="w-16 mr-2" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
+                        <p x-text="stream.user_name"></p>
                       </a>
-                      <div class="flex flex-col justify-between">
-                        <button type="button"
-                          x-on:click="$store.streams.remove(stream.user_id)"
-                          aria-label="Unfollow"
-                        >Unfollow</button>
-                        <a :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
-                          External
+                      <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                        <button class="hover:text-violet-500"
+                          x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
+                        >
+                          <svg class="fill-current w-5 h-5">
+                            <use href="/src/assets/icons.svg#star-full"></use>
+                          </svg>
+                        </button>
+                        <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
+                          <svg class="fill-current w-5 h-5">
+                            <use href="/src/assets/icons.svg#external-link"></use>
+                          </svg>
                         </a>
                       </div>
                     </li>

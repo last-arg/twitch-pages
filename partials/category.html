@@ -32,6 +32,7 @@
     </button>
   </div>
   <div class="mt-5">
+    <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
     <ul class="mt-8 flex flex-wrap -mt-6 -ml-4">
       <template x-for="video in videos">
         <li x-data="{videosUrl: `/${video.user_login}/videos`}"
