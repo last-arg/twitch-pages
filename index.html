@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Twitch Alternative</title>
   </head>
-  <body class="bg-trueGray-50">
+  <body class="bg-trueGray-50 text-trueGray-800">
     <div id="app">
       <header class="fixed top-0 w-full z-10">
         <div x-data="sidebar" class="bg-gray-700 flex shadow-md justify-between">
@@ -69,7 +69,10 @@
               <div class="flex justify-between mb-4">
                 <div class="flex items-center bg-violet-700 px-3 py-1 font-bold">
                   <svg class="fill-current w-4 h-4 mr-2">
-                    <use href="/src/assets/icons.svg#people"></use>
+                    <use x-data="{iconId: 'games'}"
+                      x-effect="if (state !== 'closed') iconId = sidebarToSvgIconId(state)"
+                      :href="`/src/assets/icons.svg#${iconId}`"
+                    ></use>
                   </svg>
                   <h2 x-text="title"></h2>
                 </div>
@@ -119,6 +122,7 @@
                   <template x-for="game in $store.games.data">
                     <li class="flex mt-4">
                       <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                          text-trueGray-300
                           border-l-6 border-transparent
                           hover:text-gray-50 hover:border-violet-700
                           focus:text-gray-50 focus:border-violet-700

@@ -77,8 +77,8 @@ function beforeAlpine(token: string) {
   document.addEventListener("alpine:initializing", () => {
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        state: "closed",
-        // state: "games",
+        // state: "closed",
+        state: "games",
         title: "",
         searchValue: "",
         searchResults: [] as Search[],
@@ -118,6 +118,14 @@ function beforeAlpine(token: string) {
         getImageSrc(name: string, width: number, height: number): string {
           return twitchCategoryImageSrc(name, width, height)
         },
+        sidebarToSvgIconId(state: SidebarState): string {
+          switch (state) {
+            case "games": return "game-controller";
+            case "streams": return "people";
+            case "search": return "looking-class";
+          }
+          return ""
+        }
       }
     })
 
