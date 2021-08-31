@@ -166,7 +166,7 @@
                           focus:text-gray-50 focus:border-violet-700
                         "
                         :href="`/${stream.user_login}/videos`"
-                        x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user_videos.html'})">
+                        x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
                         <img class="w-16 mr-2" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                         <p x-text="stream.user_name"></p>
                       </a>
