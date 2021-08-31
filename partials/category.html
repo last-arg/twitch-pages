@@ -80,12 +80,15 @@
         </li>
       </template>
     </ul>
-    <div class="text-center">
-      <button type="button"
+    <div class="text-center my-12">
+      <button x-show="!loading && cursor !== ''" type="button"
         x-on:click="fetchVideos()"
-        class="my-16 border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+        class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         :disabled="loading"
       >Load more videos</button>
+      <p x-show="loading" class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+        Loading...
+      </p>
     </div>
   </div>
 </div>
