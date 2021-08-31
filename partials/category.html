@@ -39,16 +39,23 @@
           x-init="$nextTick(() => $el.classList.add('opacity-100'))"
         >
           <div class="bg-white border-2 border-white">
-            <a :href="`https://twitch.tv/${video.user_login}`" :title="video.title">
+            <a :href="`https://twitch.tv/${video.user_login}`" :title="video.title"
+              class="hover:text-violet-700 hover:underline"
+            >
               <div class="relative">
                 <img :src="createLiveUserImageUrl(video.thumbnail_url, 440, 248)" alt="" width="440" height="248" />
                 <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1" x-text="`${video.viewer_count} viewers`"></p>
               </div>
-              <p class="truncate px-1 py-0.5" x-text="video.title">game title</p>
+              <div class="flex items-center px-1 py-1">
+                <p class="truncate" x-text="video.title">game title</p>
+                <svg class="ml-1 flex-none fill-current w-4 h-4">
+                  <use href="/src/assets/icons.svg#external-link"></use>
+                </svg>
+              </div>
             </a>
-            <div class="flex bg-trueGray-100 p-1">
+            <div class="flex bg-trueGray-50 px-1 py-1.5">
               <a aria-hidden="true" :href="videosUrl">
-                <img class="w-14" :src="$store.profile_images.imgUrl(video.user_id)" alt="" width="300" height="300">
+                <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl(video.user_id)" alt="" width="300" height="300">
               </a>
               <div class="flex flex-col justify-between ml-2">
                 <div class="flex items-center">
