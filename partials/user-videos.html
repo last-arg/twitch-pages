@@ -1,1 +1,138 @@
-User videos
+<div x-data="user()">
+  <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
+  <div class="flex items-center">
+    <h2>
+      <a
+        class="flex items-center text-lg group
+          hover:underline hover:text-violet-700
+          focus:underline focus:text-violet-700
+        "
+        :href="`https://www.twitch.tv/${name}/videos`"
+      >
+        <img class="w-10 mr-3" :src="$store.profile_images.imgUrl(id)" width="300" height="300">
+        <p x-text="name"></p>
+        <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+          <use href="/src/assets/icons.svg#external-link"></use>
+        </svg>
+      </a>
+    </h2>
+    <div class="ml-6 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
+    <button x-data="{followed: false}"
+      x-show="id !== ''"
+      class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-effect="followed = $store.streams.hasId(id)"
+      aria-label="followed ? 'UnFollow' : 'Follow'"
+      x-on:click="$store.streams.toggle(id, login, name)"
+    >
+      <svg class="fill-current w-5 h-5">
+        <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+      </svg>
+    </button>
+  </div>
+  <div class="flex items-center my-5">
+    <p>Videos:</p>
+    <ul class="flex">
+      <li class="mx-2 rounded flex items-center">
+        <button type="button"
+          class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-lime-300 hover:bg-lime-400"
+          x-on:click="toggleFilter('archive')"
+        >
+          <span class="h-full w-full rounded-full block border-2 border-trueGray-50 bg-trueGray-100"
+            :class="{'bg-lime-300': filter.archive}"
+          >&nbsp;</span>
+        </button>
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-lime-200 hover:bg-lime-300"
+          x-on:click="onlyFilter('archive')"
+        >
+          Archives (<span x-text="filterCount['archive']"></span>)
+        </button>
+      </li>
+      <li class="mx-2 rounded flex items-center">
+        <button type="button"
+          class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-sky-300 hover:bg-sky-400"
+          x-on:click="toggleFilter('upload')"
+        >
+          <span class="h-full w-full rounded-full block border-2 border-trueGray-50 bg-trueGray-100"
+            :class="{'bg-sky-300': filter.upload}"
+          >&nbsp;</span>
+        </button>
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-sky-200 hover:bg-sky-300"
+          x-on:click="onlyFilter('upload')"
+        >
+          Uploads (<span x-text="filterCount['upload']"></span>)
+        </button>
+      </li>
+      <li class="mx-2 rounded flex items-center">
+        <button type="button"
+          class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-amber-300 hover:bg-amber-400"
+          x-on:click="toggleFilter('highlight')"
+        >
+          <span class="h-full w-full rounded-full block border-2 border-trueGray-50 bg-trueGray-100"
+            :class="{'bg-amber-300': filter.highlight}"
+          >&nbsp;</span>
+        </button>
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-amber-200 hover:bg-amber-300"
+          x-on:click="onlyFilter('highlight')"
+        >
+          Highlights (<span x-text="filterCount['highlight']"></span>)
+        </button>
+      </li>
+    </ul>
+    <span class="border-l mx-2">&nbsp;</span>
+    <div>
+      <button type="button" class=""
+        x-on:click="Object.keys(filter).forEach((k) => filter[k] = true)"
+      >Show all</button>
+    </div>
+  </div>
+  <ul class="flex flex-wrap -ml-4 -mb-6">
+    <template x-for="video in videos">
+      <li x-show="filter[video.type]"
+        class="w-1/3 pl-4 pb-6 transition duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+      >
+        <a class="block  group" :href="video.url" :title="video.title">
+          <div x-data="{date: new Date(video.published_at) }" class="relative">
+            <img class="rounded-sm" alt="" width="440" height="248" :src="getImageSrc(video.thumbnail_url, $el.width, $el.height)" />
+            <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm"
+              :class="colors[video.type]"
+              :title="titles[video.type]"
+            >
+              <svg class="fill-current w-4 h-4">
+                <use :href="`/src/assets/icons.svg#${icons[video.type]}`"></use>
+              </svg>
+            </span>
+            <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
+              <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+                x-text="video.duration.slice(0,-1).replace(/(h|m)/g, ':')"
+              ></span>
+              <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+                :title="date.toString()" x-text="dateToRelative(date)"
+              ></span>
+            </div>
+          </div>
+          <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
+            <p class="truncate flex-grow" x-text="video.title"></p>
+            <svg class="flex-none ml-1 fill-current w-4 h-4">
+              <use href="/src/assets/icons.svg#external-link"></use>
+            </svg>
+          </div>
+        </a>
+      </li>
+    </template>
+  </ul>
+  <div class="text-center my-12">
+    <button x-show="!loading && cursor !== ''" type="button"
+      x-on:click="moreVideos()"
+      class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+      :disabled="loading"
+    >Load more videos</button>
+    <p x-show="loading" class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+      Loading...
+    </p>
+  </div>
+</div>

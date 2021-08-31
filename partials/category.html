@@ -66,7 +66,7 @@
                   <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
                   <button type="button"
                     class="text-gray-400 hover:text-violet-700"
-                    x-on:click="$store.streams.toggle(video)"
+                    x-on:click="$store.streams.toggle(video.user_id, video.user_login, video.user_name)"
                   >
                     <svg class="fill-current w-5 h-5">
                       <use x-show="!$store.streams.hasId(video.user_id)" href="/src/assets/icons.svg#star-empty"></use>

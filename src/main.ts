@@ -4,6 +4,7 @@ import './style.css'
 
 declare function addScopeToNode(node: Node, data: any, referenceNode: any): () => void
 
+const TWITCH_MAX_QUERY_PARAMS = 100
 const clientId = "7v5r973dmjp0nd1g43b8hcocj2airz";
 
 const paths: Record<string, string> = {
@@ -69,6 +70,18 @@ function beforeAlpine(token: string) {
     "Client-id": clientId,
     "Accept": "application/vnd.twitchtv.v5+json",
   };
+
+  const fetchUsers = async (ids: string[]): Promise<any[]> => {
+    if (ids.length === 0) return []
+    const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
+    return (await (await fetch(url, {method: "GET", headers})).json()).data;
+  }
+
+  const fetchUser = async (username: string): Promise<any | undefined> => {
+    if (username.length === 0) return undefined
+    const url = `https://api.twitch.tv/helix/users?login=${username}`;
+    return (await (await fetch(url, {method: "GET", headers})).json()).data[0];
+  }
 
   interface Search {
     name: string,
@@ -164,7 +177,7 @@ function beforeAlpine(token: string) {
             this.id = category.id
             this.fetchVideos()
           }
-
+          this.loading = false
         },
         async fetchVideos() {
           this.loading = true
@@ -180,6 +193,155 @@ function beforeAlpine(token: string) {
         },
         createLiveUserImageUrl(url_template: string, w: number, h: number): string {
           return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
+        },
+      }
+    })
+
+    const twitchDateToString = (d: Date): string => {
+      const round = (nr: number): number => {
+        const nr_floor = Math.floor(nr)
+        return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
+      }
+      const seconds_f = (Date.now() - d.getTime()) / 1000
+      const minutes_f = seconds_f / 60
+      const hours_f = minutes_f / 60
+      const days_f = hours_f / 24
+      const minutes = round(minutes_f)
+      const hours = round(hours_f)
+      const days = round(days_f)
+      const weeks = round(days_f / 7)
+      const months = round(days_f / 30)
+      const years = round(days_f / 365)
+
+      let result_str = "1 minute ago"
+      if (years > 0 && months > 11) {
+        result_str = (years === 1) ? "1 year ago" : `${years} years ago`
+      } else if (months > 0 && weeks > 4) {
+        result_str = (months === 1) ? "1 month ago" : `${months} months ago`
+      } else if (weeks > 0 && days > 6) {
+        result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
+      } else if (days > 0 && hours > 23) {
+        result_str = (days === 1) ? "Yesterday" : `${days} days ago`
+      } else if (hours > 0 && minutes > 59) {
+        result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
+      } else if (minutes > 1) {
+        result_str = `${minutes} minutes ago`
+      }
+
+      return result_str
+    };
+
+    interface UserVideo {
+      url: string,
+      type: "archive" | "upload" | "highlight",
+      duration: string,
+      published_at: string,
+      title: string,
+      thumbnail_url: string, // TODO: can be empty if live stream video. Use twitch default image
+    }
+    Alpine.data("user", function(): any {
+      return {
+        id: "",
+        name: "",
+        login: "",
+        videos: [] as UserVideo[],
+        cursor: "",
+        loading: false,
+        colors: {
+          archive: "bg-lime-200",
+          upload: "bg-sky-200",
+          highlight: "bg-amber-200",
+        },
+        icons: {
+          archive: "video-camera",
+          upload: "video-upload",
+          highlight: "video-reel",
+        },
+        titles: {
+          archive: "Archive",
+          upload: "Upload",
+          highlight: "Highlight",
+        },
+        filterCount: {
+          archive: 0,
+          upload: 0,
+          highlight: 0,
+        },
+        filter: {
+          archive: true,
+          upload: false,
+          highlight: false,
+        },
+        onlyFilter(vType: UserVideo.type) {
+          this.filter.archive = false
+          this.filter.upload = false
+          this.filter.highlight = false
+          this.filter[vType] = true
+        },
+        toggleFilter(vType: UserVideo.type) {
+          if (!this.filter[vType]) {
+            this.filter[vType] = true
+            return
+          }
+
+          const trueCount = Object.values(this.filter).reduce((acc, curr) => acc + Number(curr), 0)
+          if (trueCount > 1) {
+             this.filter[vType] = false
+          }
+        },
+        async init() {
+          Alpine.effect(() => {
+            const filterCount = {
+              archive: 0,
+              upload: 0,
+              highlight: 0,
+            }
+
+            for (const v of this.videos) {
+              filterCount[v.type] += 1
+            }
+            this.filterCount = filterCount
+          })
+          this.loading = true
+          const pathArr = location.pathname.split("/")
+          const name = decodeURIComponent(pathArr[1])
+          this.name = name
+
+          const user = await fetchUser(name)
+          if (user) {
+            this.name = user.display_name
+            this.login = user.login
+            this.id = user.id
+            if (this.$store.profile_images.imgUrl(user.id) === "") {
+              this.$store.profile_images.setImage(user.id, user.profile_image_url)
+            }
+            const resp = await this.fetchVideos()
+            if (resp.data[0]) {
+              // When first video is current streaming video
+              resp.data[0].thumbnail_url = "https://vod-secure.twitch.tv/_404/404_processing_320x180.png"
+            }
+            this.videos= [...this.videos, ...resp.data]
+            this.cursor= resp.pagination?.cursor ?? ""
+          }
+          this.loading = false
+        },
+        async moreVideos() {
+          this.loading = true
+          const resp = await this.fetchVideos()
+          this.videos= [...this.videos, ...resp.data]
+          this.cursor= resp.pagination?.cursor ?? ""
+          this.loading = false
+        },
+        async fetchVideos() {
+          const count = 10
+          const url = `https://api.twitch.tv/helix/videos?user_id=${this.id}&first=${count}&after=${this.cursor}`;
+          return (await (await fetch(url, {method: "GET", headers})).json());
+        },
+        dateToRelative(str: string): string {
+          return twitchDateToString(str)
+        },
+        getImageSrc(url: string, width: number, height: number): string {
+          return url.replace('%{width}', width).replace('%{height}', height)
         },
       }
     })
@@ -254,14 +416,6 @@ function beforeAlpine(token: string) {
   })
 
   document.addEventListener("alpine:init", function() {
-    const fetchUsers = async (ids: string[]): Promise<any[]> => {
-      if (ids.length === 0) return []
-      const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-      return (await (await fetch(url, {method: "GET", headers})).json()).data;
-    }
-
-    const TWITCH_MAX_QUERY_PARAMS = 100
-
     const storeGames = {
       data: JSON.parse(localStorage.getItem("games") ?? "[]"),
       ids: [] as string[],
@@ -311,18 +465,16 @@ function beforeAlpine(token: string) {
       hasId(id: string): boolean {
         return this.ids.includes(id)
       },
-      toggle(video: any): boolean {
-        const id = video.user_id
-        if (this.hasId(id)) {
-          this.remove(id)
+      toggle(user_id: string, user_login: string, user_name: string): boolean {
+        if (this.hasId(user_id)) {
+          this.remove(user_id)
           return false
         } else {
-          this.add(video)
+          this.add(user_id, user_login, user_name)
           return true
         }
       },
-      add(video: any) {
-        const {user_id, user_login, user_name} = video
+      add(user_id: string, user_login: string, user_name: string) {
         let index = 0;
         for (const {user_login: dataName} of this.data) {
           if (user_login < dataName) break
@@ -371,6 +523,12 @@ function beforeAlpine(token: string) {
           return img.url
         }
         return ""
+      },
+      setImage(user_id: string, url: string) {
+        this.data[user_id] = {
+          url: url,
+          last_access: Date.now(),
+        }
       },
       async fetchProfileImages(user_ids: string[]): Promise<void> {
         if (user_ids.length === 0) return
