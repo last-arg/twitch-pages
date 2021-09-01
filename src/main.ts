@@ -90,8 +90,8 @@ function beforeAlpine(token: string) {
   document.addEventListener("alpine:initializing", () => {
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        state: "closed",
-        // state: "streams",
+        // state: "closed",
+        state: "streams",
         title: "",
         searchValue: "",
         searchResults: [] as Search[],
@@ -567,9 +567,56 @@ function beforeAlpine(token: string) {
       }
     }
 
+    const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
+      if (userIds.length === 0) return []
+      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
+      return (await (await fetch(url, {method: "GET", headers})).json()).data;
+    };
+
+    const fiveMinutesInMs = 30000000
+    const keyUserLive = "users_live"
+    const storeUserLive = {
+      data: JSON.parse(localStorage.getItem(keyUserLive) ?? "{}"),
+      lastCheck: parseInt(JSON.parse(localStorage.getItem(`${keyUserLive}_last_check`) ?? Date.now().toString()), 10),
+      init() {
+        Alpine.effect(() => {
+          localStorage.setItem(keyUserLive, JSON.stringify(this.data))
+        })
+
+        Alpine.effect(() => {
+          localStorage.setItem(`${keyUserLive}_last_check`, JSON.stringify(this.lastCheck))
+        })
+
+        this.updateUserLiveness(storeStreams.ids)
+      },
+      hasId(id: string): boolean {
+        return this.data[id] !== undefined
+      },
+      async updateUserLiveness(user_ids: string[], ignore_date_check: boolean = false): Promise<void> {
+        if (user_ids.length === 0) return
+        const now = Date.now()
+        if (ignore_date_check || now > this.lastCheck + fiveMinutesInMs) {
+          const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
+
+          for (let i = 0; i < batch_count; i+=1) {
+            const start = i * TWITCH_MAX_QUERY_PARAMS
+            const end = start + TWITCH_MAX_QUERY_PARAMS
+            const streams = await fetchStreamsByUserIds(user_ids.slice(start, end))
+            let new_data = {}
+            for (const {user_id, game_name} of streams) {
+              new_data[user_id] = game_name
+            }
+            this.data = {...this.data, ...new_data}
+          }
+          this.lastCheck = now
+        }
+      }
+    }
+
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
+    Alpine.store('users_live', storeUserLive)
   })
 }
 
