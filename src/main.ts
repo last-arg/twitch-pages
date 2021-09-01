@@ -237,7 +237,7 @@ function beforeAlpine(token: string) {
       duration: string,
       published_at: string,
       title: string,
-      thumbnail_url: string, // TODO: can be empty if live stream video. Use twitch default image
+      thumbnail_url: string,
     }
     Alpine.data("user", function(): any {
       return {
@@ -316,7 +316,7 @@ function beforeAlpine(token: string) {
               this.$store.profile_images.setImage(user.id, user.profile_image_url)
             }
             const resp = await this.fetchVideos()
-            if (resp.data[0]) {
+            if (resp.data[0] && resp.data[0].thumbnail_url === "") {
               // When first video is current streaming video
               resp.data[0].thumbnail_url = "https://vod-secure.twitch.tv/_404/404_processing_320x180.png"
             }
