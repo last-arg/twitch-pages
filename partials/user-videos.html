@@ -1,36 +1,41 @@
 <div x-data="user()">
   <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
   <div class="flex items-center">
-    <h2>
-      <a
-        class="flex items-center text-lg group
-          hover:underline hover:text-violet-700
-          focus:underline focus:text-violet-700
-        "
-        :href="`https://www.twitch.tv/${name}/videos`"
+    <div class="flex items-center bg-white rounded-r-sm pr-2">
+      <h2>
+        <a
+          class="flex items-center text-lg group block
+            hover:underline hover:text-violet-700
+            focus:underline focus:text-violet-700
+          "
+          :href="`https://www.twitch.tv/${name}/videos`"
+        >
+          <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl(id)" width="300" height="300">
+          <p x-text="name"></p>
+          <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+            <use href="/src/assets/icons.svg#external-link"></use>
+          </svg>
+        </a>
+      </h2>
+      <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch "></div>
+      <button x-data="{followed: false}"
+        class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-effect="followed = $store.streams.hasId(id)"
+        aria-label="followed ? 'UnFollow' : 'Follow'"
+        x-on:click="$store.streams.toggle(id, login, name)"
       >
-        <img class="w-10 mr-3" :src="$store.profile_images.imgUrl(id)" width="300" height="300">
-        <p x-text="name"></p>
-        <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="/src/assets/icons.svg#external-link"></use>
+        <svg class="fill-current w-5 h-5">
+          <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+          <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
         </svg>
-      </a>
-    </h2>
-    <div class="ml-6 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
-    <button x-data="{followed: false}"
-      x-show="id !== ''"
-      class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
-      x-transition:enter-start="opacity-0"
-      x-transition:enter-end="opacity-100"
-      x-effect="followed = $store.streams.hasId(id)"
-      aria-label="followed ? 'UnFollow' : 'Follow'"
-      x-on:click="$store.streams.toggle(id, login, name)"
-    >
-      <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-        <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-      </svg>
-    </button>
+      </button>
+    </div>
+    <div class="text-sm ml-4" x-show="$store.users_live.hasId(id)">
+      <p class="text-sm"><span class="bg-red-300 rounded-sm px-1 text-trueGray-50">LIVE</span> <span class="italic text-trueGray-500">Playing</span></p>
+      <p x-text="$store.users_live.data[id]"></p>
+    </div>
   </div>
   <div class="flex justify-end sm:justify-start sm:items-center my-5">
     <p class="hidden sm:block">Videos:</p>
