@@ -32,10 +32,10 @@
       </svg>
     </button>
   </div>
-  <div class="flex items-center my-5">
-    <p>Videos:</p>
-    <ul class="flex">
-      <li class="mx-2 rounded flex items-center">
+  <div class="flex justify-end sm:justify-start sm:items-center my-5">
+    <p class="hidden sm:block">Videos:</p>
+    <ul class="sm:flex">
+      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
         <button type="button"
           class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-lime-300 hover:bg-lime-400"
           x-on:click="toggleFilter('archive')"
@@ -44,13 +44,13 @@
             :class="{'bg-lime-300': filter.archive}"
           >&nbsp;</span>
         </button>
-        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-lime-200 hover:bg-lime-300"
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-lime-200 hover:bg-lime-300 whitespace-nowrap flex-grow sm:flex-grow-0"
           x-on:click="onlyFilter('archive')"
         >
           Archives (<span x-text="filterCount['archive']"></span>)
         </button>
       </li>
-      <li class="mx-2 rounded flex items-center">
+      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
         <button type="button"
           class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-sky-300 hover:bg-sky-400"
           x-on:click="toggleFilter('upload')"
@@ -59,45 +59,47 @@
             :class="{'bg-sky-300': filter.upload}"
           >&nbsp;</span>
         </button>
-        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-sky-200 hover:bg-sky-300"
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-sky-200 hover:bg-sky-300 whitespace-nowrap flex-grow sm:flex-grow-0"
           x-on:click="onlyFilter('upload')"
         >
           Uploads (<span x-text="filterCount['upload']"></span>)
         </button>
       </li>
-      <li class="mx-2 rounded flex items-center">
+      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
         <button type="button"
-          class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative z-10 bg-amber-300 hover:bg-amber-400"
+          class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative bg-amber-300 hover:bg-amber-400"
           x-on:click="toggleFilter('highlight')"
         >
           <span class="h-full w-full rounded-full block border-2 border-trueGray-50 bg-trueGray-100"
             :class="{'bg-amber-300': filter.highlight}"
           >&nbsp;</span>
         </button>
-        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-amber-200 hover:bg-amber-300"
+        <button type="button" class="pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-amber-200 hover:bg-amber-300 whitespace-nowrap flex-grow sm:flex-grow-0"
           x-on:click="onlyFilter('highlight')"
         >
           Highlights (<span x-text="filterCount['highlight']"></span>)
         </button>
       </li>
     </ul>
-    <span class="border-l mx-2">&nbsp;</span>
-    <div>
-      <button type="button" class=""
-        x-on:click="Object.keys(filter).forEach((k) => filter[k] = true)"
-      >Show all</button>
+    <div class="hidden sm:flex">
+      <span class="border-l mx-2">&nbsp;</span>
+      <div>
+        <button type="button" class=""
+          x-on:click="Object.keys(filter).forEach((k) => filter[k] = true)"
+        >Show all</button>
+      </div>
     </div>
   </div>
-  <ul class="flex flex-wrap -ml-4 -mb-6">
+  <ul class="flex flex-wrap justify-center sm:justify-start -ml-4 -mb-6">
     <template x-for="video in videos">
       <li x-show="filter[video.type]"
-        class="w-1/3 pl-4 pb-6 transition duration-300"
+        class="w-full max-w-sm sm:max-w-none sm:w-1/2 md:w-1/3 xl:w-1/4 pl-4 pb-6 transition duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
       >
         <a class="block  group" :href="video.url" :title="video.title">
           <div x-data="{date: new Date(video.published_at) }" class="relative">
-            <img class="rounded-sm" alt="" width="440" height="248" :src="getImageSrc(video.thumbnail_url, $el.width, $el.height)" />
+            <img class="w-full rounded-sm" alt="" width="440" height="248" :src="getImageSrc(video.thumbnail_url, $el.width, $el.height)" />
             <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm"
               :class="colors[video.type]"
               :title="titles[video.type]"

@@ -9,192 +9,194 @@
   </head>
   <body class="bg-trueGray-50 text-trueGray-800">
     <div id="app">
-      <header class="fixed top-0 w-full z-10">
-        <div x-data="sidebar" class="bg-gray-700 flex shadow-md justify-between">
-          <h1>
-            <a href="/"
-              class="block ml-5 px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
-                border-b-5 border-gray-900
-                hover:text-gray-50 hover:border-violet-700
-                focus:border-violet-700 focus:text-gray-50
-              "
-              x-on:click.prevent="$dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})"
-            >Home</a>
-          </h1>
-          <div class="flex flex-nowrap">
-            <div class="border-b-5 border-gray-900 mr-5 flex"
-              :class="state === 'search' ? 'border-violet-700' : ''"
-            >
-              <input
-                x-on:focus="state = 'search'"
-                x-on:blur="if ($el.value.length === 0) state = 'closed'"
-                x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
-                x-ref="searchInput"
-                x-model="searchValue"
-                type="search"
-                class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top"
-                placeholder="Search for game"
-              />
-              <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
-                type="button" aria-label="Search games"
-                x-on:click="$refs.searchInput.focus()"
+      <header class="fixed top-0 w-full z-10 bg-gray-700">
+        <div class="relative bg-gray-700  max-w-screen-2xl mx-auto">
+          <div x-data="sidebar" class="flex shadow-md justify-between">
+            <h1>
+              <a href="/"
+                class="block ml-5 px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
+                  border-b-5 border-gray-900
+                  hover:text-gray-50 hover:border-violet-700
+                  focus:border-violet-700 focus:text-gray-50
+                "
+                x-on:click.prevent="$dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})"
+              >Home</a>
+            </h1>
+            <div class="flex flex-nowrap">
+              <div class="border-b-5 border-gray-900 mr-5 flex"
+                :class="state === 'search' ? 'border-violet-700' : ''"
               >
-                <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#looking-class"></use></svg>
-              </button>
-              <button class="hidden" type="reset">Clear</button>
-            </div>
-            <button
-              x-on:click="toggleSidebar('games')"
-              class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
-              :class="state === 'games' ? 'border-violet-700' : ''"
-              aria-label="Games"
-            >
-              <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#game-controller"></use></svg>
-            </button>
-            <button
-              x-on:click="toggleSidebar('streams')"
-              class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
-              :class="state === 'streams' ? 'border-violet-700' : ''"
-              aria-label="Streams"
-            >
-              <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#people"></use></svg>
-            </button>
-          </div>
-          <div x-show="state !== 'closed'"
-            class="pb-2 pt-11 h-screen absolute top-0 right-0 max-w-xs w-full -z-10 transition duration-300 transform"
-            x-transition:enter-start="translate-x-full"
-            x-transition:enter-end="translate-x-0"
-            x-transition:leave="translate-x-full"
-          >
-            <div class="bg-gray-700 text-gray-100 shadow-md flex flex-col h-full pb-4">
-              <div class="flex justify-between mb-4">
-                <div class="flex items-center bg-violet-700 px-3 py-1 font-bold">
-                  <svg class="fill-current w-4 h-4 mr-2">
-                    <use x-data="{iconId: 'games'}"
-                      x-effect="if (state !== 'closed') iconId = sidebarToSvgIconId(state)"
-                      :href="`/src/assets/icons.svg#${iconId}`"
-                    ></use>
-                  </svg>
-                  <h2 x-text="title"></h2>
-                </div>
-                <button type="button" aria-label="Close sidebar"
-                  class="block bg-violet-700 px-2.5 text-gray-50 opacity-70 hover:opacity-100 focus:opacity-100"
-                  x-on:click="state = 'closed'"
+                <input
+                  x-on:focus="state = 'search'"
+                  x-on:blur="if ($el.value.length === 0) state = 'closed'"
+                  x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
+                  x-ref="searchInput"
+                  x-model="searchValue"
+                  type="search"
+                  class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top"
+                  placeholder="Search for game"
+                />
+                <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
+                  type="button" aria-label="Search games"
+                  x-on:click="$refs.searchInput.focus()"
                 >
-                  <svg class="fill-current w-4 h-4">
-                    <use href="/src/assets/icons.svg#close"></use>
-                  </svg>
+                  <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#looking-class"></use></svg>
                 </button>
+                <button class="hidden" type="reset">Clear</button>
               </div>
-              <div class="overflow-y-auto ">
-                <div x-show="state === 'search'">
-                  <div>
-                    <ul class="-mt-4">
-                      <template x-for="game in searchResults">
-                        <li class="flex mt-4">
-                          <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                              text-trueGray-300
-                              border-l-6 border-transparent
-                              hover:text-gray-50 hover:border-violet-700
-                              focus:text-gray-50 focus:border-violet-700
-                            "
-                            :href="`/directory/game/${game.name}`"
-                            x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
-                            <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                            <span x-text="game.name"></span>
-                          </a>
-                          <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                            <button x-data="{followed: false}"
-                              class="hover:text-violet-500"
-                              x-effect="followed = $store.games.hasId(game.id)"
-                              x-on:click="$store.games.toggle(game.id)" type="button"
-                              :aria-label="followed ? 'UnFollow' : 'Follow'"
-                            >
-                              <svg class="fill-current w-5 h-5">
-                                <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-                                <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-                              </svg>
-                            </button>
-                            <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
-                              <svg class="fill-current w-5 h-5">
-                                <use href="/src/assets/icons.svg#external-link"></use>
-                              </svg>
-                            </a>
-                          </div>
-                        </li>
-                      </template>
-                    </ul>
+              <button
+                x-on:click="toggleSidebar('games')"
+                class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+                :class="state === 'games' ? 'border-violet-700' : ''"
+                aria-label="Games"
+              >
+                <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#game-controller"></use></svg>
+              </button>
+              <button
+                x-on:click="toggleSidebar('streams')"
+                class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+                :class="state === 'streams' ? 'border-violet-700' : ''"
+                aria-label="Streams"
+              >
+                <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#people"></use></svg>
+              </button>
+            </div>
+            <div x-show="state !== 'closed'"
+              class="pb-2 pt-11 h-screen absolute top-0 right-0 max-w-xs w-full -z-10 transition duration-300 transform"
+              x-transition:enter-start="translate-x-1/4 opacity-0"
+              x-transition:enter-end="translate-x-0 opacity-100"
+              x-transition:leave="translate-x-1/4 opacity-0"
+            >
+              <div class="bg-gray-700 text-gray-100 shadow-md flex flex-col h-full pb-4">
+                <div class="flex justify-between mb-4">
+                  <div class="flex items-center bg-violet-700 px-3 py-1 font-bold">
+                    <svg class="fill-current w-4 h-4 mr-2">
+                      <use x-data="{iconId: 'games'}"
+                        x-effect="if (state !== 'closed') iconId = sidebarToSvgIconId(state)"
+                        :href="`/src/assets/icons.svg#${iconId}`"
+                      ></use>
+                    </svg>
+                    <h2 x-text="title"></h2>
                   </div>
+                  <button type="button" aria-label="Close sidebar"
+                    class="block bg-violet-700 px-2.5 text-gray-50 opacity-70 hover:opacity-100 focus:opacity-100"
+                    x-on:click="state = 'closed'"
+                  >
+                    <svg class="fill-current w-4 h-4">
+                      <use href="/src/assets/icons.svg#close"></use>
+                    </svg>
+                  </button>
                 </div>
-                <ul class="-mt-4" x-show="state === 'games'">
-                  <template x-for="game in $store.games.data">
-                    <li class="flex mt-4">
-                      <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                          text-trueGray-300
-                          border-l-6 border-transparent
-                          hover:text-gray-50 hover:border-violet-700
-                          focus:text-gray-50 focus:border-violet-700
-                        "
-                        :href="`/directory/game/${game.name}`"
-                        x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
-                        <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                        <p x-text="game.name"></p>
-                      </a>
-                      <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                        <button class="hover:text-violet-500"
-                          x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
-                        >
-                          <svg class="fill-current w-5 h-5">
-                            <use href="/src/assets/icons.svg#star-full"></use>
-                          </svg>
-                        </button>
-                        <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
-                          <svg class="fill-current w-5 h-5">
-                            <use href="/src/assets/icons.svg#external-link"></use>
-                          </svg>
+                <div class="overflow-y-auto ">
+                  <div x-show="state === 'search'">
+                    <div>
+                      <ul class="-mt-4">
+                        <template x-for="game in searchResults">
+                          <li class="flex mt-4">
+                            <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                                text-trueGray-300
+                                border-l-6 border-transparent
+                                hover:text-gray-50 hover:border-violet-700
+                                focus:text-gray-50 focus:border-violet-700
+                              "
+                              :href="`/directory/game/${game.name}`"
+                              x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                              <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                              <span x-text="game.name"></span>
+                            </a>
+                            <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                              <button x-data="{followed: false}"
+                                class="hover:text-violet-500"
+                                x-effect="followed = $store.games.hasId(game.id)"
+                                x-on:click="$store.games.toggle(game.id)" type="button"
+                                :aria-label="followed ? 'UnFollow' : 'Follow'"
+                              >
+                                <svg class="fill-current w-5 h-5">
+                                  <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                                  <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+                                </svg>
+                              </button>
+                              <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                                <svg class="fill-current w-5 h-5">
+                                  <use href="/src/assets/icons.svg#external-link"></use>
+                                </svg>
+                              </a>
+                            </div>
+                          </li>
+                        </template>
+                      </ul>
+                    </div>
+                  </div>
+                  <ul class="-mt-4" x-show="state === 'games'">
+                    <template x-for="game in $store.games.data">
+                      <li class="flex mt-4">
+                        <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                            text-trueGray-300
+                            border-l-6 border-transparent
+                            hover:text-gray-50 hover:border-violet-700
+                            focus:text-gray-50 focus:border-violet-700
+                          "
+                          :href="`/directory/game/${game.name}`"
+                          x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                          <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                          <p x-text="game.name"></p>
                         </a>
-                      </div>
-                    </li>
-                  </template>
-                </ul>
-                <ul x-show="state === 'streams'">
-                  <template x-for="stream in $store.streams.data">
-                    <li class="flex mt-4">
-                      <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                          text-trueGray-300
-                          border-l-6 border-transparent
-                          hover:text-gray-50 hover:border-violet-700
-                          focus:text-gray-50 focus:border-violet-700
-                        "
-                        :href="`/${stream.user_login}/videos`"
-                        x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
-                        <img class="w-16 mr-2" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
-                        <p x-text="stream.user_name"></p>
-                      </a>
-                      <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                        <button class="hover:text-violet-500"
-                          x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
-                        >
-                          <svg class="fill-current w-5 h-5">
-                            <use href="/src/assets/icons.svg#star-full"></use>
-                          </svg>
-                        </button>
-                        <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
-                          <svg class="fill-current w-5 h-5">
-                            <use href="/src/assets/icons.svg#external-link"></use>
-                          </svg>
+                        <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                          <button class="hover:text-violet-500"
+                            x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
+                          >
+                            <svg class="fill-current w-5 h-5">
+                              <use href="/src/assets/icons.svg#star-full"></use>
+                            </svg>
+                          </button>
+                          <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                            <svg class="fill-current w-5 h-5">
+                              <use href="/src/assets/icons.svg#external-link"></use>
+                            </svg>
+                          </a>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                  <ul x-show="state === 'streams'">
+                    <template x-for="stream in $store.streams.data">
+                      <li class="flex mt-4">
+                        <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                            text-trueGray-300
+                            border-l-6 border-transparent
+                            hover:text-gray-50 hover:border-violet-700
+                            focus:text-gray-50 focus:border-violet-700
+                          "
+                          :href="`/${stream.user_login}/videos`"
+                          x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
+                          <img class="w-16 mr-2" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
+                          <p x-text="stream.user_name"></p>
                         </a>
-                      </div>
-                    </li>
-                  </template>
-                </ul>
+                        <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                          <button class="hover:text-violet-500"
+                            x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
+                          >
+                            <svg class="fill-current w-5 h-5">
+                              <use href="/src/assets/icons.svg#star-full"></use>
+                            </svg>
+                          </button>
+                          <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
+                            <svg class="fill-current w-5 h-5">
+                              <use href="/src/assets/icons.svg#external-link"></use>
+                            </svg>
+                          </a>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <main class="mt-14 px-3">
+      <main class="mt-14 px-3 max-w-screen-2xl mx-auto">
         <div class="hidden text-center mt-8">
           <a class="js-twitch-login bg-violet-700 text-gray-50 px-3 py-2 rouned-sm hover:underline" href="#">Login with Twitch</a>
         </div>

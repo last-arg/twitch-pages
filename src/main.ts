@@ -90,8 +90,8 @@ function beforeAlpine(token: string) {
   document.addEventListener("alpine:initializing", () => {
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        // state: "closed",
-        state: "streams",
+        state: "closed",
+        // state: "streams",
         title: "",
         searchValue: "",
         searchResults: [] as Search[],
