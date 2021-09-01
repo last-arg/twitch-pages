@@ -101,6 +101,9 @@ function beforeAlpine(token: string) {
             if (newTitle !== "") {
               this.title = newTitle
             }
+            if (this.state === 'streams') {
+              this.$store.users_live.updateUserLiveness(this.$store.streams.ids)
+            }
           })
           let searchTimeout = 0;
           Alpine.effect(() => {
@@ -597,7 +600,6 @@ function beforeAlpine(token: string) {
         const now = Date.now()
         if (ignore_date_check || now > this.lastCheck + fiveMinutesInMs) {
           const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
-
           for (let i = 0; i < batch_count; i+=1) {
             const start = i * TWITCH_MAX_QUERY_PARAMS
             const end = start + TWITCH_MAX_QUERY_PARAMS
