@@ -169,8 +169,16 @@
                           "
                           :href="`/${stream.user_login}/videos`"
                           x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
-                          <img class="w-16 mr-2" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
-                          <p x-text="stream.user_name"></p>
+                          <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
+                          <div x-data="{name: $store.users_live.data[stream.user_id]}"
+                            class="flex-grow relative h-full flex items-center px-2"
+                          >
+                            <p class="" :class="name ? 'items-end' : 'items-center'" x-text="stream.user_name"></p>
+                            <div class="absolute bottom-0 text-sm flex items-center" x-show="name">
+                              <p><span class="text-xs bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span></p>
+                              <p class="text-trueGray-400 ml-1 truncate" x-text="name"></p>
+                            </div>
+                          </div>
                         </a>
                         <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
                           <button class="hover:text-violet-500"
