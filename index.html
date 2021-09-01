@@ -10,11 +10,11 @@
   <body class="bg-trueGray-50 text-trueGray-800">
     <div id="app">
       <header class="fixed top-0 w-full z-10 bg-gray-700">
-        <div class="relative bg-gray-700  max-w-screen-2xl mx-auto">
+        <div class="relative bg-gray-700  max-w-screen-2xl mx-auto px-3">
           <div x-data="sidebar" class="flex shadow-md justify-between">
             <h1>
               <a href="/"
-                class="block ml-5 px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
+                class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
                   border-b-5 border-gray-900
                   hover:text-gray-50 hover:border-violet-700
                   focus:border-violet-700 focus:text-gray-50
@@ -23,7 +23,7 @@
               >Home</a>
             </h1>
             <div class="flex flex-nowrap">
-              <div class="border-b-5 border-gray-900 mr-5 flex"
+              <div class="ml-3 border-b-5 border-gray-900 mr-3 sm:mr-5 flex"
                 :class="state === 'search' ? 'border-violet-700' : ''"
               >
                 <input
@@ -33,7 +33,7 @@
                   x-ref="searchInput"
                   x-model="searchValue"
                   type="search"
-                  class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top"
+                  class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
                   placeholder="Search for game"
                 />
                 <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
@@ -46,7 +46,7 @@
               </div>
               <button
                 x-on:click="toggleSidebar('games')"
-                class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+                class="mr-3 sm:mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
                 :class="state === 'games' ? 'border-violet-700' : ''"
                 aria-label="Games"
               >
@@ -54,7 +54,7 @@
               </button>
               <button
                 x-on:click="toggleSidebar('streams')"
-                class="mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
+                class="text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
                 :class="state === 'streams' ? 'border-violet-700' : ''"
                 aria-label="Streams"
               >
