@@ -6,7 +6,7 @@
           hover:underline hover:text-violet-700
           focus:underline focus:text-violet-700
         "
-        :href="`https://www.twitch.tv/directory/games/${name}`"
+        :href="`https://www.twitch.tv/directory/game/${name}`"
       >
         <img class="w-10 mr-3" :src="getImageSrc(name, $el.width, $el.height)" width="104" height="144">
         <p x-text="name"></p>
