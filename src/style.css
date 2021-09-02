@@ -29,6 +29,13 @@
   margin-top: var(--space, 1.5rem);
 }
 
+.icon {
+  /* 0.75 is about the height of tall characters */
+  /* for small characters can use 1ex unit which is height of letter 'x' */
+  height: 0.75em;
+  width: 0.75em;
+}
+
 /* TODO: background scroll gradients */
 .scrollGradient {
   background: 
