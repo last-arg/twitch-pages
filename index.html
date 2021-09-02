@@ -91,49 +91,47 @@
                     </svg>
                   </button>
                 </div>
-                <div class="overflow-y-auto ">
-                  <div x-show="state === 'search'">
-                    <div>
-                      <ul class="-mt-4">
-                        <template x-for="game in searchResults" :key="game.id">
-                          <li class="flex mt-4">
-                            <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                text-trueGray-300
-                                border-l-6 border-transparent
-                                hover:text-gray-50 hover:border-violet-700
-                                focus:text-gray-50 focus:border-violet-700
-                              "
-                              :href="`/directory/game/${game.name}`"
-                              x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
-                              <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                              <span x-text="game.name"></span>
-                            </a>
-                            <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                              <button x-data="{followed: false}"
-                                class="hover:text-violet-500"
-                                x-effect="followed = $store.games.hasId(game.id)"
-                                x-on:click="$store.games.toggle(game.id)" type="button"
-                                :aria-label="followed ? 'UnFollow' : 'Follow'"
-                              >
-                                <svg class="fill-current w-5 h-5">
-                                  <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-                                  <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-                                </svg>
-                              </button>
-                              <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
-                                <svg class="fill-current w-5 h-5">
-                                  <use href="/src/assets/icons.svg#external-link"></use>
-                                </svg>
-                              </a>
-                            </div>
-                          </li>
-                        </template>
-                      </ul>
-                    </div>
-                  </div>
-                  <ul class="-mt-4" x-show="state === 'games'">
-                    <template x-for="game in $store.games.data" :key="game.id">
+                <div class="overflow-y-auto">
+                  <!-- @games -->
+                  <ul class="stack stack-p-4" x-show="state === 'search'">
+                    <template x-for="game in searchResults" :key="game.id">
                       <li class="flex mt-4">
+                        <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                            text-trueGray-300
+                            border-l-6 border-transparent
+                            hover:text-gray-50 hover:border-violet-700
+                            focus:text-gray-50 focus:border-violet-700
+                          "
+                          :href="`/directory/game/${game.name}`"
+                          x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                          <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                          <span x-text="game.name"></span>
+                        </a>
+                        <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                          <button x-data="{followed: false}"
+                            class="hover:text-violet-500"
+                            x-effect="followed = $store.games.hasId(game.id)"
+                            x-on:click="$store.games.toggle(game.id)" type="button"
+                            :aria-label="followed ? 'UnFollow' : 'Follow'"
+                          >
+                            <svg class="fill-current w-5 h-5">
+                              <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                              <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+                            </svg>
+                          </button>
+                          <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                            <svg class="fill-current w-5 h-5">
+                              <use href="/src/assets/icons.svg#external-link"></use>
+                            </svg>
+                          </a>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                  <!-- @games -->
+                  <ul class="stack stack-p-4" x-show="state === 'games'">
+                    <template x-for="game in $store.games.data" :key="game.id">
+                      <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-trueGray-300
                             border-l-6 border-transparent
@@ -162,9 +160,10 @@
                       </li>
                     </template>
                   </ul>
-                  <ul x-show="state === 'streams'">
+                  <!-- @streams -->
+                  <ul class="stack stack-p-4" x-show="state === 'streams'">
                     <template x-for="stream in $store.streams.data" :key="stream.user_id">
-                      <li class="flex mt-4">
+                      <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-trueGray-300
                             border-l-6 border-transparent

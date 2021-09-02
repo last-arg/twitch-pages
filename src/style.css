@@ -10,17 +10,35 @@
   contain: strict
 }
 
-.htmx-indicator {
-  @apply hidden;
+.stack-p-4 {
+  --space: 1rem
 }
 
-.htmx-request .htmx-indicator,
-.htmx-request.htmx-indicator {
-  @apply block
+.stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-.htmx-request .htmx-default,
-.htmx-request.htmx-default {
-  @apply hidden
+.stack > *:not(template) {
+  margin-top: 0;
+  margin-bottom: 0;
+} 
+
+.stack > *:not(template) + * {
+  margin-top: var(--space, 1.5rem);
+}
+
+/* TODO: background scroll gradients */
+.scrollGradient {
+  background: 
+    linear-gradient(#fc551e 33%, rgba(252,85,30, 0)),
+    linear-gradient(rgba(252,85,30, 0), #fc551e 66%) 0 100%,
+    radial-gradient(farthest-side at 50% 0, rgba(34,34,34, 0.5), rgba(0,0,0,0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(34,34,34, 0.5), rgba(0,0,0,0)) 0 100%;
+  background-color: #fc551e;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+  background-size: 100% 36px, 100% 36px, 100% 12px, 100% 12px;
 }
 
