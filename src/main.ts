@@ -101,8 +101,8 @@ function beforeAlpine(token: string) {
             if (newTitle !== "") {
               this.title = newTitle
             }
-            if (this.state === 'streams') {
-              this.$store.users_live.updateUserLiveness(this.$store.streams.ids)
+            if (this.state === 'streams' && !this.$store.streams.liveUpdating) {
+              this.$store.streams.updateUserLiveness(this.$store.streams.ids, true)
             }
           })
           let searchTimeout = 0;
@@ -456,13 +456,32 @@ function beforeAlpine(token: string) {
       }
     }
 
+    const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
+      if (userIds.length === 0) return []
+      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
+      return (await (await fetch(url, {method: "GET", headers})).json()).data;
+    };
+
+    const fiveMinutesInMs = 30000000
+    const keyStreams = "streams"
+    const keyUserLive = `${keyStreams}.live`
+    const keyUserLiveLastCheck = `${keyUserLive}.last_check`
     const storeStreams = {
-      data: JSON.parse(localStorage.getItem("streams") ?? "[]"),
+      data: JSON.parse(localStorage.getItem(keyStreams) ?? "[]"),
+      live: JSON.parse(localStorage.getItem("streams.live") ?? "{}"),
+      liveLastCheck: parseInt(JSON.parse(localStorage.getItem(keyUserLiveLastCheck) ?? Date.now().toString()), 10),
+      liveUpdating: false,
       ids: [] as string[],
       init() {
         Alpine.effect(() => {
           this.ids = this.data.map(({user_id}:{user_id:string}) => user_id)
-          localStorage.setItem("streams", JSON.stringify(this.data))
+          localStorage.setItem(keyStreams, JSON.stringify(this.data))
+        })
+        Alpine.effect(() => {
+          localStorage.setItem(keyUserLive, JSON.stringify(this.live))
+        })
+        Alpine.effect(() => {
+          localStorage.setItem(keyUserLiveLastCheck, JSON.stringify(this.liveLastCheck))
         })
       },
       hasId(id: string): boolean {
@@ -474,6 +493,7 @@ function beforeAlpine(token: string) {
           return false
         } else {
           this.add(user_id, user_login, user_name)
+          this.addLiveUser(user_id)
           return true
         }
       },
@@ -489,6 +509,38 @@ function beforeAlpine(token: string) {
         const index = this.ids.indexOf(id)
         if (index !== -1) {
           this.data.splice(index, 1)
+        }
+      },
+      isLive(user_id: string): boolean {
+        return this.live[user_id] !== undefined
+      },
+      async addLiveUser(user_id: string) {
+        if (this.live[user_id] === undefined) {
+          const stream = (await fetchStreamsByUserIds([user_id]))[0]
+          if (stream) {
+            this.live[stream.user_id] =stream.game_name
+          }
+        }
+      },
+      async updateUserLiveness(user_ids: string[], ignore_date_check: boolean = false): Promise<void> {
+        if (user_ids.length === 0) return
+        const now = Date.now()
+        if (ignore_date_check || now > (this.liveLastCheck + fiveMinutesInMs)) {
+          this.liveUpdating = true
+          this.live = {}
+          const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
+          let new_data = {}
+          for (let i = 0; i < batch_count; i+=1) {
+            const start = i * TWITCH_MAX_QUERY_PARAMS
+            const end = start + TWITCH_MAX_QUERY_PARAMS
+            const streams = await fetchStreamsByUserIds(user_ids.slice(start, end))
+            for (const {user_id, game_name} of streams) {
+              new_data[user_id] = game_name
+            }
+          }
+          this.live = new_data
+          this.liveLastCheck = now
+          this.liveUpdating = true
         }
       }
     }
@@ -570,55 +622,9 @@ function beforeAlpine(token: string) {
       }
     }
 
-    const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
-      if (userIds.length === 0) return []
-      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
-      return (await (await fetch(url, {method: "GET", headers})).json()).data;
-    };
-
-    const fiveMinutesInMs = 30000000
-    const keyUserLive = "users_live"
-    const storeUserLive = {
-      data: JSON.parse(localStorage.getItem(keyUserLive) ?? "{}"),
-      lastCheck: parseInt(JSON.parse(localStorage.getItem(`${keyUserLive}_last_check`) ?? Date.now().toString()), 10),
-      init() {
-        Alpine.effect(() => {
-          localStorage.setItem(keyUserLive, JSON.stringify(this.data))
-        })
-
-        Alpine.effect(() => {
-          localStorage.setItem(`${keyUserLive}_last_check`, JSON.stringify(this.lastCheck))
-        })
-
-        this.updateUserLiveness(storeStreams.ids)
-      },
-      hasId(id: string): boolean {
-        return this.data[id] !== undefined
-      },
-      async updateUserLiveness(user_ids: string[], ignore_date_check: boolean = false): Promise<void> {
-        if (user_ids.length === 0) return
-        const now = Date.now()
-        if (ignore_date_check || now > this.lastCheck + fiveMinutesInMs) {
-          const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
-          for (let i = 0; i < batch_count; i+=1) {
-            const start = i * TWITCH_MAX_QUERY_PARAMS
-            const end = start + TWITCH_MAX_QUERY_PARAMS
-            const streams = await fetchStreamsByUserIds(user_ids.slice(start, end))
-            let new_data = {}
-            for (const {user_id, game_name} of streams) {
-              new_data[user_id] = game_name
-            }
-            this.data = {...this.data, ...new_data}
-          }
-          this.lastCheck = now
-        }
-      }
-    }
-
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
-    Alpine.store('users_live', storeUserLive)
   })
 }
 

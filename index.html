@@ -5,7 +5,11 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Twitch Alternative</title>
-    <link rel="preload" href="/src/assets/icons.svg" as="other" type="image/svg+xml" />
+    <!--
+      TODO: for some reason icons.svg is downloaded twice
+      After few seconds console warns of not using preloaded svg
+    -->
+    <link rel="preload" href="/src/assets/icons.svg" as="image" type="image/svg+xml" />
   </head>
   <body class="bg-trueGray-50 text-trueGray-800">
     <div id="app">
@@ -91,7 +95,7 @@
                   <div x-show="state === 'search'">
                     <div>
                       <ul class="-mt-4">
-                        <template x-for="game in searchResults">
+                        <template x-for="game in searchResults" :key="game.id">
                           <li class="flex mt-4">
                             <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                                 text-trueGray-300
@@ -128,7 +132,7 @@
                     </div>
                   </div>
                   <ul class="-mt-4" x-show="state === 'games'">
-                    <template x-for="game in $store.games.data">
+                    <template x-for="game in $store.games.data" :key="game.id">
                       <li class="flex mt-4">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-trueGray-300
@@ -159,7 +163,7 @@
                     </template>
                   </ul>
                   <ul x-show="state === 'streams'">
-                    <template x-for="stream in $store.streams.data">
+                    <template x-for="stream in $store.streams.data" :key="stream.user_id">
                       <li class="flex mt-4">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-trueGray-300
@@ -170,13 +174,11 @@
                           :href="`/${stream.user_login}/videos`"
                           x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
                           <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
-                          <div x-data="{name: $store.users_live.data[stream.user_id]}"
-                            class="flex-grow relative h-full flex items-center px-2"
-                          >
-                            <p class="" :class="name ? 'items-end' : 'items-center'" x-text="stream.user_name"></p>
-                            <div class="absolute bottom-0 text-sm flex items-center" x-show="name">
+                          <div class="flex-grow relative h-full flex items-center px-2">
+                            <p x-text="stream.user_name"></p>
+                            <div class="absolute bottom-0 text-sm flex items-center" x-show="$store.streams.isLive(stream.user_id)">
                               <p><span class="text-xs bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span></p>
-                              <p class="text-trueGray-400 ml-1 truncate" x-text="name"></p>
+                              <p class="text-trueGray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
                             </div>
                           </div>
                         </a>
