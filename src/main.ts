@@ -91,7 +91,7 @@ function beforeAlpine(token: string) {
     Alpine.data("sidebar", (): Sidebar => {
       return {
         state: "closed",
-        // state: "streams",
+        // state: "games",
         title: "",
         searchValue: "",
         searchResults: [] as Search[],

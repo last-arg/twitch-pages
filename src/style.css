@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+
+h2,
+h3 {
+  max-width: 60ch;
+}
 
 img {
   width: 100%;
@@ -14,9 +18,14 @@ img {
   contain: strict
 }
 
-.stack-p-4 {
+.stack-m-4 {
   --space: 1rem
 }
+
+.stack-m-0 {
+  --space: 0
+}
+
 
 .stack {
   display: flex;
@@ -24,12 +33,14 @@ img {
   justify-content: flex-start;
 }
 
-.stack > *:not(template) {
+/* To deal with template elements */
+.stack > template + *,
+.stack > * {
   margin-top: 0;
   margin-bottom: 0;
-} 
+}
 
-.stack > *:not(template) + * {
+.stack > * + * {
   margin-top: var(--space, 1.5rem);
 }
 
@@ -128,3 +139,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
   height: 0.75em;
   width: 0.75em;
 }
+
+
+@tailwind utilities;

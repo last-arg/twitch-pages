@@ -1,5 +1,4 @@
-<div x-data="user()">
-  <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
+<div class="stack" x-data="user()">
   <div class="flex items-center">
     <div class="flex items-center bg-white rounded-r-sm pr-2">
       <h2>
@@ -37,7 +36,7 @@
       <p x-text="$store.streams.live[id]"></p>
     </div>
   </div>
-  <div class="flex justify-end sm:justify-start sm:items-center my-5">
+  <div class="flex justify-end sm:justify-start sm:items-center">
     <p class="hidden sm:block">Videos:</p>
     <ul class="sm:flex">
       <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
@@ -102,7 +101,7 @@
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
       >
-        <a class="block  group" :href="video.url" :title="video.title">
+        <a class="block group" :href="video.url" :title="video.title">
           <div x-data="{date: new Date(video.published_at) }" class="relative">
             <img class="w-full rounded-sm" alt="" width="440" height="248" :src="getImageSrc(video.thumbnail_url, $el.width, $el.height)" />
             <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm"
@@ -132,6 +131,7 @@
       </li>
     </template>
   </ul>
+  <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
   <div class="text-center my-12">
     <button x-show="!loading && cursor !== ''" type="button"
       x-on:click="moreVideos()"

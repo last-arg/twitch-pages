@@ -100,7 +100,7 @@
                 </div>
                 <div class="overflow-y-auto">
                   <!-- @search -->
-                  <ul class="stack stack-p-4" x-show="state === 'search'">
+                  <ul class="stack stack-m-4" x-show="state === 'search'">
                     <template x-for="game in searchResults" :key="game.id">
                       <li class="flex mt-4">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
@@ -136,7 +136,7 @@
                     </template>
                   </ul>
                   <!-- @games -->
-                  <ul class="stack stack-p-4" x-show="state === 'games'">
+                  <ul class="stack stack-m-4" x-show="state === 'games'">
                     <template x-for="game in $store.games.data" :key="game.id">
                       <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
@@ -168,7 +168,7 @@
                     </template>
                   </ul>
                   <!-- @streams -->
-                  <ul class="stack stack-p-4" x-show="state === 'streams'">
+                  <ul class="stack stack-m-4" x-show="state === 'streams'">
                     <template x-for="stream in $store.streams.data" :key="stream.user_id">
                       <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
