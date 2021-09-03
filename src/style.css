@@ -78,15 +78,15 @@ For example if you have white-space: nowrap on some element (to truncate it).
   }
 }
 
-.grid-min-5 {
+.grid-min-80 {
   --grid-min: 20rem
 }
 
-.grid-min-4\.5 {
+.grid-min-72 {
   --grid-min: 18rem
 }
 
-.grid-min-4 {
+.grid-min-64 {
   --grid-min: 16rem
 }
 
