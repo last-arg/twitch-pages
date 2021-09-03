@@ -10,6 +10,13 @@
       After few seconds console warns of not using preloaded svg
     -->
     <link rel="preload" href="/src/assets/icons.svg" as="image" type="image/svg+xml" />
+    <style>
+      /* Don't flash big svg icons */
+      svg {
+        width: 1em;
+        height: 1em;
+      }
+    </style>
   </head>
   <body class="bg-trueGray-50 text-trueGray-800">
     <div id="app">

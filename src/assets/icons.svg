@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<svg xmlns="http://www.w3.org/2000/svg">
-  <symbol id="external-link" class="fill-current h-full w-full" style="width: 100%; height: 100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <symbol id="external-link" class="fill-current h-full w-full" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0)">
       <path d="M18.9656 0L20 0.966047L9.03438 11.2L8 10.2346L18.9656 0Z"/>
       <path d="M20 7.2H18.56V1.44H12.8V0H20V7.2Z"/>

@@ -12,3 +12,5 @@ Swapping multiple elements in htmx with hx-swap-oob (response text contains the 
 * Make own script of htmx without global factory. Problem is as soon htmx is loaded it is also started.
 * Explore options for html over the wire: htmx, twinspark.js, ...
 * Could implement html over the wire in alpine?
+* Scroll shadows
+  * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
