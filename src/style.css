@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+img {
+  width: 100%;
+}
+
 .contain-content {
   contain: content
 }
@@ -27,6 +31,63 @@
 
 .stack > *:not(template) + * {
   margin-top: var(--space, 1.5rem);
+}
+
+/*
+If last row isn't filled with items the item(s) will all the space they can.
+Usually this isn't wanted behaviour. To make things visually balanced we could
+add empty (might need to set height to 0) html elements to end of container.
+Number of empty elements = max_column_count - 1
+And make sure to hide the elements from accesibility tools.
+
+Can use gap attribute for spacing instead of padding and margin if don't need
+wider browser support
+*/
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(var(--grid-gap, 1rem) * -0.5);
+}
+
+/*
+If you have element inside grid item that makes grid item wider than wanted then
+you can set overflow: hidden to grid item to fix it.
+For example if you have white-space: nowrap on some element (to truncate it).
+*/
+.flex-grid > * {
+  flex: 1 1 var(--grid-min, 20rem);
+  padding: calc(var(--grid-gap, 1rem) * 0.5);
+}
+
+.grid {
+  display: grid;
+  grid-gap: var(--grid-gap, 1rem);
+  /*
+    This will produce horizontal scrollbar when going below minimum value.
+    Solutions:
+    1) Use CSS min function to figure out if provided value or 100% is smaller.
+    2) For wider browser supprot can manually write media query that changes
+       attribute grid-template-columns value.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min, 20rem), 1fr));
+}
+
+@supports (width: min(250px, 100%)) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 20rem), 100%), 1fr));
+  }
+}
+
+.grid-min-5 {
+  --grid-min: 20rem
+}
+
+.grid-min-4\.5 {
+  --grid-min: 18rem
+}
+
+.grid-min-4 {
+  --grid-min: 16rem
 }
 
 .icon {

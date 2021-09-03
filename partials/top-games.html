@@ -1,8 +1,8 @@
 <h2>Top games</h2>
 <div class="mt-5" x-data="topGames">
-  <ul class="flex-1 flex flex-wrap -ml-4 -mt-6">
+  <ul class="grid grid-min-4.5">
     <template x-for="game in games">
-      <li class="flex w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pl-4 pt-6 transition duration-300 opacity-0"
+      <li class="flex transition duration-300 opacity-0"
         x-init="$nextTick(() => $el.classList.add('opacity-100'))"
       >
         <div class="flex w-full border-2 border-white">
@@ -40,7 +40,7 @@
       </li>
     </template>
     <template x-for="i in fetchCount">
-      <li x-show="loading" aria-hidden="true" class="flex w-full sm:w-1/2 md:w-1/3 lg:w-1/4 pl-4 pt-6 transition duration-300"
+      <li x-show="loading" aria-hidden="true" class="flex transition duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
       >

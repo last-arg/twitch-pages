@@ -95,10 +95,10 @@
       </div>
     </div>
   </div>
-  <ul class="flex flex-wrap justify-center sm:justify-start -ml-4 -mb-6">
+  <ul class="grid grid-min-4">
     <template x-for="video in videos">
       <li x-show="filter[video.type]"
-        class="w-full max-w-sm sm:max-w-none sm:w-1/2 md:w-1/3 xl:w-1/4 pl-4 pb-6 transition duration-300"
+        class="transition duration-300"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
       >
