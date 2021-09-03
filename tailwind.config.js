@@ -20,8 +20,8 @@ module.exports = {
       },
     }
   },
-  variants: {}
-  // plugins: [
-  //   require('@tailwindcss/line-clamp'),
-  // ]
+  variants: {},
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ]
 };

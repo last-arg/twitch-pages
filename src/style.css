@@ -90,6 +90,30 @@ For example if you have white-space: nowrap on some element (to truncate it).
   --grid-min: 16rem
 }
 
+.cover {
+  display: flex;
+  flex-direction: column;
+}
+.cover > h1 {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.cover > * {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.cover > h1 {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.cover > :first-child:not(h1) {
+  margin-top: 0;
+}
+.cover > :last-child:not(h1) {
+  margin-bottom: 0;
+}
+
 .icon {
   /* 0.75 is about the height of tall characters */
   /* for small characters can use 1ex unit which is height of letter 'x' */
