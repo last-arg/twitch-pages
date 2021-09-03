@@ -35,28 +35,28 @@
   </div>
   <div class="mt-5">
     <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
-    <ul class="grid grid-min-5">
+    <ul class="grid grid-min-5 grid-gap-6">
       <template x-for="video in videos">
         <li x-data="{videosUrl: `/${video.user_login}/videos`}"
           class="transition duration-300 opacity-0"
           x-init="$nextTick(() => $el.classList.add('opacity-100'))"
         >
-          <div class="bg-white border-2 border-white">
+          <div>
             <a :href="`https://twitch.tv/${video.user_login}`" :title="video.title"
               class="hover:text-violet-700 hover:underline"
             >
               <div class="relative">
-                <img :src="createLiveUserImageUrl(video.thumbnail_url, 440, 248)" alt="" width="440" height="248" />
+                <img class="rounded" :src="createLiveUserImageUrl(video.thumbnail_url, 440, 248)" alt="" width="440" height="248" />
                 <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1" x-text="`${video.viewer_count} viewers`"></p>
               </div>
-              <div class="flex items-center px-1 py-1">
+              <div class="flex items-center px-1 py-1 rounded bg-white">
                 <p class="truncate" x-text="video.title">stream title</p>
                 <svg class="ml-1 flex-none fill-current w-4 h-4">
                   <use href="/src/assets/icons.svg#external-link"></use>
                 </svg>
               </div>
             </a>
-            <div class="flex bg-trueGray-50 px-1 py-1.5">
+            <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
               <a aria-hidden="true" :href="videosUrl">
                 <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl(video.user_id)" alt="" width="300" height="300">
               </a>

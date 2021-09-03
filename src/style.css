@@ -90,6 +90,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
   --grid-min: 16rem
 }
 
+.grid-gap-6 {
+  --grid-gap: 1.5rem
+}
+
+.grid-gap-8 {
+  --grid-gap: 2rem
+}
+
 .cover {
   display: flex;
   flex-direction: column;
