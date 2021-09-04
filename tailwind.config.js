@@ -20,7 +20,7 @@ module.exports = {
       },
       maxWidth: {
         "10": "10rem",
-      },
+      }
     }
   },
   variants: {},
