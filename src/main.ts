@@ -1,11 +1,6 @@
 import Alpine from 'alpinejs'
-import {addScopeToNode} from '../node_modules/alpinejs/src/scope.js'
+import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
 import './style.css'
-
-declare function addScopeToNode(node: Node, data: any, referenceNode: any): () => void
-
-const TWITCH_MAX_QUERY_PARAMS = 100
-const clientId = "7v5r973dmjp0nd1g43b8hcocj2airz";
 
 const paths: Record<string, string> = {
   "/": "/partials/top-games.html",
@@ -67,7 +62,7 @@ function beforeAlpine(token: string) {
   const headers = {
     "Host": "api.twitch.tv",
     "Authorization": `Bearer ${token}`,
-    "Client-id": clientId,
+    "Client-id": TWITCH_CLIENT_ID,
     "Accept": "application/vnd.twitchtv.v5+json",
   };
 
@@ -116,7 +111,7 @@ function beforeAlpine(token: string) {
         async fetchSearch(value: string): Promise<Search[]> {
           const searchTerm = value.trim()
           if (searchTerm.length === 0) return []
-          const url = `https://api.twitch.tv/helix/search/categories?first=10&query=${searchTerm}`;
+          const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${searchTerm}`;
           const r = await fetch(url, { method: "GET", headers: headers })
           const results = await r.json()
           return results.data ?? []
@@ -181,8 +176,7 @@ function beforeAlpine(token: string) {
         },
         async fetchVideos() {
           this.loading = true
-          const count = 5
-          const url = `https://api.twitch.tv/helix/streams?game_id=${this.id}&first=${count}&after=${this.cursor}`;
+          const url = `https://api.twitch.tv/helix/streams?game_id=${this.id}&first=${STREAMS_COUNT}&after=${this.cursor}`;
           const resp = await (await fetch(url, {method: "GET", headers})).json();
           this.videos= [...this.videos, ...resp.data]
           this.cursor= resp.pagination?.cursor ?? ""
@@ -272,19 +266,19 @@ function beforeAlpine(token: string) {
           upload: false,
           highlight: false,
         },
-        onlyFilter(vType: UserVideo.type) {
+        onlyFilter(vType: UserVideo["type"]) {
           this.filter.archive = false
           this.filter.upload = false
           this.filter.highlight = false
           this.filter[vType] = true
         },
-        toggleFilter(vType: UserVideo.type) {
+        toggleFilter(vType: UserVideo["type"]) {
           if (!this.filter[vType]) {
             this.filter[vType] = true
             return
           }
 
-          const trueCount = Object.values(this.filter).reduce((acc, curr) => acc + Number(curr), 0)
+          const trueCount = Object.values(this.filter).reduce((acc: number, curr) => acc + Number(curr), 0)
           if (trueCount > 1) {
              this.filter[vType] = false
           }
@@ -297,7 +291,7 @@ function beforeAlpine(token: string) {
               highlight: 0,
             }
 
-            for (const v of this.videos) {
+            for (const v of this.videos as UserVideo[]) {
               filterCount[v.type] += 1
             }
             this.filterCount = filterCount
@@ -333,15 +327,14 @@ function beforeAlpine(token: string) {
           this.loading = false
         },
         async fetchVideos() {
-          const count = 10
-          const url = `https://api.twitch.tv/helix/videos?user_id=${this.id}&first=${count}&after=${this.cursor}`;
+          const url = `https://api.twitch.tv/helix/videos?user_id=${this.id}&first=${USER_VIDEOS_COUNT}&after=${this.cursor}`;
           return (await (await fetch(url, {method: "GET", headers})).json());
         },
-        dateToRelative(str: string): string {
+        dateToRelative(str: Date): string {
           return twitchDateToString(str)
         },
         getImageSrc(url: string, width: number, height: number): string {
-          return url.replace('%{width}', width).replace('%{height}', height)
+          return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
         },
       }
     })
@@ -386,10 +379,7 @@ function beforeAlpine(token: string) {
       id: string,
     }
     Alpine.data("topGames", function(this: AlpineMagicProperties): any {
-      const templ = this.$el?.querySelector('template')!
-      const container = templ.parentElement!
       return {
-        fetchCount: 5,
         games: [] as TopGame[],
         cursor: "",
         loading: false,
@@ -404,7 +394,7 @@ function beforeAlpine(token: string) {
           this.loading = false
         },
         async fetchCategories(): Promise<{data: TopGame[]}> {
-          const url = `https://api.twitch.tv/helix/games/top?first=${this.fetchCount}&after=${this.cursor}`
+          const url = `https://api.twitch.tv/helix/games/top?first=${TOP_GAMES_COUNT}&after=${this.cursor}`
           const r = await fetch(url, { method: "GET", headers: headers })
           return await r.json()
         },
@@ -453,9 +443,13 @@ function beforeAlpine(token: string) {
       }
     }
 
+    interface Stream {
+      user_id: string,
+      game_name: string,
+    }
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
-      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
+      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
       return (await (await fetch(url, {method: "GET", headers})).json()).data;
     };
 
@@ -479,6 +473,7 @@ function beforeAlpine(token: string) {
           localStorage.setItem(keyUserLiveLastCheck, JSON.stringify(this.liveLastCheck))
         })
 
+        // @ts-ignore
         let liveTimeout = 0
         const fiveMinutesInMs = 300000
         const queueUpdate = () => {
@@ -529,11 +524,11 @@ function beforeAlpine(token: string) {
         console.log('update ')
         if (user_ids.length === 0) return
         const now = Date.now()
-        const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
-        let new_data = {}
+        const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
+        let new_data: Record<string, string> = {}
         for (let i = 0; i < batch_count; i+=1) {
-          const start = i * TWITCH_MAX_QUERY_PARAMS
-          const end = start + TWITCH_MAX_QUERY_PARAMS
+          const start = i * TWITCH_MAX_QUERY_COUNT
+          const end = start + TWITCH_MAX_QUERY_COUNT
           const streams = await fetchStreamsByUserIds(user_ids.slice(start, end))
           for (const {user_id, game_name} of streams) {
             new_data[user_id] = game_name
@@ -587,11 +582,11 @@ function beforeAlpine(token: string) {
       async fetchProfileImages(user_ids: string[]): Promise<void> {
         if (user_ids.length === 0) return
         const last_access = Date.now()
-        const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
+        const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
 
         for (let i = 0; i < batch_count; i+=1) {
-          const start = i * TWITCH_MAX_QUERY_PARAMS
-          const end = start + TWITCH_MAX_QUERY_PARAMS
+          const start = i * TWITCH_MAX_QUERY_COUNT
+          const end = start + TWITCH_MAX_QUERY_COUNT
           const profiles = await fetchUsers(user_ids.slice(start, end))
           let new_data: StreamImage = {}
           for (let {id, profile_image_url} of profiles) {
@@ -653,7 +648,7 @@ const init = async () => {
     // initLogin()
     const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!
     link.parentElement?.classList.remove("hidden")
-    link.href = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`
+    link.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`
   }
 }
 
