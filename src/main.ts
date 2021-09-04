@@ -383,6 +383,7 @@ function beforeAlpine(token: string) {
         games: [] as TopGame[],
         cursor: "",
         loading: false,
+        fetchCount: TOP_GAMES_COUNT,
         async init() {
           this.moreGames()
         },
