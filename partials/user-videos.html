@@ -36,10 +36,9 @@
       <p x-text="$store.streams.live[id]"></p>
     </div>
   </div>
-  <div class="flex justify-end sm:justify-start sm:items-center">
-    <p class="hidden sm:block">Videos:</p>
-    <ul class="sm:flex">
-      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
+  <div class="flex">
+    <ul class="flex flex-wrap gap-4 justify-end">
+      <li class="rounded flex items-center">
         <button type="button"
           class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative bg-lime-300 hover:bg-lime-400"
           x-on:click="toggleFilter('archive')"
@@ -54,7 +53,7 @@
           Archives (<span x-text="filterCount['archive']"></span>)
         </button>
       </li>
-      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
+      <li class="rounded flex items-center">
         <button type="button"
           class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative bg-sky-300 hover:bg-sky-400"
           x-on:click="toggleFilter('upload')"
@@ -69,7 +68,7 @@
           Uploads (<span x-text="filterCount['upload']"></span>)
         </button>
       </li>
-      <li class="mb-3 sm:mb-0 sm:mx-2 rounded flex items-center">
+      <li class="rounded flex items-center">
         <button type="button"
           class="p-1 rounded-full border-2 border-trueGray-50 h-9 w-9 relative bg-amber-300 hover:bg-amber-400"
           x-on:click="toggleFilter('highlight')"
@@ -85,10 +84,10 @@
         </button>
       </li>
     </ul>
-    <div class="hidden sm:flex">
-      <span class="border-l mx-2">&nbsp;</span>
+    <div class="flex items-center">
+      <span class="w-0 border-l mx-2 h-full">&nbsp;</span>
       <div>
-        <button type="button" class=""
+        <button type="button" class="whitespace-nowrap"
           x-on:click="Object.keys(filter).forEach((k) => filter[k] = true)"
         >Show all</button>
       </div>

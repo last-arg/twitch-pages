@@ -34,7 +34,10 @@
     </div>
   </div>
   <div class="mt-5">
-    <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
+    <p class="text-lg transition delay-200 opactity-100"
+      x-transition:enter="opacity-0"
+      x-show="!loading && videos.length === 0"
+    >Found no streams</p>
     <ul class="grid grid-min-80 grid-gap-6">
       <template x-for="video in videos">
         <li x-data="{videosUrl: `/${video.user_login}/videos`}"

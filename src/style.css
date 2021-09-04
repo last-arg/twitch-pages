@@ -74,10 +74,10 @@ For example if you have white-space: nowrap on some element (to truncate it).
   display: grid;
   grid-gap: var(--grid-gap, 1rem);
   /*
-    This will produce horizontal scrollbar when going below minimum value.
+    This will produce horizontal scrollbar when going below minimum value (--grid-min).
     Solutions:
     1) Use CSS min function to figure out if provided value or 100% is smaller.
-    2) For wider browser supprot can manually write media query that changes
+    2) For wider browser support can manually write media query that changes
        attribute grid-template-columns value.
   */
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-min, 20rem), 1fr));
@@ -131,6 +131,18 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 .cover > :last-child:not(h1) {
   margin-bottom: 0;
+}
+
+
+.switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  --threshold: 30rem;
+}
+.switcher > * {
+  flex-grow: 1;
+  flex-basis: calc((var(--threshold) - 100%) * 999);
 }
 
 .icon {
