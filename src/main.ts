@@ -521,7 +521,6 @@ function beforeAlpine(token: string) {
         }
       },
       async updateUserLiveness(user_ids: string[]): Promise<void> {
-        console.log('update ')
         if (user_ids.length === 0) return
         const now = Date.now()
         const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
