@@ -58,8 +58,8 @@
             <a aria-hidden="true" :href="videosUrl">
               <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl(video.user_id)" alt="" width="300" height="300">
             </a>
-            <div class="stack ml-2">
-              <div class="flex items-center">
+            <div class="stack stack-m-0 ml-2">
+              <div class="flex items-center mb-auto">
                 <a class="hover:underline hover:text-violet-700" :href="videosUrl" x-text="video.user_name"
                    x-on:click.prevent="$dispatch('set-main', {path: videosUrl, getUrl: '/partials/user-videos.html'})">
                 ></a>
@@ -74,7 +74,7 @@
                   </svg>
                 </button>
               </div>
-              <a class="flex items-center hover:underline hover:text-violet-700 mt-auto"
+              <a class="flex items-center hover:underline hover:text-violet-700"
                 :href="`https://www.twitch.tv/${video.user_login}/videos`"
               >
                 <p>Go to Twitch videos</p>

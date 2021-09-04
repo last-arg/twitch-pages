@@ -14,3 +14,4 @@ Swapping multiple elements in htmx with hx-swap-oob (response text contains the 
 * Could implement html over the wire in alpine?
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
+* Accessiblity
