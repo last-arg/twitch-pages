@@ -34,26 +34,30 @@
               >Home</a>
             </h1>
             <div class="flex flex-nowrap">
-              <div class="ml-3 border-b-5 border-gray-900 mr-3 sm:mr-5 flex"
+              <div class="ml-3 border-b-5 border-gray-900 mr-3 sm:mr-5"
                 :class="state === 'search' ? 'border-violet-700' : ''"
               >
-                <input
-                  x-on:focus="state = 'search'"
-                  x-on:blur="if ($el.value.length === 0) state = 'closed'"
-                  x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
-                  x-ref="searchInput"
-                  x-model="searchValue"
-                  type="search"
-                  class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
-                  placeholder="Search for game"
-                />
-                <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
-                  type="button" aria-label="Search games"
-                  x-on:click="$refs.searchInput.focus()"
-                >
-                  <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#looking-class"></use></svg>
-                </button>
-                <button class="hidden" type="reset">Clear</button>
+                <form role="search" class="h-full flex" x-on:click.prevent="">
+                  <label class="sr-only" for="game_name">Enter game name</label>
+                  <input
+                    x-on:focus="state = 'search'"
+                    x-on:blur="if ($el.value.length === 0) state = 'closed'"
+                    x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
+                    x-ref="searchInput"
+                    x-model="searchValue"
+                    id="game_name"
+                    name="game_name"
+                    type="search"
+                    class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
+                    placeholder="Search for game"
+                  />
+                  <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
+                    type="submit" aria-label="Search games"
+                    x-on:click="$refs.searchInput.focus()"
+                  >
+                    <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#looking-class"></use></svg>
+                  </button>
+                </form>
               </div>
               <button
                 x-on:click="toggleSidebar('games')"

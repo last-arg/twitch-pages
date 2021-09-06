@@ -1,9 +1,8 @@
 @tailwind base;
 @tailwind components;
 
-h2,
-h3 {
-  max-width: 60ch;
+:root {
+  --measure: 60ch;
 }
 
 img {
@@ -133,16 +132,25 @@ For example if you have white-space: nowrap on some element (to truncate it).
   margin-bottom: 0;
 }
 
-
 .switcher {
+  --threshold: 1rem;
+  --space: 1rem;
+  --large: calc(1 + 7 / 10);
+}
+
+.switcher > * {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  --threshold: 30rem;
+  /* ↓ Multiply by -1 to make negative */
+  margin: calc(var(--space) / 2 * -1);
 }
-.switcher > * {
+
+.switcher > * > * {
   flex-grow: 1;
-  flex-basis: calc((var(--threshold) - 100%) * 999);
+  flex-shrink: 1;
+  flex-basis: calc((var(--threshold) - (100% - var(--space))) * 999);
+  /* ↓ Half the value to each element, combining to make the whole */
+  margin: calc(var(--space) / 2);
 }
 
 .icon {
