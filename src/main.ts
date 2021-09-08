@@ -49,15 +49,6 @@ interface Sidebar {
   [key: string]: any,
 }
 
-const getSidebarTitle = (current: SidebarState): string => {
-  switch (current) {
-    case "games": return "Games";
-    case "streams": return "Streams";
-    case "search": return "Search";
-  }
-  return ""
-}
-
 function beforeAlpine(token: string) {
   const headers = {
     "Host": "api.twitch.tv",
@@ -86,17 +77,11 @@ function beforeAlpine(token: string) {
     Alpine.data("sidebar", (): Sidebar => {
       return {
         // state: "closed",
-        state: "games",
+        state: "search",
         title: "",
-        searchValue: "",
+        searchValue: "mine",
         searchResults: [] as Search[],
         init() {
-          Alpine.effect(() => {
-            const newTitle = getSidebarTitle(this.state)
-            if (newTitle !== "") {
-              this.title = newTitle
-            }
-          })
           let searchTimeout = 0;
           Alpine.effect(() => {
             clearTimeout(searchTimeout)
