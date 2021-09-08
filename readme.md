@@ -15,3 +15,4 @@ Swapping multiple elements in htmx with hx-swap-oob (response text contains the 
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
 * Accessiblity
+* Sidbar close button pressed -> move focus back to button that opened it.

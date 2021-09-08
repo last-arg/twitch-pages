@@ -161,7 +161,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 
 
-@tailwind utilities;
 
 .sidebar-button {
   @apply mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 block
@@ -189,4 +188,5 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply translate-x-0 opacity-100 visible;
 }
 
+@tailwind utilities;
 
