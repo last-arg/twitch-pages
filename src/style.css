@@ -188,5 +188,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply translate-x-0 opacity-100 visible;
 }
 
+.skip-content {
+  @apply absolute z-20 p-4 bg-white border border-trueGray-700 underline left-0;
+  bottom: calc(100% + 1rem);
+}
+
+.skip-content:focus {
+  @apply bottom-auto;
+}
+
 @tailwind utilities;
 
