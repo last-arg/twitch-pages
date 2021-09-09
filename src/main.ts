@@ -76,10 +76,9 @@ function beforeAlpine(token: string) {
   document.addEventListener("alpine:initializing", () => {
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        // state: "closed",
-        state: "search",
-        title: "",
-        searchValue: "mine",
+        state: "closed",
+        // state: "search",
+        searchValue: "",
         searchResults: [] as Search[],
         init() {
           let searchTimeout = 0;

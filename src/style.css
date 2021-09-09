@@ -1,13 +1,20 @@
 @tailwind base;
-@tailwind components;
 
 :root {
   --measure: 60ch;
 }
 
+/*
+html {
+  font-size: calc(1rem + 0.5vw);
+}
+*/
+
 img {
   width: 100%;
 }
+
+@tailwind components;
 
 .contain-content {
   contain: content
@@ -170,7 +177,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 
 .sidebar-button {
-  @apply mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 block
+  @apply mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 block h-full;
 }
 
 .sidebar-button:focus,
@@ -187,13 +194,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   transition: visibility 150ms, opacity 150ms, transform 150ms, transform 150ms;
 }
 
-[aria-expanded="false"] + button + .sidebar-wrapper,
-[aria-expanded="false"] + .sidebar-wrapper {
+[aria-expanded="false"] ~ .sidebar-wrapper {
   @apply translate-x-1/4 opacity-0 invisible;
 }
 
-[aria-expanded="true"] + button + .sidebar-wrapper,
-[aria-expanded="true"] + .sidebar-wrapper {
+[aria-expanded="true"] ~ .sidebar-wrapper {
   @apply translate-x-0 opacity-100 visible;
 }
 

@@ -14,6 +14,13 @@ Swapping multiple elements in htmx with hx-swap-oob (response text contains the 
 * Could implement html over the wire in alpine?
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
-* Accessiblity
+* Accessibility
   * https://www.sajari.com/blog/wcag-compliance-guide
-* Sidbar close button pressed -> move focus back to button that opened it.
+  * 'Load more button'
+    * Move focus to first new result.
+    * What if there is no result to move focus to? Move to last item?
+    * No more page:
+      * hide button? disable button?
+      * Where to move focus? last item? Or keep focus on button if button is disabled
+    * Native disable option isn't good for accessibility.
+  * 'Sidebar close' button pressed -> move focus back to button that opened it.
