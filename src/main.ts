@@ -74,9 +74,11 @@ function beforeAlpine(token: string) {
     id: string,
   }
   document.addEventListener("alpine:initializing", () => {
+    const searchFeedback = document.querySelector("#search-feedback")
     Alpine.data("sidebar", (): Sidebar => {
       return {
         state: "closed",
+        loading: false,
         // state: "search",
         searchValue: "",
         searchResults: [] as Search[],
@@ -86,8 +88,18 @@ function beforeAlpine(token: string) {
             clearTimeout(searchTimeout)
             const searchTerm = this.searchValue.trim()
             if (searchTerm.length > 0) {
+              this.loading = true;
               searchTimeout = setTimeout(async () => {
+                searchFeedback.textContent = "Searching games"
                 this.searchResults = await this.fetchSearch(searchTerm)
+                this.loading = false;
+                if (this.searchResults.length === 1) {
+                  searchFeedback.textContent = `Found one game`
+                } else if (this.searchResults.length > 1) {
+                  searchFeedback.textContent = `Found ${this.searchResults.length} games`
+                } else {
+                  searchFeedback.textContent = `Found no games`
+                }
               }, 400)
             }
           })

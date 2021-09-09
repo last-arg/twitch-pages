@@ -85,21 +85,17 @@
                           </svg>
                         </button>
                       </div>
+                      <div id="search-feedback" role="status" aria-live="polite" class="sr-only"></div>
+                      <p class="text-trueGray-300 ml-3"
+                        :class="{'hidden': searchValue.length === 0 || !loading}"
+                      >Searching games</p>
+                      <p class="text-trueGray-300 ml-3"
+                        :class="{'hidden': loading || searchValue.length === 0 || searchResults.length !== 0}"
+                      >Found no results</p>
+                      <p class="text-trueGray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
+                      >Enter game name to search</p>
                       <!-- search list -->
                       <div class="overflow-y-auto">
-                        <div role="status" aria-live="polite" class="sr-only">
-                          <!-- TODO: Announce search results to screen readers -->
-                          <!--
-                          Loading search results
-                          Found no search results
-                          Found 5 search results
-                          -->
-                        </div>
-                        <p class="text-trueGray-300 ml-3"
-                          :class="{'hidden': searchValue.length >= 0 && searchResults.length !== 0}"
-                        >Found no results</p>
-                        <p class="text-trueGray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
-                        >Enter game name to search</p>
                         <!-- @search -->
                         <ul class="stack stack-m-4" x-show="state === 'search'">
                           <template x-for="game in searchResults" :key="game.id">
