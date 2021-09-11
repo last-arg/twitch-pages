@@ -167,6 +167,9 @@ function beforeAlpine(token: string) {
             this.name = category.name
             this.id = category.id
             this.fetchVideos()
+          } else {
+            // TODO: 404 message
+            // page title?
           }
           this.loading = false
         },
