@@ -13,7 +13,6 @@
 * 404 page + title
 * Accessibility
   * Sidebar
-    * 'Sidebar close' button pressed -> move focus back to button that opened it.
     * game/stream clicked close sidebar, load new url content, move focus to main, close sidebar?
       * aria live role
   * 'Load more button'

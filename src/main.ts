@@ -78,12 +78,23 @@ function beforeAlpine(token: string) {
     Alpine.data("sidebar", (): Sidebar => {
       return {
         state: "closed",
-        loading: false,
         // state: "search",
+        loading: false,
         searchValue: "",
         searchResults: [] as Search[],
         init() {
           let searchTimeout = 0;
+          let activeSidebar: Element = document.activeElement;
+          Alpine.effect(() => {
+            const state = this.state;
+            if (document.activeElement.tagName === "BUTTON") {
+              if (this.state === 'closed') {
+                activeSidebar.focus();
+              } else {
+                activeSidebar = document.activeElement;
+              }
+            }
+          })
           Alpine.effect(() => {
             clearTimeout(searchTimeout)
             const searchTerm = this.searchValue.trim()
