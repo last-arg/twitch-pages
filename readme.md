@@ -13,7 +13,7 @@
 * 404 page + title
 * Accessibility
   * Sidebar
-    * game/stream clicked close sidebar, load new url content, move focus to main, close sidebar?
+    * game/stream clicked: close sidebar, load new url content, move focus to main, close sidebar?
       * aria live role
   * 'Load more button'
     * Move focus to first new result.
@@ -21,7 +21,7 @@
     * No more page:
       * hide button? disable button?
       * Where to move focus? last item? Or keep focus on button if button is disabled not hidden
-    * Native disable option isn't good for accessibility.
+    * Native input disable attribute isn't good for accessibility.
 
 
 ## Resources

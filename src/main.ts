@@ -170,6 +170,7 @@ function beforeAlpine(token: string) {
           const pathArr = location.pathname.split("/")
           const name = decodeURIComponent(pathArr[pathArr.length - 1])
           this.name = name
+          document.title = name
           this.loading = true
           const url = `https://api.twitch.tv/helix/games?name=${name}`;
           const data = (await (await fetch(url, {method: "GET", headers})).json()).data;
@@ -177,10 +178,8 @@ function beforeAlpine(token: string) {
             const category = data[0]
             this.name = category.name
             this.id = category.id
+            document.title = category.name
             this.fetchVideos()
-          } else {
-            // TODO: 404 message
-            // page title?
           }
           this.loading = false
         },
