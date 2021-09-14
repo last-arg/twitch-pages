@@ -7,10 +7,8 @@
   * htmx
   * twinspark.js
   * implement in alpine
-* Change page title when changing page url
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
-* 404 page + title
 * Accessibility
   * Sidebar
     * game/stream clicked: close sidebar, load new url content, move focus to main, close sidebar?
