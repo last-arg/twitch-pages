@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Twitch Alternative</title>
+    <title>Home</title>
     <!--
       TODO: for some reason icons.svg is downloaded twice
       After few seconds console warns of not using preloaded svg
@@ -32,7 +32,10 @@
                     hover:text-gray-50 hover:border-violet-700
                     focus:border-violet-700 focus:text-gray-50
                   "
-                  x-on:click.prevent="$dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})"
+                  x-on:click.prevent="
+                    $dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})
+                    document.title = 'Home'
+                  "
                 >Home</a>
               </h1>
               <div class="search-wrapper"

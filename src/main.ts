@@ -6,7 +6,7 @@ const paths: Record<string, string> = {
   "/": "/partials/top-games.html",
   "/directory/game/:name" : "/partials/category.html",
   "/:user/videos" : "/partials/user-videos.html",
-  "/not-found" : "/partials/not-foudn.html",
+  "/not-found" : "/partials/not-found.html",
 }
 
 const resolveUrlPath = (): string => {
@@ -313,8 +313,10 @@ function beforeAlpine(token: string) {
           const user = await fetchUser(name)
           if (user) {
             this.name = user.display_name
+
             this.login = user.login
             this.id = user.id
+            document.title = this.name
             if (this.$store.profile_images.imgUrl(user.id) === "") {
               this.$store.profile_images.setImage(user.id, user.profile_image_url)
             }
