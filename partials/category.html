@@ -34,7 +34,7 @@
   </div>
   <p class="text-lg transition delay-100 opactity-100"
     x-show="id.length === 0 && !loading" >Game/Category not found</p>
-  <div x-show="id.length > 0">
+  <div class="list-wrapper" x-show="id.length > 0">
     <ul class="grid grid-min-72 grid-gap-6">
       <template x-for="video in videos">
         <li x-data="{videosUrl: `/${video.user_login}/videos`}"
@@ -96,7 +96,15 @@
     >Found no streams</p>
     <div class="text-center my-12">
       <button x-show="!loading && cursor !== ''" type="button"
-        x-on:click="fetchVideos()"
+        x-on:click="
+          last = document.querySelector('.list-wrapper ul').lastElementChild;
+          await fetchVideos()
+          const firstLoad = last.nextElementSibling
+          if (firstLoad) {
+            firstLoad.setAttribute('tabindex', -1)
+            firstLoad.focus()
+          }
+        "
         class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         :disabled="loading"
       >Load more videos</button>
