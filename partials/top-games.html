@@ -2,7 +2,7 @@
   <div class="flex">
     <h2 class="px-3 py-2 bg-white">Top games</h2>
   </div>
-  <ul class="grid grid-min-72">
+  <ul class="list-wrapper grid grid-min-72">
     <template x-for="game in games">
       <li class="flex transition duration-300 opacity-0"
         x-init="$nextTick(() => $el.classList.add('opacity-100'))"
@@ -41,34 +41,19 @@
         </div>
       </li>
     </template>
-    <template x-for="i in fetchCount">
-      <li x-show="loading" aria-hidden="true" class="flex transition duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-      >
-        <div class="flex bg-white w-full border-2 border-white">
-          <div class="flex-1 flex items-center">
-            <div class="bg-trueGray-100">
-              <img class="opacity-0 w-16" alt="" width="104" height="144"/>
-            </div>
-            <p class="ml-2 text-lg text-trueGray-400 rounded">Loading...</p>
-          </div>
-          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
-            <svg class="fill-current w-5 h-5">
-              <use href="/src/assets/icons.svg#star-empty"></use>
-            </svg>
-            <svg class="fill-current w-5 h-5">
-              <use href="/src/assets/icons.svg#external-link"></use>
-            </svg>
-          </div>
-        </div>
-       </li>
-    </template>
   </ul>
   <div class="text-center my-12">
     <button x-show="!loading && cursor !== ''" type="button"
       class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
-      x-on:click="moreGames()"
+      x-on:click="
+        last = document.querySelector('.list-wrapper ul').lastElementChild;
+        await moreGames()
+        const firstLoad = last.nextElementSibling
+        if (firstLoad) {
+          firstLoad.setAttribute('tabindex', -1)
+          firstLoad.focus()
+        }
+      "
       :disabled="loading || cursor === ''"
     >
       <span class="">Load more games</span>
