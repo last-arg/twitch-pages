@@ -99,10 +99,10 @@
         </div>
       </div>
     </div>
-    <ul class="grid grid-min-64 mt-6">
+    <ul class="video-list grid grid-min-64 mt-6">
       <template x-for="video in videos">
-        <li x-show="filter[video.type]"
-          class="transition duration-300"
+        <li class="transition duration-300"
+          :class="{hidden: !filter[video.type]}"
           x-transition:enter-start="opacity-0"
           x-transition:enter-end="opacity-100"
         >
@@ -139,7 +139,18 @@
     <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
     <div class="text-center my-12">
       <button x-show="!loading && cursor !== ''" type="button"
-        x-on:click="moreVideos()"
+        x-on:click="
+          beforeElems = document.querySelectorAll('.video-list li:not(.hidden)');
+          await moreVideos()
+          const afterElems = document.querySelectorAll('.video-list li:not(.hidden)');
+          if (afterElems.length > beforeElems.length) {
+            const firstLoad = afterElems[beforeElems.length]
+            if (firstLoad) {
+              firstLoad.setAttribute('tabindex', -1)
+              firstLoad.focus()
+            }
+          }
+        "
         class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         :disabled="loading"
       >Load more videos</button>

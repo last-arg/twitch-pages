@@ -2,7 +2,7 @@
   <div class="flex">
     <h2 class="px-3 py-2 bg-white">Top games</h2>
   </div>
-  <ul class="list-wrapper grid grid-min-72">
+  <ul class="video-list grid grid-min-72">
     <template x-for="game in games">
       <li class="flex transition duration-300 opacity-0"
         x-init="$nextTick(() => $el.classList.add('opacity-100'))"
@@ -46,7 +46,7 @@
     <button x-show="!loading && cursor !== ''" type="button"
       class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
       x-on:click="
-        last = document.querySelector('.list-wrapper ul').lastElementChild;
+        last = document.querySelector('.video-list').lastElementChild;
         await moreGames()
         const firstLoad = last.nextElementSibling
         if (firstLoad) {

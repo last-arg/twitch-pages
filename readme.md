@@ -14,12 +14,14 @@
     * game/stream clicked: close sidebar, load new url content, move focus to main, close sidebar?
       * aria live role
   * 'Load more button'
-    * Move focus to first new result.
-    * What if there is no result to move focus to? Move to last item?
-    * No more page:
-      * hide button? disable button?
+    * No more pages:
+      * hide button? disable button? display text no more pages/videos?
       * Where to move focus? last item? Or keep focus on button if button is disabled not hidden
     * Native input disable attribute isn't good for accessibility.
+    * ? aria-live
+      * No more videos to load
+      * Loaded 5 videos
+      * Loaded 5 videos. 8 Archives, 2 Uploads, 1 Hightlight
 
 
 ## Resources
