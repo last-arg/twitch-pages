@@ -1,4 +1,9 @@
-# Title
+# Twitch alternative page
+Use twitch API to display simple twitch pages.
+Pages:
+* Top games
+* Category/Game
+* User videos
 
 
 ## TODO
