@@ -358,6 +358,7 @@ function beforeAlpine(token: string) {
         loading: false,
         async init() {
           this.loading = true;
+          const mainElem = document.querySelector("main")
 
           window.addEventListener('set-main', async (e: AlpineEvent) => {
             if (e.detail.path === decodeURIComponent(location.pathname)) return
@@ -369,6 +370,7 @@ function beforeAlpine(token: string) {
             this.html = await r.text()
             history.pushState({html: this.html}, '',  e.detail.path);
             this.loading = false;
+            mainElem.focus()
           })
 
           window.addEventListener('popstate', (e) => {

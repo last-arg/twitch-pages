@@ -14,16 +14,14 @@ Pages:
   * implement in alpine
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
+* Filtering on different pages?
 * Accessibility
-  * Sidebar
-    * game/stream clicked: close sidebar, load new url content, move focus to main, close sidebar?
-      * aria live role
   * 'Load more button'
     * No more pages:
       * hide button? disable button? display text no more pages/videos?
       * Where to move focus? last item? Or keep focus on button if button is disabled not hidden
     * Native input disable attribute isn't good for accessibility.
-    * ? aria-live
+    * aria-live?
       * No more videos to load
       * Loaded 5 videos
       * Loaded 5 videos. 8 Archives, 2 Uploads, 1 Hightlight
