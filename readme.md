@@ -22,7 +22,6 @@ Pages:
     * No more pages:
       * hide button? disable button? display text no more pages/videos?
       * Where to move focus? last item? Or keep focus on button if button is disabled not hidden
-    * Native input disable attribute isn't good for accessibility.
     * aria-live?
       * No more videos to load
       * Loaded 5 videos

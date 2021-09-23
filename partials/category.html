@@ -94,7 +94,7 @@
       x-transition:enter="opacity-0"
       x-show="!loading && videos.length === 0"
     >Found no streams</p>
-    <div class="text-center my-12">
+    <div x-show="cursor !== ''" class="text-center my-12">
       <button type="button"
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         x-on:click="
@@ -107,7 +107,7 @@
             firstLoad.focus()
           }
         "
-        :aria-disabled="(loading || cursor === '').toString()"
+        :aria-disabled="loading.toString()"
       >Load more videos</button>
       <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
         Loading...
