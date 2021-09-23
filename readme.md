@@ -7,11 +7,10 @@ Pages:
 
 
 ## TODO
-* Make own script of htmx without global factory. Problem is as soon htmx is loaded it is also started.
 * html over the wire:
   * htmx
   * twinspark.js
-  * implement in alpine
+  * with alpine
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
 * Filtering
@@ -19,9 +18,6 @@ Pages:
   * User videos page
 * Accessibility
   * 'Load more button'
-    * No more pages:
-      * hide button? disable button? display text no more pages/videos?
-      * Where to move focus? last item? Or keep focus on button if button is disabled not hidden
     * aria-live?
       * No more videos to load
       * Loaded 5 videos
