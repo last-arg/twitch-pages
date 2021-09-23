@@ -95,9 +95,11 @@
       x-show="!loading && videos.length === 0"
     >Found no streams</p>
     <div class="text-center my-12">
-      <button x-show="!loading && cursor !== ''" type="button"
+      <button type="button"
+        class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         x-on:click="
           last = document.querySelector('.list-wrapper ul').lastElementChild;
+          if ($el.getAttribute('aria-disabled') === 'true') return;
           await fetchVideos()
           const firstLoad = last.nextElementSibling
           if (firstLoad) {
@@ -105,10 +107,9 @@
             firstLoad.focus()
           }
         "
-        class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
-        :disabled="loading"
+        :aria-disabled="(loading || cursor === '').toString()"
       >Load more videos</button>
-      <p x-show="loading" class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+      <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
         Loading...
       </p>
     </div>

@@ -255,8 +255,8 @@
                               <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                               <div class="flex-grow relative h-full flex items-center px-2">
                                 <p x-text="stream.user_name"></p>
-                                <div class="absolute bottom-0 text-sm flex items-center" x-show="$store.streams.isLive(stream.user_id)">
-                                  <p><span class="text-xs bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span></p>
+                                <div class="absolute bottom-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">
+                                  <span class="bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span>
                                   <p class="text-trueGray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
                                 </div>
                               </div>

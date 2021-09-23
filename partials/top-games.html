@@ -43,10 +43,11 @@
     </template>
   </ul>
   <div class="text-center my-12">
-    <button x-show="!loading && cursor !== ''" type="button"
-      class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+    <button type="button"
+      class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
       x-on:click="
         last = document.querySelector('.video-list').lastElementChild;
+        if ($el.getAttribute('aria-disabled') === 'true') return;
         await moreGames()
         const firstLoad = last.nextElementSibling
         if (firstLoad) {
@@ -54,11 +55,11 @@
           firstLoad.focus()
         }
       "
-      :disabled="loading || cursor === ''"
+      :aria-disabled="(loading || cursor === '').toString()"
     >
       <span class="">Load more games</span>
     </button>
-      <p x-show="loading" class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+      <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
         Loading...
       </p>
   </div>

@@ -14,7 +14,9 @@ Pages:
   * implement in alpine
 * Scroll shadows
   * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
-* Filtering on different pages?
+* Filtering
+  * Category/Game page
+  * User videos page
 * Accessibility
   * 'Load more button'
     * No more pages:
@@ -31,6 +33,7 @@ Pages:
 
 ### Accessibility
 * [How to handle search results](https://www.sajari.com/blog/wcag-compliance-guide)
+* [a11y-101](https://a11y-101.com)
 
 ### Routing
 * [Alpine routing](https://github.com/alpinejs/alpine/issues/306#issuecomment-627400322)
