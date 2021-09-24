@@ -469,6 +469,7 @@ function beforeAlpine(token: string) {
     const keyStreams = "streams"
     const keyUserLive = `${keyStreams}.live`
     const keyUserLiveLastCheck = `${keyUserLive}.last_check`
+    const fiveMinutesInMs = 300000
     const storeStreams = {
       data: JSON.parse(localStorage.getItem(keyStreams) ?? "[]"),
       ids: [] as string[],
@@ -488,12 +489,11 @@ function beforeAlpine(token: string) {
 
         // @ts-ignore
         let liveTimeout = 0
-        const fiveMinutesInMs = 300000
         const queueUpdate = () => {
           this.updateUserLiveness(this.ids)
-          liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs)
+          liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs - 1)
         }
-        liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs)
+        queueUpdate()
       },
       hasId(id: string): boolean {
         return this.ids.includes(id)
@@ -536,6 +536,7 @@ function beforeAlpine(token: string) {
       async updateUserLiveness(user_ids: string[]): Promise<void> {
         if (user_ids.length === 0) return
         const now = Date.now()
+        if (now < this.liveLastCheck + fiveMinutesInMs) return
         const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
         let new_data: Record<string, string> = {}
         for (let i = 0; i < batch_count; i+=1) {
