@@ -11,12 +11,10 @@ Pages:
   * htmx
   * twinspark.js
   * with alpine
-* Scroll shadows
-  * [Example 3](https://codepen.io/chris22smith/pen/OJMrWgb)
-* Filtering
+* Search filtering
   * Category/Game page
   * User videos page
-* On user page add info about games to videos?
+* On user page add info (game timestamp) about games to videos?
 * Accessibility
   * 'Load more button'
     * aria-live?

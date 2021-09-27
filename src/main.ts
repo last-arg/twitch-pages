@@ -77,8 +77,8 @@ function beforeAlpine(token: string) {
     const searchFeedback = document.querySelector("#search-feedback")
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        state: "closed",
-        // state: "search",
+        // state: "closed",
+        state: "games",
         loading: false,
         searchValue: "",
         searchResults: [] as Search[],
@@ -639,6 +639,34 @@ const twitchCategoryImageSrc = (name: string, width: number, height: number): st
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
+const handleSidebarScroll = () => {
+  const scrollBoxes = document.querySelectorAll('.scrollbox')
+  for (const box of scrollBoxes) {
+    const scrollContainer = box.closest('.scroll-container')
+    const ul = box.querySelector('ul');
+    let scrolling = false;
+    const setShadow = (event) => {
+      if (!scrolling) {
+        window.requestAnimationFrame(function() {
+          if (event.target.scrollTop > 0) {
+            scrollContainer.classList.add('has-top-shadow');
+          } else {
+            scrollContainer.classList.remove('has-top-shadow');
+          }
+          if (event.target.scrollTop + event.target.offsetHeight < ul.offsetHeight) {
+            scrollContainer.classList.add('has-bottom-shadow');
+          } else {
+            scrollContainer.classList.remove('has-bottom-shadow');
+          }
+          scrolling = false;
+        });
+        scrolling = true;
+      }
+    };
+    box.addEventListener("scroll", setShadow)
+  }
+}
+
 const init = async () => {
   // Get token
   let token = localStorage.getItem("twitch_token")
@@ -657,6 +685,7 @@ const init = async () => {
   if (token) {
     beforeAlpine(token)
     Alpine.start()
+    handleSidebarScroll()
   } else {
     // initLogin()
     const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!

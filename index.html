@@ -90,9 +90,10 @@
                       >Found no results</p>
                       <p class="text-trueGray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
                       >Enter game name to search</p>
-                      <!-- search list -->
-                      <div class="overflow-y-auto">
-                        <!-- @search -->
+                      <!-- search results -->
+                      <div class="overflow-y-auto relative">
+                        <div class="shadow shadow-top"></div>
+                        <div class="shadow shadow-bottom"></div>
                         <ul class="stack stack-m-4" x-show="state === 'search'">
                           <template x-for="game in searchResults" :key="game.id">
                             <li class="flex mt-4">
@@ -166,38 +167,42 @@
                       </button>
                     </div>
                     <!-- games list -->
-                    <div class="overflow-y-auto">
-                      <ul class="stack stack-m-4">
-                        <template x-for="game in $store.games.data" :key="game.id">
-                          <li class="flex">
-                            <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                text-trueGray-300
-                                border-l-6 border-transparent
-                                hover:text-gray-50 hover:border-violet-700
-                                focus:text-gray-50 focus:border-violet-700
-                              "
-                              :href="`/directory/game/${game.name}`"
-                              x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
-                              <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                              <p x-text="game.name"></p>
-                            </a>
-                            <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                              <button class="hover:text-violet-500"
-                                x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
-                              >
-                                <svg class="fill-current w-5 h-5">
-                                  <use href="/src/assets/icons.svg#star-full"></use>
-                                </svg>
-                              </button>
-                              <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
-                                <svg class="fill-current w-5 h-5">
-                                  <use href="/src/assets/icons.svg#external-link"></use>
-                                </svg>
+                    <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
+                      <div class="scrollbox">
+                        <ul class="stack stack-m-4">
+                          <template x-for="game in $store.games.data" :key="game.id">
+                            <li class="flex">
+                              <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                                  text-trueGray-300
+                                  border-l-6 border-transparent
+                                  hover:text-gray-50 hover:border-violet-700
+                                  focus:text-gray-50 focus:border-violet-700
+                                "
+                                :href="`/directory/game/${game.name}`"
+                                x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                                <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                                <p x-text="game.name"></p>
                               </a>
-                            </div>
-                          </li>
-                        </template>
-                      </ul>
+                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                                <button class="hover:text-violet-500"
+                                  x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
+                                >
+                                  <svg class="fill-current w-5 h-5">
+                                    <use href="/src/assets/icons.svg#star-full"></use>
+                                  </svg>
+                                </button>
+                                <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                                  <svg class="fill-current w-5 h-5">
+                                    <use href="/src/assets/icons.svg#external-link"></use>
+                                  </svg>
+                                </a>
+                              </div>
+                            </li>
+                          </template>
+                        </ul>
+                      </div>
+                      <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
+                      <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
                     </div>
                   </div>
                 </div>
@@ -235,44 +240,48 @@
                       </button>
                     </div>
                     <!-- streams list -->
-                    <div class="overflow-y-auto">
-                      <ul class="stack stack-m-4" x-show="state === 'streams'">
-                        <template x-for="stream in $store.streams.data" :key="stream.user_id">
-                          <li class="flex">
-                            <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                text-trueGray-300
-                                border-l-6 border-transparent
-                                hover:text-gray-50 hover:border-violet-700
-                                focus:text-gray-50 focus:border-violet-700
-                              "
-                              :href="`/${stream.user_login}/videos`"
-                              x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
-                              <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
-                              <div class="flex-grow relative h-full flex items-center px-2">
-                                <p x-text="stream.user_name"></p>
-                                <div class="absolute bottom-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">
-                                  <span class="bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span>
-                                  <p class="text-trueGray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
+                    <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
+                      <div class="scrollbox">
+                        <ul class="stack stack-m-4" x-show="state === 'streams'">
+                          <template x-for="stream in $store.streams.data" :key="stream.user_id">
+                            <li class="flex">
+                              <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                                  text-trueGray-300
+                                  border-l-6 border-transparent
+                                  hover:text-gray-50 hover:border-violet-700
+                                  focus:text-gray-50 focus:border-violet-700
+                                "
+                                :href="`/${stream.user_login}/videos`"
+                                x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
+                                <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
+                                <div class="flex-grow relative h-full flex items-center px-2">
+                                  <p x-text="stream.user_name"></p>
+                                  <div class="absolute bottom-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">
+                                    <span class="bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span>
+                                    <p class="text-trueGray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
+                                  </div>
                                 </div>
-                              </div>
-                            </a>
-                            <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
-                              <button class="hover:text-violet-500"
-                                x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
-                              >
-                                <svg class="fill-current w-5 h-5">
-                                  <use href="/src/assets/icons.svg#star-full"></use>
-                                </svg>
-                              </button>
-                              <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
-                                <svg class="fill-current w-5 h-5">
-                                  <use href="/src/assets/icons.svg#external-link"></use>
-                                </svg>
                               </a>
-                            </div>
-                          </li>
-                        </template>
-                      </ul>
+                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                                <button class="hover:text-violet-500"
+                                  x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
+                                >
+                                  <svg class="fill-current w-5 h-5">
+                                    <use href="/src/assets/icons.svg#star-full"></use>
+                                  </svg>
+                                </button>
+                                <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
+                                  <svg class="fill-current w-5 h-5">
+                                    <use href="/src/assets/icons.svg#external-link"></use>
+                                  </svg>
+                                </a>
+                              </div>
+                            </li>
+                          </template>
+                        </ul>
+                      </div>
+                      <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
+                      <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
                     </div>
                   </div>
                 </div>
