@@ -14,7 +14,6 @@ Pages:
 * Search filtering
   * Category/Game page
   * User videos page
-* On user page add info (game timestamp) about games to videos?
 * Accessibility
   * 'Load more button'
     * aria-live?
