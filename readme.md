@@ -1,5 +1,5 @@
 # Twitch alternative page
-Use twitch API to display simple twitch pages.
+Use twitch API to display simple alternatives to some twitch pages.
 Pages:
 * Top games
 * Category/Game
@@ -34,4 +34,3 @@ Pages:
 * [Htmx routing](https://htmx.org/attributes/hx-push-url/)
 * hx-push-url should probably be used with [hx-history-elt](https://htmx.org/attributes/hx-history-elt/)
 * Swapping multiple elements in htmx with hx-swap-oob (response text contains the attribute)
-

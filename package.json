@@ -1,5 +1,5 @@
 {
-  "name": "twitch-alt-page",
+  "name": "twitch-pages",
   "version": "1.0.0",
   "description": "Twitch alternative page with htmx and alpine",
   "scripts": {
