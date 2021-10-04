@@ -31,7 +31,7 @@
                     focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
                   "
                   x-on:click.prevent="
-                    $dispatch('set-main', {path: '/', getUrl: '/partials/top-games.html'})
+                    $dispatch('set-main', {path: $el.href, getUrl: '/partials/top-games.html'})
                     document.title = 'Home'
                   "
                 >Home</a>
@@ -107,7 +107,7 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/category.html'})">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -182,7 +182,7 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('set-main', {path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})">
+                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/category.html'})">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -255,7 +255,7 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`/${stream.user_login}/videos`"
-                                x-on:click.prevent="$dispatch('set-main', {path: `/${stream.user_login}/videos`, getUrl: '/partials/user-videos.html'})">
+                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/user-videos.html'})">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
