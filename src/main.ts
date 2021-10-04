@@ -1,46 +1,31 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
 import './style.css'
+import { mainContent } from 'config'
 
-const paths: Record<string, string> = {
-  "/": "/partials/top-games.html",
-  "/directory/game/:name" : "/partials/category.html",
-  "/:user/videos" : "/partials/user-videos.html",
-  "/not-found" : "/partials/not-found.html",
-}
-
-const resolveUrlPath = (): string => {
-  let currentPath = "/not-found"
-  let pathParams: Record<string, string> = {}
-  if (location.pathname === "/") {
-    currentPath = "/"
-  } else {
-    const urlDirs = location.pathname.split("/").filter((p) => p.length > 0)
-    for (const path of Object.keys(paths)) {
-      const pathDirs = path.split("/").filter((p) => p.length > 0)
-      if (pathDirs.length === 0) continue
-      if (pathDirs.length !== urlDirs.length) continue
-      let matchPath = true
-      let params: typeof pathParams = {}
-      urlDirs.forEach((urlDirs, index) => {
-        if (pathDirs[index][0] === ":") {
-          params[pathDirs[index].slice(1)] = decodeURIComponent(urlDirs)
-        } else if (urlDirs !== pathDirs[index]) {
-          matchPath = false
-        }
-      })
-      if (matchPath) {
-        currentPath = path
-        pathParams = params
+const getUrlObject = (newPath: string): string => {
+  if (newPath === "/") return mainContent["top-games"]
+  let contentKey = "not-found"
+  const newDirs = newPath.split("/").filter((p) => p.length > 0)
+  for (const key in mainContent) {
+    const obj = mainContent[key]
+    const dirs = obj.url.split("/").filter((p) => p.length > 0)
+    if (dirs.length !== newDirs.length || dirs.length === 0) continue
+    let isMatch = true
+    for (let i = 0; i < dirs.length; i+=1) {
+      const dir = dirs[i]
+      if (dir[0] === ":") continue
+      if (dir !== newDirs[i]) {
+        isMatch = false
         break
       }
     }
+    if (isMatch) {
+      contentKey = key
+      break
+    }
   }
-  return currentPath
-}
-
-const resolveUrlGet = (): string => {
-  return paths[resolveUrlPath()]
+  return mainContent[contentKey]
 }
 
 type SidebarState = "closed" | "games" | "streams" | "search"
@@ -77,8 +62,8 @@ function beforeAlpine(token: string) {
     const searchFeedback = document.querySelector("#search-feedback")!
     Alpine.data("sidebar", (): Sidebar => {
       return {
-        // state: "closed",
-        state: "games",
+        state: "closed",
+        // state: "games",
         loading: false,
         searchValue: "",
         searchResults: [] as Search[],
@@ -359,18 +344,20 @@ function beforeAlpine(token: string) {
           this.loading = true;
           const mainElem = document.querySelector("main")!
 
-          window.addEventListener('set-main', async (e: AlpineEvent) => {
-            if (e.detail.path === decodeURIComponent(location.pathname)) return
+          window.addEventListener('update-main', async (e: AlpineEvent) => {
             this.loading = true;
             history.replaceState({html: this.html}, '',  location.pathname);
-            const r = await fetch(e.detail.getUrl, {method: "GET"})
-            // Always update main content
+            const newUrl = e.target.getAttribute("href")
+            const contentObj = getUrlObject(newUrl)
+            const r = await fetch(contentObj.html, {method: "GET"})
+            // // Always update main content
             Alpine.disableEffectScheduling(() => this.html = "")
             this.html = await r.text()
-            history.pushState({html: this.html}, '',  e.detail.path);
+            history.pushState({html: this.html}, '',  newUrl);
             this.loading = false;
             mainElem.focus()
           })
+
 
           window.addEventListener('popstate', (e) => {
             // Always update main content when url changes
@@ -378,7 +365,7 @@ function beforeAlpine(token: string) {
             this.html = e.state.html
           })
 
-          const r = await fetch(resolveUrlGet(), {method: "GET"})
+          const r = await fetch(getUrlObject(location.pathname).html, {method: "GET"})
           this.html = await r.text()
           history.replaceState({html: this.html}, '',  location.pathname);
           this.loading = false;

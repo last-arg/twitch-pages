@@ -13,7 +13,7 @@
               hover:underline
             "
             :href="`/directory/game/${game.name}`"
-            x-on:click.prevent="$dispatch('set-main', { path: `/directory/game/${game.name}`, getUrl: '/partials/category.html'})"
+            x-on:click.prevent="$dispatch('update-main')"
           >
             <img class="w-16" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">
             <p class="ml-2 text-lg" x-text="game.name"></p>
