@@ -10,6 +10,7 @@ export default defineConfig({
   //     'htmx.org': resolve(__dirname, 'node_modules/htmx.org/dist/htmx.js')
   //   }
   // },
+  base: "/twitch-pages/",
   build: {
     target: "esnext",
     polyfillDynamicImport: false,

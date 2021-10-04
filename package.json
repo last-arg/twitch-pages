@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "push-page": "git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "@alpinejs/persist": "^3.2.4",
