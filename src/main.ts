@@ -74,7 +74,7 @@ function beforeAlpine(token: string) {
     id: string,
   }
   document.addEventListener("alpine:initializing", () => {
-    const searchFeedback = document.querySelector("#search-feedback")
+    const searchFeedback = document.querySelector("#search-feedback")!
     Alpine.data("sidebar", (): Sidebar => {
       return {
         // state: "closed",
@@ -84,14 +84,13 @@ function beforeAlpine(token: string) {
         searchResults: [] as Search[],
         init() {
           let searchTimeout = 0;
-          let activeSidebar: Element = document.activeElement;
+          let activeSidebar = (document.activeElement! as HTMLElement);
           Alpine.effect(() => {
-            const state = this.state;
-            if (document.activeElement.tagName === "BUTTON") {
+            if (document.activeElement?.tagName === "BUTTON") {
               if (this.state === 'closed') {
                 activeSidebar.focus();
               } else {
-                activeSidebar = document.activeElement;
+                activeSidebar = (document.activeElement! as HTMLElement);
               }
             }
           })
@@ -358,7 +357,7 @@ function beforeAlpine(token: string) {
         loading: false,
         async init() {
           this.loading = true;
-          const mainElem = document.querySelector("main")
+          const mainElem = document.querySelector("main")!
 
           window.addEventListener('set-main', async (e: AlpineEvent) => {
             if (e.detail.path === decodeURIComponent(location.pathname)) return
@@ -640,20 +639,21 @@ const twitchCategoryImageSrc = (name: string, width: number, height: number): st
 }
 
 const handleSidebarScroll = () => {
-  const scrollBoxes = document.querySelectorAll('.scrollbox')
+  const scrollBoxes = document.querySelectorAll('.scrollbox') as any
   for (const box of scrollBoxes) {
     const scrollContainer = box.closest('.scroll-container')
     const ul = box.querySelector('ul');
     let scrolling = false;
-    const setShadow = (event) => {
+    const setShadow = (event: Event) => {
       if (!scrolling) {
+        const elem = event.target as HTMLElement
         window.requestAnimationFrame(function() {
-          if (event.target.scrollTop > 0) {
+          if (elem.scrollTop > 0) {
             scrollContainer.classList.add('has-top-shadow');
           } else {
             scrollContainer.classList.remove('has-top-shadow');
           }
-          if (event.target.scrollTop + event.target.offsetHeight < ul.offsetHeight) {
+          if (elem.scrollTop + elem.offsetHeight < ul.offsetHeight) {
             scrollContainer.classList.add('has-bottom-shadow');
           } else {
             scrollContainer.classList.remove('has-bottom-shadow');
