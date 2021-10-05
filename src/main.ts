@@ -1,10 +1,10 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
 import './style.css'
-import { mainContent } from 'config'
+import { mainContent, urlRoot } from 'config'
 
 const getUrlObject = (newPath: string): string => {
-  if (newPath === "/") return mainContent["top-games"]
+  if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
   const newDirs = newPath.split("/").filter((p) => p.length > 0)
   for (const key in mainContent) {
@@ -290,8 +290,8 @@ function beforeAlpine(token: string) {
             this.filterCount = filterCount
           })
           this.loading = true
-          const pathArr = location.pathname.split("/")
-          const name = decodeURIComponent(pathArr[1])
+          const pathArr = location.pathname.slice(urlRoot.length).split("/")
+          const name = decodeURIComponent(pathArr[0])
           this.name = name
 
           const user = await fetchUser(name)
@@ -615,6 +615,7 @@ function beforeAlpine(token: string) {
       }
     }
 
+    Alpine.store("global", { urlRoot: urlRoot })
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)

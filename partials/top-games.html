@@ -12,7 +12,7 @@
               hover:text-violet-700
               hover:underline
             "
-            :href="`/directory/game/${game.name}`"
+            :href="`${$store.global.urlRoot}directory/game/${game.name}`"
             x-on:click.prevent="$dispatch('update-main')"
           >
             <img class="w-16" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">

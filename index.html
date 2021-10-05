@@ -21,7 +21,7 @@
           <div x-data="sidebar" class="flex shadow-md justify-between">
             <nav class="flex w-full">
               <h1>
-                <a href="/"
+                <a :href="$store.global.urlRoot"
                   class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
                     border-b-5 border-gray-900
                     hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
@@ -104,7 +104,7 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/directory/game/${game.name}`"
+                                :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
                                 x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
@@ -179,7 +179,7 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/directory/game/${game.name}`"
+                                :href="`${$store.global.urlRoot}directory/game/${game.name}`"
                                 x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
@@ -252,7 +252,7 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/${stream.user_login}/videos`"
+                                :href="`${$store.global.urlRoot}${stream.user_login}/videos`"
                                 x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">

@@ -37,7 +37,7 @@
   <div class="list-wrapper" x-show="id.length > 0">
     <ul class="grid grid-min-72 grid-gap-6">
       <template x-for="video in videos">
-        <li x-data="{videosUrl: `/${video.user_login}/videos`}"
+        <li x-data="{videosUrl: `${$store.global.urlRoot}${video.user_login}/videos`}"
           class="transition duration-300 opacity-0"
           x-init="$nextTick(() => $el.classList.add('opacity-100'))"
         >
