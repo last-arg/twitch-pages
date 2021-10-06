@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
-import { mainContent, urlRoot, UrlResolve } from './config'
+import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
 
 const getUrlObject = (newPath: string): UrlResolve => {

@@ -19,9 +19,6 @@ export default defineConfig({
     polyfillDynamicImport: false,
 		rollupOptions: {
 			inlineDynamicImports: true,
-			// output: {
-			// 	manualChunks: () => "everything.js",
-			// },
       input: {
         index: resolve(__dirname, 'index.html'),
       }
