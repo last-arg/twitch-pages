@@ -23,6 +23,7 @@ Pages:
       * No more videos to load
       * Loaded 5 videos
       * Loaded 5 videos. 8 Archives, 2 Uploads, 1 Hightlight
+* dist build is missing partials
 
 
 ## Resources
