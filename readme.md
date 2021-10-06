@@ -11,9 +11,12 @@ Pages:
   * htmx
   * twinspark.js
   * with alpine
-* Search filtering
+* Search/Filter
   * Category/Game page
   * User videos page
+  * Sidebar
+    * Games
+    * Streams
 * Accessibility
   * 'Load more button'
     * aria-live?

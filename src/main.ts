@@ -1,9 +1,9 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
+import { mainContent, urlRoot, UrlResolve } from './config'
 import './style.css'
-import { mainContent, urlRoot } from 'config'
 
-const getUrlObject = (newPath: string): string => {
+const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
   const newDirs = newPath.split("/").filter((p) => p.length > 0)
@@ -344,7 +344,7 @@ function beforeAlpine(token: string) {
           this.loading = true;
           const mainElem = document.querySelector("main")!
 
-          window.addEventListener('update-main', async (e: AlpineEvent) => {
+          window.addEventListener('update-main', async (e: AlpineEvent & {target: any}) => {
             this.loading = true;
             history.replaceState({html: this.html}, '',  location.pathname);
             const newUrl = e.target.getAttribute("href")

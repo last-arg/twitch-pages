@@ -12,7 +12,7 @@
         height: 1em;
       }
     </style>
-    <script type="module" crossorigin src="/twitch-pages/assets/index.d1d2b39b.js"></script>
+    <script type="module" crossorigin src="/twitch-pages/assets/index.5467d145.js"></script>
     <link rel="modulepreload" href="/twitch-pages/assets/vendor.f11d85c8.js">
     <link rel="stylesheet" href="/twitch-pages/assets/index.4fe7cd79.css">
   </head>
@@ -24,16 +24,17 @@
           <div x-data="sidebar" class="flex shadow-md justify-between">
             <nav class="flex w-full">
               <h1>
-                <a href="/"
+                <a :href="$store.global.urlRoot"
                   class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
                     border-b-5 border-gray-900
                     hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
                     focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
                   "
                   x-on:click.prevent="
-                    $dispatch('set-main', {path: $el.href, getUrl: '/partials/top-games.html'})
+                    $dispatch('update-main')
                     document.title = 'Home'
                   "
+
                 >Home</a>
               </h1>
               <div class="search-wrapper"
@@ -106,8 +107,8 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/category.html'})">
+                                :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
+                                x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -181,8 +182,8 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/category.html'})">
+                                :href="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -254,8 +255,8 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`/${stream.user_login}/videos`"
-                                x-on:click.prevent="$dispatch('set-main', {path: $el.href, getUrl: '/partials/user-videos.html'})">
+                                :href="`${$store.global.urlRoot}${stream.user_login}/videos`"
+                                x-on:click.prevent="$dispatch('update-main')">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
