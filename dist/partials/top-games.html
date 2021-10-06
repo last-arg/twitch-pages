@@ -1,0 +1,66 @@
+<div class="stack" x-data="topGames">
+  <div class="flex">
+    <h2 class="px-3 py-2 bg-white">Top games</h2>
+  </div>
+  <ul class="video-list grid grid-min-72">
+    <template x-for="game in games">
+      <li class="flex transition duration-300 opacity-0"
+        x-init="$nextTick(() => $el.classList.add('opacity-100'))"
+      >
+        <div class="flex w-full border-2 border-white">
+          <a class="flex flex-grow items-center bg-white
+              hover:text-violet-700
+              hover:underline
+            "
+            :href="`${$store.global.urlRoot}directory/game/${game.name}`"
+            x-on:click.prevent="$dispatch('update-main')"
+          >
+            <img class="w-16" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144">
+            <p class="ml-2 text-lg" x-text="game.name"></p>
+          </a>
+          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+            <button x-data="{followed: false}"
+              class="hover:text-violet-700"
+              x-effect="followed = $store.games.hasId(game.id)"
+              x-on:click="$store.games.toggle(game.id, game.name)"
+              :aria-label="followed ? 'UnFollow' : 'Follow'"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+              </svg>
+            </button>
+            <a class="hover:text-violet-700"
+              :href="'https://www.twitch.tv/directory/games/' + game.name" aria-label="Open game in Twitch"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use href="/src/assets/icons.svg#external-link"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </li>
+    </template>
+  </ul>
+  <div x-show="cursor !== ''" class="text-center my-12">
+    <button type="button"
+      class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+      x-on:click="
+        last = document.querySelector('.video-list').lastElementChild;
+        if ($el.getAttribute('aria-disabled') === 'true') return;
+        await moreGames()
+        const firstLoad = last.nextElementSibling
+        if (firstLoad) {
+          firstLoad.setAttribute('tabindex', -1)
+          firstLoad.focus()
+        }
+      "
+      :aria-disabled="loading.toString()"
+    >
+      <span class="">Load more games</span>
+    </button>
+      <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+        Loading...
+      </p>
+  </div>
+</div>
