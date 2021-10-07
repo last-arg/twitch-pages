@@ -16,12 +16,7 @@ export default defineConfig({
   base: base,
   build: {
     target: "esnext",
-    polyfillDynamicImport: false,
 		rollupOptions: {
-			inlineDynamicImports: true,
-      input: {
-        index: resolve(__dirname, 'index.html'),
-      }
 		},
   },
   server: {

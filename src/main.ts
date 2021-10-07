@@ -477,7 +477,7 @@ function beforeAlpine(token: string) {
         let liveTimeout = 0
         const queueUpdate = () => {
           this.updateUserLiveness(this.ids)
-          liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs - 1)
+          liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs)
         }
         queueUpdate()
       },
@@ -522,7 +522,6 @@ function beforeAlpine(token: string) {
       async updateUserLiveness(user_ids: string[]): Promise<void> {
         if (user_ids.length === 0) return
         const now = Date.now()
-        if (now < this.liveLastCheck + fiveMinutesInMs) return
         const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
         let new_data: Record<string, string> = {}
         for (let i = 0; i < batch_count; i+=1) {
