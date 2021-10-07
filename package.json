@@ -10,7 +10,7 @@
   "dependencies": {
     "@alpinejs/persist": "^3.2.4",
     "alpinejs": "^3.2.4",
-    "htmx.org": "^1.5.0"
+    "htmx.org": "^1.6.0"
   },
   "devDependencies": {
     "@leanadmin/alpine-typescript": "^0.1.25",

@@ -2,6 +2,10 @@ import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
+// import 'htmx.org'
+// console.log(htmx)
+// htmx.onLoad(() => console.log("htmx onload"))
+
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
@@ -674,7 +678,6 @@ const init = async () => {
     Alpine.start()
     handleSidebarScroll()
   } else {
-    // initLogin()
     const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!
     link.parentElement?.classList.remove("hidden")
     link.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`
