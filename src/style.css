@@ -241,5 +241,22 @@ For example if you have white-space: nowrap on some element (to truncate it).
   box-shadow: 0 -2em 1em -1em theme('colors.trueGray.700') inset;
 }
 
+.top-games-btn.htmx-request {
+  display: none;
+}
+
+.htmx-request + p {
+  display: block;
+}
+
 @tailwind utilities;
+
+.fade-in {
+  animation: fadein 300ms;
+}
+
+@keyframes fadein {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
 

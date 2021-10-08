@@ -2,10 +2,9 @@ import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
-// import 'htmx.org'
+import 'htmx.org'
 // console.log(htmx)
 // htmx.onLoad(() => console.log("htmx onload"))
-
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
@@ -363,11 +362,11 @@ function beforeAlpine(token: string) {
           })
 
 
-          window.addEventListener('popstate', (e) => {
-            // Always update main content when url changes
-            Alpine.disableEffectScheduling(() => this.html = "")
-            this.html = e.state.html
-          })
+          // window.addEventListener('popstate', (e) => {
+          //   // Always update main content when url changes
+          //   Alpine.disableEffectScheduling(() => this.html = "")
+          //   this.html = e.state.html
+          // })
 
           const r = await fetch(getUrlObject(location.pathname).html, {method: "GET"})
           this.html = await r.text()
@@ -658,6 +657,84 @@ const handleSidebarScroll = () => {
   }
 }
 
+// async fetchCategories(): Promise<{data: TopGame[]}> {
+//   const url = `https://api.twitch.tv/helix/games/top?first=5`
+//   const r = await fetch(url, { method: "GET", headers: headers })
+//   return await r.json()
+// },
+
+function getImageSrc(name: string, width: number, height: number): string {
+  return twitchCategoryImageSrc(name, width, height)
+}
+
+const CAT_IMG_WIDTH = 104
+const CAT_IMG_HEIGHT = 144
+
+const initHtmx = async (token: string) => {
+  htmx.defineExtension("twitch-api", {
+    onEvent : function(name: string, evt: any) {
+      // console.log("Fired event: " + name, evt);
+      if (name === "htmx:configRequest") {
+        // console.log(evt.detail)
+        evt.detail.headers["HX-Current-URL"] = null;
+        evt.detail.headers["HX-Request"] = null;
+        evt.detail.headers["HX-Target"] = null;
+        evt.detail.headers["Host"] = "api.twitch.tv";
+        evt.detail.headers["Authorization"] = `Bearer ${token}`;
+        evt.detail.headers["Client-id"] = TWITCH_CLIENT_ID;
+        evt.detail.headers["Accept"] = "application/vnd.twitchtv.v5+json";
+      }
+    },
+    transformResponse: function(text: string, xhr: any, elt: HTMLElement) {
+      console.log(xhr, elt.getAttribute("hx-get"))
+      const json = JSON.parse(text)
+      let result = ""
+      for (const game of json.data) {
+        result += `
+          <li class="fade-in flex">
+            <div class="flex w-full border-2 border-white">
+              <a href="/directory/game/${game.name}"
+                hx-push-url="/directory/game/${game.name}"
+                hx-get="/partials/category.html" hx-target="#main"
+                class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
+              >
+                <img class="w-16" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt="" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+                <p class="ml-2 text-lg">${game.name}</p>
+              </a>
+              <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+                <button x-data="{followed: false}"
+                  class="hover:text-violet-700"
+                  x-effect="followed = $store.games.hasId('${game.id}')"
+                  x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+                  :aria-label="followed ? 'UnFollow' : 'Follow'"
+                >
+                  <svg class="fill-current w-5 h-5">
+                    <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                    <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+                  </svg>
+                </button>
+                <a class="hover:text-violet-700"
+                  href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
+                >
+                  <svg class="fill-current w-5 h-5">
+                    <use href="/src/assets/icons.svg#external-link"></use>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </li>
+        `
+      }
+      if (json.pagination.cursor) {
+        result += `<input type="hidden" id="top-games-params" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+      }
+      return result
+    },
+  })
+
+  htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
+}
+
 const init = async () => {
   // Get token
   let token = localStorage.getItem("twitch_token")
@@ -676,6 +753,7 @@ const init = async () => {
   if (token) {
     beforeAlpine(token)
     Alpine.start()
+    initHtmx(token)
     handleSidebarScroll()
   } else {
     const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!
