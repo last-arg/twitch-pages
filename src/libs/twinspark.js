@@ -731,7 +731,7 @@
     var title = headers['ts-title'] || html.title;
     // either ts-history contains new URL or ts-req-history attr is present,
     // then take request URL as new URL
-    var pushurl = headers['ts-history'] || hasattr(origins[0], 'ts-req-history') && url;
+    var pushurl = headers['ts-history'] || getattr(origins[0], 'ts-req-history') || hasattr(origins[0], 'ts-req-history') && url;
     var children = Array.from(html.body.children);
     var replyParent = html.body;
 
