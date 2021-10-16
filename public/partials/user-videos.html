@@ -1,161 +1,78 @@
-<div class="stack" x-data="user()">
+<div class="stack">
   <div class="flex items-center">
-    <div class="flex items-center bg-white rounded-r-sm pr-2">
-      <h2>
-        <a
-          class="flex items-center text-lg group block
-            hover:underline hover:text-violet-700
-            focus:underline focus:text-violet-700
-          "
-          :href="`https://www.twitch.tv/${name}/videos`"
-        >
-          <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl(id)" width="300" height="300">
-          <p x-text="name"></p>
-          <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-            <use href="/src/assets/icons.svg#external-link"></use>
-          </svg>
-        </a>
+    <div id="user-header" class="flex items-center bg-white rounded-r-sm pr-2">
+      <div hx-ext="twitch-api"
+        hx-get="https://api.twitch.tv/helix/users"
+        hx-trigger="load"
+        hx-target="#user-header"
+      ></div>
+      <h2 aria-hidden="true">
+        <img class="block w-10 mr-3" width="300" height="300">
+        <p class="w-48"></p>
       </h2>
-      <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch "></div>
-      <button x-data="{followed: false}"
-        class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-effect="followed = $store.streams.hasId(id)"
-        aria-label="followed ? 'UnFollow' : 'Follow'"
-        x-on:click="$store.streams.toggle(id, login, name)"
-      >
-        <svg class="fill-current w-5 h-5">
-          <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-          <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-        </svg>
-      </button>
     </div>
-    <div class="text-sm ml-4" x-show="$store.streams.isLive(id)">
+    <div class="hidden text-sm ml-4">
       <p class="text-sm"><span class="bg-red-300 rounded-sm px-1 text-trueGray-50">LIVE</span> <span class="italic text-trueGray-500">Playing</span></p>
-      <p x-text="$store.streams.live[id]"></p>
+      <p>Game name</p>
     </div>
   </div>
-  <p class="text-lg transition delay-100 opactity-100"
-    x-show="id.length === 0 && !loading" >User not found</p>
-  <div x-show="id.length > 0">
+  <div>
     <div class="flex items-center flex-wrap gap-y-6 gap-x-4">
       <h3 class="px-2 py-1 bg-white">Videos</h3>
       <div class="flex">
         <ul class="flex flex-wrap gap-4">
           <li class="flex items-center">
-            <button type="button"
-              class="p-1 bg-lime-300 hover:bg-lime-400 border-r-2 border-trueGray-50"
-              x-on:click="toggleFilter('archive')"
-            >
-              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100"
-                :class="{'bg-lime-300': filter.archive}"
-              >&nbsp;</span>
+            <button type="button" class="p-1 bg-lime-300 hover:bg-lime-400 border-r-2 border-trueGray-50">
+              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-lime-200 hover:bg-lime-300 whitespace-nowrap px-3"
-              x-on:click="onlyFilter('archive')"
-            >
-              Archives (<span x-text="filterCount['archive']"></span>)
+            <button type="button" class="bg-lime-200 hover:bg-lime-300 whitespace-nowrap px-3">
+              Archives (<span id="archives-count">0</span>)
             </button>
           </li>
           <li class="flex items-center">
-            <button type="button"
-              class="p-1 bg-sky-300 hover:bg-sky-400 border-r-2 border-trueGray-50"
-              x-on:click="toggleFilter('upload')"
-            >
-              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100"
-                :class="{'bg-sky-300': filter.upload}"
-              >&nbsp;</span>
+            <button type="button" class="p-1 bg-sky-300 hover:bg-sky-400 border-r-2 border-trueGray-50">
+              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-sky-200 hover:bg-sky-300 whitespace-nowrap px-3"
-              x-on:click="onlyFilter('upload')"
-            >
-              Uploads (<span x-text="filterCount['upload']"></span>)
+            <button type="button" class="bg-sky-200 hover:bg-sky-300 whitespace-nowrap px-3">
+              Uploads (<span id="uploads-count">0</span>)
             </button>
           </li>
           <li class="flex items-center">
-            <button type="button"
-              class="p-1 bg-amber-300 hover:bg-amber-400 border-r-2 border-trueGray-50"
-              x-on:click="toggleFilter('highlight')"
-            >
-              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100"
-                :class="{'bg-amber-300': filter.highlight}"
-              >&nbsp;</span>
+            <button type="button" class="p-1 bg-amber-300 hover:bg-amber-400 border-r-2 border-trueGray-50">
+              <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-amber-200 hover:bg-amber-300 whitespace-nowrap px-3"
-              x-on:click="onlyFilter('highlight')"
-            >
-              Highlights (<span x-text="filterCount['highlight']"></span>)
+            <button type="button" class="bg-amber-200 hover:bg-amber-300 whitespace-nowrap px-3">
+              Highlights (<span id="highlights-count">0</span>)
             </button>
           </li>
         </ul>
         <div class="flex items-center">
           <span class="w-0 border-l mx-2 h-full">&nbsp;</span>
           <div>
-            <button type="button" class="whitespace-nowrap bg-trueGray-600 rounded-sm px-2 hover:bg-trueGray-800 text-trueGray-100"
-              x-on:click="Object.keys(filter).forEach((k) => filter[k] = true)"
-            >Show all</button>
+            <button type="button" class="whitespace-nowrap bg-trueGray-600 rounded-sm px-2 hover:bg-trueGray-800 text-trueGray-100">Show all</button>
           </div>
         </div>
       </div>
     </div>
-    <ul class="video-list grid grid-min-64 mt-6">
-      <template x-for="video in videos">
-        <li class="transition duration-300"
-          :class="{hidden: !filter[video.type]}"
-          x-transition:enter-start="opacity-0"
-          x-transition:enter-end="opacity-100"
-        >
-          <a class="block group" :href="video.url" :title="video.title">
-            <div x-data="{date: new Date(video.published_at) }" class="relative">
-              <img class="w-full rounded-sm" alt="" width="440" height="248" :src="getImageSrc(video.thumbnail_url, $el.width, $el.height)" />
-              <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm"
-                :class="colors[video.type]"
-                :title="titles[video.type]"
-              >
-                <svg class="fill-current w-4 h-4">
-                  <use :href="`/src/assets/icons.svg#${icons[video.type]}`"></use>
-                </svg>
-              </span>
-              <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
-                <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
-                  x-text="video.duration.slice(0,-1).replace(/(h|m)/g, ':')"
-                ></span>
-                <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
-                  :title="date.toString()" x-text="dateToRelative(date)"
-                ></span>
-              </div>
-            </div>
-            <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
-              <p class="truncate flex-grow" x-text="video.title"></p>
-              <svg class="flex-none ml-1 fill-current w-4 h-4">
-                <use href="/src/assets/icons.svg#external-link"></use>
-              </svg>
-            </div>
-          </a>
-        </li>
-      </template>
-    </ul>
-    <p class="text-lg" x-show="!loading && videos.length === 0">Found no streams</p>
-    <div x-show="cursor !== ''" class="text-center my-12">
+    <div id="feedback" class="hidden"></div>
+    <ul id="video-list" class="video-list grid grid-min-64 mt-6"></ul>
+    <div class="text-center my-12">
       <button type="button"
+        id="load-more-streams"
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
-        x-on:click="
-          beforeElems = document.querySelectorAll('.video-list li:not(.hidden)');
-          if ($el.getAttribute('aria-disabled') === 'true') return;
-          await moreVideos()
-          const afterElems = document.querySelectorAll('.video-list li:not(.hidden)');
-          if (afterElems.length > beforeElems.length) {
-            const firstLoad = afterElems[beforeElems.length]
-            if (firstLoad) {
-              firstLoad.setAttribute('tabindex', -1)
-              firstLoad.focus()
-            }
-          }
-        "
-        :aria-disabled="loading.toString()"
-      >Load more videos</button>
-      <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+        hx-ext="twitch-api"
+        hx-trigger="click"
+        hx-include=".req-param"
+        hx-get="https://api.twitch.tv/helix/videos?first=5"
+        hx-target="#video-list"
+        hx-swap="beforeend"
+        aria-disabled="TODO"
+      >
+        <input type="hidden" class="req-param" name="user_id" value="">
+        <input type="hidden" class="req-param" name="after" value="">
+        <span>Load more videos</span>
+      </button>
+      <p class="loading-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
         Loading...
       </p>
     </div>

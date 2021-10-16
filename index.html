@@ -102,7 +102,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.gameClicked = game.name"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -177,7 +181,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.gameClicked = game.name"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -250,7 +258,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}${stream.user_login}/videos`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.userClicked = stream.user_login"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}${stream.user_login}/videos`"
+                                hx-get="/partials/user-videos.html">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
@@ -292,9 +304,6 @@
         <div class="hidden text-center mt-8">
           <a class="js-twitch-login bg-violet-700 text-gray-50 px-3 py-2 rouned-sm hover:underline" href="#">Login with Twitch</a>
         </div>
-        <!--
-        <div id="main-content" x-data="pathContent" x-html="html"></div>
-        -->
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>

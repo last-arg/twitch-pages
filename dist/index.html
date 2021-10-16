@@ -12,9 +12,9 @@
         height: 1em;
       }
     </style>
-    <script type="module" crossorigin src="/twitch-pages/assets/index.9046f2c0.js"></script>
-    <link rel="modulepreload" href="/twitch-pages/assets/vendor.f11d85c8.js">
-    <link rel="stylesheet" href="/twitch-pages/assets/index.4fe7cd79.css">
+    <script type="module" crossorigin src="/twitch-pages/assets/index.91f4eb2f.js"></script>
+    <link rel="modulepreload" href="/twitch-pages/assets/vendor.e906ad84.js">
+    <link rel="stylesheet" href="/twitch-pages/assets/index.cfdb5fcb.css">
   </head>
   <body class="bg-trueGray-50 text-trueGray-800">
     <a href="#main" class="skip-content">skip to content</a>
@@ -30,11 +30,8 @@
                     hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
                     focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
                   "
-                  x-on:click.prevent="
-                    $dispatch('update-main')
-                    document.title = 'Home'
-                  "
-
+                  hx-get="/partials/top-games.html" hx-target="#main"
+                  :hx-push-url="$store.global.urlRoot"
                 >Home</a>
               </h1>
               <div class="search-wrapper"
@@ -108,7 +105,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.gameClicked = game.name"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -183,7 +184,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}directory/game/${game.name}`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.gameClicked = game.name"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -256,7 +261,11 @@
                                   focus:text-gray-50 focus:border-violet-700
                                 "
                                 :href="`${$store.global.urlRoot}${stream.user_login}/videos`"
-                                x-on:click.prevent="$dispatch('update-main')">
+                                x-init="htmx.process($el)"
+                                x-on:click="window.userClicked = stream.user_login"
+                                hx-target="#main"
+                                :hx-push-url="`${$store.global.urlRoot}${stream.user_login}/videos`"
+                                hx-get="/partials/user-videos.html">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
@@ -294,12 +303,10 @@
           </div>
         </div>
       </header>
-
-      <main id="main" class="pt-14 px-3 max-w-screen-2xl mx-auto" tabindex="-1">
+      <main id="main" class="pt-14 px-3 max-w-screen-2xl mx-auto" tabindex="-1" hx-history-elt>
         <div class="hidden text-center mt-8">
           <a class="js-twitch-login bg-violet-700 text-gray-50 px-3 py-2 rouned-sm hover:underline" href="#">Login with Twitch</a>
         </div>
-        <div id="main-content" x-data="pathContent" x-html="html"></div>
       </main>
     </div>
     

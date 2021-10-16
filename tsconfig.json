@@ -13,9 +13,14 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
+    "isolatedModules": true,
     "paths": {
       "config": ["./src/config.prod.ts"]
-    }
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types",
+    ]
   },
   "include": ["./src"]
 }

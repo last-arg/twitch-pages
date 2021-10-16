@@ -241,11 +241,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   box-shadow: 0 -2em 1em -1em theme('colors.trueGray.700') inset;
 }
 
-.top-games-btn.htmx-request {
+.load-more-btn.htmx-request {
   display: none;
 }
 
-.htmx-request + p {
+.htmx-request + .loading-msg {
   display: block;
 }
 

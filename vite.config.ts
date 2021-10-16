@@ -1,6 +1,6 @@
 import { resolve } from "path"
 import { defineConfig } from "vite";
-import viteCompression from 'vite-plugin-compression';
+// import viteCompression from 'vite-plugin-compression';
 
 const base = process.env.NODE_ENV === "production" ? "/twitch-pages/" : "/"
 const configFile = process.env.NODE_ENV === "production" ? "config.prod.ts" : "config.dev.ts"
@@ -16,8 +16,6 @@ export default defineConfig({
   base: base,
   build: {
     target: "esnext",
-		rollupOptions: {
-		},
   },
   server: {
     port: 3001,

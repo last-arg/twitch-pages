@@ -1,115 +1,37 @@
-<div class="stack" x-data="category()">
+<div class="stack">
   <div class="flex">
-    <div class="flex items-center bg-white rounded-r-sm">
-      <h2>
-        <a class="flex items-center text-lg group block pr-3
-            hover:underline hover:text-violet-700
-            focus:underline focus:text-violet-700
-          "
-          :href="`https://www.twitch.tv/directory/game/${name}`"
-        >
-          <img class="w-10" :src="getImageSrc(name, $el.width, $el.height)" width="104" height="144">
-          <p class="line-clamp-2 pl-3" x-text="name"></p>
-          <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-            <use href="/src/assets/icons.svg#external-link"></use>
-          </svg>
-        </a>
+    <div id="category-header" class="flex items-center bg-white rounded-r-sm">
+      <div hx-ext="twitch-api"
+        hx-get="https://api.twitch.tv/helix/games"
+        hx-trigger="load"
+        hx-target="#category-header"
+      ></div>
+      <h2 aria-hidden="true">
+        <img class="w-10 bg-trueGray-100" width="104" height="144">
+        <p class="w-48"></p>
       </h2>
-      <div class="border-l-2 border-trueGray-50 h-full"></div>
-      <button x-data="{followed: false}"
-        x-show="id !== ''"
-        class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-effect="followed = $store.games.hasId(id)"
-        aria-label="followed ? 'UnFollow' : 'Follow'"
-        x-on:click="$store.games.toggle(id, name)"
-      >
-        <svg class="fill-current w-5 h-5">
-          <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-          <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-        </svg>
-      </button>
     </div>
   </div>
-  <p class="text-lg transition delay-100 opactity-100"
-    x-show="id.length === 0 && !loading" >Game/Category not found</p>
-  <div class="list-wrapper" x-show="id.length > 0">
-    <ul class="grid grid-min-72 grid-gap-6">
-      <template x-for="video in videos">
-        <li x-data="{videosUrl: `${$store.global.urlRoot}${video.user_login}/videos`}"
-          class="transition duration-300 opacity-0"
-          x-init="$nextTick(() => $el.classList.add('opacity-100'))"
-        >
-          <div>
-            <a :href="`https://twitch.tv/${video.user_login}`" :title="video.title"
-              class="hover:text-violet-700 hover:underline"
-            >
-              <div class="relative">
-                <img class="rounded" :src="createLiveUserImageUrl(video.thumbnail_url, 440, 248)" alt="" width="440" height="248" />
-                <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1" x-text="`${video.viewer_count} viewers`"></p>
-              </div>
-              <div class="flex items-center px-1 py-1 rounded bg-white">
-                <p class="truncate" x-text="video.title">stream title</p>
-                <svg class="ml-1 flex-none fill-current w-4 h-4">
-                  <use href="/src/assets/icons.svg#external-link"></use>
-                </svg>
-              </div>
-            </a>
-            <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
-              <a aria-hidden="true" :href="videosUrl">
-                <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl(video.user_id)" alt="" width="300" height="300">
-              </a>
-              <div class="stack stack-m-0 ml-2">
-                <div class="flex items-center mb-auto">
-                  <a class="hover:underline hover:text-violet-700" :href="videosUrl" x-text="video.user_name"
-                     x-on:click.prevent="$dispatch('update-main')">
-                  ></a>
-                  <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
-                  <button type="button"
-                    class="text-gray-400 hover:text-violet-700"
-                    x-on:click="$store.streams.toggle(video.user_id, video.user_login, video.user_name)"
-                  >
-                    <svg class="fill-current w-5 h-5">
-                      <use x-show="!$store.streams.hasId(video.user_id)" href="/src/assets/icons.svg#star-empty"></use>
-                      <use x-show="$store.streams.hasId(video.user_id)" href="/src/assets/icons.svg#star-full"></use>
-                    </svg>
-                  </button>
-                </div>
-                <a class="flex items-center hover:underline hover:text-violet-700"
-                  :href="`https://www.twitch.tv/${video.user_login}/videos`"
-                >
-                  <p>Go to Twitch videos</p>
-                  <svg class="fill-current w-4 h-4 ml-1">
-                    <use href="/src/assets/icons.svg#external-link"></use>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-      </template>
-    </ul>
-    <p class="text-lg transition delay-100 opactity-100"
-      x-transition:enter="opacity-0"
-      x-show="!loading && videos.length === 0"
-    >Found no streams</p>
-    <div x-show="cursor !== ''" class="text-center my-12">
+  <div class="list-wrapper">
+    <div id="feedback"></div>
+    <ul id="category-streams" class="grid grid-min-72 grid-gap-6"></ul>
+    <div class="text-center my-12">
       <button type="button"
+        id="load-more-streams"
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
-        x-on:click="
-          last = document.querySelector('.list-wrapper ul').lastElementChild;
-          if ($el.getAttribute('aria-disabled') === 'true') return;
-          await fetchVideos()
-          const firstLoad = last.nextElementSibling
-          if (firstLoad) {
-            firstLoad.setAttribute('tabindex', -1)
-            firstLoad.focus()
-          }
-        "
-        :aria-disabled="loading.toString()"
-      >Load more videos</button>
-      <p class="border-2 py-1 border-trueGray-300 text-trueGray-500">
+        hx-ext="twitch-api"
+        hx-trigger="click"
+        hx-include=".category-param"
+        hx-get="https://api.twitch.tv/helix/streams?first=5"
+        hx-target="#category-streams"
+        hx-swap="beforeend"
+        aria-disabled="TODO"
+      >
+        <input type="hidden" class="category-param" name="after" value="">
+        <input type="hidden" class="category-param" name="game_id" value="">
+        <span>Load more videos</span>
+      </button>
+      <p class="loading-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
         Loading...
       </p>
     </div>

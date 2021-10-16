@@ -1,10 +1,9 @@
 import Alpine from 'alpinejs'
-import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, TOP_GAMES_COUNT } from './common'
+import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
-import 'htmx.org'
-// console.log(htmx)
-// htmx.onLoad(() => console.log("htmx onload"))
+import 'htmx.org';
+// import './libs/twinspark.js'
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
@@ -31,13 +30,7 @@ const getUrlObject = (newPath: string): UrlResolve => {
   return mainContent[contentKey]
 }
 
-type SidebarState = "closed" | "games" | "streams" | "search"
-interface Sidebar {
-  state: SidebarState,
-  [key: string]: any,
-}
-
-function beforeAlpine(token: string) {
+function alpineInit(token: string) {
   const headers = {
     "Host": "api.twitch.tv",
     "Authorization": `Bearer ${token}`,
@@ -51,10 +44,10 @@ function beforeAlpine(token: string) {
     return (await (await fetch(url, {method: "GET", headers})).json()).data;
   }
 
-  const fetchUser = async (username: string): Promise<any | undefined> => {
-    if (username.length === 0) return undefined
-    const url = `https://api.twitch.tv/helix/users?login=${username}`;
-    return (await (await fetch(url, {method: "GET", headers})).json()).data[0];
+  type SidebarState = "closed" | "games" | "streams" | "search"
+  interface Sidebar {
+    state: SidebarState,
+    [key: string]: any,
   }
 
   interface Search {
@@ -71,6 +64,8 @@ function beforeAlpine(token: string) {
         searchValue: "",
         searchResults: [] as Search[],
         init() {
+          console.log(Alpine)
+          // Alpine.mutateDom(())
           let searchTimeout = 0;
           let activeSidebar = (document.activeElement! as HTMLElement);
           Alpine.effect(() => {
@@ -128,281 +123,6 @@ function beforeAlpine(token: string) {
           }
           return ""
         }
-      }
-    })
-
-    interface Video {
-      user_id: string,
-      user_login: string,
-      user_name: string,
-      title: string,
-      thumbnail_url: string,
-      viewer_count: number,
-    }
-    Alpine.data("category", function(): any {
-      return {
-        id: "",
-        name: "",
-        videos: [] as Video[],
-        cursor: "",
-        loading: false,
-        async init() {
-          Alpine.effect(() => {
-            if (this.videos.length > 0) {
-              const current_ids = Object.keys(this.$store.profile_images.data)
-              const fetch_ids = this.videos.map((v: Video) => v.user_id).filter((id: string) => !current_ids.includes(id))
-              this.$store.profile_images.fetchProfileImages(fetch_ids)
-            }
-          })
-          const pathArr = location.pathname.split("/")
-          const name = decodeURIComponent(pathArr[pathArr.length - 1])
-          this.name = name
-          document.title = name
-          this.loading = true
-          const url = `https://api.twitch.tv/helix/games?name=${name}`;
-          const data = (await (await fetch(url, {method: "GET", headers})).json()).data;
-          if (data && data[0]) {
-            const category = data[0]
-            this.name = category.name
-            this.id = category.id
-            document.title = category.name
-            this.fetchVideos()
-          }
-          this.loading = false
-        },
-        async fetchVideos() {
-          this.loading = true
-          const url = `https://api.twitch.tv/helix/streams?game_id=${this.id}&first=${STREAMS_COUNT}&after=${this.cursor}`;
-          const resp = await (await fetch(url, {method: "GET", headers})).json();
-          this.videos= [...this.videos, ...resp.data]
-          this.cursor= resp.pagination?.cursor ?? ""
-          this.loading = false
-        },
-        getImageSrc(name: string, width: number, height: number): string {
-          return twitchCategoryImageSrc(name, width, height)
-        },
-        createLiveUserImageUrl(url_template: string, w: number, h: number): string {
-          return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
-        },
-      }
-    })
-
-    const twitchDateToString = (d: Date): string => {
-      const round = (nr: number): number => {
-        const nr_floor = Math.floor(nr)
-        return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
-      }
-      const seconds_f = (Date.now() - d.getTime()) / 1000
-      const minutes_f = seconds_f / 60
-      const hours_f = minutes_f / 60
-      const days_f = hours_f / 24
-      const minutes = round(minutes_f)
-      const hours = round(hours_f)
-      const days = round(days_f)
-      const weeks = round(days_f / 7)
-      const months = round(days_f / 30)
-      const years = round(days_f / 365)
-
-      let result_str = "1 minute ago"
-      if (years > 0 && months > 11) {
-        result_str = (years === 1) ? "1 year ago" : `${years} years ago`
-      } else if (months > 0 && weeks > 4) {
-        result_str = (months === 1) ? "1 month ago" : `${months} months ago`
-      } else if (weeks > 0 && days > 6) {
-        result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
-      } else if (days > 0 && hours > 23) {
-        result_str = (days === 1) ? "Yesterday" : `${days} days ago`
-      } else if (hours > 0 && minutes > 59) {
-        result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
-      } else if (minutes > 1) {
-        result_str = `${minutes} minutes ago`
-      }
-
-      return result_str
-    };
-
-    interface UserVideo {
-      url: string,
-      type: "archive" | "upload" | "highlight",
-      duration: string,
-      published_at: string,
-      title: string,
-      thumbnail_url: string,
-    }
-    Alpine.data("user", function(): any {
-      return {
-        id: "",
-        name: "",
-        login: "",
-        videos: [] as UserVideo[],
-        cursor: "",
-        loading: false,
-        colors: {
-          archive: "bg-lime-200",
-          upload: "bg-sky-200",
-          highlight: "bg-amber-200",
-        },
-        icons: {
-          archive: "video-camera",
-          upload: "video-upload",
-          highlight: "video-reel",
-        },
-        titles: {
-          archive: "Archive",
-          upload: "Upload",
-          highlight: "Highlight",
-        },
-        filterCount: {
-          archive: 0,
-          upload: 0,
-          highlight: 0,
-        },
-        filter: {
-          archive: true,
-          upload: false,
-          highlight: false,
-        },
-        onlyFilter(vType: UserVideo["type"]) {
-          this.filter.archive = false
-          this.filter.upload = false
-          this.filter.highlight = false
-          this.filter[vType] = true
-        },
-        toggleFilter(vType: UserVideo["type"]) {
-          if (!this.filter[vType]) {
-            this.filter[vType] = true
-            return
-          }
-
-          const trueCount = Object.values(this.filter).reduce((acc: number, curr) => acc + Number(curr), 0)
-          if (trueCount > 1) {
-             this.filter[vType] = false
-          }
-        },
-        async init() {
-          Alpine.effect(() => {
-            const filterCount = {
-              archive: 0,
-              upload: 0,
-              highlight: 0,
-            }
-
-            for (const v of this.videos as UserVideo[]) {
-              filterCount[v.type] += 1
-            }
-            this.filterCount = filterCount
-          })
-          this.loading = true
-          const pathArr = location.pathname.slice(urlRoot.length).split("/")
-          const name = decodeURIComponent(pathArr[0])
-          this.name = name
-
-          const user = await fetchUser(name)
-          if (user) {
-            this.name = user.display_name
-
-            this.login = user.login
-            this.id = user.id
-            document.title = this.name
-            if (this.$store.profile_images.imgUrl(user.id) === "") {
-              this.$store.profile_images.setImage(user.id, user.profile_image_url)
-            }
-            const resp = await this.fetchVideos()
-            if (resp.data[0] && resp.data[0].thumbnail_url === "") {
-              // When first video is current streaming video
-              resp.data[0].thumbnail_url = "https://vod-secure.twitch.tv/_404/404_processing_320x180.png"
-            }
-            this.videos= [...this.videos, ...resp.data]
-            this.cursor= resp.pagination?.cursor ?? ""
-          }
-          this.loading = false
-        },
-        async moreVideos() {
-          this.loading = true
-          const resp = await this.fetchVideos()
-          this.videos= [...this.videos, ...resp.data]
-          this.cursor= resp.pagination?.cursor ?? ""
-          this.loading = false
-        },
-        async fetchVideos() {
-          const url = `https://api.twitch.tv/helix/videos?user_id=${this.id}&first=${USER_VIDEOS_COUNT}&after=${this.cursor}`;
-          return (await (await fetch(url, {method: "GET", headers})).json());
-        },
-        dateToRelative(str: Date): string {
-          return twitchDateToString(str)
-        },
-        getImageSrc(url: string, width: number, height: number): string {
-          return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
-        },
-      }
-    })
-
-    type AlpineEvent = CustomEventInit<any>
-
-    Alpine.data("pathContent", function(): any {
-      return {
-        html: "",
-        loading: false,
-        async init() {
-          this.loading = true;
-          const mainElem = document.querySelector("main")!
-
-          window.addEventListener('update-main', async (e: AlpineEvent & {target: any}) => {
-            this.loading = true;
-            history.replaceState({html: this.html}, '',  location.pathname);
-            const newUrl = e.target.getAttribute("href")
-            const contentObj = getUrlObject(newUrl)
-            const r = await fetch(contentObj.html, {method: "GET"})
-            // // Always update main content
-            Alpine.disableEffectScheduling(() => this.html = "")
-            this.html = await r.text()
-            history.pushState({html: this.html}, '',  newUrl);
-            this.loading = false;
-            mainElem.focus()
-          })
-
-
-          // window.addEventListener('popstate', (e) => {
-          //   // Always update main content when url changes
-          //   Alpine.disableEffectScheduling(() => this.html = "")
-          //   this.html = e.state.html
-          // })
-
-          const r = await fetch(getUrlObject(location.pathname).html, {method: "GET"})
-          this.html = await r.text()
-          history.replaceState({html: this.html}, '',  location.pathname);
-          this.loading = false;
-        },
-      }
-    })
-
-    interface TopGame {
-      name: string,
-      id: string,
-    }
-    Alpine.data("topGames", function(this: AlpineMagicProperties): any {
-      return {
-        games: [] as TopGame[],
-        cursor: "",
-        loading: false,
-        async init() {
-          this.moreGames()
-        },
-        async moreGames(): Promise<void> {
-          this.loading = true
-          const r = await this.fetchCategories()
-          this.games = [...this.games, ...r.data]
-          this.cursor = r.pagination?.cursor ?? ""
-          this.loading = false
-        },
-        async fetchCategories(): Promise<{data: TopGame[]}> {
-          const url = `https://api.twitch.tv/helix/games/top?first=${TOP_GAMES_COUNT}&after=${this.cursor}`
-          const r = await fetch(url, { method: "GET", headers: headers })
-          return await r.json()
-        },
-        getImageSrc(name: string, width: number, height: number): string {
-          return twitchCategoryImageSrc(name, width, height)
-        },
       }
     })
   })
@@ -624,10 +344,6 @@ function beforeAlpine(token: string) {
   })
 }
 
-const twitchCategoryImageSrc = (name: string, width: number, height: number): string => {
-  return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
-}
-
 const handleSidebarScroll = () => {
   const scrollBoxes = document.querySelectorAll('.scrollbox') as any
   for (const box of scrollBoxes) {
@@ -657,77 +373,456 @@ const handleSidebarScroll = () => {
   }
 }
 
-// async fetchCategories(): Promise<{data: TopGame[]}> {
-//   const url = `https://api.twitch.tv/helix/games/top?first=5`
-//   const r = await fetch(url, { method: "GET", headers: headers })
-//   return await r.json()
-// },
+const twitchCategoryImageSrc = (name: string, width: number, height: number): string => {
+  return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
+}
 
 function getImageSrc(name: string, width: number, height: number): string {
   return twitchCategoryImageSrc(name, width, height)
 }
 
+function createLiveUserImageUrl(url_template: string, w: number, h: number): string {
+  return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
+}
+
 const CAT_IMG_WIDTH = 104
 const CAT_IMG_HEIGHT = 144
+const VIDEO_IMG_WIDTH = 440
+const VIDEO_IMG_HEIGHT = 248
+declare global {
+  interface Window {
+    gameClicked: string | null
+    userClicked: string | null
+  }
+}
+window.gameClicked = null
+window.userClicked = null
+
+interface TopGame {
+  name: string,
+  id: string,
+}
+
+const topGamesTransform = (games: TopGame[]) => {
+  let result = ""
+  for (const game of games) {
+    result += `
+      <li class="fade-in flex">
+        <div class="flex w-full border-2 border-white">
+          <a href="/directory/game/${game.name}"
+            hx-push-url="/directory/game/${game.name}"
+            hx-get="/partials/category.html?name=Game_name" hx-target="#main"
+            class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
+            @click="window.gameClicked = '${game.name}'"
+          >
+            <img class="w-16" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt="" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+            <p class="ml-2 text-lg">${game.name}</p>
+          </a>
+          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+            <button x-data="{followed: false}"
+              class="hover:text-violet-700"
+              x-effect="followed = $store.games.hasId('${game.id}')"
+              x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+              :aria-label="followed ? 'UnFollow' : 'Follow'"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+              </svg>
+            </button>
+            <a class="hover:text-violet-700"
+              href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
+            >
+              <svg class="fill-current w-5 h-5">
+                <use href="/src/assets/icons.svg#external-link"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </li>
+    `
+  }
+
+  return result
+}
+
+const categoryTransform = (json: any) => {
+  const game = json.data[0]
+  return `
+    <h2>
+      <a class="flex items-center text-lg group block pr-3
+          hover:underline hover:text-violet-700
+          focus:underline focus:text-violet-700
+        "
+        href="https://www.twitch.tv/directory/game/${game.name}"
+      >
+        <img class="w-10" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+        <p class="line-clamp-2 pl-3">${game.name}</p>
+        <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+          <use href="/src/assets/icons.svg#external-link"></use>
+        </svg>
+      </a>
+    </h2>
+    <div class="border-l-2 border-trueGray-50 h-full"></div>
+    <button x-data="{followed: false}"
+      class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
+      x-effect="followed = $store.games.hasId('${game.id}')"
+      aria-label="followed ? 'UnFollow' : 'Follow'"
+      x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+    >
+      <svg class="fill-current w-5 h-5">
+        <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+      </svg>
+    </button>
+  `
+}
+
+interface Video {
+  user_id: string,
+  user_login: string,
+  user_name: string,
+  title: string,
+  thumbnail_url: string,
+  viewer_count: number,
+}
+
+const streamsTransform = (streams: Video[]) => {
+  let result = ""
+  for (const stream of streams) {
+    const videoUrl = `${urlRoot}${stream.user_login}/videos`
+    result += `
+      <li class="fade-in">
+        <div>
+          <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
+            class="hover:text-violet-700 hover:underline"
+          >
+            <div class="relative">
+              <img class="rounded" src="${createLiveUserImageUrl(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+              <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
+            </div>
+            <div class="flex items-center px-1 py-1 rounded bg-white">
+              <p class="truncate">${stream.title}</p>
+              <svg class="ml-1 flex-none fill-current w-4 h-4">
+                <use href="/src/assets/icons.svg#external-link"></use>
+              </svg>
+            </div>
+          </a>
+          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
+            
+            <a aria-hidden="true" href="${videoUrl}"
+              hx-push-url="${videoUrl}" hx-get="/partials/user-videos.html" hx-target="#main"
+              @click="window.userClicked = '${stream.user_login}'"
+            >
+              <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
+            </a>
+            <div class="stack stack-m-0 ml-2">
+              <div class="flex items-center mb-auto">
+                <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
+                  hx-push-url="${videoUrl}" hx-get="/partials/user-videos.html" hx-target="#main"
+                  @click="window.userClicked = '${stream.user_login}'"
+                >${stream.user_name}</a>
+                <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
+                <button type="button"
+                  class="text-gray-400 hover:text-violet-700"
+                  x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
+                >
+                  <svg class="fill-current w-5 h-5">
+                    <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/src/assets/icons.svg#star-empty"></use>
+                    <use x-show="$store.streams.hasId('${stream.user_id}')" href="/src/assets/icons.svg#star-full"></use>
+                  </svg>
+                </button>
+              </div>
+              <a class="flex items-center hover:underline hover:text-violet-700"
+                href="https://www.twitch.tv/${stream.user_login}/videos"
+              >
+                <p>Go to Twitch videos</p>
+                <svg class="fill-current w-4 h-4 ml-1">
+                  <use href="/src/assets/icons.svg#external-link"></use>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    `
+  }
+  return result
+}
+
+const userTransform = (json: any) => {
+  const user = json.data[0]
+  return `
+    <h2>
+      <a
+        class="flex items-center text-lg group block
+          hover:underline hover:text-violet-700
+          focus:underline focus:text-violet-700
+        "
+        href="https://www.twitch.tv/${user.login}/videos"
+      >
+        <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${user.id}')" width="300" height="300">
+        <p>${user.display_name}</p>
+        <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+          <use href="/src/assets/icons.svg#external-link"></use>
+        </svg>
+      </a>
+    </h2>
+    <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
+    <button x-data="{followed: false}"
+      class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-effect="followed = $store.streams.hasId('${user.id}')"
+      aria-label="followed ? 'UnFollow' : 'Follow'"
+      x-on:click="$store.streams.toggle('${user.id}', '${user.name}', '${user.display_name}')"
+    >
+      <svg class="fill-current w-5 h-5">
+        <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+      </svg>
+    </button>
+   `
+}
+
+interface UserVideo {
+  url: string,
+  type: "archive" | "upload" | "highlight",
+  duration: string,
+  published_at: string,
+  title: string,
+  thumbnail_url: string,
+}
+
+const VIDEO_COLORS: Record<string, string> = {
+  archive: "bg-lime-200",
+  upload: "bg-sky-200",
+  highlight: "bg-amber-200",
+}
+
+const VIDEO_TITLES: Record<string, string> = {
+  archive: "Archive",
+  upload: "Upload",
+  highlight: "Highlight",
+}
+
+const VIDEO_ICONS: Record<string, string> = {
+  archive: "video-camera",
+  upload: "video-upload",
+  highlight: "video-reel",
+}
+
+const twitchDateToString = (d: Date): string => {
+  const round = (nr: number): number => {
+    const nr_floor = Math.floor(nr)
+    return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
+  }
+  const seconds_f = (Date.now() - d.getTime()) / 1000
+  const minutes_f = seconds_f / 60
+  const hours_f = minutes_f / 60
+  const days_f = hours_f / 24
+  const minutes = round(minutes_f)
+  const hours = round(hours_f)
+  const days = round(days_f)
+  const weeks = round(days_f / 7)
+  const months = round(days_f / 30)
+  const years = round(days_f / 365)
+
+  let result_str = "1 minute ago"
+  if (years > 0 && months > 11) {
+    result_str = (years === 1) ? "1 year ago" : `${years} years ago`
+  } else if (months > 0 && weeks > 4) {
+    result_str = (months === 1) ? "1 month ago" : `${months} months ago`
+  } else if (weeks > 0 && days > 6) {
+    result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
+  } else if (days > 0 && hours > 23) {
+    result_str = (days === 1) ? "Yesterday" : `${days} days ago`
+  } else if (hours > 0 && minutes > 59) {
+    result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
+  } else if (minutes > 1) {
+    result_str = `${minutes} minutes ago`
+  }
+
+  return result_str
+};
+
+function getVideoImageSrc(url: string, width: number, height: number): string {
+  return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
+}
+
+const videosTransform = (videos: UserVideo[]) => {
+  let result = ""
+  for (const video of videos) {
+    const date = new Date(video.published_at)
+    result += `
+      <li class="fade-in">
+        <a class="block group" href="${video.url}" title="${video.title}">
+          <div class="relative">
+          <img class="w-full rounded-sm" src="${getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+            <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm"
+              class="${VIDEO_COLORS[video.type]}"
+              title="${VIDEO_TITLES[video.type]}"
+            >
+              <svg class="fill-current w-4 h-4">
+                <use href="/src/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
+              </svg>
+            </span>
+            <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
+              <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+              >${video.duration.slice(0,-1).replace(/(h|m)/g, ':')}</span>
+              <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+                title="${date.toString()}"
+              >${twitchDateToString(date)}</span>
+            </div>
+          </div>
+          <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
+            <p class="truncate flex-grow">${video.title}</p>
+            <svg class="flex-none ml-1 fill-current w-4 h-4">
+              <use href="/src/assets/icons.svg#external-link"></use>
+            </svg>
+          </div>
+        </a>
+      </li>
+    `
+  }
+  return result
+}
+
+// TODO: user videos filter
+// onlyFilter(vType: UserVideo["type"]) {
+//   this.filter.archive = false
+//   this.filter.upload = false
+//   this.filter.highlight = false
+//   this.filter[vType] = true
+// },
+// toggleFilter(vType: UserVideo["type"]) {
+//   if (!this.filter[vType]) {
+//     this.filter[vType] = true
+//     return
+//   }
+
+//   const trueCount = Object.values(this.filter).reduce((acc: number, curr) => acc + Number(curr), 0)
+//   if (trueCount > 1) {
+//      this.filter[vType] = false
+//   }
+// },
 
 const initHtmx = async (token: string) => {
   htmx.defineExtension("twitch-api", {
-    onEvent : function(name: string, evt: any) {
+    onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt);
       if (name === "htmx:configRequest") {
-        // console.log(evt.detail)
+        // console.log("config details", evt.detail)
         evt.detail.headers["HX-Current-URL"] = null;
         evt.detail.headers["HX-Request"] = null;
         evt.detail.headers["HX-Target"] = null;
-        evt.detail.headers["Host"] = "api.twitch.tv";
+        evt.detail.headers["HX-Trigger"] = null;
         evt.detail.headers["Authorization"] = `Bearer ${token}`;
         evt.detail.headers["Client-id"] = TWITCH_CLIENT_ID;
         evt.detail.headers["Accept"] = "application/vnd.twitchtv.v5+json";
+        const pathUrl = new URL(evt.detail.path)
+        if (pathUrl.pathname === "/helix/games") {
+          let gameName = ""
+          if (window.gameClicked) {
+            gameName = window.gameClicked
+          } else {
+            const pathArr = location.pathname.split("/")
+            gameName = decodeURIComponent(pathArr[pathArr.length - 1])
+          }
+          evt.detail.parameters["name"] = gameName
+          window.gameClicked = null
+        } else if (pathUrl.pathname === "/helix/users") {
+          let loginName = ""
+          if (window.userClicked) {
+            loginName = window.userClicked
+          } else {
+            const pathArr = location.pathname.split("/")
+            loginName = decodeURIComponent(pathArr[pathArr.length - 2])
+          }
+          evt.detail.parameters["login"] = loginName
+        }
       }
     },
-    transformResponse: function(text: string, xhr: any, elt: HTMLElement) {
-      console.log(xhr, elt.getAttribute("hx-get"))
+    transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
+      // console.log(xhr, elt)
+      // console.log("elt", _elt)
       const json = JSON.parse(text)
       let result = ""
-      for (const game of json.data) {
-        result += `
-          <li class="fade-in flex">
-            <div class="flex w-full border-2 border-white">
-              <a href="/directory/game/${game.name}"
-                hx-push-url="/directory/game/${game.name}"
-                hx-get="/partials/category.html" hx-target="#main"
-                class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
-              >
-                <img class="w-16" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt="" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
-                <p class="ml-2 text-lg">${game.name}</p>
-              </a>
-              <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
-                <button x-data="{followed: false}"
-                  class="hover:text-violet-700"
-                  x-effect="followed = $store.games.hasId('${game.id}')"
-                  x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
-                  :aria-label="followed ? 'UnFollow' : 'Follow'"
-                >
-                  <svg class="fill-current w-5 h-5">
-                    <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-                    <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
-                  </svg>
-                </button>
-                <a class="hover:text-violet-700"
-                  href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
-                >
-                  <svg class="fill-current w-5 h-5">
-                    <use href="/src/assets/icons.svg#external-link"></use>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </li>
-        `
+      const pathUrl = new URL(xhr.responseURL)
+      if (pathUrl.pathname === "/helix/games") {
+        if (xhr.status === 200) {
+          document.querySelector(".category-param[name='game_id']")?.setAttribute("value", json.data[0].id)
+
+          htmx.trigger("#load-more-streams", "click", {})
+          result = categoryTransform(json)
+        } else {
+          const pathArr = location.pathname.split("/")
+          result = `
+            <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
+            <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
+          `;
+        }
+      } else if (pathUrl.pathname === "/helix/games/top") {
+        result = topGamesTransform(json.data as TopGame[])
+        if (json.pagination && json.pagination.cursor) {
+          result += `<input type="hidden" id="top-games-params" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+        }
+      } else if (pathUrl.pathname === "/helix/streams") {
+        if (json.data.length > 0) {
+          // TODO: get user ids of missing profile images
+          // download missing images
+          // Connect with Alpine.store('profile_images', storeProfileImages) ???
+
+          result = streamsTransform(json.data as Video[])
+          if (json.pagination !== undefined && json.pagination.cursor) {
+            document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+          }
+        } else {
+          result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
+        }
+      } else if (pathUrl.pathname === "/helix/users") {
+        if (xhr.status === 200) {
+          document.querySelector(".req-param[name='user_id']")?.setAttribute("value", json.data[0].id)
+          htmx.trigger(".load-more-btn", "click", {})
+          result = userTransform(json)
+        } else {
+          const pathArr = location.pathname.split("/")
+          result = `
+            <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
+            <div id="feedback" hx-swap-oob="true">User not found</div>
+          `;
+        }
+      } else if (pathUrl.pathname === "/helix/videos") {
+        if (json.data.length > 0) {
+          result = videosTransform(json.data as UserVideo[])
+          if (json.pagination !== undefined && json.pagination.cursor) {
+            document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+          }
+          const elHighlights = document.querySelector("#highlights-count")!;
+          const elUploads = document.querySelector("#uploads-count")!;
+          const elArchives = document.querySelector("#archives-count")!;
+          const counts: Record<string, number> = {
+            "archives": parseInt(elArchives.textContent!, 10) ?? 0,
+            "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
+            "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
+          }
+          for (const video of json.data) {
+            if (video.type === "archive") {
+              counts.archives += 1
+            } else if (video.type === "upload") {
+              counts.uploads += 1
+            } else if (video.type === "highlight") {
+              counts.highlights += 1
+            }
+          }
+          elHighlights.textContent = counts.highlights.toString()
+          elUploads.textContent = counts.uploads.toString()
+          elArchives.textContent = counts.archives.toString()
+        } else {
+          result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
+        }
       }
-      if (json.pagination.cursor) {
-        result += `<input type="hidden" id="top-games-params" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
-      }
+
       return result
     },
   })
@@ -751,7 +846,7 @@ const init = async () => {
 
   // Init
   if (token) {
-    beforeAlpine(token)
+    alpineInit(token)
     Alpine.start()
     initHtmx(token)
     handleSidebarScroll()
