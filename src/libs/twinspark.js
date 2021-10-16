@@ -320,6 +320,7 @@
 
   /** @type {function(string, RequestInit): Promise<*> } */
   function xhr(url, opts) {
+    console.log(url, opts)
     return new Promise(function(resolve, reject) {
       opts || (opts = {});
 
