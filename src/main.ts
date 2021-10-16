@@ -5,6 +5,7 @@ import './style.css'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
+
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
@@ -64,7 +65,6 @@ function alpineInit(token: string) {
         searchValue: "",
         searchResults: [] as Search[],
         init() {
-          console.log(Alpine)
           // Alpine.mutateDom(())
           let searchTimeout = 0;
           let activeSidebar = (document.activeElement! as HTMLElement);
@@ -490,7 +490,7 @@ interface Video {
 const streamsTransform = (streams: Video[]) => {
   let result = ""
   for (const stream of streams) {
-    const videoUrl = `${urlRoot}${stream.user_login}/videos`
+    const videoUrl = `${urlRoot}/${stream.user_login}/videos`
     result += `
       <li class="fade-in">
         <div>
@@ -687,6 +687,8 @@ const videosTransform = (videos: UserVideo[]) => {
   }
   return result
 }
+
+// TODO: focus first new element after videos load
 
 // TODO: user videos filter
 // onlyFilter(vType: UserVideo["type"]) {

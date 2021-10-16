@@ -180,7 +180,7 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`${$store.global.urlRoot}directory/game/${game.name}`"
+                                :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
                                 x-init="htmx.process($el)"
                                 x-on:click="window.gameClicked = game.name"
                                 hx-target="#main"
@@ -257,7 +257,7 @@
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
                                 "
-                                :href="`${$store.global.urlRoot}${stream.user_login}/videos`"
+                                :href="`${$store.global.urlRoot}/${stream.user_login}/videos`"
                                 x-init="htmx.process($el)"
                                 x-on:click="window.userClicked = stream.user_login"
                                 hx-target="#main"
