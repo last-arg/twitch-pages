@@ -12,9 +12,9 @@
         height: 1em;
       }
     </style>
-    <script type="module" crossorigin src="/twitch-pages/assets/index.d0faf186.js"></script>
+    <script type="module" crossorigin src="/twitch-pages/assets/index.2c7d2dcc.js"></script>
     <link rel="modulepreload" href="/twitch-pages/assets/vendor.e906ad84.js">
-    <link rel="stylesheet" href="/twitch-pages/assets/index.cfdb5fcb.css">
+    <link rel="stylesheet" href="/twitch-pages/assets/index.4c2778e4.css">
   </head>
   <body class="bg-trueGray-50 text-trueGray-800">
     <a href="#main" class="skip-content">skip to content</a>
@@ -57,7 +57,7 @@
                     type="submit" aria-label="Search games"
                     x-on:click="$refs.searchInput.focus()"
                   >
-                    <svg class="fill-current w-5 h-5"><use href="/twitch-pages/assets/icons.8d978ee2.svg#looking-class"></use></svg>
+                    <svg class="fill-current w-5 h-5"><use href="/twitch-pages/assets/icons.svg#looking-class"></use></svg>
                   </button>
                   <!-- search sidebar -->
                   <div class="sidebar-wrapper">
@@ -65,7 +65,7 @@
                       <div class="flex justify-between mb-4">
                         <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                           <svg class="fill-current w-4 h-4 mr-2">
-                            <use href="/twitch-pages/assets/icons.8d978ee2.svg#looking-class"></use>
+                            <use href="/twitch-pages/assets/icons.svg#looking-class"></use>
                           </svg>
                           Search results
                         </h2>
@@ -78,7 +78,7 @@
                         >
                           <span class="sr-only">Close sidebar</span>
                           <svg class="fill-current w-4 h-4">
-                            <use href="/twitch-pages/assets/icons.8d978ee2.svg#close"></use>
+                            <use href="/twitch-pages/assets/icons.svg#close"></use>
                           </svg>
                         </button>
                       </div>
@@ -121,13 +121,13 @@
                                   :aria-label="followed ? 'UnFollow' : 'Follow'"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use x-show="!followed" href="/twitch-pages/assets/icons.8d978ee2.svg#star-empty"></use>
-                                    <use x-show="followed" href="/twitch-pages/assets/icons.8d978ee2.svg#star-full"></use>
+                                    <use x-show="!followed" href="/twitch-pages/assets/icons.svg#star-empty"></use>
+                                    <use x-show="followed" href="/twitch-pages/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#external-link"></use>
+                                    <use href="/twitch-pages/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
@@ -146,7 +146,7 @@
                   x-on:click="toggleSidebar('games')"
                 >
                   <svg class="fill-current w-5 h-5">
-                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#game-controller"></use>
+                    <use href="/twitch-pages/assets/icons.svg#game-controller"></use>
                   </svg>
                 </button>
                 <!-- games sidebar -->
@@ -155,7 +155,7 @@
                     <div class="flex justify-between mb-4">
                       <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
-                          <use href="/twitch-pages/assets/icons.8d978ee2.svg#game-controller"></use>
+                          <use href="/twitch-pages/assets/icons.svg#game-controller"></use>
                         </svg>
                         Games
                       </h2>
@@ -167,7 +167,7 @@
                       >
                         <span class="sr-only">Close sidebar</span>
                         <svg class="fill-current w-4 h-4">
-                          <use href="/twitch-pages/assets/icons.8d978ee2.svg#close"></use>
+                          <use href="/twitch-pages/assets/icons.svg#close"></use>
                         </svg>
                       </button>
                     </div>
@@ -197,12 +197,12 @@
                                   x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#star-full"></use>
+                                    <use href="/twitch-pages/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#external-link"></use>
+                                    <use href="/twitch-pages/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
@@ -224,7 +224,7 @@
                   x-on:click="toggleSidebar('streams')"
                   :aria-expanded="(state === 'streams').toString()"
                 >
-                  <svg class="fill-current w-5 h-5"><use href="/twitch-pages/assets/icons.8d978ee2.svg#people"></use></svg>
+                  <svg class="fill-current w-5 h-5"><use href="/twitch-pages/assets/icons.svg#people"></use></svg>
                 </button>
                 <!-- streams sidebar -->
                 <div class="sidebar-wrapper">
@@ -232,7 +232,7 @@
                     <div class="flex justify-between mb-4">
                       <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
-                          <use href="/twitch-pages/assets/icons.8d978ee2.svg#people"></use>
+                          <use href="/twitch-pages/assets/icons.svg#people"></use>
                         </svg>
                         Streams
                       </h2>
@@ -244,7 +244,7 @@
                       >
                         <span class="sr-only">Close sidebar</span>
                         <svg class="fill-current w-4 h-4">
-                          <use href="/twitch-pages/assets/icons.8d978ee2.svg#close"></use>
+                          <use href="/twitch-pages/assets/icons.svg#close"></use>
                         </svg>
                       </button>
                     </div>
@@ -280,12 +280,12 @@
                                   x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#star-full"></use>
+                                    <use href="/twitch-pages/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/twitch-pages/assets/icons.8d978ee2.svg#external-link"></use>
+                                    <use href="/twitch-pages/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
