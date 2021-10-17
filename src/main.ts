@@ -403,6 +403,7 @@ interface TopGame {
   id: string,
 }
 
+// TODO: change hx-get '/partials/...' using urlRoot '/twitch-pages/'
 const topGamesTransform = (games: TopGame[]) => {
   let result = ""
   for (const game of games) {
@@ -570,12 +571,10 @@ const userTransform = (json: any) => {
     </h2>
     <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
     <button x-data="{followed: false}"
-      class="text-gray-400 hover:text-violet-700 transition duration-100" type="button"
-      x-transition:enter-start="opacity-0"
-      x-transition:enter-end="opacity-100"
+      class="text-gray-400 hover:text-violet-700" type="button"
       x-effect="followed = $store.streams.hasId('${user.id}')"
       aria-label="followed ? 'UnFollow' : 'Follow'"
-      x-on:click="$store.streams.toggle('${user.id}', '${user.name}', '${user.display_name}')"
+      x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
     >
       <svg class="fill-current w-5 h-5">
         <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
