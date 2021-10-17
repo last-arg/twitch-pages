@@ -18,15 +18,15 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
               <svg class="fill-current w-5 h-5">
-                <use x-show="!followed" href="${d}assets/icons.svg#star-empty"></use>
-                <use x-show="followed" href="${d}assets/icons.svg#star-full"></use>
+                <use x-show="!followed" href="${d}/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="${d}/assets/icons.svg#star-full"></use>
               </svg>
             </button>
             <a class="hover:text-violet-700"
               href="https://www.twitch.tv/directory/games/${e.name}" aria-label="Game's Twitch page"
             >
               <svg class="fill-current w-5 h-5">
-                <use href="${d}assets/icons.svg#external-link"></use>
+                <use href="${d}/assets/icons.svg#external-link"></use>
               </svg>
             </a>
           </div>
@@ -43,7 +43,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
         <img class="w-10" src="${O(s.name,b,S)}" width="${b}" height="${S}">
         <p class="line-clamp-2 pl-3">${s.name}</p>
         <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="${d}assets/icons.svg#external-link"></use>
+          <use href="${d}/assets/icons.svg#external-link"></use>
         </svg>
       </a>
     </h2>
@@ -55,8 +55,8 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
       x-on:click="$store.games.toggle('${s.id}', '${s.name}')"
     >
       <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="${d}assets/icons.svg#star-empty"></use>
-        <use x-show="followed" href="${d}assets/icons.svg#star-full"></use>
+        <use x-show="!followed" href="${d}/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="${d}/assets/icons.svg#star-full"></use>
       </svg>
     </button>
   `},H=l=>{let s="";for(const e of l){const r=`${d}/${e.user_login}/videos`;s+=`
@@ -72,7 +72,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
             <div class="flex items-center px-1 py-1 rounded bg-white">
               <p class="truncate">${e.title}</p>
               <svg class="ml-1 flex-none fill-current w-4 h-4">
-                <use href="${d}assets/icons.svg#external-link"></use>
+                <use href="${d}/assets/icons.svg#external-link"></use>
               </svg>
             </div>
           </a>
@@ -96,8 +96,8 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
                   x-on:click="$store.streams.toggle('${e.user_id}', '${e.user_login}', '${e.user_name}')"
                 >
                   <svg class="fill-current w-5 h-5">
-                    <use x-show="!$store.streams.hasId('${e.user_id}')" href="${d}assets/icons.svg#star-empty"></use>
-                    <use x-show="$store.streams.hasId('${e.user_id}')" href="${d}assets/icons.svg#star-full"></use>
+                    <use x-show="!$store.streams.hasId('${e.user_id}')" href="${d}/assets/icons.svg#star-empty"></use>
+                    <use x-show="$store.streams.hasId('${e.user_id}')" href="${d}/assets/icons.svg#star-full"></use>
                   </svg>
                 </button>
               </div>
@@ -106,7 +106,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
               >
                 <p>Go to Twitch videos</p>
                 <svg class="fill-current w-4 h-4 ml-1">
-                  <use href="${d}assets/icons.svg#external-link"></use>
+                  <use href="${d}/assets/icons.svg#external-link"></use>
                 </svg>
               </a>
             </div>
@@ -125,7 +125,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
         <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${s.id}')" width="300" height="300">
         <p>${s.display_name}</p>
         <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="${d}assets/icons.svg#external-link"></use>
+          <use href="${d}/assets/icons.svg#external-link"></use>
         </svg>
       </a>
     </h2>
@@ -137,8 +137,8 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
       x-on:click="$store.streams.toggle('${s.id}', '${s.login}', '${s.display_name}')"
     >
       <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="${d}assets/icons.svg#star-empty"></use>
-        <use x-show="followed" href="${d}assets/icons.svg#star-full"></use>
+        <use x-show="!followed" href="${d}/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="${d}/assets/icons.svg#star-full"></use>
       </svg>
     </button>
    `},J={archive:"bg-lime-200",upload:"bg-sky-200",highlight:"bg-amber-200"},M={archive:"Archive",upload:"Upload",highlight:"Highlight"},V={archive:"video-camera",upload:"video-upload",highlight:"video-reel"},P=l=>{const s=h=>{const u=Math.floor(h);return h-u>.5?Math.ceil(h):u},r=(Date.now()-l.getTime())/1e3/60,t=r/60,o=t/24,n=s(r),c=s(t),f=s(o),p=s(o/7),m=s(o/30),a=s(o/365);let i="1 minute ago";return a>0&&m>11?i=a===1?"1 year ago":`${a} years ago`:m>0&&p>4?i=m===1?"1 month ago":`${m} months ago`:p>0&&f>6?i=p===1?"1 week ago":`${p} weeks ago`:f>0&&c>23?i=f===1?"Yesterday":`${f} days ago`:c>0&&n>59?i=c===1?"1 hour ago":`${c} hours ago`:n>1&&(i=`${n} minutes ago`),i};function z(l,s,e){return l.replace("%{width}",s.toString()).replace("%{height}",e.toString())}const B=l=>{let s="";for(const e of l){const r=new Date(e.published_at);s+=`
@@ -150,7 +150,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
               title="${M[e.type]}"
             >
               <svg class="fill-current w-4 h-4">
-                <use href="${d}assets/icons.svg#${V[e.type]}"></use>
+                <use href="${d}/assets/icons.svg#${V[e.type]}"></use>
               </svg>
             </span>
             <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
@@ -164,7 +164,7 @@ import{m as g}from"./vendor.e906ad84.js";const E=function(){const s=document.cre
           <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
             <p class="truncate flex-grow">${e.title}</p>
             <svg class="flex-none ml-1 fill-current w-4 h-4">
-              <use href="${d}assets/icons.svg#external-link"></use>
+              <use href="${d}/assets/icons.svg#external-link"></use>
             </svg>
           </div>
         </a>
