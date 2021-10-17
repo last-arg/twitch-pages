@@ -49,6 +49,7 @@
                     class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
                     placeholder="Search for game"
                     :aria-expanded="(state === 'search').toString()"
+                    aria-expanded="false"
                   />
                   <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
                     type="submit" aria-label="Search games"
@@ -140,6 +141,7 @@
                 <!-- games button -->
                 <button class="sidebar-button" aria-label="Games" aria-haspopup="true"
                   :aria-expanded="(state === 'games').toString()"
+                  aria-expanded="false"
                   x-on:click="toggleSidebar('games')"
                 >
                   <svg class="fill-current w-5 h-5">
@@ -220,6 +222,7 @@
                   aria-label="Streams"
                   x-on:click="toggleSidebar('streams')"
                   :aria-expanded="(state === 'streams').toString()"
+                  aria-expanded="false"
                 >
                   <svg class="fill-current w-5 h-5"><use href="/assets/icons.svg#people"></use></svg>
                 </button>
