@@ -169,7 +169,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 
 
 .search-wrapper {
-  @apply ml-auto mr-3 border-b-5 border-gray-900;
+  @apply ml-auto mr-4 border-b-5 border-gray-900;
 }
 
 .search-wrapper:focus-within {
@@ -177,7 +177,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 
 .sidebar-button {
-  @apply mr-5 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 block h-full;
+  @apply mr-4 text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 border-b-5 border-gray-900 block h-full;
 }
 
 .sidebar-button:focus,
