@@ -403,7 +403,6 @@ interface TopGame {
   id: string,
 }
 
-// TODO: change hx-get '/partials/...' using urlRoot '/twitch-pages/'
 const topGamesTransform = (games: TopGame[]) => {
   let result = ""
   for (const game of games) {
@@ -412,7 +411,7 @@ const topGamesTransform = (games: TopGame[]) => {
         <div class="flex w-full border-2 border-white">
           <a href="/directory/game/${game.name}"
             hx-push-url="/directory/game/${game.name}"
-            hx-get="/partials/category.html?name=Game_name" hx-target="#main"
+            hx-get="${mainContent['category'].html}" hx-target="#main"
             class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
             @click="window.gameClicked = '${game.name}'"
           >
@@ -512,7 +511,7 @@ const streamsTransform = (streams: Video[]) => {
           <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
             
             <a aria-hidden="true" href="${videoUrl}"
-              hx-push-url="${videoUrl}" hx-get="/partials/user-videos.html" hx-target="#main"
+              hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
               @click="window.userClicked = '${stream.user_login}'"
             >
               <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
@@ -520,7 +519,7 @@ const streamsTransform = (streams: Video[]) => {
             <div class="stack stack-m-0 ml-2">
               <div class="flex items-center mb-auto">
                 <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
-                  hx-push-url="${videoUrl}" hx-get="/partials/user-videos.html" hx-target="#main"
+                  hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
                   @click="window.userClicked = '${stream.user_login}'"
                 >${stream.user_name}</a>
                 <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>

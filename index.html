@@ -27,7 +27,7 @@
                     hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
                     focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
                   "
-                  hx-get="/partials/top-games.html" hx-target="#main"
+                  hx-get="/twitch-pages/partials/top-games.html" hx-target="#main"
                   :hx-push-url="$store.global.urlRoot"
                 >Home</a>
               </h1>
@@ -106,7 +106,7 @@
                                 x-on:click="window.gameClicked = game.name"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
-                                hx-get="/partials/category.html">
+                                hx-get="/twitch-pages/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -185,7 +185,7 @@
                                 x-on:click="window.gameClicked = game.name"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
-                                hx-get="/partials/category.html">
+                                hx-get="/twitch-pages/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -262,7 +262,7 @@
                                 x-on:click="window.userClicked = stream.user_login"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}${stream.user_login}/videos`"
-                                hx-get="/partials/user-videos.html">
+                                hx-get="/twitch-pages/partials/user-videos.html">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
