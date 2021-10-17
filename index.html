@@ -54,7 +54,7 @@
                     type="submit" aria-label="Search games"
                     x-on:click="$refs.searchInput.focus()"
                   >
-                    <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#looking-class"></use></svg>
+                    <svg class="fill-current w-5 h-5"><use href="/assets/icons.svg#looking-class"></use></svg>
                   </button>
                   <!-- search sidebar -->
                   <div class="sidebar-wrapper">
@@ -62,7 +62,7 @@
                       <div class="flex justify-between mb-4">
                         <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                           <svg class="fill-current w-4 h-4 mr-2">
-                            <use href="/src/assets/icons.svg#looking-class"></use>
+                            <use href="/assets/icons.svg#looking-class"></use>
                           </svg>
                           Search results
                         </h2>
@@ -75,7 +75,7 @@
                         >
                           <span class="sr-only">Close sidebar</span>
                           <svg class="fill-current w-4 h-4">
-                            <use href="/src/assets/icons.svg#close"></use>
+                            <use href="/assets/icons.svg#close"></use>
                           </svg>
                         </button>
                       </div>
@@ -118,13 +118,13 @@
                                   :aria-label="followed ? 'UnFollow' : 'Follow'"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use x-show="!followed" href="/src/assets/icons.svg#star-empty"></use>
-                                    <use x-show="followed" href="/src/assets/icons.svg#star-full"></use>
+                                    <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
+                                    <use x-show="followed" href="/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/src/assets/icons.svg#external-link"></use>
+                                    <use href="/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
@@ -143,7 +143,7 @@
                   x-on:click="toggleSidebar('games')"
                 >
                   <svg class="fill-current w-5 h-5">
-                    <use href="/src/assets/icons.svg#game-controller"></use>
+                    <use href="/assets/icons.svg#game-controller"></use>
                   </svg>
                 </button>
                 <!-- games sidebar -->
@@ -152,7 +152,7 @@
                     <div class="flex justify-between mb-4">
                       <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
-                          <use href="/src/assets/icons.svg#game-controller"></use>
+                          <use href="/assets/icons.svg#game-controller"></use>
                         </svg>
                         Games
                       </h2>
@@ -164,7 +164,7 @@
                       >
                         <span class="sr-only">Close sidebar</span>
                         <svg class="fill-current w-4 h-4">
-                          <use href="/src/assets/icons.svg#close"></use>
+                          <use href="/assets/icons.svg#close"></use>
                         </svg>
                       </button>
                     </div>
@@ -194,12 +194,12 @@
                                   x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/src/assets/icons.svg#star-full"></use>
+                                    <use href="/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/src/assets/icons.svg#external-link"></use>
+                                    <use href="/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
@@ -221,7 +221,7 @@
                   x-on:click="toggleSidebar('streams')"
                   :aria-expanded="(state === 'streams').toString()"
                 >
-                  <svg class="fill-current w-5 h-5"><use href="/src/assets/icons.svg#people"></use></svg>
+                  <svg class="fill-current w-5 h-5"><use href="/assets/icons.svg#people"></use></svg>
                 </button>
                 <!-- streams sidebar -->
                 <div class="sidebar-wrapper">
@@ -229,7 +229,7 @@
                     <div class="flex justify-between mb-4">
                       <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
-                          <use href="/src/assets/icons.svg#people"></use>
+                          <use href="/assets/icons.svg#people"></use>
                         </svg>
                         Streams
                       </h2>
@@ -241,7 +241,7 @@
                       >
                         <span class="sr-only">Close sidebar</span>
                         <svg class="fill-current w-4 h-4">
-                          <use href="/src/assets/icons.svg#close"></use>
+                          <use href="/assets/icons.svg#close"></use>
                         </svg>
                       </button>
                     </div>
@@ -277,12 +277,12 @@
                                   x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
                                 >
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/src/assets/icons.svg#star-full"></use>
+                                    <use href="/assets/icons.svg#star-full"></use>
                                   </svg>
                                 </button>
                                 <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
                                   <svg class="fill-current w-5 h-5">
-                                    <use href="/src/assets/icons.svg#external-link"></use>
+                                    <use href="/assets/icons.svg#external-link"></use>
                                   </svg>
                                 </a>
                               </div>
