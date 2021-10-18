@@ -55,7 +55,8 @@ function alpineInit(token: string) {
     name: string,
     id: string,
   }
-  document.addEventListener("alpine:initializing", () => {
+
+  document.addEventListener("alpine:init", function() {
     const searchFeedback = document.querySelector("#search-feedback")!
     Alpine.data("sidebar", (): Sidebar => {
       return {
@@ -125,9 +126,37 @@ function alpineInit(token: string) {
         }
       }
     })
-  })
 
-  document.addEventListener("alpine:init", function() {
+    Alpine.data("userVideosFilter", (): any => {
+      const outputList = document.querySelector("#video-list")!
+      console.log(outputList)
+      return {
+        toggleFilter(videoType: VideoType) {
+          const outputClass = `show-${videoType}s`
+          if (this.$el.classList.toggle("checked")) {
+            outputList.classList.add(outputClass)
+          } else {
+            outputList.classList.remove(outputClass)
+          }
+        },
+        onlyFilter(videoType: VideoType) {
+          console.log()
+          for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
+            btn.classList.remove("checked")
+          }
+          outputList.classList.remove("show-highlights", "show-uploads", "show-archives")
+          this.$el.previousElementSibling.classList.add("checked")
+          outputList.classList.add(`show-${videoType}s`)
+        },
+        showAll() {
+          for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
+            btn.classList.add("checked")
+          }
+          outputList.classList.add("show-highlights", "show-uploads", "show-archives")
+        }
+      }
+    })
+
     const storeGames = {
       data: JSON.parse(localStorage.getItem("games") ?? "[]"),
       ids: [] as string[],
@@ -583,9 +612,11 @@ const userTransform = (json: any) => {
    `
 }
 
+type VideoType = "archive" | "upload" | "highlight"
+
 interface UserVideo {
   url: string,
-  type: "archive" | "upload" | "highlight",
+  type: VideoType,
   duration: string,
   published_at: string,
   title: string,
@@ -653,7 +684,7 @@ const videosTransform = (videos: UserVideo[]) => {
   for (const video of videos) {
     const date = new Date(video.published_at)
     result += `
-      <li class="fade-in">
+      <li class="fade-in ${video.type}">
         <a class="block group" href="${video.url}" title="${video.title}">
           <div class="relative">
           <img class="w-full rounded-sm" src="${getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
@@ -685,31 +716,11 @@ const videosTransform = (videos: UserVideo[]) => {
   return result
 }
 
-// TODO: focus first new element after videos load
-
-// TODO: user videos filter
-// onlyFilter(vType: UserVideo["type"]) {
-//   this.filter.archive = false
-//   this.filter.upload = false
-//   this.filter.highlight = false
-//   this.filter[vType] = true
-// },
-// toggleFilter(vType: UserVideo["type"]) {
-//   if (!this.filter[vType]) {
-//     this.filter[vType] = true
-//     return
-//   }
-
-//   const trueCount = Object.values(this.filter).reduce((acc: number, curr) => acc + Number(curr), 0)
-//   if (trueCount > 1) {
-//      this.filter[vType] = false
-//   }
-// },
-
 const initHtmx = async (token: string) => {
   htmx.defineExtension("twitch-api", {
+    itemsLength: 0,
     onEvent: function(name: string, evt: any) {
-      // console.log("Fired event: " + name, evt);
+      // console.log("Fired event: " + name, evt.detail);
       if (name === "htmx:configRequest") {
         // console.log("config details", evt.detail)
         evt.detail.headers["HX-Current-URL"] = null;
@@ -740,10 +751,19 @@ const initHtmx = async (token: string) => {
           }
           evt.detail.parameters["login"] = loginName
         }
+      } else if (evt.detail.target !== undefined && evt.detail.target.id === "video-list") {
+        // TODO: focus first new visible list item
+        if (name === "htmx:beforeOnLoad") {
+          this.itemsLength = evt.detail.target.children.length
+        } else if (name === "htmx:afterOnLoad") {
+          const index = evt.detail.target.children.length - this.itemsLength - 1
+          // console.log(index)
+          // console.log(evt.detail.target.children[index])
+        }
       }
     },
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
-      // console.log(xhr, elt)
+      // console.log(xhr, _elt)
       // console.log("elt", _elt)
       const json = JSON.parse(text)
       let result = ""
@@ -823,6 +843,10 @@ const initHtmx = async (token: string) => {
       }
 
       return result
+    },
+    handleSwap: function(swapStyle, target, fragment, settleInfo) {
+      console.log(swapStyle, target, fragment, settleInfo)
+      return false;
     },
   })
 

@@ -249,6 +249,36 @@ For example if you have white-space: nowrap on some element (to truncate it).
   display: block;
 }
 
+.filter-checkbox-btn {
+  @apply p-1 border-r-2 border-trueGray-50;
+}
+
+.filter-checkbox-btn.archive.checked > span {
+  @apply bg-lime-300;
+}
+
+.filter-checkbox-btn.upload.checked > span {
+  @apply bg-sky-300;
+}
+
+.filter-checkbox-btn.highlight.checked > span {
+  @apply bg-amber-300;
+}
+
+.filter-only-btn {
+  @apply whitespace-nowrap px-3
+}
+
+.video-list > li {
+  display: none;
+}
+
+.video-list.show-highlights > .highlight,
+.video-list.show-uploads > .upload,
+.video-list.show-archives > .archive {
+  display: block;
+}
+
 @tailwind utilities;
 
 .fade-in {

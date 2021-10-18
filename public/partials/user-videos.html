@@ -19,29 +19,41 @@
   <div>
     <div class="flex items-center flex-wrap gap-y-6 gap-x-4">
       <h3 class="px-2 py-1 bg-white">Videos</h3>
-      <div class="flex">
+      <div x-data="userVideosFilter()" class="flex">
         <ul class="flex flex-wrap gap-4">
           <li class="flex items-center">
-            <button type="button" class="p-1 bg-lime-300 hover:bg-lime-400 border-r-2 border-trueGray-50">
+            <button type="button" class="filter-checkbox-btn archive checked bg-lime-300 hover:bg-lime-400"
+              x-on:click="toggleFilter('archive')"
+            >
               <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-lime-200 hover:bg-lime-300 whitespace-nowrap px-3">
+            <button type="button" class="filter-only-btn bg-lime-200 hover:bg-lime-300"
+              x-on:click="onlyFilter('archive')"
+            >
               Archives (<span id="archives-count">0</span>)
             </button>
           </li>
           <li class="flex items-center">
-            <button type="button" class="p-1 bg-sky-300 hover:bg-sky-400 border-r-2 border-trueGray-50">
+            <button type="button" class="filter-checkbox-btn upload bg-sky-300 hover:bg-sky-400"
+              x-on:click="toggleFilter('upload')"
+            >
               <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-sky-200 hover:bg-sky-300 whitespace-nowrap px-3">
+            <button type="button" class="filter-only-btn bg-sky-200 hover:bg-sky-300"
+              x-on:click="onlyFilter('upload')"
+            >
               Uploads (<span id="uploads-count">0</span>)
             </button>
           </li>
           <li class="flex items-center">
-            <button type="button" class="p-1 bg-amber-300 hover:bg-amber-400 border-r-2 border-trueGray-50">
+            <button type="button" class="filter-checkbox-btn highlight bg-amber-300 hover:bg-amber-400"
+              x-on:click="toggleFilter('highlight')"
+            >
               <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
             </button>
-            <button type="button" class="bg-amber-200 hover:bg-amber-300 whitespace-nowrap px-3">
+            <button type="button" class="filter-only-btn bg-amber-200 hover:bg-amber-300"
+              x-on:click="onlyFilter('highlight')"
+            >
               Highlights (<span id="highlights-count">0</span>)
             </button>
           </li>
@@ -49,13 +61,16 @@
         <div class="flex items-center">
           <span class="w-0 border-l mx-2 h-full">&nbsp;</span>
           <div>
-            <button type="button" class="whitespace-nowrap bg-trueGray-600 rounded-sm px-2 hover:bg-trueGray-800 text-trueGray-100">Show all</button>
+            <button type="button"
+              class="whitespace-nowrap bg-trueGray-600 rounded-sm px-2 hover:bg-trueGray-800 text-trueGray-100"
+              x-on:click="showAll()"
+            >Show all</button>
           </div>
         </div>
       </div>
     </div>
     <div id="feedback" class="hidden"></div>
-    <ul id="video-list" class="video-list grid grid-min-64 mt-6"></ul>
+    <ul id="video-list" class="video-list grid grid-min-64 mt-6 show-archives"></ul>
     <div class="text-center my-12">
       <button type="button"
         id="load-more-streams"
