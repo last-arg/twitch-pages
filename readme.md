@@ -7,10 +7,8 @@ Pages:
 
 
 ## TODO
-* html over the wire:
-  * htmx
-  * twinspark.js
-  * with alpine
+* Fix user profile image loading
+* Load more button when response.pagination.cursor === undefined
 * Search/Filter
   * Category/Game page
   * User videos page
@@ -24,6 +22,8 @@ Pages:
       * Loaded 5 videos
       * Loaded 5 videos. 8 Archives, 2 Uploads, 1 Hightlight
 
+### Explore/Try
+* twinspark.js
 
 ## Resources
 

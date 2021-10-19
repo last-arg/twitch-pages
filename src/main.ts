@@ -720,9 +720,13 @@ const initHtmx = async (token: string) => {
   htmx.defineExtension("twitch-api", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
-      // console.log("Fired event: " + name, evt.detail);
+      // console.log("Fired event: " + name, evt.target);
+      const isVideoListSwap = evt.detail.target !== undefined && evt.detail.target.id === "video-list" || evt.target.id === "video-list-swap"
       if (name === "htmx:configRequest") {
         // console.log("config details", evt.detail)
+        if (isVideoListSwap) {
+          document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "true")
+        }
         evt.detail.headers["HX-Current-URL"] = null;
         evt.detail.headers["HX-Request"] = null;
         evt.detail.headers["HX-Target"] = null;
@@ -751,7 +755,7 @@ const initHtmx = async (token: string) => {
           }
           evt.detail.parameters["login"] = loginName
         }
-      } else if (evt.detail.target !== undefined && evt.detail.target.id === "video-list") {
+      } else if (isVideoListSwap) {
         // Focus first new element if visible
         if (name === "htmx:beforeOnLoad") {
           this.lastElem = evt.detail.target.lastElementChild
@@ -768,6 +772,7 @@ const initHtmx = async (token: string) => {
               elem = elem.nextElementSibling
             }
           }
+          document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
         }
       }
     },

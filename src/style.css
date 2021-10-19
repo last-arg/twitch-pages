@@ -211,14 +211,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply bottom-auto;
 }
 
-.load-more-btn[aria-disabled='true'] {
-  display: none;
-}
-
-.load-more-btn[aria-disabled='false'] + p {
-  display: none;
-}
-
 .scrollbox {
   @apply h-full overflow-auto;
 }
