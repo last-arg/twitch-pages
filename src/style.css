@@ -269,13 +269,13 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply whitespace-nowrap px-3
 }
 
-.video-list > li {
+.user-videos > li {
   display: none;
 }
 
-.video-list.show-highlights > .highlight,
-.video-list.show-uploads > .upload,
-.video-list.show-archives > .archive {
+.user-videos.show-highlights > .highlight,
+.user-videos.show-uploads > .upload,
+.user-videos.show-archives > .archive {
   display: block;
 }
 

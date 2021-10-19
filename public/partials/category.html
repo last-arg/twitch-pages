@@ -14,7 +14,7 @@
   </div>
   <div class="list-wrapper">
     <div id="feedback"></div>
-    <ul id="category-streams" class="grid grid-min-72 grid-gap-6"></ul>
+    <ul id="video-list" class="grid grid-min-72 grid-gap-6"></ul>
     <div class="text-center my-12">
       <button type="button"
         id="load-more-streams"
@@ -23,7 +23,7 @@
         hx-trigger="click"
         hx-include=".category-param"
         hx-get="https://api.twitch.tv/helix/streams?first=5"
-        hx-target="#category-streams"
+        hx-target="#video-list"
         hx-swap="beforeend"
         aria-disabled="TODO"
       >

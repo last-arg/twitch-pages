@@ -718,7 +718,7 @@ const videosTransform = (videos: UserVideo[]) => {
 
 const initHtmx = async (token: string) => {
   htmx.defineExtension("twitch-api", {
-    itemsLength: 0,
+    lastElem: null,
     onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt.detail);
       if (name === "htmx:configRequest") {
@@ -752,13 +752,22 @@ const initHtmx = async (token: string) => {
           evt.detail.parameters["login"] = loginName
         }
       } else if (evt.detail.target !== undefined && evt.detail.target.id === "video-list") {
-        // TODO: focus first new visible list item
+        // Focus first new element if visible
         if (name === "htmx:beforeOnLoad") {
-          this.itemsLength = evt.detail.target.children.length
+          this.lastElem = evt.detail.target.lastElementChild
         } else if (name === "htmx:afterOnLoad") {
-          const index = evt.detail.target.children.length - this.itemsLength - 1
-          // console.log(index)
-          // console.log(evt.detail.target.children[index])
+          if (this.lastElem !== null) {
+            let elem = this.lastElem.nextElementSibling
+            while (elem) {
+              const styles = window.getComputedStyle(elem);
+              if (styles.getPropertyValue("display") !== "none") {
+                elem.setAttribute("tabindex", "-1")
+                elem.focus()
+                break;
+              }
+              elem = elem.nextElementSibling
+            }
+          }
         }
       }
     },
