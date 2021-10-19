@@ -191,15 +191,15 @@ For example if you have white-space: nowrap on some element (to truncate it).
 
 .sidebar-wrapper {
   @apply h-screen pt-11 pb-2 absolute top-0 left-full max-w-xs w-full -z-10;
-  transition: opacity 150ms, transform 150ms;
+  transition: visibility 150ms, opacity 150ms, transform 150ms;
 }
 
 [aria-expanded="false"] ~ .sidebar-wrapper {
-  @apply translate-x-0 opacity-0;
+  @apply translate-x-0 opacity-0 invisible;
 }
 
 [aria-expanded="true"] ~ .sidebar-wrapper {
-  @apply -translate-x-full opacity-100;
+  @apply -translate-x-full opacity-100 visible;
 }
 
 .skip-content {
