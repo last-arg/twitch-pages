@@ -5,6 +5,10 @@ import './style.css'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
+interface Stream {
+  user_id: string,
+  game_name: string,
+}
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
@@ -129,7 +133,6 @@ function alpineInit(token: string) {
 
     Alpine.data("userVideosFilter", (): any => {
       const outputList = document.querySelector("#video-list")!
-      console.log(outputList)
       return {
         toggleFilter(videoType: VideoType) {
           const outputClass = `show-${videoType}s`
@@ -140,7 +143,6 @@ function alpineInit(token: string) {
           }
         },
         onlyFilter(videoType: VideoType) {
-          console.log()
           for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
             btn.classList.remove("checked")
           }
@@ -194,10 +196,7 @@ function alpineInit(token: string) {
       }
     }
 
-    interface Stream {
-      user_id: string,
-      game_name: string,
-    }
+
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
       const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
@@ -309,6 +308,9 @@ function alpineInit(token: string) {
 
         Alpine.effect(() => {
           localStorage.setItem("profile_images_last_update", JSON.stringify(this.lastUpdate))
+        })
+        window.addEventListener("fetchProfileImages", (ev: CustomEventInit<string[]>) => {
+          if (ev.detail) this.fetchProfileImages(ev.detail.filter((id) => !this.hasId(id)))
         })
         window.addEventListener("unload", () => this.clean());
       },
@@ -802,10 +804,9 @@ const initHtmx = async (token: string) => {
         }
       } else if (pathUrl.pathname === "/helix/streams") {
         if (json.data.length > 0) {
-          // TODO: get user ids of missing profile images
-          // download missing images
-          // Connect with Alpine.store('profile_images', storeProfileImages) ???
-
+          window.dispatchEvent(
+            new CustomEvent("fetchProfileImages", {detail: json.data.map((stream: Stream) => stream.user_id)})
+          )
           result = streamsTransform(json.data as Video[])
           if (json.pagination !== undefined && json.pagination.cursor) {
             document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
@@ -815,7 +816,11 @@ const initHtmx = async (token: string) => {
         }
       } else if (pathUrl.pathname === "/helix/users") {
         if (xhr.status === 200) {
-          document.querySelector(".req-param[name='user_id']")?.setAttribute("value", json.data[0].id)
+          const user_id = json.data[0].id
+          window.dispatchEvent(
+            new CustomEvent("fetchProfileImages", {detail: [user_id]})
+          )
+          document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
           htmx.trigger(".load-more-btn", "click", {})
           result = userTransform(json)
         } else {
@@ -857,10 +862,6 @@ const initHtmx = async (token: string) => {
       }
 
       return result
-    },
-    handleSwap: function(swapStyle, target, fragment, settleInfo) {
-      console.log(swapStyle, target, fragment, settleInfo)
-      return false;
     },
   })
 

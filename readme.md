@@ -7,8 +7,11 @@ Pages:
 
 
 ## TODO
-* Fix user profile image loading
-* Load more button when response.pagination.cursor === undefined
+* Close sidebar when game/stream/search clicked
+* Load more button when response.pagination.cursor === undefined. Replace button text with 'No more to load'?
+* Settings page
+  * Stream live check interval?
+  * Clear cache: all, streams, games, ...
 * Search/Filter
   * Category/Game page
   * User videos page
