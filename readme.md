@@ -7,7 +7,6 @@ Pages:
 
 
 ## TODO
-* Close sidebar when game/stream/search clicked
 * Load more button when response.pagination.cursor === undefined. Replace button text with 'No more to load'?
 * Settings page
   * Stream live check interval?
