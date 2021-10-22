@@ -10,6 +10,14 @@ interface Stream {
   game_name: string,
 }
 
+interface Global {
+  urlRoot: string,
+  clickedGame: string | null,
+  clickedStream: string | null,
+  setClickedGame: (name: string | null) => void,
+  setClickedStream: (name: string | null) => void,
+}
+
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
@@ -65,7 +73,6 @@ function alpineInit(token: string) {
     Alpine.data("sidebar", (): Sidebar => {
       return {
         state: "closed",
-        // state: "games",
         loading: false,
         searchValue: "",
         searchResults: [] as Search[],
@@ -110,6 +117,14 @@ function alpineInit(token: string) {
           const results = await r.json()
           return results.data ?? []
         },
+        clickSidebarGame(name: string) {
+          this.state = "closed";
+          (Alpine.store("global") as Global).setClickedGame(name);
+        },
+        clickSidebarStream(name: string) {
+          this.state = "closed";
+          (Alpine.store("global") as Global).setClickedStream(name);
+        },
         toggleSidebar(current: SidebarState) {
           if (this.state === current) {
             this.state = "closed"
@@ -120,14 +135,6 @@ function alpineInit(token: string) {
         getImageSrc(name: string, width: number, height: number): string {
           return twitchCategoryImageSrc(name, width, height)
         },
-        sidebarToSvgIconId(state: SidebarState): string {
-          switch (state) {
-            case "games": return "game-controller";
-            case "streams": return "people";
-            case "search": return "looking-class";
-          }
-          return ""
-        }
       }
     })
 
@@ -368,10 +375,22 @@ function alpineInit(token: string) {
       }
     }
 
-    Alpine.store("global", { urlRoot: urlRoot })
+
+    Alpine.store("global", {
+      urlRoot: urlRoot,
+      clickedGame: null,
+      clickedStream: null,
+      setClickedGame(name: string | null) {
+        this.clickedGame = name
+      },
+      setClickedStream(name: string | null) {
+        this.clickedStream = name
+      },
+    } as Global)
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
+
   })
 }
 
@@ -420,14 +439,6 @@ const CAT_IMG_WIDTH = 104
 const CAT_IMG_HEIGHT = 144
 const VIDEO_IMG_WIDTH = 440
 const VIDEO_IMG_HEIGHT = 248
-declare global {
-  interface Window {
-    gameClicked: string | null
-    userClicked: string | null
-  }
-}
-window.gameClicked = null
-window.userClicked = null
 
 interface TopGame {
   name: string,
@@ -440,11 +451,11 @@ const topGamesTransform = (games: TopGame[]) => {
     result += `
       <li class="fade-in flex">
         <div class="flex w-full border-2 border-white">
-          <a href="/directory/game/${game.name}"
-            hx-push-url="/directory/game/${game.name}"
+          <a href="${urlRoot}/directory/game/${game.name}"
+            hx-push-url="${urlRoot}/directory/game/${game.name}"
             hx-get="${mainContent['category'].html}" hx-target="#main"
             class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
-            @click="window.gameClicked = '${game.name}'"
+            @click="$store.global.setClickedGame('${game.name}')"
           >
             <img class="w-16" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt="" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
             <p class="ml-2 text-lg">${game.name}</p>
@@ -543,7 +554,7 @@ const streamsTransform = (streams: Video[]) => {
             
             <a aria-hidden="true" href="${videoUrl}"
               hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
-              @click="window.userClicked = '${stream.user_login}'"
+              @click="$store.global.setClickedStream('${stream.user_login}')"
             >
               <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
             </a>
@@ -551,7 +562,7 @@ const streamsTransform = (streams: Video[]) => {
               <div class="flex items-center mb-auto">
                 <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
                   hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
-                  @click="window.userClicked = '${stream.user_login}'"
+                  @click="$store.global.setClickedStream('${stream.user_login}')"
                 >${stream.user_name}</a>
                 <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
                 <button type="button"
@@ -738,24 +749,27 @@ const initHtmx = async (token: string) => {
         evt.detail.headers["Accept"] = "application/vnd.twitchtv.v5+json";
         const pathUrl = new URL(evt.detail.path)
         if (pathUrl.pathname === "/helix/games") {
+          const global = Alpine.store('global') as Global
           let gameName = ""
-          if (window.gameClicked) {
-            gameName = window.gameClicked
+          if (global.clickedGame) {
+            gameName = global.clickedGame
           } else {
             const pathArr = location.pathname.split("/")
             gameName = decodeURIComponent(pathArr[pathArr.length - 1])
           }
           evt.detail.parameters["name"] = gameName
-          window.gameClicked = null
+          global.setClickedGame(null)
         } else if (pathUrl.pathname === "/helix/users") {
+          const global = Alpine.store('global') as Global
           let loginName = ""
-          if (window.userClicked) {
-            loginName = window.userClicked
+          if (global.clickedStream) {
+            loginName = global.clickedStream
           } else {
             const pathArr = location.pathname.split("/")
             loginName = decodeURIComponent(pathArr[pathArr.length - 2])
           }
           evt.detail.parameters["login"] = loginName
+          global.setClickedStream(null)
         }
       } else if (isVideoListSwap) {
         // Focus first new element if visible

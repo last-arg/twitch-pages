@@ -104,7 +104,7 @@
                                 "
                                 :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
                                 x-init="htmx.process($el)"
-                                x-on:click="state = 'closed'; window.gameClicked = game.name"
+                                x-on:click="clickSidebarGame(game.name)"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
                                 hx-get="/twitch-pages/partials/category.html">
@@ -184,7 +184,7 @@
                                 "
                                 :href="`${$store.global.urlRoot}/directory/game/${game.name}`"
                                 x-init="htmx.process($el)"
-                                x-on:click="state = 'closed'; window.gameClicked = game.name"
+                                x-on:click="clickSidebarGame(game.name)"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}directory/game/${game.name}`"
                                 hx-get="/twitch-pages/partials/category.html">
@@ -262,7 +262,7 @@
                                 "
                                 :href="`${$store.global.urlRoot}/${stream.user_login}/videos`"
                                 x-init="htmx.process($el)"
-                                x-on:click="state = 'closed'; window.userClicked = stream.user_login"
+                                x-on:click="clickSidebarStream(stream.user_login)"
                                 hx-target="#main"
                                 :hx-push-url="`${$store.global.urlRoot}${stream.user_login}/videos`"
                                 hx-get="/twitch-pages/partials/user-videos.html">
