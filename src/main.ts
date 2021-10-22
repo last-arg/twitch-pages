@@ -10,6 +10,20 @@ interface Stream {
   game_name: string,
 }
 
+interface ProfileImages {
+  data: Record<string, {
+    url: string
+    last_access: number
+  }>
+  lastUpdate: number
+  hasId: (id: string) => boolean
+  init: () => void
+  imgUrl: (user_id: string) => string
+  setImage: (user_id: string, url: string) => void
+  fetchProfileImages: (user_ids: string[]) => Promise<void>
+  clean: (excludeIds: string[]) => void
+}
+
 interface Global {
   urlRoot: string,
   clickedGame: string | null,
@@ -297,7 +311,7 @@ function alpineInit(token: string) {
 
     type StreamImage = Record<string, {url: string, last_access: number}>
 
-    const storeProfileImages = {
+    const storeProfileImages: ProfileImages = {
       data: JSON.parse(localStorage.getItem("profile_images") ?? "{}"),
       lastUpdate: parseInt(JSON.parse(localStorage.getItem("profile_images_last_update") ?? Date.now().toString()), 10),
       init() {
@@ -316,7 +330,7 @@ function alpineInit(token: string) {
         Alpine.effect(() => {
           localStorage.setItem("profile_images_last_update", JSON.stringify(this.lastUpdate))
         })
-        window.addEventListener("unload", () => this.clean());
+        window.addEventListener("unload", () => this.clean([]));
       },
       hasId(user_id: string): boolean {
         return this.data[user_id] !== undefined
@@ -815,7 +829,14 @@ const initHtmx = async (token: string) => {
         }
       } else if (pathUrl.pathname === "/helix/streams") {
         if (json.data.length > 0) {
-          Alpine.store("profile_images").fetchProfileImages(json.data.map((stream: Stream) => stream.user_id))
+          const storeProfileImages = Alpine.store("profile_images") as ProfileImages
+          const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
+            if (!storeProfileImages.hasId(curr.user_id)) {
+              return prev.concat(curr.user_id)
+            }
+            return prev
+          }, [])
+          storeProfileImages.fetchProfileImages(user_ids )
           result = streamsTransform(json.data as Video[])
           if (json.pagination !== undefined && json.pagination.cursor) {
             document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
