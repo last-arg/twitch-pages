@@ -316,9 +316,6 @@ function alpineInit(token: string) {
         Alpine.effect(() => {
           localStorage.setItem("profile_images_last_update", JSON.stringify(this.lastUpdate))
         })
-        window.addEventListener("fetchProfileImages", (ev: CustomEventInit<string[]>) => {
-          if (ev.detail) this.fetchProfileImages(ev.detail.filter((id) => !this.hasId(id)))
-        })
         window.addEventListener("unload", () => this.clean());
       },
       hasId(user_id: string): boolean {
@@ -818,9 +815,7 @@ const initHtmx = async (token: string) => {
         }
       } else if (pathUrl.pathname === "/helix/streams") {
         if (json.data.length > 0) {
-          window.dispatchEvent(
-            new CustomEvent("fetchProfileImages", {detail: json.data.map((stream: Stream) => stream.user_id)})
-          )
+          Alpine.store("profile_images").fetchProfileImages(json.data.map((stream: Stream) => stream.user_id))
           result = streamsTransform(json.data as Video[])
           if (json.pagination !== undefined && json.pagination.cursor) {
             document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
