@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "gh-pages": "git subtree split --branch gh-pages  --prefix dist/"
+    "gh-pages": "npm build && git add dist/ && git ci -m 'update dist' git subtree split --branch gh-pages  --prefix dist/"
   },
   "dependencies": {
     "@alpinejs/persist": "^3.2.4",
