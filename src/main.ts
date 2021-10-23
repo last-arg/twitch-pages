@@ -71,25 +71,40 @@ function alpineInit(token: string) {
     return (await (await fetch(url, {method: "GET", headers})).json()).data;
   }
 
-  type SidebarState = "closed" | "games" | "streams" | "search"
-  interface Sidebar {
-    state: SidebarState,
-    [key: string]: any,
-  }
-
   interface Search {
     name: string,
     id: string,
   }
 
+  type SidebarState = "closed" | "games" | "streams" | "search"
+  interface Sidebar {
+    state: SidebarState,
+    loading: boolean,
+    searchValue: string,
+    searchResults: Search[],
+    init: () => void,
+    closeSidebar: () => void,
+    fetchSearch: (value: string) => Promise<Search[]>,
+    clickSidebarGame: (name: string) => void,
+    clickSidebarStream: (name: string) => void,
+    toggleSidebar: (current: SidebarState) => void,
+    getImageSrc: (name: string, width: number, height: number) => string,
+    [key: string]: any,
+  }
+
   document.addEventListener("alpine:init", function() {
     const searchFeedback = document.querySelector("#search-feedback")!
     Alpine.data("sidebar", (): Sidebar => {
+      const sidebarButtons: Record<string, HTMLElement> = {
+        "games": document.querySelector(".sidebar-button[aria-label='Games']")!,
+        "streams": document.querySelector(".sidebar-button[aria-label='Streams']")!,
+        "search": document.querySelector(".search-wrapper button")!,
+      }
       return {
         state: "closed",
         loading: false,
         searchValue: "",
-        searchResults: [] as Search[],
+        searchResults: [],
         init() {
           // Alpine.mutateDom(())
           let searchTimeout = 0;
@@ -131,12 +146,16 @@ function alpineInit(token: string) {
           const results = await r.json()
           return results.data ?? []
         },
-        clickSidebarGame(name: string) {
+        closeSidebar() {
+          sidebarButtons[this.state].focus()
           this.state = "closed";
+        },
+        clickSidebarGame(name: string) {
+          this.closeSidebar();
           (Alpine.store("global") as Global).setClickedGame(name);
         },
         clickSidebarStream(name: string) {
-          this.state = "closed";
+          this.closeSidebar();
           (Alpine.store("global") as Global).setClickedStream(name);
         },
         toggleSidebar(current: SidebarState) {
