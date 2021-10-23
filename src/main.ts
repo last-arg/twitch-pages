@@ -722,6 +722,14 @@ function getVideoImageSrc(url: string, width: number, height: number): string {
   return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
 }
 
+const twitchDurationToString = (duration: string): string => {
+  const time = duration.slice(0,-1).split(/[hm]/).reverse()
+  const hours = (time.length >= 3) ? `${time[2]}:` : ""
+  const minutes = (time.length >= 2) ? `${time[1].padStart(2, "0")}:` : ""
+  const seconds = (time.length >= 1) ? time[0].padStart(2, "0") : ""
+  return `${hours}${minutes}${seconds}`
+}
+
 const videosTransform = (videos: UserVideo[]) => {
   let result = ""
   for (const video of videos) {
@@ -740,7 +748,7 @@ const videosTransform = (videos: UserVideo[]) => {
             </span>
             <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
               <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
-              >${video.duration.slice(0,-1).replace(/(h|m)/g, ':')}</span>
+              >${twitchDurationToString(video.duration)}</span>
               <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
                 title="${date.toString()}"
               >${twitchDateToString(date)}</span>

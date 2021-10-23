@@ -9,7 +9,6 @@ Pages:
 ## TODO
 * Load more button when response.pagination.cursor === undefined. Replace button text with 'No more to load'?
 * User video page: if live fix current/first videos image
-* User video page: make displayed duration seconds and minutes 2 characters wide
 * Settings page
   * Stream live check interval?
   * Clear cache: all, streams, games, ...
