@@ -730,15 +730,18 @@ const twitchDurationToString = (duration: string): string => {
   return `${hours}${minutes}${seconds}`
 }
 
+const twitch_404_img = `https://vod-secure.twitch.tv/_404/404_processing_320x180.png`
+
 const videosTransform = (videos: UserVideo[]) => {
   let result = ""
   for (const video of videos) {
     const date = new Date(video.published_at)
+    const img = video.thumbnail_url ? getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT) : twitch_404_img
     result += `
       <li class="fade-in ${video.type}">
         <a class="block group" href="${video.url}" title="${video.title}">
           <div class="relative">
-          <img class="w-full rounded-sm" src="${getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+          <img class="w-full rounded-sm" src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
             <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm ${VIDEO_COLORS[video.type]}"
               title="${VIDEO_TITLES[video.type]}"
             >
