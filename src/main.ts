@@ -836,6 +836,7 @@ const initHtmx = async (token: string) => {
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log(xhr, _elt)
       // console.log("elt", _elt)
+      const storeProfileImages = Alpine.store("profile_images") as ProfileImages
       const json = JSON.parse(text)
       let result = ""
       const pathUrl = new URL(xhr.responseURL)
@@ -859,7 +860,6 @@ const initHtmx = async (token: string) => {
         }
       } else if (pathUrl.pathname === "/helix/streams") {
         if (json.data.length > 0) {
-          const storeProfileImages = Alpine.store("profile_images") as ProfileImages
           const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
             if (!storeProfileImages.hasId(curr.user_id)) {
               return prev.concat(curr.user_id)
@@ -877,9 +877,7 @@ const initHtmx = async (token: string) => {
       } else if (pathUrl.pathname === "/helix/users") {
         if (xhr.status === 200) {
           const user_id = json.data[0].id
-          window.dispatchEvent(
-            new CustomEvent("fetchProfileImages", {detail: [user_id]})
-          )
+          storeProfileImages.fetchProfileImages([user_id])
           document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
           htmx.trigger(".load-more-btn", "click", {})
           result = userTransform(json)

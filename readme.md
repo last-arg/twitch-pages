@@ -8,6 +8,7 @@ Pages:
 
 ## TODO
 * Load more button when response.pagination.cursor === undefined. Replace button text with 'No more to load'?
+* User page: sticky filter at top when scrolling
 * Settings page
   * Stream live check interval?
   * Clear cache: all, streams, games, ...
