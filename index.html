@@ -218,7 +218,7 @@
               <div>
                 <!-- streams button -->
                 <button
-                  class="sidebar-button mr-0"
+                  class="sidebar-button"
                   aria-label="Streams"
                   x-on:click="toggleSidebar('streams')"
                   :aria-expanded="(state === 'streams').toString()"
@@ -298,6 +298,18 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div>
+                <!-- Settings button/link -->
+                <a :href="$store.global.urlRoot + 'settings'"
+                  class="sidebar-button mr-0 pt-2"
+                  aria-label="Settings"
+                  hx-get="/twitch-pages/partials/settings.html" hx-target="#main"
+                  :hx-push-url="$store.global.urlRoot + 'settings'"
+                >
+                  <svg class="fill-current h-5"><use href="/assets/icons.svg#settings"></use></svg>
+                </a>
+
               </div>
             </nav>
           </div>

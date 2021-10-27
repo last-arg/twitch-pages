@@ -16,6 +16,10 @@ export const mainContent: Record<string, UrlResolve> = {
     url: urlRoot + "/:user/videos",
     html: urlRoot + "/partials/user-videos.html",
   },
+  "settings": {
+    url: urlRoot + "/settings",
+    html: urlRoot + "/partials/settings.html",
+  },
   "not-found": {
     url: urlRoot + "/not-found",
     html: urlRoot + "/partials/not-found.html",
