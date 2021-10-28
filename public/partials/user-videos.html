@@ -1,6 +1,6 @@
 <div class="stack">
   <div class="flex items-center">
-    <div id="user-header" class="flex items-center bg-white rounded-r-sm pr-2">
+    <div id="user-header" class="flex items-center">
       <div hx-ext="twitch-api"
         hx-get="https://api.twitch.tv/helix/users"
         hx-trigger="load"
@@ -85,7 +85,7 @@
         hx-swap="beforeend"
         aria-disabled="false"
       >
-        <input type="hidden" class="req-param" name="first" value="3">
+        <input type="hidden" class="req-param" name="first" value="5">
         <input type="hidden" class="req-param" name="user_id" value="">
         <input type="hidden" class="req-param" name="after" value="">
         <span>Load more videos</span>

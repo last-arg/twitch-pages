@@ -8,9 +8,10 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top'
+* truncate sidebar streams live message
 * Settings page
-  * Stream live check interval?
-  * Clear cache: all, streams, games, ...
+  * styling
+  * functionality
 * Search/Filter
   * Category/Game page
   * User videos page
@@ -19,6 +20,7 @@ Pages:
     * Streams
 * Accessibility
   * 'Load more button'
+    * [UX accessibilty post](https://ux.stackexchange.com/questions/131889/accessible-way-of-notifying-a-screen-reader-about-loading-the-dynamic-web-page-u)
     * aria-live?
       * No more videos to load
       * Loaded 5 videos

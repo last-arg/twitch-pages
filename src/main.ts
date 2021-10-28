@@ -632,33 +632,39 @@ const streamsTransform = (streams: Video[]) => {
 const userTransform = (json: any) => {
   const user = json.data[0]
   return `
-    <h2>
-      <a
-        class="flex items-center text-lg group block
-          hover:underline hover:text-violet-700
-          focus:underline focus:text-violet-700
-        "
-        href="https://www.twitch.tv/${user.login}/videos"
+    <div class="flex items-center rounded-r-sm pr-2 bg-white">
+      <h2>
+        <a
+          class="flex items-center text-lg group block
+            hover:underline hover:text-violet-700
+            focus:underline focus:text-violet-700
+          "
+          href="https://www.twitch.tv/${user.login}/videos"
+        >
+          <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${user.id}')" width="300" height="300">
+          <p>${user.display_name}</p>
+          <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+            <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+          </svg>
+        </a>
+      </h2>
+      <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
+      <button x-data="{followed: false}"
+        class="text-gray-400 hover:text-violet-700" type="button"
+        x-effect="followed = $store.streams.hasId('${user.id}')"
+        aria-label="followed ? 'UnFollow' : 'Follow'"
+        x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
       >
-        <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${user.id}')" width="300" height="300">
-        <p>${user.display_name}</p>
-        <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+        <svg class="fill-current w-5 h-5">
+          <use x-show="!followed" href="${urlRoot}/assets/icons.svg#star-empty"></use>
+          <use x-show="followed" href="${urlRoot}/assets/icons.svg#star-full"></use>
         </svg>
-      </a>
-    </h2>
-    <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
-    <button x-data="{followed: false}"
-      class="text-gray-400 hover:text-violet-700" type="button"
-      x-effect="followed = $store.streams.hasId('${user.id}')"
-      aria-label="followed ? 'UnFollow' : 'Follow'"
-      x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
-    >
-      <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="${urlRoot}/assets/icons.svg#star-empty"></use>
-        <use x-show="followed" href="${urlRoot}/assets/icons.svg#star-full"></use>
-      </svg>
-    </button>
+      </button>
+    </div>
+    <div class="ml-4" x-show="$store.streams.isLive('${user.id}')">
+      <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-trueGray-50 text-xs">LIVE</span>
+      <p class="text-sm" x-text="$store.streams.live['${user.id}']">test</p>
+    </div>
    `
 }
 
