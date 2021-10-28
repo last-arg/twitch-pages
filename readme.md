@@ -18,13 +18,6 @@ Pages:
   * Sidebar
     * Games
     * Streams
-* Accessibility
-  * 'Load more button'
-    * [UX accessibilty post](https://ux.stackexchange.com/questions/131889/accessible-way-of-notifying-a-screen-reader-about-loading-the-dynamic-web-page-u)
-    * aria-live?
-      * No more videos to load
-      * Loaded 5 videos
-      * Loaded 5 videos. 8 Archives, 2 Uploads, 1 Hightlight
 
 ### Explore/Try
 * twinspark.js

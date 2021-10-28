@@ -32,6 +32,11 @@ interface Global {
   setClickedStream: (name: string | null) => void,
 }
 
+const setAriaMsg = (function() {
+  const container = document.querySelector("#aria-feedback")!
+  return (msg: string) => container.textContent = msg
+})()
+
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
@@ -91,11 +96,6 @@ function alpineInit(token: string) {
     getImageSrc: (name: string, width: number, height: number) => string,
     [key: string]: any,
   }
-
-  const setAriaMsg = (function() {
-    const container = document.querySelector("#aria-feedback")!
-    return (msg: string) => container.textContent = msg
-  })()
 
   document.addEventListener("alpine:init", function() {
     Alpine.data("sidebar", (): Sidebar => {
@@ -787,12 +787,15 @@ const initHtmx = async (token: string) => {
   htmx.defineExtension("twitch-api", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
-      // console.log("Fired event: " + name, evt.target);
+      // console.log("Fired event: " + name, evt);
       const isVideoListSwap = evt.detail.target !== undefined && evt.detail.target.id === "video-list" || evt.target.id === "video-list-swap"
       if (name === "htmx:configRequest") {
         // console.log("config details", evt.detail)
         if (isVideoListSwap) {
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "true")
+          if (this.lastElem !== null) {
+            setAriaMsg("Loading more items")
+          }
         }
         evt.detail.headers["HX-Current-URL"] = null;
         evt.detail.headers["HX-Request"] = null;
@@ -831,6 +834,7 @@ const initHtmx = async (token: string) => {
           this.lastElem = evt.detail.target.lastElementChild
         } else if (name === "htmx:afterOnLoad") {
           if (this.lastElem !== null) {
+            setAriaMsg("Loading done")
             let elem = this.lastElem.nextElementSibling
             while (elem) {
               const styles = window.getComputedStyle(elem);
