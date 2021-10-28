@@ -73,23 +73,24 @@
     </div>
     <div id="feedback" class="hidden"></div>
     <ul id="video-list" class="user-videos grid grid-min-64 mt-6 show-archives"></ul>
-    <div class="text-center my-12">
+    <div id="load-more-wrapper" class="text-center my-12">
       <button type="button"
         id="load-more-streams"
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         hx-ext="twitch-api"
         hx-trigger="click"
         hx-include=".req-param"
-        hx-get="https://api.twitch.tv/helix/videos?first=15"
+        hx-get="https://api.twitch.tv/helix/videos"
         hx-target="#video-list"
         hx-swap="beforeend"
         aria-disabled="false"
       >
+        <input type="hidden" class="req-param" name="first" value="3">
         <input type="hidden" class="req-param" name="user_id" value="">
         <input type="hidden" class="req-param" name="after" value="">
         <span>Load more videos</span>
       </button>
-      <p class="loading-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
+      <p class="load-more-msg hidden">
         Loading...
       </p>
     </div>

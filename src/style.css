@@ -237,7 +237,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   display: none;
 }
 
-.htmx-request + .loading-msg {
+.load-more-msg {
+  @apply border-2 py-1 border-trueGray-300 text-trueGray-500;
+}
+
+.htmx-request + .load-more-msg {
   display: block;
 }
 

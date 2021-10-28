@@ -16,7 +16,7 @@
   <body class="bg-trueGray-50 text-trueGray-800">
     <a href="#main" class="skip-content">skip to content</a>
     <div id="app">
-      <header class="fixed top-0 w-full z-10 bg-gray-700">
+      <header class="fixed top-0 w-full z-20 bg-gray-700">
         <div class="relative bg-gray-700  max-w-screen-2xl mx-auto px-3">
           <div x-data="sidebar" class="flex shadow-md justify-between">
             <nav class="flex w-full">
@@ -80,7 +80,6 @@
                           </svg>
                         </button>
                       </div>
-                      <div id="search-feedback" role="status" aria-live="polite" class="sr-only"></div>
                       <p class="text-trueGray-300 ml-3"
                         :class="{'hidden': searchValue.length === 0 || !loading}"
                       >Searching games</p>
@@ -312,7 +311,6 @@
                 >
                   <svg class="fill-current h-5"><use href="/assets/icons.svg#settings"></use></svg>
                 </a>
-
               </div>
             </nav>
           </div>
@@ -324,6 +322,7 @@
         </div>
       </main>
     </div>
+    <div id="aria-feedback" role="status" aria-live="polite" class="sr-only"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

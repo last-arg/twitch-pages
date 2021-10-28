@@ -92,8 +92,12 @@ function alpineInit(token: string) {
     [key: string]: any,
   }
 
+  const setAriaMsg = (function() {
+    const container = document.querySelector("#aria-feedback")!
+    return (msg: string) => container.textContent = msg
+  })()
+
   document.addEventListener("alpine:init", function() {
-    const searchFeedback = document.querySelector("#search-feedback")!
     Alpine.data("sidebar", (): Sidebar => {
       const sidebarButtons: Record<string, HTMLElement> = {
         "games": document.querySelector(".sidebar-button[aria-label='Games']")!,
@@ -124,16 +128,17 @@ function alpineInit(token: string) {
             if (searchTerm.length > 0) {
               this.loading = true;
               searchTimeout = setTimeout(async () => {
-                searchFeedback.textContent = "Searching games"
+                let aria_msg = "Searching games"
                 this.searchResults = await this.fetchSearch(searchTerm)
                 this.loading = false;
                 if (this.searchResults.length === 1) {
-                  searchFeedback.textContent = `Found one game`
+                  aria_msg = "Found one game"
                 } else if (this.searchResults.length > 1) {
-                  searchFeedback.textContent = `Found ${this.searchResults.length} games`
+                  aria_msg = `Found ${this.searchResults.length} games`
                 } else {
-                  searchFeedback.textContent = `Found no games`
+                  aria_msg = "Found no games"
                 }
+                setAriaMsg(aria_msg)
               }, 400)
             }
           })
@@ -859,6 +864,10 @@ const initHtmx = async (token: string) => {
         result = topGamesTransform(json.data as TopGame[])
         if (json.pagination && json.pagination.cursor) {
           result += `<input type="hidden" id="top-games-params" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+        } else {
+          result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+            <p class="load-more-msg">No more games to load</p>
+          </div>`
         }
       } else if (pathUrl.pathname === "/helix/streams") {
         if (json.data.length > 0) {
@@ -872,6 +881,10 @@ const initHtmx = async (token: string) => {
           result = streamsTransform(json.data as Video[])
           if (json.pagination !== undefined && json.pagination.cursor) {
             document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+          } else {
+            result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+              <p class="load-more-msg">No more videos to load</p>
+            </div>`
           }
         } else {
           result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
@@ -893,8 +906,13 @@ const initHtmx = async (token: string) => {
       } else if (pathUrl.pathname === "/helix/videos") {
         if (json.data.length > 0) {
           result = videosTransform(json.data as UserVideo[])
+
           if (json.pagination !== undefined && json.pagination.cursor) {
             document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+          } else {
+            result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+              <p class="load-more-msg">No more videos to load</p>
+            </div>`
           }
           const elHighlights = document.querySelector("#highlights-count")!;
           const elUploads = document.querySelector("#uploads-count")!;
