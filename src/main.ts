@@ -408,6 +408,7 @@ function alpineInit(token: string) {
 
     Alpine.store("global", {
       urlRoot: urlRoot,
+      mainContent: mainContent,
       clickedGame: null,
       clickedStream: null,
       setClickedGame(name: string | null) {
@@ -478,11 +479,12 @@ interface TopGame {
 const topGamesTransform = (games: TopGame[]) => {
   let result = ""
   for (const game of games) {
+    const game_url = mainContent['category'].url.replace(":name", game.name)
     result += `
       <li class="fade-in flex">
         <div class="flex w-full border-2 border-white">
-          <a href="${urlRoot}/directory/game/${game.name}"
-            hx-push-url="${urlRoot}/directory/game/${game.name}"
+          <a href="${game_url}"
+            hx-push-url="${game_url}"
             hx-get="${mainContent['category'].html}" hx-target="#main"
             class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
             @click="$store.global.setClickedGame('${game.name}')"
@@ -562,7 +564,7 @@ interface Video {
 const streamsTransform = (streams: Video[]) => {
   let result = ""
   for (const stream of streams) {
-    const videoUrl = `${urlRoot}/${stream.user_login}/videos`
+    const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
     result += `
       <li class="fade-in">
         <div>

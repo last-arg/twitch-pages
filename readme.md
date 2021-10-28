@@ -9,9 +9,6 @@ Pages:
 ## TODO
 * Load more button when response.pagination.cursor === undefined. Replace button text with 'No more to load'?
 * User page: sticky filter at top when scrolling
-* On SVG icons try using 1/0.75/... em unit instead
-* Consolidate config files. Or remove dev config
-* Remove width class from svg icons
 * Settings page
   * Stream live check interval?
   * Clear cache: all, streams, games, ...

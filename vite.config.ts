@@ -2,7 +2,7 @@ import { resolve } from "path"
 import { defineConfig } from "vite";
 // import viteCompression from 'vite-plugin-compression';
 
-const configFile = process.env.NODE_ENV === "production" ? "config.prod.ts" : "config.dev.ts"
+const configFile = process.env.NODE_ENV === "production" ? "config.prod.ts" : "config.prod.ts"
 export default defineConfig({
   plugins: [],
 
