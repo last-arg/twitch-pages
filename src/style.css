@@ -271,6 +271,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
   display: block;
 }
 
+.filter-wrapper {
+  @apply sticky z-10;
+  /* TODO: remove hardcoded number */
+  top: 37px;
+  border-bottom: 1rem solid;
+  border-image: linear-gradient(theme('colors.trueGray.50'), transparent) 100;
+}
+
 @tailwind utilities;
 
 .fade-in {
