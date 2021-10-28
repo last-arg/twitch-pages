@@ -1,1 +1,32 @@
-<h2>Settings page</h2>
+<div class="stack">
+  <div class="flex">
+    <h2 class="px-3 py-2 bg-white">Settings</h2>
+  </div>
+  <div>
+    <button type="button">Log out from Twitch</button>
+    <section>
+      <h3>General</h3>
+      <label for="items-number">
+        Number of items (videos, streams, games) to retrieve with one request?
+      </label>
+      <input type="number" id="items-number" name="items-number" min="1" max="100" value="5" required>
+    </section>
+    <section>
+      <h3>Cache</h3>
+      <ul>
+        <li>
+          <button type="button">Clear games cache</button>
+        </li>
+        <li>
+          <button type="button">Clear streams cache</button>
+        </li>
+        <li>
+          <button type="button">Clear profile images cache</button>
+        </li>
+        <li>
+          <button type="button">Clear all cache</button>
+        </li>
+      </ul>
+    </section>
+  </div>
+</div>
