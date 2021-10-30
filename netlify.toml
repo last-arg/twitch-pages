@@ -1,0 +1,21 @@
+# netlify.toml
+[[redirects]]
+force = true
+from = '/api/*'
+status = 200
+to = '/.netlify/functions/:splat'
+
+[[redirects]]
+from = '/*'
+status = 200
+to = '/index.html'
+
+[build]
+  command = "npm run build"
+  functions = "netlify/functions"
+  publish = "dist"
+
+[dev]
+autoLaunch = false
+command = "npm run dev"
+

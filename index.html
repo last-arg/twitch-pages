@@ -21,14 +21,14 @@
           <div x-data="sidebar" class="flex shadow-md justify-between">
             <nav class="flex w-full">
               <h1>
-                <a :href="$store.global.urlRoot"
+                <a href="/"
                   class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
                     border-b-5 border-gray-900
                     hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
                     focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
                   "
-                  hx-get="/twitch-pages/partials/top-games.html" hx-target="#main"
-                  :hx-push-url="$store.global.urlRoot"
+                  hx-get="/partials/top-games.html" hx-target="#main"
+                  hx-push-url="/"
                 >Home</a>
               </h1>
               <div class="search-wrapper"
@@ -107,7 +107,7 @@
                                 x-on:click="clickSidebarGame(game.name)"
                                 hx-target="#main"
                                 :hx-push-url="href_url"
-                                hx-get="/twitch-pages/partials/category.html">
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
@@ -188,7 +188,7 @@
                                 x-on:click="clickSidebarGame(game.name)"
                                 hx-target="#main"
                                 :hx-push-url="href_url"
-                                hx-get="/twitch-pages/partials/category.html">
+                                hx-get="/partials/category.html">
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
@@ -267,7 +267,7 @@
                                 x-on:click="clickSidebarStream(stream.user_login)"
                                 hx-target="#main"
                                 :hx-push-url="href_url"
-                                hx-get="/twitch-pages/partials/user-videos.html">
+                                hx-get="/partials/user-videos.html">
                                 <img class="w-16" :src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
@@ -303,11 +303,11 @@
               </div>
               <div>
                 <!-- Settings button/link -->
-                <a :href="$store.global.urlRoot + 'settings'"
+                <a href="/settings"
                   class="sidebar-button mr-0 pt-2"
                   aria-label="Settings"
-                  hx-get="/twitch-pages/partials/settings.html" hx-target="#main"
-                  :hx-push-url="$store.global.urlRoot + 'settings'"
+                  hx-get="/partials/settings.html" hx-target="#main"
+                  hx-push-url="/settings"
                 >
                   <svg class="fill-current h-5"><use href="/assets/icons.svg#settings"></use></svg>
                 </a>

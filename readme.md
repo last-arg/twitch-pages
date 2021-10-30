@@ -4,10 +4,11 @@ Pages:
 * Top games
 * Category/Game
 * User videos
+* Settings (non-twitch api page)
 
 
 ## TODO
-* CSS .filter-wrapper remove hardcoded number from 'top'
+* CSS .filter-wrapper remove hardcoded number from 'top' attribute
 * truncate sidebar streams live message
 * Settings page
   * styling
@@ -18,6 +19,10 @@ Pages:
   * Sidebar
     * Games
     * Streams
+* Twitch api request with netlify functions
+  * Make twitch api request from netlify
+  * Netlify sends back partial html
+
 
 ### Explore/Try
 * twinspark.js

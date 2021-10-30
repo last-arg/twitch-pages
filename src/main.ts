@@ -505,15 +505,15 @@ const topGamesTransform = (games: TopGame[]) => {
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
               <svg class="fill-current w-5 h-5">
-                <use x-show="!followed" href="${urlRoot}/assets/icons.svg#star-empty"></use>
-                <use x-show="followed" href="${urlRoot}/assets/icons.svg#star-full"></use>
+                <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="/assets/icons.svg#star-full"></use>
               </svg>
             </button>
             <a class="hover:text-violet-700"
               href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
             >
               <svg class="fill-current w-5 h-5">
-                <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+                <use href="/assets/icons.svg#external-link"></use>
               </svg>
             </a>
           </div>
@@ -538,7 +538,7 @@ const categoryTransform = (json: any) => {
         <img class="w-10" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
         <p class="line-clamp-2 pl-3">${game.name}</p>
         <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+          <use href="/assets/icons.svg#external-link"></use>
         </svg>
       </a>
     </h2>
@@ -550,8 +550,8 @@ const categoryTransform = (json: any) => {
       x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
     >
       <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="${urlRoot}/assets/icons.svg#star-empty"></use>
-        <use x-show="followed" href="${urlRoot}/assets/icons.svg#star-full"></use>
+        <use x-show="!followed" href="cons.svg#star-empty"></use>
+        <use x-show="followed" href="/assets/icons.svg#star-full"></use>
       </svg>
     </button>
   `
@@ -583,7 +583,7 @@ const streamsTransform = (streams: Video[]) => {
             <div class="flex items-center px-1 py-1 rounded bg-white">
               <p class="truncate">${stream.title}</p>
               <svg class="ml-1 flex-none fill-current w-4 h-4">
-                <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+                <use href="/assets/icons.svg#external-link"></use>
               </svg>
             </div>
           </a>
@@ -607,8 +607,8 @@ const streamsTransform = (streams: Video[]) => {
                   x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
                 >
                   <svg class="fill-current w-5 h-5">
-                    <use x-show="!$store.streams.hasId('${stream.user_id}')" href="${urlRoot}/assets/icons.svg#star-empty"></use>
-                    <use x-show="$store.streams.hasId('${stream.user_id}')" href="${urlRoot}/assets/icons.svg#star-full"></use>
+                    <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-empty"></use>
+                    <use x-show="$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-full"></use>
                   </svg>
                 </button>
               </div>
@@ -617,7 +617,7 @@ const streamsTransform = (streams: Video[]) => {
               >
                 <p>Go to Twitch videos</p>
                 <svg class="fill-current w-4 h-4 ml-1">
-                  <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+                  <use href="/assets/icons.svg#external-link"></use>
                 </svg>
               </a>
             </div>
@@ -644,7 +644,7 @@ const userTransform = (json: any) => {
           <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${user.id}')" width="300" height="300">
           <p>${user.display_name}</p>
           <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-            <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+            <use href="/assets/icons.svg#external-link"></use>
           </svg>
         </a>
       </h2>
@@ -656,8 +656,8 @@ const userTransform = (json: any) => {
         x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
       >
         <svg class="fill-current w-5 h-5">
-          <use x-show="!followed" href="${urlRoot}/assets/icons.svg#star-empty"></use>
-          <use x-show="followed" href="${urlRoot}/assets/icons.svg#star-full"></use>
+          <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
+          <use x-show="followed" href="/assets/icons.svg#star-full"></use>
         </svg>
       </button>
     </div>
@@ -759,7 +759,7 @@ const videosTransform = (videos: UserVideo[]) => {
               title="${VIDEO_TITLES[video.type]}"
             >
               <svg class="fill-current w-4 h-4">
-                <use href="${urlRoot}/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
+                <use href="/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
               </svg>
             </span>
             <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
@@ -773,7 +773,7 @@ const videosTransform = (videos: UserVideo[]) => {
           <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
             <p class="truncate flex-grow">${video.title}</p>
             <svg class="flex-none ml-1 fill-current w-4 h-4">
-              <use href="${urlRoot}/assets/icons.svg#external-link"></use>
+              <use href="/assets/icons.svg#external-link"></use>
             </svg>
           </div>
         </a>
@@ -976,6 +976,13 @@ const init = async () => {
     Alpine.start()
     initHtmx(token)
     handleSidebarScroll()
+    fetch("/api/twitch-api", {
+      headers: {
+        'Content-Type': "application/json"
+      }
+    })
+    .then((r) => r.text())
+    .then((j) => console.log(j))
   } else {
     const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!
     link.parentElement?.classList.remove("hidden")

@@ -3,7 +3,7 @@ export interface UrlResolve {
   html: string,
 }
 
-export const urlRoot = "/twitch-pages/"
+export const urlRoot = "/"
 export const mainContent: Record<string, UrlResolve> = {
   "top-games": {
     url: urlRoot,

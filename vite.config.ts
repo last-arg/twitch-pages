@@ -12,11 +12,17 @@ export default defineConfig({
       // 'htmx.org': resolve(__dirname, 'node_modules/htmx.org/dist/htmx.js')
     }
   },
-  base: "/twitch-pages/",
+  base: "/",
   build: {
     target: "esnext",
   },
   server: {
-    port: 3001,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8888/.netlify/functions',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
   }
 });
