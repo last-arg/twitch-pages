@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Twitch alternative page with htmx and alpine",
   "scripts": {
+    "netlify": "netlify dev",
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
@@ -17,6 +18,8 @@
     "@leanadmin/alpine-typescript": "^0.1.25",
     "@tailwindcss/line-clamp": "^0.2.1",
     "autoprefixer": "^10.3.1",
+    "netlify-cli": "^6.14.7",
+    "node-fetch": "^3.0.0",
     "postcss": "^8.3.6",
     "tailwindcss": "^2.2.7",
     "typescript": "^4.3.2",
