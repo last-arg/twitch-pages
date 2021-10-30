@@ -976,6 +976,7 @@ const init = async () => {
     Alpine.start()
     initHtmx(token)
     handleSidebarScroll()
+    // @test
     fetch("/api/twitch-api", {
       headers: {
         'Content-Type': "application/json"
