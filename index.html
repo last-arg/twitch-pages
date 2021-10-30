@@ -115,7 +115,7 @@
                                 <button x-data="{followed: false}"
                                   class="hover:text-violet-500"
                                   x-effect="followed = $store.games.hasId(game.id)"
-                                  x-on:click="$store.games.toggle(game.id)" type="button"
+                                  x-on:click="$store.games.toggle(game.id, game.name)" type="button"
                                   :aria-label="followed ? 'UnFollow' : 'Follow'"
                                 >
                                   <svg class="fill-current w-5 h-5">
