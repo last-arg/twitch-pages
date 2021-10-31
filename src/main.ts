@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs'
-import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT } from './common'
+import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
 import 'htmx.org';
@@ -463,16 +463,6 @@ const twitchCategoryImageSrc = (name: string, width: number, height: number): st
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
-function getImageSrc(name: string, width: number, height: number): string {
-  return twitchCategoryImageSrc(name, width, height)
-}
-
-function createLiveUserImageUrl(url_template: string, w: number, h: number): string {
-  return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
-}
-
-const CAT_IMG_WIDTH = 104
-const CAT_IMG_HEIGHT = 144
 const VIDEO_IMG_WIDTH = 440
 const VIDEO_IMG_HEIGHT = 248
 
@@ -483,69 +473,6 @@ interface Video {
   title: string,
   thumbnail_url: string,
   viewer_count: number,
-}
-
-const streamsTransform = (streams: Video[]) => {
-  let result = ""
-  for (const stream of streams) {
-    const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
-    result += `
-      <li class="fade-in">
-        <div>
-          <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
-            class="hover:text-violet-700 hover:underline"
-          >
-            <div class="relative">
-              <img class="rounded" src="${createLiveUserImageUrl(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
-              <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
-            </div>
-            <div class="flex items-center px-1 py-1 rounded bg-white">
-              <p class="truncate">${stream.title}</p>
-              <svg class="ml-1 flex-none fill-current w-4 h-4">
-                <use href="/assets/icons.svg#external-link"></use>
-              </svg>
-            </div>
-          </a>
-          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
-            
-            <a aria-hidden="true" href="${videoUrl}"
-              hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
-              @click="$store.global.setClickedStream('${stream.user_login}')"
-            >
-              <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
-            </a>
-            <div class="stack stack-m-0 ml-2">
-              <div class="flex items-center mb-auto">
-                <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
-                  hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
-                  @click="$store.global.setClickedStream('${stream.user_login}')"
-                >${stream.user_name}</a>
-                <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
-                <button type="button"
-                  class="text-gray-400 hover:text-violet-700"
-                  x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
-                >
-                  <svg class="fill-current w-5 h-5">
-                    <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-empty"></use>
-                    <use x-show="$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-full"></use>
-                  </svg>
-                </button>
-              </div>
-              <a class="flex items-center hover:underline hover:text-violet-700"
-                href="https://www.twitch.tv/${stream.user_login}/videos"
-              >
-                <p>Go to Twitch videos</p>
-                <svg class="fill-current w-4 h-4 ml-1">
-                  <use href="/assets/icons.svg#external-link"></use>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </li>
-    `
-  }
-  return result
 }
 
 const userTransform = (json: any) => {
@@ -707,32 +634,24 @@ const initHtmx = async (token: string) => {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt);
-      const isVideoListSwap = evt.detail.target !== undefined
+      const isVideoListSwap = evt.detail.target
         && evt.detail.target.id === "video-list" || evt.target.id === "video-list-swap"
       if (name === "htmx:configRequest") {
-        // console.log("config details", evt.detail)
         if (isVideoListSwap) {
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "true")
           if (this.lastElem !== null) {
             setAriaMsg("Loading more items")
           }
         }
-        evt.detail.headers["HX-Current-URL"] = null;
-        evt.detail.headers["HX-Request"] = null;
-        evt.detail.headers["HX-Target"] = null;
-        evt.detail.headers["HX-Trigger"] = null;
-        evt.detail.headers["Authorization"] = `Bearer ${token}`;
-        evt.detail.headers["Client-id"] = TWITCH_CLIENT_ID;
-        evt.detail.headers["Accept"] = "application/vnd.twitchtv.v5+json";
 
         // const pathUrl = new URL(evt.detail.path)
         const pathUrl = ""
         const path = evt.detail.path
         if (path === "/helix/games/top") {
           let token = localStorage.getItem("twitch_token") || ""
-          evt.detail.path = `/api/twitch-api?path=${evt.detail.path}&token=${token}&first=${TOP_GAMES_COUNT}`
+          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}&first=${TOP_GAMES_COUNT}`
         } else if (path === "/helix/games") {
-          evt.detail.path = `/api/twitch-api?path=${evt.detail.path}&token=${token}`
+          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}`
           const global = Alpine.store('global') as Global
           let gameName = ""
           if (global.clickedGame) {
@@ -743,6 +662,8 @@ const initHtmx = async (token: string) => {
           }
           evt.detail.parameters["name"] = gameName
           global.setClickedGame(null)
+        } else if (path === "/helix/streams") {
+          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}&first=${STREAMS_COUNT}`
         } else if (pathUrl.pathname === "/helix/users") {
           const global = Alpine.store('global') as Global
           let loginName = ""
@@ -811,6 +732,8 @@ const initHtmx = async (token: string) => {
             <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
           `;
         }
+      } else if (path === "/helix/streams") {
+        result = text
       } else {
         const json = JSON.parse(text)
         if (pathUrl.pathname === "/helix/streams") {

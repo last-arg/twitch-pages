@@ -5,6 +5,8 @@ import { mainContent } from "../../src/config.prod"
 
 const CAT_IMG_WIDTH = 104
 const CAT_IMG_HEIGHT = 144
+const VIDEO_IMG_WIDTH = 440
+const VIDEO_IMG_HEIGHT = 248
 
 const API_URL = "https://api.twitch.tv"
 const { TWITCH_CLIENT_SECRET } = process.env
@@ -22,12 +24,25 @@ interface Game {
   id: string,
 }
 
+interface Video {
+  user_id: string,
+  user_login: string,
+  user_name: string,
+  title: string,
+  thumbnail_url: string,
+  viewer_count: number,
+}
+
 const twitchCategoryImageSrc = (name: string, width: number, height: number): string => {
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
 function getImageSrc(name: string, width: number, height: number): string {
   return twitchCategoryImageSrc(name, width, height)
+}
+
+function createLiveUserImageUrl(url_template: string, w: number, h: number): string {
+  return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
 }
 
 const topGamesHtml = (games: Game[]): string => {
@@ -106,6 +121,69 @@ const categoryTitleHtml = (game: Game): string => {
   `
 }
 
+const streamsHtml = (streams: Video[]) => {
+  let result = ""
+  for (const stream of streams) {
+    const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
+    result += `
+      <li class="fade-in">
+        <div>
+          <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
+            class="hover:text-violet-700 hover:underline"
+          >
+            <div class="relative">
+              <img class="rounded" src="${createLiveUserImageUrl(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+              <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
+            </div>
+            <div class="flex items-center px-1 py-1 rounded bg-white">
+              <p class="truncate">${stream.title}</p>
+              <svg class="ml-1 flex-none fill-current w-4 h-4">
+                <use href="/assets/icons.svg#external-link"></use>
+              </svg>
+            </div>
+          </a>
+          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
+            
+            <a aria-hidden="true" href="${videoUrl}"
+              hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
+              @click="$store.global.setClickedStream('${stream.user_login}')"
+            >
+              <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
+            </a>
+            <div class="stack stack-m-0 ml-2">
+              <div class="flex items-center mb-auto">
+                <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
+                  hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
+                  @click="$store.global.setClickedStream('${stream.user_login}')"
+                >${stream.user_name}</a>
+                <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
+                <button type="button"
+                  class="text-gray-400 hover:text-violet-700"
+                  x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
+                >
+                  <svg class="fill-current w-5 h-5">
+                    <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-empty"></use>
+                    <use x-show="$store.streams.hasId('${stream.user_id}')" href="/assets/icons.svg#star-full"></use>
+                  </svg>
+                </button>
+              </div>
+              <a class="flex items-center hover:underline hover:text-violet-700"
+                href="https://www.twitch.tv/${stream.user_login}/videos"
+              >
+                <p>Go to Twitch videos</p>
+                <svg class="fill-current w-4 h-4 ml-1">
+                  <use href="/assets/icons.svg#external-link"></use>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    `
+  }
+  return result
+}
+
 const jsonToHtml = (path: string, json: any): string | null => {
   let result: string | null = "";
   if (path === "/helix/games/top") {
@@ -122,6 +200,8 @@ const jsonToHtml = (path: string, json: any): string | null => {
     if (json.pagination && json.pagination.cursor) {
       result += `<input type="hidden" id="param-after" class="category-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
     }
+  } else if (path === "/helix/streams") {
+    result = streamsHtml(json.data)
   } else {
     result = null
   }
