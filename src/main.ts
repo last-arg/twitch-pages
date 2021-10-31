@@ -717,23 +717,19 @@ const initHtmx = async (token: string) => {
         localStorage.setItem("twitch_token", token)
       }
 
-      let result = ""
+      // default return
+      // '/helix/games/top'
+      // '/helix/games'
+      // '/helix/streams'
+      let result = text
       const pathUrl = new URL(xhr.responseURL)
       const path = pathUrl.searchParams.get("path")
-      if (path === "/helix/games/top") {
-        result = text
-      } else if (path === "/helix/games") {
-        if (xhr.status === 200) {
-          result = text
-        } else {
-          const pathArr = location.pathname.split("/")
-          result = `
-            <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
-            <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
-          `;
-        }
-      } else if (path === "/helix/streams") {
-        result = text
+      if (path === "/helix/games" && xhr.status !== 200) {
+        const pathArr = location.pathname.split("/")
+        result = `
+          <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
+          <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
+        `;
       } else {
         const json = JSON.parse(text)
         if (pathUrl.pathname === "/helix/streams") {
