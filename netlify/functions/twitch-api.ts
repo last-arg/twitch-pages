@@ -16,7 +16,8 @@ const twitch_headers = {
   "Accept": "application/vnd.twitchtv.v5+json",
 };
 
-interface TopGame {
+// Category and Top Games have same structure
+interface Game {
   name: string,
   id: string,
 }
@@ -29,7 +30,7 @@ function getImageSrc(name: string, width: number, height: number): string {
   return twitchCategoryImageSrc(name, width, height)
 }
 
-const topGamesHtml = (games: TopGame[]) => {
+const topGamesHtml = (games: Game[]): string => {
   let result = ""
   for (const game of games) {
     const game_url = mainContent['category'].url.replace(":name", game.name)
@@ -73,8 +74,40 @@ const topGamesHtml = (games: TopGame[]) => {
   return result
 }
 
+const categoryTitleHtml = (game: Game): string => {
+  return `
+    <h2>
+      <a class="flex items-center text-lg group block pr-3
+          hover:underline hover:text-violet-700
+          focus:underline focus:text-violet-700
+        "
+        href="https://www.twitch.tv/directory/game/${game.name}"
+      >
+        <img class="w-10" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+        <p class="line-clamp-2 pl-3">${game.name}</p>
+        <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+          <use href="/assets/icons.svg#external-link"></use>
+        </svg>
+      </a>
+    </h2>
+    <div class="border-l-2 border-trueGray-50 h-full"></div>
+    <button x-data="{followed: false}"
+      class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
+      x-effect="followed = $store.games.hasId('${game.id}')"
+      aria-label="followed ? 'UnFollow' : 'Follow'"
+      x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+    >
+      <svg class="fill-current w-5 h-5">
+        <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
+        <use x-show="followed" href="/assets/icons.svg#star-full"></use>
+      </svg>
+    </button>
+    <input type="hidden" id="param-game_id" class="category-param" hx-swap-oob="true" name="game_id" value="${game.id}">
+  `
+}
+
 const jsonToHtml = (path: string, json: any): string | null => {
-  let result: string;
+  let result: string | null = "";
   if (path === "/helix/games/top") {
     result = topGamesHtml(json.data)
     if (json.pagination && json.pagination.cursor) {
@@ -84,10 +117,16 @@ const jsonToHtml = (path: string, json: any): string | null => {
         <p class="load-more-msg">No more games to load</p>
       </div>`
     }
-    return result
+  } else if (path === "/helix/games") {
+    result = categoryTitleHtml(json.data[0])
+    if (json.pagination && json.pagination.cursor) {
+      result += `<input type="hidden" id="param-after" class="category-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+    }
+  } else {
+    result = null
   }
 
-  return null
+  return result
 }
 
 const errorReturn = (status: number, errorMsg: string): any => {

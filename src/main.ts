@@ -476,38 +476,6 @@ const CAT_IMG_HEIGHT = 144
 const VIDEO_IMG_WIDTH = 440
 const VIDEO_IMG_HEIGHT = 248
 
-const categoryTransform = (json: any) => {
-  const game = json.data[0]
-  return `
-    <h2>
-      <a class="flex items-center text-lg group block pr-3
-          hover:underline hover:text-violet-700
-          focus:underline focus:text-violet-700
-        "
-        href="https://www.twitch.tv/directory/game/${game.name}"
-      >
-        <img class="w-10" src="${getImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
-        <p class="line-clamp-2 pl-3">${game.name}</p>
-        <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-          <use href="/assets/icons.svg#external-link"></use>
-        </svg>
-      </a>
-    </h2>
-    <div class="border-l-2 border-trueGray-50 h-full"></div>
-    <button x-data="{followed: false}"
-      class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
-      x-effect="followed = $store.games.hasId('${game.id}')"
-      aria-label="followed ? 'UnFollow' : 'Follow'"
-      x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
-    >
-      <svg class="fill-current w-5 h-5">
-        <use x-show="!followed" href="cons.svg#star-empty"></use>
-        <use x-show="followed" href="/assets/icons.svg#star-full"></use>
-      </svg>
-    </button>
-  `
-}
-
 interface Video {
   user_id: string,
   user_login: string,
@@ -739,7 +707,8 @@ const initHtmx = async (token: string) => {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt);
-      const isVideoListSwap = evt.detail.target !== undefined && evt.detail.target.id === "video-list" || evt.target.id === "video-list-swap"
+      const isVideoListSwap = evt.detail.target !== undefined
+        && evt.detail.target.id === "video-list" || evt.target.id === "video-list-swap"
       if (name === "htmx:configRequest") {
         // console.log("config details", evt.detail)
         if (isVideoListSwap) {
@@ -755,12 +724,15 @@ const initHtmx = async (token: string) => {
         evt.detail.headers["Authorization"] = `Bearer ${token}`;
         evt.detail.headers["Client-id"] = TWITCH_CLIENT_ID;
         evt.detail.headers["Accept"] = "application/vnd.twitchtv.v5+json";
+
         // const pathUrl = new URL(evt.detail.path)
         const pathUrl = ""
-        if (evt.detail.path === "/helix/games/top") {
+        const path = evt.detail.path
+        if (path === "/helix/games/top") {
           let token = localStorage.getItem("twitch_token") || ""
           evt.detail.path = `/api/twitch-api?path=${evt.detail.path}&token=${token}&first=${TOP_GAMES_COUNT}`
-        } else if (pathUrl.pathname === "/helix/games") {
+        } else if (path === "/helix/games") {
+          evt.detail.path = `/api/twitch-api?path=${evt.detail.path}&token=${token}`
           const global = Alpine.store('global') as Global
           let gameName = ""
           if (global.clickedGame) {
@@ -803,6 +775,15 @@ const initHtmx = async (token: string) => {
           }
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
         }
+      } else if (name === "htmx:afterSwap") {
+        if (evt.target.id === "param-game_id") {
+          const pathUrl = new URL(evt.detail.xhr.responseURL)
+          const path = pathUrl.searchParams.get("path")
+          if (path === "/helix/games" && evt.detail.xhr.status === 200) {
+            console.log("trigger")
+            htmx.trigger("#load-more-streams", "click", {})
+          }
+        }
       }
     },
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
@@ -817,17 +798,12 @@ const initHtmx = async (token: string) => {
 
       let result = ""
       const pathUrl = new URL(xhr.responseURL)
-      // const pathUrl = ""
-      if (pathUrl.searchParams.get("path") === "/helix/games/top") {
-        return text
-      } else {
-        const json = JSON.parse(text)
-        if (pathUrl.pathname === "/helix/games") {
+      const path = pathUrl.searchParams.get("path")
+      if (path === "/helix/games/top") {
+        result = text
+      } else if (path === "/helix/games") {
         if (xhr.status === 200) {
-          document.querySelector(".category-param[name='game_id']")?.setAttribute("value", json.data[0].id)
-
-          htmx.trigger("#load-more-streams", "click", {})
-          result = categoryTransform(json)
+          result = text
         } else {
           const pathArr = location.pathname.split("/")
           result = `
@@ -835,77 +811,78 @@ const initHtmx = async (token: string) => {
             <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
           `;
         }
-      } else if (pathUrl.pathname === "/helix/streams") {
-        if (json.data.length > 0) {
-          const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
-            if (!storeProfileImages.hasId(curr.user_id)) {
-              return prev.concat(curr.user_id)
+      } else {
+        const json = JSON.parse(text)
+        if (pathUrl.pathname === "/helix/streams") {
+          if (json.data.length > 0) {
+            const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
+              if (!storeProfileImages.hasId(curr.user_id)) {
+                return prev.concat(curr.user_id)
+              }
+              return prev
+            }, [])
+            storeProfileImages.fetchProfileImages(user_ids )
+            result = streamsTransform(json.data as Video[])
+            if (json.pagination !== undefined && json.pagination.cursor) {
+              document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+            } else {
+              result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+                <p class="load-more-msg">No more videos to load</p>
+              </div>`
             }
-            return prev
-          }, [])
-          storeProfileImages.fetchProfileImages(user_ids )
-          result = streamsTransform(json.data as Video[])
-          if (json.pagination !== undefined && json.pagination.cursor) {
-            document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
           } else {
-            result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-              <p class="load-more-msg">No more videos to load</p>
-            </div>`
+            result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
           }
-        } else {
-          result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
-        }
-      } else if (pathUrl.pathname === "/helix/users") {
-        if (xhr.status === 200) {
-          const user_id = json.data[0].id
-          storeProfileImages.fetchProfileImages([user_id])
-          document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
-          htmx.trigger(".load-more-btn", "click", {})
-          result = userTransform(json)
-        } else {
-          const pathArr = location.pathname.split("/")
-          result = `
-            <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
-            <div id="feedback" hx-swap-oob="true">User not found</div>
-          `;
-        }
-      } else if (pathUrl.pathname === "/helix/videos") {
-        if (json.data.length > 0) {
-          result = videosTransform(json.data as UserVideo[])
+        } else if (pathUrl.pathname === "/helix/users") {
+          if (xhr.status === 200) {
+            const user_id = json.data[0].id
+            storeProfileImages.fetchProfileImages([user_id])
+            document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
+            htmx.trigger(".load-more-btn", "click", {})
+            result = userTransform(json)
+            } else {
+              const pathArr = location.pathname.split("/")
+              result = `
+                <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
+                <div id="feedback" hx-swap-oob="true">User not found</div>
+              `;
+            }
+        } else if (pathUrl.pathname === "/helix/videos") {
+          if (json.data.length > 0) {
+            result = videosTransform(json.data as UserVideo[])
 
-          if (json.pagination !== undefined && json.pagination.cursor) {
-            document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-          } else {
-            result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-              <p class="load-more-msg">No more videos to load</p>
-            </div>`
-          }
-          const elHighlights = document.querySelector("#highlights-count")!;
-          const elUploads = document.querySelector("#uploads-count")!;
-          const elArchives = document.querySelector("#archives-count")!;
-          const counts: Record<string, number> = {
-            "archives": parseInt(elArchives.textContent!, 10) ?? 0,
-            "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
-            "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
-          }
-          for (const video of json.data) {
-            if (video.type === "archive") {
-              counts.archives += 1
-            } else if (video.type === "upload") {
-              counts.uploads += 1
-            } else if (video.type === "highlight") {
-              counts.highlights += 1
+            if (json.pagination !== undefined && json.pagination.cursor) {
+              document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+            } else {
+              result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+                <p class="load-more-msg">No more videos to load</p>
+              </div>`
             }
+            const elHighlights = document.querySelector("#highlights-count")!;
+            const elUploads = document.querySelector("#uploads-count")!;
+            const elArchives = document.querySelector("#archives-count")!;
+            const counts: Record<string, number> = {
+              "archives": parseInt(elArchives.textContent!, 10) ?? 0,
+              "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
+              "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
+            }
+            for (const video of json.data) {
+              if (video.type === "archive") {
+                counts.archives += 1
+              } else if (video.type === "upload") {
+                counts.uploads += 1
+              } else if (video.type === "highlight") {
+                counts.highlights += 1
+              }
+            }
+            elHighlights.textContent = counts.highlights.toString()
+            elUploads.textContent = counts.uploads.toString()
+            elArchives.textContent = counts.archives.toString()
+          } else {
+            result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
           }
-          elHighlights.textContent = counts.highlights.toString()
-          elUploads.textContent = counts.uploads.toString()
-          elArchives.textContent = counts.archives.toString()
-        } else {
-          result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
         }
       }
-      }
-
       return result
     },
   })

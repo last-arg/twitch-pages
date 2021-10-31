@@ -2,7 +2,7 @@
   <div class="flex">
     <div id="category-header" class="flex items-center bg-white rounded-r-sm">
       <div hx-ext="twitch-api"
-        hx-get="https://api.twitch.tv/helix/games"
+        hx-get="/helix/games"
         hx-trigger="load"
         hx-target="#category-header"
       ></div>
@@ -16,6 +16,7 @@
     <div id="feedback"></div>
     <ul id="video-list" class="grid grid-min-72 grid-gap-6"></ul>
     <div id="load-more-wrapper" class="text-center my-12">
+      <!-- TODO: move to netlify function -->
       <button type="button"
         id="load-more-streams"
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
@@ -27,8 +28,8 @@
         hx-swap="beforeend"
         aria-disabled="false"
       >
-        <input type="hidden" class="category-param" name="after" value="">
-        <input type="hidden" class="category-param" name="game_id" value="">
+        <input id="param-after" type="hidden" class="category-param" name="after" value="">
+        <input id="param-game_id" type="hidden" class="category-param" name="game_id" value="">
         <span>Load more videos</span>
       </button>
       <p class="load-more-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
