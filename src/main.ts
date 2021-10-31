@@ -808,12 +808,13 @@ const initHtmx = async (token: string) => {
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log("xhr", xhr)
       // console.log("elt", _elt)
+      const storeProfileImages = Alpine.store("profile_images") as ProfileImages
+
       const token = xhr.getResponseHeader("Twitch-Access-Token")
       if (token) {
         localStorage.setItem("twitch_token", token)
       }
 
-      const storeProfileImages = Alpine.store("profile_images") as ProfileImages
       let result = ""
       const pathUrl = new URL(xhr.responseURL)
       // const pathUrl = ""

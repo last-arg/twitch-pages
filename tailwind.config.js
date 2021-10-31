@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
   mode: 'jit',
   purge: {
-    content: ['./index.html', 'public/partials/*.html', './src/**/*.{js,ts,jsx,tsx}'],
+    content: ['./index.html', 'public/partials/*.html', 'src/**/*.{js,ts,jsx,tsx}', 'netlify/functions/*.{ts,js}'],
   },
   theme: {
     colors : colors,
