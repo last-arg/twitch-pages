@@ -535,25 +535,25 @@ const initHtmx = async (_token: string) => {
               elem = elem.nextElementSibling
             }
           }
-
-          // Get user ids to update/get profile images
-          let elem = this.lastElem ? this.lastElem.nextElementSibling : evt.detail.target.children[0]
-          let ids = []
-          while (elem) {
-            ids.push(elem.getAttribute("data-user-id"))
-            elem = elem.nextElementSibling
-          }
-          const storeProfileImages = Alpine.store("profile_images") as ProfileImages
-          const imageIds = Object.keys(storeProfileImages.data)
-          ids = ids.filter((id: string) => !imageIds.includes(id))
-          storeProfileImages.fetchProfileImages(ids)
-
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
 
-          // TODO: move querySelector fns outside
-          // User page: Update filter counts
-          const elHighlights = document.querySelector("#highlights-count");
-          if (elHighlights) {
+          const path = evt.target.getAttribute("hx-get")
+          if (path === "/helix/streams") {
+            // Get user ids to update/get profile images
+            let elem = this.lastElem ? this.lastElem.nextElementSibling : evt.detail.target.children[0]
+            let ids = []
+            while (elem) {
+              ids.push(elem.getAttribute("data-user-id"))
+              elem = elem.nextElementSibling
+            }
+            const storeProfileImages = Alpine.store("profile_images") as ProfileImages
+            const imageIds = Object.keys(storeProfileImages.data)
+            ids = ids.filter((id: string) => !imageIds.includes(id))
+            storeProfileImages.fetchProfileImages(ids)
+          } else if (path === "/helix/videos") {
+            // TODO: move querySelector fns outside
+            // User page: Update filter counts
+            const elHighlights = document.querySelector("#highlights-count")!;
             const elUploads = document.querySelector("#uploads-count")!;
             const elArchives = document.querySelector("#archives-count")!;
 
