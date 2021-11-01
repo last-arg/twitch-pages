@@ -22,14 +22,14 @@
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         hx-ext="twitch-api"
         hx-get="/helix/streams"
-        hx-include=".category-param"
+        hx-include=".req-param"
         hx-trigger="click"
         hx-target="#video-list"
         hx-swap="beforeend"
         aria-disabled="false"
       >
-        <input id="param-after" type="hidden" class="category-param" name="after" value="">
-        <input id="param-game_id" type="hidden" class="category-param" name="game_id" value="">
+        <input id="param-after" type="hidden" class="req-param" name="after" value="">
+        <input id="param-game_id" type="hidden" class="req-param" name="game_id" value="">
         <span>Load more videos</span>
       </button>
       <p class="load-more-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">

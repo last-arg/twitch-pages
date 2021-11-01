@@ -109,7 +109,7 @@ const categoryTitleHtml = (game: Game): string => {
         <use x-show="followed" href="/assets/icons.svg#star-full"></use>
       </svg>
     </button>
-    <input type="hidden" id="param-game_id" class="category-param" hx-swap-oob="true" name="game_id" value="${game.id}">
+    <input type="hidden" id="param-game_id" class="req-param" hx-swap-oob="true" name="game_id" value="${game.id}">
   `
 }
 
@@ -342,7 +342,7 @@ const jsonToHtml = (path: string, json: any): string | null => {
   if (path === "/helix/games/top") {
     result = topGamesHtml(json.data)
     if (json.pagination && json.pagination.cursor) {
-      result += `<input type="hidden" id="top-games-params" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+      result += `<input type="hidden" id="param-after" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
     } else {
       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
         <p class="load-more-msg">No more games to load</p>
@@ -353,7 +353,7 @@ const jsonToHtml = (path: string, json: any): string | null => {
   } else if (path === "/helix/streams") {
     result = streamsHtml(json.data)
     if (json.pagination && json.pagination.cursor) {
-      result += `<input type="hidden" id="param-after" class="category-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
+      result += `<input type="hidden" id="param-after" class="req-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
     }
   } else if (path === "/helix/users") {
     result = userHtml(json.data[0])

@@ -9,10 +9,10 @@
     <button type="button"
       class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
       hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#video-list" hx-swap="beforeend"
-      hx-include="#top-games-params"
+      hx-include="#param-after"
       aria-disabled="false"
     >
-      <input type="text" id="top-games-params" name="after" value="">
+      <input type="hidden" id="param-after" name="after" value="">
       <span class="">Load more games</span>
     </button>
     <p class="load-more-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
