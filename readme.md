@@ -20,8 +20,9 @@ Pages:
     * Games
     * Streams
 * Twitch api request with netlify functions
-  * Make twitch api request from netlify
-  * Netlify sends back partial html
+  * Category/Game page: getting profile images
+  * User page: updating filter count
+  * Check aria-disabled in load-more buttons
 
 
 ### Explore/Try

@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs'
-import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT } from './common'
+import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
 import './style.css'
 import 'htmx.org';
@@ -171,7 +171,7 @@ function alpineInit(token: string) {
           this.state = current
         },
         getImageSrc(name: string, width: number, height: number): string {
-          return twitchCategoryImageSrc(name, width, height)
+          return twitchCatImageSrc(name, width, height)
         },
       }
     })
@@ -459,13 +459,6 @@ const handleSidebarScroll = () => {
   }
 }
 
-const twitchCategoryImageSrc = (name: string, width: number, height: number): string => {
-  return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
-}
-
-const VIDEO_IMG_WIDTH = 440
-const VIDEO_IMG_HEIGHT = 248
-
 interface Video {
   user_id: string,
   user_login: string,
@@ -475,161 +468,7 @@ interface Video {
   viewer_count: number,
 }
 
-const userTransform = (json: any) => {
-  const user = json.data[0]
-  return `
-    <div class="flex items-center rounded-r-sm pr-2 bg-white">
-      <h2>
-        <a
-          class="flex items-center text-lg group block
-            hover:underline hover:text-violet-700
-            focus:underline focus:text-violet-700
-          "
-          href="https://www.twitch.tv/${user.login}/videos"
-        >
-          <img class="block w-10 mr-3" :src="$store.profile_images.imgUrl('${user.id}')" width="300" height="300">
-          <p>${user.display_name}</p>
-          <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
-            <use href="/assets/icons.svg#external-link"></use>
-          </svg>
-        </a>
-      </h2>
-      <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
-      <button x-data="{followed: false}"
-        class="text-gray-400 hover:text-violet-700" type="button"
-        x-effect="followed = $store.streams.hasId('${user.id}')"
-        aria-label="followed ? 'UnFollow' : 'Follow'"
-        x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
-      >
-        <svg class="fill-current w-5 h-5">
-          <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
-          <use x-show="followed" href="/assets/icons.svg#star-full"></use>
-        </svg>
-      </button>
-    </div>
-    <div class="ml-4" x-show="$store.streams.isLive('${user.id}')">
-      <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-trueGray-50 text-xs">LIVE</span>
-      <p class="text-sm" x-text="$store.streams.live['${user.id}']">test</p>
-    </div>
-   `
-}
-
-type VideoType = "archive" | "upload" | "highlight"
-
-interface UserVideo {
-  url: string,
-  type: VideoType,
-  duration: string,
-  published_at: string,
-  title: string,
-  thumbnail_url: string,
-}
-
-const VIDEO_COLORS: Record<string, string> = {
-  archive: "bg-lime-200",
-  upload: "bg-sky-200",
-  highlight: "bg-amber-200",
-}
-
-const VIDEO_TITLES: Record<string, string> = {
-  archive: "Archive",
-  upload: "Upload",
-  highlight: "Highlight",
-}
-
-const VIDEO_ICONS: Record<string, string> = {
-  archive: "video-camera",
-  upload: "video-upload",
-  highlight: "video-reel",
-}
-
-const twitchDateToString = (d: Date): string => {
-  const round = (nr: number): number => {
-    const nr_floor = Math.floor(nr)
-    return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
-  }
-  const seconds_f = (Date.now() - d.getTime()) / 1000
-  const minutes_f = seconds_f / 60
-  const hours_f = minutes_f / 60
-  const days_f = hours_f / 24
-  const minutes = round(minutes_f)
-  const hours = round(hours_f)
-  const days = round(days_f)
-  const weeks = round(days_f / 7)
-  const months = round(days_f / 30)
-  const years = round(days_f / 365)
-
-  let result_str = "1 minute ago"
-  if (years > 0 && months > 11) {
-    result_str = (years === 1) ? "1 year ago" : `${years} years ago`
-  } else if (months > 0 && weeks > 4) {
-    result_str = (months === 1) ? "1 month ago" : `${months} months ago`
-  } else if (weeks > 0 && days > 6) {
-    result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
-  } else if (days > 0 && hours > 23) {
-    result_str = (days === 1) ? "Yesterday" : `${days} days ago`
-  } else if (hours > 0 && minutes > 59) {
-    result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
-  } else if (minutes > 1) {
-    result_str = `${minutes} minutes ago`
-  }
-
-  return result_str
-};
-
-function getVideoImageSrc(url: string, width: number, height: number): string {
-  return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
-}
-
-const twitchDurationToString = (duration: string): string => {
-  const time = duration.slice(0,-1).split(/[hm]/).reverse()
-  const hours = (time.length >= 3) ? `${time[2]}:` : ""
-  const minutes = (time.length >= 2) ? `${time[1].padStart(2, "0")}:` : ""
-  const seconds = (time.length >= 1) ? time[0].padStart(2, "0") : ""
-  return `${hours}${minutes}${seconds}`
-}
-
-const twitch_404_img = `https://vod-secure.twitch.tv/_404/404_processing_320x180.png`
-
-const videosTransform = (videos: UserVideo[]) => {
-  let result = ""
-  for (const video of videos) {
-    const date = new Date(video.published_at)
-    const img = video.thumbnail_url ? getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT) : twitch_404_img
-    result += `
-      <li class="fade-in ${video.type}">
-        <a class="block group" href="${video.url}" title="${video.title}">
-          <div class="relative">
-          <img class="w-full rounded-sm" src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
-            <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm ${VIDEO_COLORS[video.type]}"
-              title="${VIDEO_TITLES[video.type]}"
-            >
-              <svg class="fill-current w-4 h-4">
-                <use href="/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
-              </svg>
-            </span>
-            <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
-              <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
-              >${twitchDurationToString(video.duration)}</span>
-              <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
-                title="${date.toString()}"
-              >${twitchDateToString(date)}</span>
-            </div>
-          </div>
-          <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
-            <p class="truncate flex-grow">${video.title}</p>
-            <svg class="flex-none ml-1 fill-current w-4 h-4">
-              <use href="/assets/icons.svg#external-link"></use>
-            </svg>
-          </div>
-        </a>
-      </li>
-    `
-  }
-  return result
-}
-
-const initHtmx = async (token: string) => {
+const initHtmx = async (_token: string) => {
   htmx.defineExtension("twitch-api", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
@@ -644,15 +483,17 @@ const initHtmx = async (token: string) => {
           }
         }
 
-        // const pathUrl = new URL(evt.detail.path)
-        const pathUrl = ""
+        const global = Alpine.store('global') as Global
+        const token = localStorage.getItem("twitch_token") || ""
+
         const path = evt.detail.path
+        evt.detail.path = "/api/twitch-api"
+        evt.detail.parameters["path"] = path
+        evt.detail.parameters["token"] = token
+
         if (path === "/helix/games/top") {
-          let token = localStorage.getItem("twitch_token") || ""
-          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}&first=${TOP_GAMES_COUNT}`
+          evt.detail.parameters["first"] = TOP_GAMES_COUNT
         } else if (path === "/helix/games") {
-          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}`
-          const global = Alpine.store('global') as Global
           let gameName = ""
           if (global.clickedGame) {
             gameName = global.clickedGame
@@ -662,10 +503,11 @@ const initHtmx = async (token: string) => {
           }
           evt.detail.parameters["name"] = gameName
           global.setClickedGame(null)
+        } else if (path === "/helix/videos") {
+          evt.detail.parameters["first"] = USER_VIDEOS_COUNT
         } else if (path === "/helix/streams") {
-          evt.detail.path = `/api/twitch-api?path=${path}&token=${token}&first=${STREAMS_COUNT}`
-        } else if (pathUrl.pathname === "/helix/users") {
-          const global = Alpine.store('global') as Global
+          evt.detail.parameters["first"] = STREAMS_COUNT
+        } else if (path === "/helix/users") {
           let loginName = ""
           if (global.clickedStream) {
             loginName = global.clickedStream
@@ -701,11 +543,20 @@ const initHtmx = async (token: string) => {
           const pathUrl = new URL(evt.detail.xhr.responseURL)
           const path = pathUrl.searchParams.get("path")
           if (path === "/helix/games" && evt.detail.xhr.status === 200) {
-            console.log("trigger")
             htmx.trigger("#load-more-streams", "click", {})
+          }
+        } else if (evt.target.id === "param-user_id") {
+          const pathUrl = new URL(evt.detail.xhr.responseURL)
+          const path = pathUrl.searchParams.get("path")
+          if (path === "/helix/users" && evt.detail.xhr.status === 200) {
+            htmx.trigger(".load-more-btn", "click", {})
           }
         }
       }
+    },
+    handleSwap : function(swapStyle, target, fragment, settleInfo) {
+      // console.log(swapStyle, target, fragment, settleInfo)
+      return false;
     },
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log("xhr", xhr)
@@ -717,10 +568,6 @@ const initHtmx = async (token: string) => {
         localStorage.setItem("twitch_token", token)
       }
 
-      // default return
-      // '/helix/games/top'
-      // '/helix/games'
-      // '/helix/streams'
       let result = text
       const pathUrl = new URL(xhr.responseURL)
       const path = pathUrl.searchParams.get("path")
@@ -730,77 +577,83 @@ const initHtmx = async (token: string) => {
           <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
           <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
         `;
+      } else if (path === "/helix/users" && xhr.status !== 200) {
+        const pathArr = location.pathname.split("/")
+        result = `
+          <h2 class="text-lg px-3 py-2 bg-white">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
+          <div id="feedback" hx-swap-oob="true">User not found</div>
+        `;
       } else {
-        const json = JSON.parse(text)
-        if (pathUrl.pathname === "/helix/streams") {
-          if (json.data.length > 0) {
-            const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
-              if (!storeProfileImages.hasId(curr.user_id)) {
-                return prev.concat(curr.user_id)
-              }
-              return prev
-            }, [])
-            storeProfileImages.fetchProfileImages(user_ids )
-            result = streamsTransform(json.data as Video[])
-            if (json.pagination !== undefined && json.pagination.cursor) {
-              document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-            } else {
-              result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-                <p class="load-more-msg">No more videos to load</p>
-              </div>`
-            }
-          } else {
-            result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
-          }
-        } else if (pathUrl.pathname === "/helix/users") {
-          if (xhr.status === 200) {
-            const user_id = json.data[0].id
-            storeProfileImages.fetchProfileImages([user_id])
-            document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
-            htmx.trigger(".load-more-btn", "click", {})
-            result = userTransform(json)
-            } else {
-              const pathArr = location.pathname.split("/")
-              result = `
-                <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
-                <div id="feedback" hx-swap-oob="true">User not found</div>
-              `;
-            }
-        } else if (pathUrl.pathname === "/helix/videos") {
-          if (json.data.length > 0) {
-            result = videosTransform(json.data as UserVideo[])
+        // const json = JSON.parse(text)
+        // if (pathUrl.pathname === "/helix/streams") {
+        //   if (json.data.length > 0) {
+        //     const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
+        //       if (!storeProfileImages.hasId(curr.user_id)) {
+        //         return prev.concat(curr.user_id)
+        //       }
+        //       return prev
+        //     }, [])
+        //     storeProfileImages.fetchProfileImages(user_ids )
+        //     result = streamsTransform(json.data as Video[])
+        //     if (json.pagination !== undefined && json.pagination.cursor) {
+        //       document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+        //     } else {
+        //       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+        //         <p class="load-more-msg">No more videos to load</p>
+        //       </div>`
+        //     }
+        //   } else {
+        //     result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
+        //   }
+        // } else if (pathUrl.pathname === "/helix/users") {
+        //   if (xhr.status === 200) {
+        //     const user_id = json.data[0].id
+        //     storeProfileImages.fetchProfileImages([user_id])
+        //     document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
+        //     htmx.trigger(".load-more-btn", "click", {})
+        //     result = userTransform(json)
+        //     } else {
+        //       const pathArr = location.pathname.split("/")
+        //       result = `
+        //         <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
+        //         <div id="feedback" hx-swap-oob="true">User not found</div>
+        //       `;
+        //     }
+        // } else if (pathUrl.pathname === "/helix/videos") {
+        //   if (json.data.length > 0) {
+        //     result = videosTransform(json.data as UserVideo[])
 
-            if (json.pagination !== undefined && json.pagination.cursor) {
-              document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-            } else {
-              result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-                <p class="load-more-msg">No more videos to load</p>
-              </div>`
-            }
-            const elHighlights = document.querySelector("#highlights-count")!;
-            const elUploads = document.querySelector("#uploads-count")!;
-            const elArchives = document.querySelector("#archives-count")!;
-            const counts: Record<string, number> = {
-              "archives": parseInt(elArchives.textContent!, 10) ?? 0,
-              "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
-              "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
-            }
-            for (const video of json.data) {
-              if (video.type === "archive") {
-                counts.archives += 1
-              } else if (video.type === "upload") {
-                counts.uploads += 1
-              } else if (video.type === "highlight") {
-                counts.highlights += 1
-              }
-            }
-            elHighlights.textContent = counts.highlights.toString()
-            elUploads.textContent = counts.uploads.toString()
-            elArchives.textContent = counts.archives.toString()
-          } else {
-            result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
-          }
-        }
+        //     if (json.pagination !== undefined && json.pagination.cursor) {
+        //       document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+        //     } else {
+        //       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+        //         <p class="load-more-msg">No more videos to load</p>
+        //       </div>`
+        //     }
+        //     const elHighlights = document.querySelector("#highlights-count")!;
+        //     const elUploads = document.querySelector("#uploads-count")!;
+        //     const elArchives = document.querySelector("#archives-count")!;
+        //     const counts: Record<string, number> = {
+        //       "archives": parseInt(elArchives.textContent!, 10) ?? 0,
+        //       "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
+        //       "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
+        //     }
+        //     for (const video of json.data) {
+        //       if (video.type === "archive") {
+        //         counts.archives += 1
+        //       } else if (video.type === "upload") {
+        //         counts.uploads += 1
+        //       } else if (video.type === "highlight") {
+        //         counts.highlights += 1
+        //       }
+        //     }
+        //     elHighlights.textContent = counts.highlights.toString()
+        //     elUploads.textContent = counts.uploads.toString()
+        //     elArchives.textContent = counts.archives.toString()
+        //   } else {
+        //     result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
+        //   }
+        // }
       }
       return result
     },

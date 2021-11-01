@@ -2,18 +2,14 @@
   <div class="flex items-center">
     <div id="user-header" class="flex items-center">
       <div hx-ext="twitch-api"
-        hx-get="https://api.twitch.tv/helix/users"
+        hx-get="/helix/users"
         hx-trigger="load"
         hx-target="#user-header"
       ></div>
-      <h2 aria-hidden="true">
-        <img class="block w-10 mr-3" width="300" height="300">
+      <h2 aria-hidden="true" class="flex items-center bg-white">
+        <img class="block w-10" width="300" height="300">
         <p class="w-48"></p>
       </h2>
-    </div>
-    <div class="hidden text-sm ml-4">
-      <p class="text-sm"><span class="bg-red-300 rounded-sm px-1 text-trueGray-50">LIVE</span> <span class="italic text-trueGray-500">Playing</span></p>
-      <p>Game name</p>
     </div>
   </div>
   <div>
@@ -80,14 +76,13 @@
         hx-ext="twitch-api"
         hx-trigger="click"
         hx-include=".req-param"
-        hx-get="https://api.twitch.tv/helix/videos"
+        hx-get="/helix/videos"
         hx-target="#video-list"
         hx-swap="beforeend"
         aria-disabled="false"
       >
-        <input type="hidden" class="req-param" name="first" value="5">
-        <input type="hidden" class="req-param" name="user_id" value="">
-        <input type="hidden" class="req-param" name="after" value="">
+        <input id="param-after" type="hidden" class="req-param" name="after" value="">
+        <input id="param-user_id" type="hidden" class="req-param" name="user_id" value="">
         <span>Load more videos</span>
       </button>
       <p class="load-more-msg hidden">
