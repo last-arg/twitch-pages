@@ -118,7 +118,7 @@ const streamsHtml = (streams: Video[]): string => {
   for (const stream of streams) {
     const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
     result += `
-      <li class="fade-in">
+      <li class="fade-in" data-user-id='${stream.user_id}'>
         <div>
           <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
             class="hover:text-violet-700 hover:underline"

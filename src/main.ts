@@ -344,9 +344,7 @@ function alpineInit(token: string) {
         const imageIds = Object.keys(this.data)
         const fetchIds = storeStreams.data.map(({user_id}:{user_id:string}) => user_id)
           .filter((id: string) => !imageIds.includes(id))
-        if (fetchIds.length > 0) {
-            this.fetchProfileImages(fetchIds)
-        }
+        this.fetchProfileImages(fetchIds)
 
         Alpine.effect(() => {
           localStorage.setItem("profile_images", JSON.stringify(this.data))
@@ -537,9 +535,23 @@ const initHtmx = async (_token: string) => {
               elem = elem.nextElementSibling
             }
           }
+
+          // Get user ids to update/get profile images
+          let elem = this.lastElem ? this.lastElem.nextElementSibling : evt.detail.target.children[0]
+          let ids = []
+          while (elem) {
+            ids.push(elem.getAttribute("data-user-id"))
+            elem = elem.nextElementSibling
+          }
+          const storeProfileImages = Alpine.store("profile_images") as ProfileImages
+          const imageIds = Object.keys(storeProfileImages.data)
+          ids = ids.filter((id: string) => !imageIds.includes(id))
+          storeProfileImages.fetchProfileImages(ids)
+
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
 
-          // TODO: remove querySelector fns outside
+          // TODO: move querySelector fns outside
+          // User page: Update filter counts
           const elHighlights = document.querySelector("#highlights-count");
           if (elHighlights) {
             const elUploads = document.querySelector("#uploads-count")!;
@@ -550,7 +562,6 @@ const initHtmx = async (_token: string) => {
             elArchives.textContent = evt.detail.target.querySelectorAll(".archive").length
           }
         }
-
       } else if (name === "htmx:afterSwap") {
         if (evt.target.id === "param-game_id") {
           const pathUrl = new URL(evt.detail.xhr.responseURL)
@@ -567,14 +578,9 @@ const initHtmx = async (_token: string) => {
         }
       }
     },
-    handleSwap : function(swapStyle, target, fragment, settleInfo) {
-      // console.log(swapStyle, target, fragment, settleInfo)
-      return false;
-    },
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log("xhr", xhr)
       // console.log("elt", _elt)
-      const storeProfileImages = Alpine.store("profile_images") as ProfileImages
 
       const token = xhr.getResponseHeader("Twitch-Access-Token")
       if (token) {

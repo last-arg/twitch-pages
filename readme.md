@@ -19,10 +19,6 @@ Pages:
   * Sidebar
     * Games
     * Streams
-* Twitch api request with netlify functions
-  * Category/Game page: getting profile images
-  * Check aria-disabled in load-more buttons
-
 
 ### Explore/Try
 * twinspark.js
