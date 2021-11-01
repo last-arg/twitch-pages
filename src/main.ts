@@ -540,13 +540,15 @@ const initHtmx = async (_token: string) => {
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
 
           // TODO: remove querySelector fns outside
-          const elHighlights = document.querySelector("#highlights-count")!;
-          const elUploads = document.querySelector("#uploads-count")!;
-          const elArchives = document.querySelector("#archives-count")!;
+          const elHighlights = document.querySelector("#highlights-count");
+          if (elHighlights) {
+            const elUploads = document.querySelector("#uploads-count")!;
+            const elArchives = document.querySelector("#archives-count")!;
 
-          elHighlights.textContent = evt.detail.target.querySelectorAll(".highlight").length
-          elUploads.textContent = evt.detail.target.querySelectorAll(".upload").length
-          elArchives.textContent = evt.detail.target.querySelectorAll(".archive").length
+            elHighlights.textContent = evt.detail.target.querySelectorAll(".highlight").length
+            elUploads.textContent = evt.detail.target.querySelectorAll(".upload").length
+            elArchives.textContent = evt.detail.target.querySelectorAll(".archive").length
+          }
         }
 
       } else if (name === "htmx:afterSwap") {
