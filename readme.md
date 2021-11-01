@@ -22,7 +22,6 @@ Pages:
 * Twitch api request with netlify functions
   * Category/Game page: getting profile images
   * Check aria-disabled in load-more buttons
-  * No more videos to load msg
 
 
 ### Explore/Try

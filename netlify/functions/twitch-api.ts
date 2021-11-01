@@ -335,40 +335,30 @@ const videosHtml = (videos: UserVideo[]): string => {
   return result
 }
 
+const cursorHtml = (pagination: {cursor: string | undefined} | undefined, msg: string): string => {
+  if (pagination && pagination.cursor) {
+    return `<input type="hidden" id="param-after" class="req-param" hx-swap-oob="true" name="after" value="${pagination.cursor}">`
+  }
+  return `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+    <p class="load-more-msg">${msg}</p>
+  </div>`
+}
 
-// TODO: add msg no more videos to load
-//     if (json.pagination !== undefined && json.pagination.cursor) {
-//       document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-//     } else {
-//       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-//         <p class="load-more-msg">No more videos to load</p>
-//       </div>`
-//     }
 const jsonToHtml = (path: string, json: any): string | null => {
   let result: string | null = "";
   if (path === "/helix/games/top") {
     result = topGamesHtml(json.data)
-    if (json.pagination && json.pagination.cursor) {
-      result += `<input type="hidden" id="param-after" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
-    } else {
-      result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-        <p class="load-more-msg">No more games to load</p>
-      </div>`
-    }
+    result += cursorHtml(json.pagination, "No more games to load")
   } else if (path === "/helix/games") {
     result = categoryTitleHtml(json.data[0])
   } else if (path === "/helix/streams") {
     result = streamsHtml(json.data)
-    if (json.pagination && json.pagination.cursor) {
-      result += `<input type="hidden" id="param-after" class="req-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
-    }
+    result += cursorHtml(json.pagination, "No more streams to load")
   } else if (path === "/helix/users") {
     result = userHtml(json.data[0])
   } else if (path === "/helix/videos") {
     result = videosHtml(json.data)
-    if (json.pagination && json.pagination.cursor) {
-      result += `<input type="hidden" id="param-after" class="req-param" hx-swap-oob="true" name="after" value="${json.pagination.cursor}">`
-    }
+    result += cursorHtml(json.pagination, "No more videos to load")
   } else {
     result = null
   }
