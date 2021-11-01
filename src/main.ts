@@ -111,7 +111,8 @@ function alpineInit(token: string) {
         searchResults: [],
         init() {
           // Alpine.mutateDom(())
-          let searchTimeout = 0;
+          // @ts-ignore
+          let searchTimeout: NodeJS.Timeout = 0;
           let activeSidebar = (document.activeElement! as HTMLElement);
           Alpine.effect(() => {
             if (document.activeElement?.tagName === "BUTTON") {
@@ -270,7 +271,7 @@ function alpineInit(token: string) {
         })
 
         // @ts-ignore
-        let liveTimeout = 0
+        let liveTimeout: NodeJs.Timeout = 0
         const queueUpdate = () => {
           this.updateUserLiveness(this.ids)
           liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs)
@@ -519,10 +520,10 @@ const initHtmx = async (_token: string) => {
           global.setClickedStream(null)
         }
       } else if (isVideoListSwap) {
-        // Focus first new element if visible
         if (name === "htmx:beforeOnLoad") {
           this.lastElem = evt.detail.target.lastElementChild
         } else if (name === "htmx:afterOnLoad") {
+          // Focus first new element if visible
           if (this.lastElem !== null) {
             setAriaMsg("Loading done")
             let elem = this.lastElem.nextElementSibling
@@ -537,7 +538,17 @@ const initHtmx = async (_token: string) => {
             }
           }
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
+
+          // TODO: remove querySelector fns outside
+          const elHighlights = document.querySelector("#highlights-count")!;
+          const elUploads = document.querySelector("#uploads-count")!;
+          const elArchives = document.querySelector("#archives-count")!;
+
+          elHighlights.textContent = evt.detail.target.querySelectorAll(".highlight").length
+          elUploads.textContent = evt.detail.target.querySelectorAll(".upload").length
+          elArchives.textContent = evt.detail.target.querySelectorAll(".archive").length
         }
+
       } else if (name === "htmx:afterSwap") {
         if (evt.target.id === "param-game_id") {
           const pathUrl = new URL(evt.detail.xhr.responseURL)
@@ -583,78 +594,8 @@ const initHtmx = async (_token: string) => {
           <h2 class="text-lg px-3 py-2 bg-white">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
           <div id="feedback" hx-swap-oob="true">User not found</div>
         `;
-      } else {
-        // const json = JSON.parse(text)
-        // if (pathUrl.pathname === "/helix/streams") {
-        //   if (json.data.length > 0) {
-        //     const user_ids: string[] = json.data.reduce((prev: string[], curr: Video) => {
-        //       if (!storeProfileImages.hasId(curr.user_id)) {
-        //         return prev.concat(curr.user_id)
-        //       }
-        //       return prev
-        //     }, [])
-        //     storeProfileImages.fetchProfileImages(user_ids )
-        //     result = streamsTransform(json.data as Video[])
-        //     if (json.pagination !== undefined && json.pagination.cursor) {
-        //       document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-        //     } else {
-        //       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-        //         <p class="load-more-msg">No more videos to load</p>
-        //       </div>`
-        //     }
-        //   } else {
-        //     result = `<div id="feedback" hx-swap-oob="true">Found no live streams</div>`
-        //   }
-        // } else if (pathUrl.pathname === "/helix/users") {
-        //   if (xhr.status === 200) {
-        //     const user_id = json.data[0].id
-        //     storeProfileImages.fetchProfileImages([user_id])
-        //     document.querySelector(".req-param[name='user_id']")?.setAttribute("value", user_id)
-        //     htmx.trigger(".load-more-btn", "click", {})
-        //     result = userTransform(json)
-        //     } else {
-        //       const pathArr = location.pathname.split("/")
-        //       result = `
-        //         <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
-        //         <div id="feedback" hx-swap-oob="true">User not found</div>
-        //       `;
-        //     }
-        // } else if (pathUrl.pathname === "/helix/videos") {
-        //   if (json.data.length > 0) {
-        //     result = videosTransform(json.data as UserVideo[])
-
-        //     if (json.pagination !== undefined && json.pagination.cursor) {
-        //       document.querySelector(".req-param[name='after']")?.setAttribute("value", json.pagination.cursor)
-        //     } else {
-        //       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-        //         <p class="load-more-msg">No more videos to load</p>
-        //       </div>`
-        //     }
-        //     const elHighlights = document.querySelector("#highlights-count")!;
-        //     const elUploads = document.querySelector("#uploads-count")!;
-        //     const elArchives = document.querySelector("#archives-count")!;
-        //     const counts: Record<string, number> = {
-        //       "archives": parseInt(elArchives.textContent!, 10) ?? 0,
-        //       "uploads": parseInt(elUploads.textContent!, 10) ?? 0,
-        //       "highlights": parseInt(elHighlights.textContent!, 10) ?? 0,
-        //     }
-        //     for (const video of json.data) {
-        //       if (video.type === "archive") {
-        //         counts.archives += 1
-        //       } else if (video.type === "upload") {
-        //         counts.uploads += 1
-        //       } else if (video.type === "highlight") {
-        //         counts.highlights += 1
-        //       }
-        //     }
-        //     elHighlights.textContent = counts.highlights.toString()
-        //     elUploads.textContent = counts.uploads.toString()
-        //     elArchives.textContent = counts.archives.toString()
-        //   } else {
-        //     result = `<div id="feedback" hx-swap-oob="true">Found no videos</div>`
-        //   }
-        // }
       }
+
       return result
     },
   })

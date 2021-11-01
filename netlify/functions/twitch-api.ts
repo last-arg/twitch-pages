@@ -297,7 +297,7 @@ function getVideoImageSrc(url: string, width: number, height: number): string {
   return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
 }
 
-const videosHtml = (videos: UserVideo[]) => {
+const videosHtml = (videos: UserVideo[]): string => {
   let result = ""
   for (const video of videos) {
     const date = new Date(video.published_at)
@@ -336,7 +336,14 @@ const videosHtml = (videos: UserVideo[]) => {
 }
 
 
-
+// TODO: add msg no more videos to load
+//     if (json.pagination !== undefined && json.pagination.cursor) {
+//       document.querySelector(".category-param[name='after']")?.setAttribute("value", json.pagination.cursor)
+//     } else {
+//       result += `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
+//         <p class="load-more-msg">No more videos to load</p>
+//       </div>`
+//     }
 const jsonToHtml = (path: string, json: any): string | null => {
   let result: string | null = "";
   if (path === "/helix/games/top") {
