@@ -396,6 +396,10 @@ const handler: Handler = async (event) => {
   if (TWITCH_CLIENT_SECRET === undefined) {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
   }
+  if (event.queryStringParameters['request_token'] === '') {
+    const new_token = await requestTwitchToken()
+    return { statusCode: 200, body: new_token };
+  }
   let {path, token, ...attrs} = event.queryStringParameters
   const requestUrl = new URL(path, API_URL)
   requestUrl.search = Object.entries(attrs).map((key_val: string[]) => key_val.join("=")).join("&")

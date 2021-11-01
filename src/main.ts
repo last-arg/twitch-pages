@@ -37,6 +37,38 @@ const setAriaMsg = (function() {
   return (msg: string) => container.textContent = msg
 })()
 
+const twitch: {
+  twitch_token: string | null;
+  user_token: string | null;
+  updateToken: () => Promise<void>;
+  setTwitchToken: (token: string) => void;
+  setUserToken: (token: string) => void;
+  getToken: () => string | null;
+  hasValidToken(): boolean;
+} = {
+  twitch_token: localStorage.getItem("twitch_token"),
+  user_token: localStorage.getItem("user_token"),
+  updateToken: async function() {
+    const resp = await fetch("/api/twitch-api?request_token")
+    const token = await resp.text()
+    this.setTwitchToken(token)
+  },
+  setTwitchToken: function(token: string): void {
+    this.twitch_token = token
+    localStorage.setItem("twitch_token", this.twitch_token)
+  },
+  setUserToken: function(token: string): void {
+    this.user_token = token
+    localStorage.setItem("user_token", this.user_token)
+  },
+  getToken: function(): string | null {
+    return this.twitch_token || this.user_token
+  },
+  hasValidToken(): boolean {
+    return (this.twitch_token || this.user_token) !== null
+  }
+}
+
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
@@ -62,10 +94,11 @@ const getUrlObject = (newPath: string): UrlResolve => {
   return mainContent[contentKey]
 }
 
-function alpineInit(token: string) {
+function alpineInit() {
+  // TODO: Use js Proxy to udpate headers.Authorization ???
   const headers = {
     "Host": "api.twitch.tv",
-    "Authorization": `Bearer ${token}`,
+    "Authorization": `Bearer ${twitch.getToken()}`,
     "Client-id": TWITCH_CLIENT_ID,
     "Accept": "application/vnd.twitchtv.v5+json",
   };
@@ -246,7 +279,7 @@ function alpineInit(token: string) {
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
       const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-      return (await (await fetch(url, {method: "GET", headers})).json()).data;
+      return (await (await fetch(url, {method: "GET", headers: headers})).json()).data;
     };
 
     const keyStreams = "streams"
@@ -427,6 +460,7 @@ function alpineInit(token: string) {
     Alpine.store('profile_images', storeProfileImages)
 
   })
+  Alpine.start()
 }
 
 const handleSidebarScroll = () => {
@@ -467,7 +501,7 @@ interface Video {
   viewer_count: number,
 }
 
-const initHtmx = async (_token: string) => {
+const initHtmx = async () => {
   htmx.defineExtension("twitch-api", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
@@ -483,7 +517,7 @@ const initHtmx = async (_token: string) => {
         }
 
         const global = Alpine.store('global') as Global
-        const token = localStorage.getItem("twitch_token") || ""
+        const token = twitch.getToken() || ""
 
         const path = evt.detail.path
         evt.detail.path = "/api/twitch-api"
@@ -581,10 +615,9 @@ const initHtmx = async (_token: string) => {
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log("xhr", xhr)
       // console.log("elt", _elt)
-
       const token = xhr.getResponseHeader("Twitch-Access-Token")
       if (token) {
-        localStorage.setItem("twitch_token", token)
+        twitch.setTwitchToken(token)
       }
 
       let result = text
@@ -612,30 +645,25 @@ const initHtmx = async (_token: string) => {
 }
 
 const init = async () => {
-  // Get token
-  let token = localStorage.getItem("twitch_token")
+  // Save user access_token after login (settings page)
   if (window.location.hash) {
+    // TODO: use new URL()?
     for (const paramStr of window.location.hash.slice(1).split("&")) {
-      const [key, value] = paramStr.split("=")
+      const [key, token] = paramStr.split("=")
       if (key === "access_token") {
-        token = value
-        localStorage.setItem("twitch_token", value)
+        twitch.setUserToken(token)
         break
       }
     }
   }
 
   // Init
-  if (token) {
-    alpineInit(token)
-    Alpine.start()
-    initHtmx(token)
-    handleSidebarScroll()
-  } else {
-    const link = document.querySelector<HTMLLinkElement>(".js-twitch-login")!
-    link.parentElement?.classList.remove("hidden")
-    link.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`
+  if (!twitch.hasValidToken()) {
+    await twitch.updateToken()
   }
+  alpineInit()
+  initHtmx()
+  handleSidebarScroll()
 }
 
 init()
