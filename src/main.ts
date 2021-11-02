@@ -45,6 +45,7 @@ const twitch: {
   setUserToken: (token: string) => void;
   getToken: () => string | null;
   hasValidToken(): boolean;
+  logout(): void;
 } = {
   twitch_token: localStorage.getItem("twitch_token"),
   user_token: localStorage.getItem("user_token"),
@@ -60,6 +61,10 @@ const twitch: {
   setUserToken: function(token: string): void {
     this.user_token = token
     localStorage.setItem("user_token", this.user_token)
+  },
+  logout: function(): void {
+    this.user_token = null
+    localStorage.removeItem("user_token")
   },
   getToken: function(): string | null {
     return this.twitch_token || this.user_token
@@ -445,6 +450,8 @@ function alpineInit() {
 
 
     Alpine.store("global", {
+      twitch: twitch,
+      twitch_login_url: `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`,
       urlRoot: urlRoot,
       mainContent: mainContent,
       clickedGame: null,

@@ -5,11 +5,12 @@
   <div class="bg-white p-3 stack">
     <section>
       <h3 class="title-setting">Twitch</h3>
-      <!--
-      `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`
-      -->
-      <a class="btn-twitch" href="">Log in with Twitch</a>
-      <button class="btn-twitch" type="button">Log out from Twitch</button>
+      <button class="btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }" type="button"
+        @click="$store.global.twitch.logout()"
+      >Log out from Twitch</button>
+      <a class="btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
+        :href="$store.global.twitch_login_url"
+      >Log in with Twitch</a>
     </section>
     <section>
       <h3 class="title-setting">General</h3>
