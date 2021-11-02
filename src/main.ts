@@ -400,6 +400,7 @@ function alpineInit() {
         return ""
       },
       setImage(user_id: string, url: string) {
+        if (this.data[user_id]) return
         this.data[user_id] = {
           url: url,
           last_access: Date.now(),

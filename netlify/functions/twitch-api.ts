@@ -204,6 +204,7 @@ const userHtml = (user: User): string => {
       <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
       <button x-data="{followed: false}"
         class="text-gray-400 hover:text-violet-700" type="button"
+        x-init="$store.profile_images.setImage('${user.id}', '${user.profile_image_url}')"
         x-effect="followed = $store.streams.hasId('${user.id}')"
         aria-label="followed ? 'UnFollow' : 'Follow'"
         x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
