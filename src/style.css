@@ -32,7 +32,6 @@ img {
   --space: 0
 }
 
-
 .stack {
   display: flex;
   flex-direction: column;
@@ -281,6 +280,40 @@ For example if you have white-space: nowrap on some element (to truncate it).
   top: 37px;
   border-bottom: 1rem solid;
   border-image: linear-gradient(theme('colors.trueGray.50'), transparent) 100;
+}
+
+.title-setting {
+  @apply text-xl text-trueGray-400;
+}
+
+.btn-setting {
+  @apply bg-indigo-300 py-1 px-2 rounded-sm text-black;
+}
+
+.btn-setting:hover {
+  @apply bg-indigo-400;
+}
+
+.list-general {
+  width: max-content;
+}
+.list-general > li {
+  @apply flex;
+}
+.list-general > li > label {
+  @apply flex-grow mr-4;
+}
+
+#main input {
+  @apply border border-black px-1 w-20;
+}
+
+.btn-twitch {
+  @apply bg-violet-600 text-trueGray-100 inline-block px-2 py-1;
+}
+
+.btn-twitch:hover {
+  @apply bg-violet-800;
 }
 
 @tailwind utilities;

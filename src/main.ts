@@ -285,7 +285,7 @@ function alpineInit() {
     const keyStreams = "streams"
     const keyUserLive = `${keyStreams}.live`
     const keyUserLiveLastCheck = `${keyUserLive}.last_check`
-    const fiveMinutesInMs = 300000
+    const livenessCheckTimeMs = 600000 // 10 minutes
     const storeStreams = {
       data: JSON.parse(localStorage.getItem(keyStreams) ?? "[]"),
       ids: [] as string[],
@@ -307,7 +307,7 @@ function alpineInit() {
         let liveTimeout: NodeJs.Timeout = 0
         const queueUpdate = () => {
           this.updateUserLiveness(this.ids)
-          liveTimeout = setTimeout(queueUpdate, fiveMinutesInMs)
+          liveTimeout = setTimeout(queueUpdate, livenessCheckTimeMs)
         }
         queueUpdate()
       },
@@ -345,7 +345,7 @@ function alpineInit() {
         if (this.live[user_id] === undefined) {
           const stream = (await fetchStreamsByUserIds([user_id]))[0]
           if (stream) {
-            this.live[stream.user_id] =stream.game_name
+            this.live[stream.user_id] = stream.game_name
           }
         }
       },
