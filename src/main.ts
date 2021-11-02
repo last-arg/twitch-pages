@@ -492,15 +492,6 @@ const handleSidebarScroll = () => {
   }
 }
 
-interface Video {
-  user_id: string,
-  user_login: string,
-  user_name: string,
-  title: string,
-  thumbnail_url: string,
-  viewer_count: number,
-}
-
 const initHtmx = async () => {
   htmx.defineExtension("twitch-api", {
     lastElem: null,
