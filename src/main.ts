@@ -563,7 +563,6 @@ const initHtmx = async () => {
         }
 
         const token = twitch.getToken() || ""
-
         const path = evt.detail.path
         evt.detail.path = "/api/twitch-api"
         evt.detail.parameters["path"] = path
@@ -630,7 +629,6 @@ const initHtmx = async () => {
             ids = ids.filter((id: string) => !imageIds.includes(id))
             storeProfileImages.fetchProfileImages(ids)
           } else if (path === "/helix/videos") {
-            // TODO: move querySelector fns outside
             // User page: Update filter counts
             const elHighlights = document.querySelector("#highlights-count")!;
             const elUploads = document.querySelector("#uploads-count")!;
@@ -692,7 +690,6 @@ const initHtmx = async () => {
 const init = async () => {
   // Save user access_token after login (settings page)
   if (window.location.hash) {
-    // TODO: use new URL()?
     for (const paramStr of window.location.hash.slice(1).split("&")) {
       const [key, token] = paramStr.split("=")
       if (key === "access_token") {
