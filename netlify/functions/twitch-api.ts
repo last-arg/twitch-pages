@@ -215,9 +215,11 @@ const userHtml = (user: User): string => {
         </svg>
       </button>
     </div>
-    <div class="ml-4" x-show="$store.streams.isLive('${user.id}')">
+    <div class="ml-4" :class="{hidden: game === ''}"
+      x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame('${user.id}')"
+    >
       <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-trueGray-50 text-xs">LIVE</span>
-      <p class="text-sm" x-text="$store.streams.live['${user.id}']">test</p>
+      <p class="text-sm" x-text="game"></p>
     </div>
     <input type="hidden" id="param-user_id" class="req-param" hx-swap-oob="true" name="user_id" value="${user.id}">
    `

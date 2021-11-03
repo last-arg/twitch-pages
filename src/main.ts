@@ -8,6 +8,7 @@ import 'htmx.org';
 interface Stream {
   user_id: string,
   game_name: string,
+  type: string,
 }
 
 interface ProfileImages {
@@ -291,11 +292,27 @@ function alpineInit() {
       return (await (await fetch(url, {method: "GET", headers: headers})).json()).data;
     };
 
+    interface StoreStreams {
+      data: {user_id: string, user_login: string, user_name: string}[],
+      ids: string[],
+      live: Record<string, string>,
+      liveLastCheck: number,
+      init(): void,
+      hasId(id: string): boolean,
+      toggle(user_id: string, user_login: string, user_name: string): boolean,
+      add(user_id: string, user_login: string, user_name: string): void,
+      remove(id: string): void,
+      isLive(user_id: string): boolean,
+      addLiveUser(user_id: string): Promise<void>,
+      updateUserLiveness(user_ids: string[]): Promise<void>,
+      clear(): void
+    }
+
     const keyStreams = "streams"
     const keyUserLive = `${keyStreams}.live`
     const keyUserLiveLastCheck = `${keyUserLive}.last_check`
     const livenessCheckTimeMs = 600000 // 10 minutes
-    const storeStreams = {
+    const storeStreams: StoreStreams = {
       data: JSON.parse(localStorage.getItem(keyStreams) ?? "[]"),
       ids: [] as string[],
       live: JSON.parse(localStorage.getItem("streams.live") ?? "{}"),
@@ -475,6 +492,16 @@ function alpineInit() {
         (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value; });
         this.settings = opts_obj
         localStorage.setItem("settings", JSON.stringify(opts_obj))
+      },
+      async getLiveUserGame(user_id: string): Promise<string> {
+        let result = (Alpine.store("streams")as StoreStreams).live[user_id] || ""
+        if (!result) {
+          const stream = (await fetchStreamsByUserIds([user_id]))[0]
+          if (stream && stream.type === "live") {
+            result = stream.game_name
+          }
+        }
+        return result
       },
       clickedGame: null,
       clickedStream: null,
