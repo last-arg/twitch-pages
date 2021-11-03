@@ -103,15 +103,14 @@ const getUrlObject = (newPath: string): UrlResolve => {
   return mainContent[contentKey]
 }
 
-function alpineInit() {
-  // TODO: Use js Proxy to udpate headers.Authorization ???
-  const headers = {
-    "Host": "api.twitch.tv",
-    "Authorization": `Bearer ${twitch.getToken()}`,
-    "Client-id": TWITCH_CLIENT_ID,
-    "Accept": "application/vnd.twitchtv.v5+json",
-  };
+const headers = {
+  "Host": "api.twitch.tv",
+  "Authorization": `Bearer ${twitch.getToken()}`,
+  "Client-id": TWITCH_CLIENT_ID,
+  "Accept": "application/vnd.twitchtv.v5+json",
+};
 
+function alpineInit() {
   const fetchUsers = async (ids: string[]): Promise<any[]> => {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
@@ -661,6 +660,7 @@ const initHtmx = async () => {
       const token = xhr.getResponseHeader("Twitch-Access-Token")
       if (token) {
         twitch.setTwitchToken(token)
+        headers["Authorization"] = `Bearer ${token}`;
       }
 
       let result = text
@@ -702,6 +702,7 @@ const init = async () => {
   // Init
   if (!twitch.hasValidToken()) {
     await twitch.updateToken()
+    headers["Authorization"] = `Bearer ${twitch.getToken()!}`;
   }
   alpineInit()
   initHtmx()
