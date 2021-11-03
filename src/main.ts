@@ -277,7 +277,8 @@ function alpineInit() {
         if (index !== -1) {
           this.data.splice(index, 1)
         }
-      }
+      },
+      clear() { this.data = [] }
     }
 
 
@@ -369,7 +370,8 @@ function alpineInit() {
         }
         this.live = new_data
         this.liveLastCheck = now
-      }
+      },
+      clear() { this.data = [] }
     }
 
     type StreamImage = Record<string, {url: string, last_access: number}>
@@ -445,7 +447,8 @@ function alpineInit() {
           }
         }
         this.lastUpdate = nowDate
-      }
+      },
+      clear() { this.data = {} }
     }
 
 

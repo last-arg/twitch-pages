@@ -5,11 +5,11 @@
   <div class="bg-white p-3 stack">
     <section>
       <h3 class="title-setting">Twitch</h3>
-      <button class="btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }" type="button"
+      <button type="button" class="btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
         @click="$store.global.twitch.logout()"
       >Log out from Twitch</button>
-      <a class="btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
-        :href="$store.global.twitch_login_url"
+      <a :href="$store.global.twitch_login_url"
+        class="btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
       >Log in with Twitch</a>
     </section>
     <section>
@@ -33,10 +33,14 @@
     <section>
       <h3 class="title-setting">Cache</h3>
       <ul class="stack stack-m-4 mt-1.5">
-        <li><button type="button" class="btn-setting">Clear games cache</button></li>
-        <li><button type="button" class="btn-setting">Clear streams cache</button></li>
-        <li><button type="button" class="btn-setting">Clear profile images cache</button></li>
-        <li><button type="button" class="btn-setting">Clear all cache</button></li>
+        <li><button @click="$store.games.clear()" type="button" class="btn-setting">Clear games cache</button></li>
+        <li><button @click="$store.streams.clear()" type="button" class="btn-setting">Clear streams cache</button></li>
+        <li><button @click="$store.profile_images.clear()" type="button" class="btn-setting">Clear profile images cache</button></li>
+        <li>
+          <button type="button" class="btn-setting"
+            @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
+          >Clear all cache</button>
+        </li>
       </ul>
     </section>
   </div>
