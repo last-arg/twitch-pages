@@ -9,7 +9,6 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* truncate sidebar streams live message
 * Search/Filter
   * Category/Game page
   * User videos page
