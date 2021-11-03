@@ -5,37 +5,47 @@
   <div class="bg-white p-3 stack">
     <section>
       <h3 class="title-setting">Twitch</h3>
-      <button type="button" class="btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
+      <button type="button" class="btn btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
         @click="$store.global.twitch.logout()"
       >Log out from Twitch</button>
       <a :href="$store.global.twitch_login_url"
-        class="btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
+        class="btn btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
       >Log in with Twitch</a>
     </section>
     <section>
       <h3 class="title-setting">General</h3>
-      <p class="mt-1.5">Number of items to load with one request</p>
-      <ul class="list-general stack stack-m-4 mt-1.5 pl-4">
-        <li>
-          <label for="top-games-count">Top Games:</label>
-          <input type="number" id="top-games-count" name="top-games-count" min="1" max="100" value="5">
-        </li>
-        <li>
-          <label for="category-count">Category/Games:</label>
-          <input type="number" id="category-count" name="category-count" min="1" max="100" value="5">
-        </li>
-        <li>
-          <label for="user-videos-count">User videos:</label>
-          <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100" value="5">
-        </li>
-      </ul>
+      <form id="settings-general" class="mt-1.5"
+        @submit.prevent = "$store.global.saveSettingsForm($el)"
+      >
+        <fieldset>
+          <legend>Number of items to load with one request</legend>
+          <ul class="list-general stack stack-m-4 mt-1.5 pl-4">
+            <li>
+              <label for="top-games-count">Top Games:</label>
+              <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
+                :value="$store.global.settings['top-games-count']" value="5">
+            </li>
+            <li>
+              <label for="category-count">Category/Games:</label>
+              <input type="number" id="category-count" name="category-count" min="1" max="100"
+                :value="$store.global.settings['category-count']" value="5">
+            </li>
+            <li>
+              <label for="user-videos-count">User videos:</label>
+              <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100"
+                :value="$store.global.settings['user-videos-count']" value="5">
+            </li>
+          </ul>
+        </fieldset>
+        <button type="submit" class="btn bg-emerald-400 mt-4 text-black hover:bg-emerald-500">Save general settings</button>
+      </form>
     </section>
     <section>
       <h3 class="title-setting">Cache</h3>
       <ul class="stack stack-m-4 mt-1.5">
-        <li><button @click="$store.games.clear()" type="button" class="btn-setting">Clear games cache</button></li>
-        <li><button @click="$store.streams.clear()" type="button" class="btn-setting">Clear streams cache</button></li>
-        <li><button @click="$store.profile_images.clear()" type="button" class="btn-setting">Clear profile images cache</button></li>
+        <li><button @click="$store.games.clear()" type="button" class="btn btn-setting">Clear games cache</button></li>
+        <li><button @click="$store.streams.clear()" type="button" class="btn btn-setting">Clear streams cache</button></li>
+        <li><button @click="$store.profile_images.clear()" type="button" class="btn btn-setting">Clear profile images cache</button></li>
         <li>
           <button type="button" class="btn-setting"
             @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
@@ -45,3 +55,10 @@
     </section>
   </div>
 </div>
+<script>
+document.getElementById("settings-general").addEventListener("submit", function(evt) {
+  evt.preventDefault()
+  console.log(Object.fromEntries(new FormData(evt.target)))
+  // localStorage.setItem("settings")
+})
+</script>

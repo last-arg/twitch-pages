@@ -286,8 +286,12 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply text-xl text-trueGray-400;
 }
 
+.btn {
+  @apply py-1 px-2 rounded-sm;
+}
+
 .btn-setting {
-  @apply bg-indigo-300 py-1 px-2 rounded-sm text-black;
+  @apply bg-indigo-300 text-black;
 }
 
 .btn-setting:hover {
@@ -309,7 +313,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 
 .btn-twitch {
-  @apply bg-violet-600 text-trueGray-100 inline-block px-2 py-1;
+  @apply bg-violet-600 text-trueGray-100 inline-block;
 }
 
 .btn-twitch:hover {

@@ -22,10 +22,11 @@ interface ProfileImages {
   setImage: (user_id: string, url: string) => void
   fetchProfileImages: (user_ids: string[]) => Promise<void>
   clean: (excludeIds: string[]) => void
+  clear: () => void
 }
 
 interface Global {
-  urlRoot: string,
+  settings: Record<string, number>,
   clickedGame: string | null,
   clickedStream: string | null,
   setClickedGame: (name: string | null) => void,
@@ -38,6 +39,7 @@ const setAriaMsg = (function() {
 })()
 
 const twitch: {
+  login_url: string;
   twitch_token: string | null;
   user_token: string | null;
   updateToken: () => Promise<void>;
@@ -47,6 +49,7 @@ const twitch: {
   hasValidToken(): boolean;
   logout(): void;
 } = {
+  login_url: `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`,
   twitch_token: localStorage.getItem("twitch_token"),
   user_token: localStorage.getItem("user_token"),
   updateToken: async function() {
@@ -453,18 +456,30 @@ function alpineInit() {
 
 
     Alpine.store("global", {
+      settings: {
+        "top-games-count": TOP_GAMES_COUNT,
+        "category-count": STREAMS_COUNT,
+        "user-videos-count": USER_VIDEOS_COUNT,
+      },
       twitch: twitch,
-      twitch_login_url: `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`,
-      urlRoot: urlRoot,
       mainContent: mainContent,
+      init() {
+        const settings_str = localStorage.getItem("settings")
+        if (settings_str) {
+          const settings = JSON.parse(settings_str)
+          this.settings = settings
+        }
+      },
+      saveSettingsForm(el: HTMLFormElement) {
+        let opts_obj: Record<string, any> = {};
+        (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value; });
+        this.settings = opts_obj
+        localStorage.setItem("settings", JSON.stringify(opts_obj))
+      },
       clickedGame: null,
       clickedStream: null,
-      setClickedGame(name: string | null) {
-        this.clickedGame = name
-      },
-      setClickedStream(name: string | null) {
-        this.clickedStream = name
-      },
+      setClickedGame(name: string | null) { this.clickedGame = name },
+      setClickedStream(name: string | null) { this.clickedStream = name },
     } as Global)
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
@@ -504,6 +519,8 @@ const handleSidebarScroll = () => {
 }
 
 const initHtmx = async () => {
+  const global = Alpine.store("global") as Global
+
   htmx.defineExtension("twitch-api", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
@@ -518,7 +535,6 @@ const initHtmx = async () => {
           }
         }
 
-        const global = Alpine.store('global') as Global
         const token = twitch.getToken() || ""
 
         const path = evt.detail.path
@@ -527,7 +543,7 @@ const initHtmx = async () => {
         evt.detail.parameters["token"] = token
 
         if (path === "/helix/games/top") {
-          evt.detail.parameters["first"] = TOP_GAMES_COUNT
+          evt.detail.parameters["first"] = global.settings["top-games-count"]
         } else if (path === "/helix/games") {
           let gameName = ""
           if (global.clickedGame) {
@@ -539,9 +555,9 @@ const initHtmx = async () => {
           evt.detail.parameters["name"] = gameName
           global.setClickedGame(null)
         } else if (path === "/helix/videos") {
-          evt.detail.parameters["first"] = USER_VIDEOS_COUNT
+          evt.detail.parameters["first"] = global.settings["user-videos-count"]
         } else if (path === "/helix/streams") {
-          evt.detail.parameters["first"] = STREAMS_COUNT
+          evt.detail.parameters["first"] = global.settings["category-count"]
         } else if (path === "/helix/users") {
           let loginName = ""
           if (global.clickedStream) {
@@ -669,4 +685,6 @@ const init = async () => {
 }
 
 init()
+
+
 

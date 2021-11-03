@@ -11,9 +11,6 @@ Pages:
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
 * truncate sidebar streams live message
 * User page: Do liveness check on not followed streamers
-* Settings page
-  * styling
-  * functionality
 * Search/Filter
   * Category/Game page
   * User videos page
