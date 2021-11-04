@@ -304,12 +304,16 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .list-general > li {
   @apply flex;
 }
-.list-general > li > label {
+.list-general label {
   @apply flex-grow mr-4;
 }
 
+.list-general input {
+  @apply w-20;
+}
+
 #main input {
-  @apply border border-black px-1 w-20;
+  @apply border border-black px-1;
 }
 
 .btn-twitch {
@@ -321,6 +325,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
 }
 
 @tailwind utilities;
+
+.min-w-22ch {
+  min-width: 22ch;
+}
+
+.max-w-30ch {
+  max-width: 30ch
+}
 
 .fade-in {
   animation-name: fadein;

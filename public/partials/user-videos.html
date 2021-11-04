@@ -13,9 +13,9 @@
     </div>
   </div>
   <div>
+    <h3 class="px-2 py-1 bg-white inline-block">Videos</h3>
     <div class="filter-wrapper">
-      <div class="flex items-center flex-wrap gap-y-6 gap-x-4 bg-trueGray-50 pt-4 pb-1">
-        <h3 class="px-2 py-1 bg-white">Videos</h3>
+      <div class="flex justify-between items-center flex-wrap gap-y-6 gap-x-4 bg-trueGray-50 pt-4 pb-1">
         <div x-data="userVideosFilter()" class="flex">
           <ul class="flex flex-wrap gap-4">
             <li class="flex items-center">
@@ -65,6 +65,11 @@
             </div>
           </div>
         </div>
+        <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" @reset="formReset()">
+          <label class="sr-only" for="search">Search video title</label>
+          <input class="w-full" type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
+          <button type="reset" class="ml-2 btn bg-trueGray-200 hover:bg-trueGray-300">Reset</button>
+        </form>
       </div>
     </div>
     <div id="feedback" class="hidden"></div>

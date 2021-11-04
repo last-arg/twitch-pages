@@ -9,12 +9,7 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* Search/Filter
-  * Category/Game page
-  * User videos page
-  * Sidebar
-    * Games
-    * Streams
+* When flex list contains too few items, items grow too large (take all the available container width)
 
 ### Explore/Try
 * twinspark.js

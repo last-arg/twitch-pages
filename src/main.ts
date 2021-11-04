@@ -246,6 +246,22 @@ function alpineInit() {
       }
     })
 
+    Alpine.data("search", (): any => {
+      return {
+        stylesheet: null,
+        init() {
+          this.stylesheet = this.$el.insertAdjacentElement('afterend', document.createElement('style')).sheet
+        },
+        searchTitle() {
+          this.formReset()
+          const value = this.$el.value
+          if (value.length === 0) return
+          this.stylesheet.insertRule(`#video-list > :not(li[data-title*='${value}' i]) { display: none }`, 0)
+        },
+        formReset() { if (this.stylesheet.cssRules.length) this.stylesheet.deleteRule(0) }
+      }
+    })
+
     const storeGames = {
       data: JSON.parse(localStorage.getItem("games") ?? "[]"),
       ids: [] as string[],
