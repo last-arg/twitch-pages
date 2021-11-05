@@ -9,7 +9,7 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* Add setting for default user video filter 
+* user page: video type counts don't work
 
 ### Explore/Try
 * twinspark.js

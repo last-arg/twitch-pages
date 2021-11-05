@@ -27,7 +27,7 @@ interface ProfileImages {
 }
 
 interface Global {
-  settings: Record<string, number>,
+  settings: Record<string, number | "on" | false>,
   clickedGame: string | null,
   clickedStream: string | null,
   setClickedGame: (name: string | null) => void,
@@ -492,6 +492,9 @@ function alpineInit() {
         "top-games-count": TOP_GAMES_COUNT,
         "category-count": STREAMS_COUNT,
         "user-videos-count": USER_VIDEOS_COUNT,
+        "video-archives": "on",
+        "video-uploads": false,
+        "video-highlights": false,
       },
       twitch: twitch,
       mainContent: mainContent,
@@ -499,13 +502,13 @@ function alpineInit() {
         const settings_str = localStorage.getItem("settings")
         if (settings_str) {
           const settings = JSON.parse(settings_str)
-          this.settings = settings
+          this.settings = { ...this.settings, ...settings }
         }
       },
       saveSettingsForm(el: HTMLFormElement) {
         let opts_obj: Record<string, any> = {};
-        (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value; });
-        this.settings = opts_obj
+        (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value });
+        this.settings = { ...this.settings, ...opts_obj }
         localStorage.setItem("settings", JSON.stringify(opts_obj))
       },
       async getLiveUserGame(user_id: string): Promise<string> {

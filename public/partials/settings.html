@@ -14,7 +14,7 @@
     </section>
     <section>
       <h3 class="title-setting">General</h3>
-      <form id="settings-general" class="mt-1.5"
+      <form id="settings-general" class="stack mt-1.5"
         @submit.prevent = "$store.global.saveSettingsForm($el)"
       >
         <fieldset>
@@ -37,17 +37,54 @@
             </li>
           </ul>
         </fieldset>
-        <button type="submit" class="btn bg-emerald-400 mt-4 text-black hover:bg-emerald-500">Save general settings</button>
+        <fieldset>
+          <legend>Default selected user video types</legend>
+          <ul class="stack stack-m-2 pl-4 mt-1.5">
+            <li>
+              <label for="video-archives">
+                <input type="checkbox" id="video-archives" name="video-archives"
+                x-init="$el.checked = $store.global.settings['video-archives'] === 'on'">
+                <span>Archives</span>
+              </label>
+            </li>
+            <li>
+              <label for="video-uploads">
+                <input type="checkbox" id="video-uploads" name="video-uploads"
+                :checked="$store.global.settings['video-uploads'] === 'on'">
+                <span>Uploads</span>
+              </label>
+            </li>
+            <li>
+              <label for="video-highlights">
+                <input type="checkbox" id="video-highlights" name="video-highlights"
+                x-init="$el.checked = $store.global.settings['video-highlights'] === 'on'">
+                <span>Highlights</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+        <div>
+        <button type="submit" class="btn bg-emerald-400 text-black hover:bg-emerald-500">Save general settings</button>
+        </div>
       </form>
     </section>
     <section>
       <h3 class="title-setting">Cache</h3>
       <ul class="stack stack-m-4 mt-1.5">
-        <li><button @click="$store.games.clear()" type="button" class="btn btn-setting">Clear games cache</button></li>
-        <li><button @click="$store.streams.clear()" type="button" class="btn btn-setting">Clear streams cache</button></li>
-        <li><button @click="$store.profile_images.clear()" type="button" class="btn btn-setting">Clear profile images cache</button></li>
         <li>
-          <button type="button" class="btn-setting"
+          <button @click="$store.games.clear()" type="button" class="btn btn-setting"
+          >Clear games cache</button>
+        </li>
+        <li>
+          <button @click="$store.streams.clear()" type="button" class="btn btn-setting"
+          >Clear streams cache</button>
+        </li>
+        <li>
+          <button @click="$store.profile_images.clear()" type="button" class="btn btn-setting"
+          >Clear profile images cache</button>
+        </li>
+        <li>
+          <button type="button" class="btn btn-setting"
             @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
           >Clear all cache</button>
         </li>
@@ -55,10 +92,3 @@
     </section>
   </div>
 </div>
-<script>
-document.getElementById("settings-general").addEventListener("submit", function(evt) {
-  evt.preventDefault()
-  console.log(Object.fromEntries(new FormData(evt.target)))
-  // localStorage.setItem("settings")
-})
-</script>

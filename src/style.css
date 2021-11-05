@@ -28,6 +28,10 @@ img {
   --space: 1rem
 }
 
+.stack-m-2 {
+  --space: 0.5rem
+}
+
 .stack-m-0 {
   --space: 0
 }
