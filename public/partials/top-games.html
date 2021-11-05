@@ -2,13 +2,13 @@
   <div class="flex">
     <h2 class="px-3 py-2 bg-white">Top games</h2>
   </div>
-  <ul id="video-list" class="grid grid-min-72">
-    <div id="video-list-swap" hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
+  <ul id="list-top-games" class="grid grid-min-72">
+    <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <div id="load-more-wrapper" class="text-center my-12">
     <button type="button"
       class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
-      hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#video-list" hx-swap="beforeend"
+      hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
       hx-include="#param-after"
       aria-disabled="false"
     >

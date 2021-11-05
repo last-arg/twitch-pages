@@ -9,12 +9,11 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* user page: video type counts don't work
-* user page: videos aren't displayed if doing this:
-  * This happens when I am navigating from page with same 'id'. My guess is Alpine uses the id for identifying element
+* user page: fix video type counts
 * filter search: titles with '"' dont work, have to escape them or remove them
   * might have to escape CSS selector search value also
   * generated selector seems to only work with id (not class)
+* User page: add video type tag(text) to items? hover?
 
 ### Explore/Try
 * twinspark.js
