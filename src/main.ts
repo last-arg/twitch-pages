@@ -219,7 +219,7 @@ function alpineInit() {
     })
 
     Alpine.data("userVideosFilter", (): any => {
-      const outputList = document.querySelector("#video-list")!
+      const outputList = document.querySelector(".user-videos")!
       return {
         toggleFilter(videoType: VideoType) {
           const outputClass = `show-${videoType}s`
@@ -658,6 +658,7 @@ const initHtmx = async () => {
           }
         }
       } else if (name === "htmx:afterSwap") {
+        console.log(evt.detail)
         if (evt.target.id === "param-game_id") {
           const pathUrl = new URL(evt.detail.xhr.responseURL)
           const path = pathUrl.searchParams.get("path")

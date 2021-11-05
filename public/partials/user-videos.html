@@ -76,12 +76,12 @@
       </div>
     </div>
     <div id="feedback" class="hidden"></div>
-    <ul id="video-list" class="user-videos flex-grid grid-min-64 grid-gap-6 mt-6"
-      :class="{
-        'show-archives': $store.global.settings['video-archives'] === 'on',
-        'show-uploads': $store.global.settings['video-uploads'] === 'on',
-        'show-highlights': $store.global.settings['video-highlights'] === 'on',
-      }"
+    <ul :id="`video-list`" class="user-videos flex-grid grid-min-64 grid-gap-6 mt-6"
+      x-init="
+        if ($store.global.settings['video-archives'] === 'on') $el.classList.add('show-archives')
+        if ($store.global.settings['video-uploads'] === 'on') $el.classList.add('show-uploads')
+        if ($store.global.settings['video-highlights'] === 'on') $el.classList.add('show-highlights')
+      "
     >
       <li class="filler-item"></li>
       <li class="filler-item"></li>
