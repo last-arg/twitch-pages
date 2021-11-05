@@ -19,7 +19,12 @@
   </div>
   <div class="list-wrapper">
     <div id="feedback"></div>
-    <ul id="video-list" class="grid grid-min-72 grid-gap-6"></ul>
+    <ul id="video-list" class="flex-grid grid-min-72 grid-gap-6">
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+    </ul>
     <div id="load-more-wrapper" class="text-center my-12">
       <button type="button"
         id="load-more-streams"
@@ -28,8 +33,8 @@
         hx-get="/helix/streams"
         hx-include=".req-param"
         hx-trigger="click"
-        hx-target="#video-list"
-        hx-swap="beforeend"
+        hx-target=".filler-item"
+        hx-swap="beforebegin"
         aria-disabled="false"
       >
         <input id="param-after" type="hidden" class="req-param" name="after" value="">

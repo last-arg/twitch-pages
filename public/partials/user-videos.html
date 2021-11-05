@@ -73,7 +73,12 @@
       </div>
     </div>
     <div id="feedback" class="hidden"></div>
-    <ul id="video-list" class="user-videos grid grid-min-64 mt-6 show-archives"></ul>
+    <ul id="video-list" class="user-videos flex-grid grid-min-64 grid-gap-6 mt-6 show-archives">
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+      <li class="filler-item"></li>
+    </ul>
     <div id="load-more-wrapper" class="text-center my-12">
       <button type="button"
         id="load-more-streams"
@@ -82,8 +87,8 @@
         hx-trigger="click"
         hx-include=".req-param"
         hx-get="/helix/videos"
-        hx-target="#video-list"
-        hx-swap="beforeend"
+        hx-target=".filler-item"
+        hx-swap="beforebegin"
         aria-disabled="false"
       >
         <input id="param-after" type="hidden" class="req-param" name="after" value="">

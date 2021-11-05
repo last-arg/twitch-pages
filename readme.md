@@ -9,7 +9,7 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* When flex list contains too few items, items grow too large (take all the available container width)
+* Add setting for default user video filter 
 
 ### Explore/Try
 * twinspark.js
