@@ -222,26 +222,26 @@ function alpineInit() {
       const outputList = document.querySelector(".user-videos")!
       return {
         toggleFilter(videoType: VideoType) {
-          const outputClass = `show-${videoType}s`
+          const outputClass = `no-${videoType}s`
           if (this.$el.classList.toggle("checked")) {
-            outputList.classList.add(outputClass)
-          } else {
             outputList.classList.remove(outputClass)
+          } else {
+            outputList.classList.add(outputClass)
           }
         },
         onlyFilter(videoType: VideoType) {
           for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
             btn.classList.remove("checked")
           }
-          outputList.classList.remove("show-highlights", "show-uploads", "show-archives")
+          outputList.classList.add("no-highlights", "no-uploads", "no-archives")
           this.$el.previousElementSibling.classList.add("checked")
-          outputList.classList.add(`show-${videoType}s`)
+          outputList.classList.remove(`no-${videoType}s`)
         },
         showAll() {
           for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
             btn.classList.add("checked")
           }
-          outputList.classList.add("show-highlights", "show-uploads", "show-archives")
+          outputList.classList.remove("no-highlights", "no-uploads", "no-archives")
         }
       }
     })

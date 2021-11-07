@@ -260,14 +260,10 @@ For example if you have white-space: nowrap on some element (to truncate it).
   @apply whitespace-nowrap px-3
 }
 
-.user-videos > li {
+.user-videos.no-highlights > .highlight,
+.user-videos.no-uploads > .upload,
+.user-videos.no-archives > .archive {
   display: none;
-}
-
-.user-videos.show-highlights > .highlight,
-.user-videos.show-uploads > .upload,
-.user-videos.show-archives > .archive {
-  display: block;
 }
 
 .filter-wrapper {

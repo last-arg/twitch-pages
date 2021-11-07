@@ -13,7 +13,6 @@ Pages:
   * might have to escape CSS selector search value also
   * generated selector seems to only work with id (not class)
 * User page: add video type tag(text) to items? hover?
-* User page: CSS default display all videos
 
 ### Explore/Try
 * twinspark.js
