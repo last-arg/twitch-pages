@@ -9,9 +9,6 @@ Pages:
 
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* filter search: titles with '"' dont work, have to escape them or remove them
-  * might have to escape CSS selector search value also
-  * generated selector seems to only work with id (not class)
 * User page: add video type tag(text) to items? hover?
 
 ### Explore/Try

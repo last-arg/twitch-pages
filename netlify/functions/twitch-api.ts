@@ -118,7 +118,7 @@ const streamsHtml = (streams: Video[]): string => {
   for (const stream of streams) {
     const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
     result += `
-      <li class="fade-in overflow-hidden" data-user-id='${stream.user_id}' data-title="${stream.title}">
+      <li class="fade-in overflow-hidden" data-user-id='${stream.user_id}' data-title="${escape(stream.title)}">
         <div>
           <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
             class="hover:text-violet-700 hover:underline"
@@ -306,7 +306,7 @@ const videosHtml = (videos: UserVideo[]): string => {
     const date = new Date(video.published_at)
     const img = video.thumbnail_url ? getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT) : twitch_404_img
     result += `
-      <li class="fade-in overflow-hidden ${video.type}" data-title="${video.title}">
+      <li class="fade-in overflow-hidden ${video.type}" data-title="${escape(video.title)}">
         <a class="block group" href="${video.url}" title="${video.title}">
           <div class="relative">
           <img class="w-full rounded-sm" src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
