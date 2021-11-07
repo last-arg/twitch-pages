@@ -19,11 +19,7 @@
   </div>
   <div class="list-wrapper">
     <div id="feedback"></div>
-    <ul class="filter-search flex-grid grid-min-72 grid-gap-6">
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
+    <ul class="filter-search grid grid-min-72 grid-gap-6">
     </ul>
     <div id="load-more-wrapper" class="text-center my-12">
       <button type="button"
@@ -33,8 +29,8 @@
         hx-get="/helix/streams"
         hx-include=".req-param"
         hx-trigger="click"
-        hx-target=".filler-item"
-        hx-swap="beforebegin"
+        hx-target=".filter-search"
+        hx-swap="beforeend"
         aria-disabled="false"
       >
         <input id="param-after" type="hidden" class="req-param" name="after" value="">

@@ -76,17 +76,13 @@
       </div>
     </div>
     <div id="feedback" class="hidden"></div>
-    <ul class="filter-search user-videos flex-grid grid-min-64 grid-gap-6 mt-6"
+    <ul class="filter-search user-videos grid grid-min-64 grid-gap-6 mt-6"
       x-init="
         if ($store.global.settings['video-archives'] === 'on') $el.classList.add('show-archives')
         if ($store.global.settings['video-uploads'] === 'on') $el.classList.add('show-uploads')
         if ($store.global.settings['video-highlights'] === 'on') $el.classList.add('show-highlights')
       "
     >
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
-      <li class="filler-item"></li>
     </ul>
     <div id="load-more-wrapper" class="text-center my-12">
       <button type="button"
@@ -94,19 +90,17 @@
         class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
         hx-ext="twitch-api"
         hx-trigger="click"
-        hx-include=".req-param"
         hx-get="/helix/videos"
-        hx-target=".filler-item"
-        hx-swap="beforebegin"
+        hx-include=".req-param"
+        hx-target=".filter-search"
+        hx-swap="beforeend"
         aria-disabled="false"
       >
         <input id="param-after" type="hidden" class="req-param" name="after" value="">
         <input id="param-user_id" type="hidden" class="req-param" name="user_id" value="">
         <span>Load more videos</span>
       </button>
-      <p class="load-more-msg hidden">
-        Loading...
-      </p>
+      <p class="load-more-msg hidden">Loading...</p>
     </div>
   </div>
 </div>

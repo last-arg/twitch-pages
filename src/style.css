@@ -89,19 +89,13 @@ For example if you have white-space: nowrap on some element (to truncate it).
     2) For wider browser support can manually write media query that changes
        attribute grid-template-columns value.
   */
-  grid-template-columns: repeat(auto-fit, minmax(var(--grid-min, 20rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
 }
 
 @supports (width: min(250px, 100%)) {
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 20rem), 100%), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
   }
-}
-
-.filler-item {
-  display: block !important;
-  height: 0;
-  padding: 0 !important;
 }
 
 .grid-min-72 {

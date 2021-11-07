@@ -256,7 +256,7 @@ function alpineInit() {
           this.formReset()
           const value = this.$el.value
           if (value.length === 0) return
-          this.stylesheet.insertRule(`.user-videos > :not(li[data-title*='${value}' i]) { display: none !important }`, 0)
+          this.stylesheet.insertRule(`.filter-search > :not(li[data-title*='${value}' i]) { display: none !important }`, 0)
         },
         formReset() { if (this.stylesheet.cssRules.length) this.stylesheet.deleteRule(0) }
       }
@@ -570,8 +570,9 @@ const initHtmx = async () => {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt);
-      const isVideoListSwap = evt.detail.target && (evt.detail.target.id === 'list-top-games'
-        || evt.detail.target.classList && evt.detail.target.classList.contains('filter-search'))
+      const target = evt.detail.target
+      const isVideoListSwap = target !== undefined && (target.id === 'list-top-games'
+        || (target.classList !== undefined && target.classList.contains('filter-search')))
       if (name === "htmx:configRequest") {
         if (isVideoListSwap) {
           document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "true")
@@ -658,7 +659,6 @@ const initHtmx = async () => {
           }
         }
       } else if (name === "htmx:afterSwap") {
-        console.log(evt.detail)
         if (evt.target.id === "param-game_id") {
           const pathUrl = new URL(evt.detail.xhr.responseURL)
           const path = pathUrl.searchParams.get("path")
