@@ -15,7 +15,7 @@
   <div>
     <h3 class="px-2 py-1 bg-white inline-block">Videos</h3>
     <div class="filter-wrapper">
-      <div class="flex justify-between items-center flex-wrap gap-y-6 gap-x-4 bg-trueGray-50 pt-4 pb-1">
+      <div class="flex justify-between items-center flex-wrap gap-y-6 gap-x-4 bg-truegray-50 pt-4 pb-1">
         <div x-data="userVideosFilter()" class="flex">
           <ul class="flex flex-wrap gap-4">
             <li class="flex items-center">
@@ -23,7 +23,7 @@
                 :class="{checked: $store.global.settings['video-archives'] === 'on'}"
                 x-on:click="toggleFilter('archive')"
               >
-                <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
+                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
               </button>
               <button type="button" class="filter-only-btn bg-lime-200 hover:bg-lime-300"
                 x-on:click="onlyFilter('archive')"
@@ -36,7 +36,7 @@
                 :class="{checked: $store.global.settings['video-uploads'] === 'on'}"
                 x-on:click="toggleFilter('upload')"
               >
-                <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
+                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
               </button>
               <button type="button" class="filter-only-btn bg-sky-200 hover:bg-sky-300"
                 x-on:click="onlyFilter('upload')"
@@ -49,7 +49,7 @@
                 :class="{checked: $store.global.settings['video-highlights'] === 'on'}"
                 x-on:click="toggleFilter('highlight')"
               >
-                <span class="border-2 block w-5 h-5 border-trueGray-50 bg-trueGray-100">&nbsp;</span>
+                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
               </button>
               <button type="button" class="filter-only-btn bg-amber-200 hover:bg-amber-300"
                 x-on:click="onlyFilter('highlight')"
@@ -62,7 +62,7 @@
             <span class="w-0 border-l mx-2 h-full">&nbsp;</span>
             <div>
               <button type="button"
-                class="whitespace-nowrap bg-trueGray-600 rounded-sm px-2 hover:bg-trueGray-800 text-trueGray-100"
+                class="whitespace-nowrap bg-truegray-600 rounded-sm px-2 hover:bg-truegray-800 text-truegray-100"
                 x-on:click="showAll()"
               >Show all</button>
             </div>
@@ -71,7 +71,7 @@
         <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" @reset="formReset()">
           <label class="sr-only" for="search">Search video title</label>
           <input class="w-full" type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
-          <button type="reset" class="ml-2 btn bg-trueGray-200 hover:bg-trueGray-300">Reset</button>
+          <button type="reset" class="ml-2 btn bg-truegray-200 hover:bg-truegray-300">Reset</button>
         </form>
       </div>
     </div>

@@ -1,15 +1,23 @@
-import { resolve } from "path"
+import Unocss from "unocss/vite";
+import { presetUno } from 'unocss'
+import { resolve } from "path";
 import { defineConfig } from "vite";
-// import viteCompression from 'vite-plugin-compression';
 
 const configFile = process.env.NODE_ENV === "production" ? "config.prod.ts" : "config.prod.ts"
 export default defineConfig({
-  plugins: [],
-
+  plugins: [
+    // Unocss({
+    //   mode: 'global',
+    //   presets: [ presetUno() ],
+    //   include: [
+    //     "**/*"
+    //   ],
+    // })
+  ],
   resolve: {
     alias: {
-      'config': resolve(__dirname, `src/${configFile}`)
-      // 'htmx.org': resolve(__dirname, 'node_modules/htmx.org/dist/htmx.js')
+      'config': resolve(__dirname, `src/${configFile}`),
+      // 'htmx.org': resolve(__dirname, 'node_modules/htmx.org/dist/htmx.js'),
     }
   },
   base: "/",

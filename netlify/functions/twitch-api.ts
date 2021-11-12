@@ -50,14 +50,15 @@ const topGamesHtml = (games: Game[]): string => {
             class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
             @click="$store.global.setClickedGame('${game.name}')"
           >
-            <img class="w-16" src="${twitchCatImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt="" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+            <img class="w-16" src="${twitchCatImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt=""
+              width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
             <p class="ml-2 text-lg">${game.name}</p>
           </a>
-          <div class="bg-trueGray-100 text-trueGray-400 flex flex-col justify-between p-2">
+          <div class="bg-truegray-100 text-truegray-400 flex flex-col justify-between p-2">
             <button x-data="{followed: false}"
               class="hover:text-violet-700"
               x-effect="followed = $store.games.hasId('${game.id}')"
-              x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+              @click="$store.games.toggle('${game.id}', '${game.name}')"
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
               <svg class="fill-current w-5 h-5">
@@ -97,7 +98,7 @@ const categoryTitleHtml = (game: Game): string => {
         </svg>
       </a>
     </h2>
-    <div class="border-l-2 border-trueGray-50 h-full"></div>
+    <div class="border-l-2 border-truegray-50 h-full"></div>
     <button x-data="{followed: false}"
       class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
       x-effect="followed = $store.games.hasId('${game.id}')"
@@ -125,7 +126,7 @@ const streamsHtml = (streams: Video[]): string => {
           >
             <div class="relative">
               <img class="rounded" src="${createLiveUserImageUrl(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
-              <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
+              <p class="absolute bottom-0 left-0 bg-truegray-800 text-truegray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
             </div>
             <div class="flex items-center px-1 py-1 rounded bg-white">
               <p class="truncate">${stream.title}</p>
@@ -134,13 +135,13 @@ const streamsHtml = (streams: Video[]): string => {
               </svg>
             </div>
           </a>
-          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-trueGray-50">
+          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-truegray-50">
             
             <a aria-hidden="true" href="${videoUrl}"
               hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
               @click="$store.global.setClickedStream('${stream.user_login}')"
             >
-              <img class="w-14 border border-trueGray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
+              <img class="w-14 border border-truegray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
             </a>
             <div class="stack stack-m-0 ml-2">
               <div class="flex items-center mb-auto">
@@ -148,7 +149,7 @@ const streamsHtml = (streams: Video[]): string => {
                   hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
                   @click="$store.global.setClickedStream('${stream.user_login}')"
                 >${stream.user_name}</a>
-                <div class="ml-4 mr-2 border-l h-6 w-0 border-trueGray-300"></div>
+                <div class="ml-4 mr-2 border-l h-6 w-0 border-truegray-300"></div>
                 <button type="button"
                   class="text-gray-400 hover:text-violet-700"
                   x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
@@ -201,7 +202,7 @@ const userHtml = (user: User): string => {
           </svg>
         </a>
       </h2>
-      <div class="ml-6 mr-2 border-l-2 border-trueGray-50 place-self-stretch"></div>
+      <div class="ml-6 mr-2 border-l-2 border-truegray-50 place-self-stretch"></div>
       <button x-data="{followed: false}"
         class="text-gray-400 hover:text-violet-700" type="button"
         x-init="$store.profile_images.setImage('${user.id}', '${user.profile_image_url}')"
@@ -218,7 +219,7 @@ const userHtml = (user: User): string => {
     <div class="ml-4" :class="{hidden: game === ''}"
       x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame('${user.id}')"
     >
-      <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-trueGray-50 text-xs">LIVE</span>
+      <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-truegray-50 text-xs">LIVE</span>
       <p class="text-sm" x-text="game"></p>
     </div>
     <input type="hidden" id="param-user_id" class="req-param" hx-swap-oob="true" name="user_id" value="${user.id}">

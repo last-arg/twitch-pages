@@ -7,14 +7,14 @@
         hx-target="#category-header"
       ></div>
       <h2 aria-hidden="true">
-        <img class="w-10 bg-trueGray-100" width="104" height="144">
+        <img class="w-10 bg-truegray-100" width="104" height="144">
         <p class="w-48"></p>
       </h2>
     </div>
     <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" @reset="formReset()">
       <label class="sr-only" for="search">Search stream title</label>
       <input class="w-full" type="search" id="search" placeholder="Stream title" @input.debounce.100ms="searchTitle()" value="">
-      <button type="reset" class="ml-2 btn bg-trueGray-200 hover:bg-trueGray-300">Reset</button>
+      <button type="reset" class="ml-2 btn bg-truegray-200 hover:bg-truegray-300">Reset</button>
     </form>
   </div>
   <div class="list-wrapper">
@@ -37,7 +37,7 @@
         <input id="param-game_id" type="hidden" class="req-param" name="game_id" value="">
         <span>Load more videos</span>
       </button>
-      <p class="load-more-msg hidden border-2 py-1 border-trueGray-300 text-trueGray-500">
+      <p class="load-more-msg hidden border-2 py-1 border-truegray-300 text-truegray-500">
         Loading...
       </p>
     </div>

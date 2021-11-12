@@ -13,7 +13,7 @@
       }
     </style>
   </head>
-  <body class="bg-trueGray-50 text-trueGray-800">
+  <body class="bg-truegray-50 text-truegray-800">
     <a href="#main" class="skip-content">skip to content</a>
     <div id="app">
       <header class="fixed top-0 w-full z-20 bg-gray-700">
@@ -59,9 +59,9 @@
                   </button>
                   <!-- search sidebar -->
                   <div class="sidebar-wrapper">
-                    <div class="flex flex-col bg-trueGray-700 h-full pb-4">
+                    <div class="flex flex-col bg-truegray-700 h-full pb-4">
                       <div class="flex justify-between mb-4">
-                        <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
+                        <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
                           <svg class="fill-current w-4 h-4 mr-2">
                             <use href="/assets/icons.svg#looking-class"></use>
                           </svg>
@@ -69,7 +69,7 @@
                         </h2>
 
                         <button type="button"
-                          class="block bg-violet-700 px-2.5 text-trueGray-100
+                          class="block bg-violet-700 px-2.5 text-truegray-100
                             opacity-70 hover:opacity-100 focus:opacity-100
                           "
                           x-on:click="closeSidebar()"
@@ -80,13 +80,13 @@
                           </svg>
                         </button>
                       </div>
-                      <p class="text-trueGray-300 ml-3"
+                      <p class="text-truegray-300 ml-3"
                         :class="{'hidden': searchValue.length === 0 || !loading}"
                       >Searching games</p>
-                      <p class="text-trueGray-300 ml-3"
+                      <p class="text-truegray-300 ml-3"
                         :class="{'hidden': loading || searchValue.length === 0 || searchResults.length !== 0}"
                       >Found no results</p>
-                      <p class="text-trueGray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
+                      <p class="text-truegray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
                       >Enter game name to search</p>
                       <!-- search results -->
                       <div class="overflow-y-auto relative">
@@ -96,7 +96,7 @@
                           <template x-for="game in searchResults" :key="game.id">
                             <li class="flex mt-4">
                               <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                  text-trueGray-300
+                                  text-truegray-300
                                   border-l-6 border-transparent
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
@@ -111,7 +111,7 @@
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
                                 <button x-data="{followed: false}"
                                   class="hover:text-violet-500"
                                   x-effect="followed = $store.games.hasId(game.id)"
@@ -150,16 +150,16 @@
                 </button>
                 <!-- games sidebar -->
                 <div class="sidebar-wrapper">
-                  <div class="flex flex-col bg-trueGray-700 h-full pb-4">
+                  <div class="flex flex-col bg-truegray-700 h-full pb-4">
                     <div class="flex justify-between mb-4">
-                      <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
+                      <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
                           <use href="/assets/icons.svg#game-controller"></use>
                         </svg>
                         Games
                       </h2>
                       <button type="button"
-                        class="block bg-violet-700 px-2.5 text-trueGray-100
+                        class="block bg-violet-700 px-2.5 text-truegray-100
                           opacity-70 hover:opacity-100 focus:opacity-100
                         "
                         x-on:click="closeSidebar()"
@@ -177,7 +177,7 @@
                           <template x-for="game in $store.games.data" :key="game.id">
                             <li class="flex">
                               <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                  text-trueGray-300
+                                  text-truegray-300
                                   border-l-6 border-transparent
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
@@ -189,10 +189,10 @@
                                 hx-target="#main"
                                 :hx-push-url="href_url"
                                 hx-get="/partials/category.html">
-                                <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                                <img class="w-14 mr-2" :src="getImageSrc(game.name, 104, 144)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
                                 <button class="hover:text-violet-500"
                                   x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
                                 >
@@ -229,16 +229,16 @@
                 </button>
                 <!-- streams sidebar -->
                 <div class="sidebar-wrapper">
-                  <div class="flex flex-col bg-trueGray-700 h-full pb-4">
+                  <div class="flex flex-col bg-truegray-700 h-full pb-4">
                     <div class="flex justify-between mb-4">
-                      <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-trueGray-100">
+                      <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
                         <svg class="fill-current w-4 h-4 mr-2">
                           <use href="/assets/icons.svg#people"></use>
                         </svg>
                         Streams
                       </h2>
                       <button type="button"
-                        class="block bg-violet-700 px-2.5 text-trueGray-100
+                        class="block bg-violet-700 px-2.5 text-truegray-100
                           opacity-70 hover:opacity-100 focus:opacity-100
                         "
                         x-on:click="closeSidebar()"
@@ -256,7 +256,7 @@
                           <template x-for="stream in $store.streams.data" :key="stream.user_id">
                             <li class="flex">
                               <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                  text-trueGray-300
+                                  text-truegray-300
                                   border-l-6 border-transparent
                                   hover:text-gray-50 hover:border-violet-700
                                   focus:text-gray-50 focus:border-violet-700
@@ -272,12 +272,12 @@
                                 <div class="flex-grow relative h-full flex items-center px-2">
                                   <p x-text="stream.user_name"></p>
                                   <div class="absolute bottom-0 px-2 right-0 left-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">
-                                    <span class="bg-red-900 opacity-60 rounded-sm px-1 text-trueGray-50">LIVE</span>
-                                    <p class="text-trueGray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
+                                    <span class="bg-red-900 opacity-60 rounded-sm px-1 text-truegray-50">LIVE</span>
+                                    <p class="text-truegray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
                                   </div>
                                 </div>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-trueGray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
                                 <button class="hover:text-violet-500"
                                   x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
                                 >

@@ -1,9 +1,12 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc } from './common'
 import { mainContent, urlRoot, UrlResolve } from 'config'
-import './style.css'
 import 'htmx.org';
 // import './libs/twinspark.js'
+
+// CSS
+// import 'uno.css'
+import './styles/main.css'
 
 interface Stream {
   user_id: string,
@@ -81,10 +84,10 @@ const twitch: {
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === urlRoot) return mainContent["top-games"]
   let contentKey = "not-found"
-  const newDirs = newPath.split("/").filter((p) => p.length > 0)
+  const newDirs = newPath.split("/").filter((path) => path.length > 0)
   for (const key in mainContent) {
     const obj = mainContent[key]
-    const dirs = obj.url.split("/").filter((p) => p.length > 0)
+    const dirs = obj.url.split("/").filter((path) => path.length > 0)
     if (dirs.length !== newDirs.length || dirs.length === 0) continue
     let isMatch = true
     for (let i = 0; i < dirs.length; i+=1) {
