@@ -10,6 +10,28 @@ const config = defineConfig({
   rules: [
     ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
+    [/^l-grid-?(.*)$/, async function([selector, min_width], {generator}) {
+      const classSelector = "." + escapeSelector(selector)
+      if (min_width === '') {
+        return `
+${classSelector} {
+  display: grid;
+  grid-gap: var(--grid-gap, 1rem);
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
+}
+@supports (width: min(250px, 100%)) {
+  ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr)); }
+}
+        `
+      }
+
+      const [,,attrs] = await generator.parseUtil(min_width)
+      const value = attrs[0][1]
+      if (value) return `${classSelector} { --grid-min: ${value} }`
+
+      return `/* Failed to generate rule from ${selector} */`
+
+    }, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],

@@ -409,33 +409,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
   padding: calc(var(--grid-gap, 1rem) * 0.5);
 }
 
-.grid {
-  display: grid;
-  grid-gap: var(--grid-gap, 1rem);
-  /*
-    This will produce horizontal scrollbar when going below minimum value (--grid-min).
-    Solutions:
-    1) Use CSS min function to figure out if provided value or 100% is smaller.
-    2) For wider browser support can manually write media query that changes
-       attribute grid-template-columns value.
-  */
-  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
-}
-
-@supports (width: min(250px, 100%)) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
-  }
-}
-
-.grid-min-72 {
-  --grid-min: 18rem
-}
-
-.grid-min-64 {
-  --grid-min: 16rem
-}
-
 .cover {
   display: flex;
   flex-direction: column;
@@ -593,7 +566,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .btn-setting{--un-bg-opacity:1;background-color:rgba(165,180,252,var(--un-bg-opacity));--un-text-opacity:1;color:rgba(0,0,0,var(--un-text-opacity));}
 .btn-twitch{display:inline-block;--un-bg-opacity:1;background-color:rgba(124,58,237,var(--un-bg-opacity));--un-text-opacity:1;color:rgba(245,245,245,var(--un-text-opacity));}
 .title-setting{font-size:1.25rem;line-height:1.75rem;--un-text-opacity:1;color:rgba(163,163,163,var(--un-text-opacity));}
-.stack-4px { --space: 4px; }
 
 .stack { display: flex; flex-direction: column; justify-content: flex-start; }
 .stack > template + *,
@@ -607,6 +579,18 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .stack-4 { --space: 1rem; }
 .stack-0 { --space: 0rem; }
 .stack-2 { --space: 0.5rem; }
+
+.l-grid {
+  display: grid;
+  grid-gap: var(--grid-gap, 1rem);
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
+}
+@supports (width: min(250px, 100%)) {
+  .l-grid { grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr)); }
+}
+        
+.l-grid-min-w-72 { --grid-min: 18rem }
+.l-grid-min-w-64 { --grid-min: 16rem }
 .sidebar-button{padding-left:0.75rem;padding-right:0.75rem;padding-top:0.375rem;padding-bottom:0.125rem;margin-right:1rem;display:block;--un-bg-opacity:1;background-color:rgba(24,24,27,var(--un-bg-opacity));border-bottom-width:5px;border-style:solid;--un-border-opacity:1;border-color:rgba(24,24,27,var(--un-border-opacity));--un-text-opacity:1;color:rgba(228,228,231,var(--un-text-opacity));height:100%;}
 .sidebar-button:hover{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button:focus{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
@@ -753,7 +737,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .flex-none{flex:none;}
 .flex-grow{flex-grow:1;}
 .flex{display:flex;}
-.grid{display:grid;}
 .gap-4{grid-gap:1rem;gap:1rem;}
 .gap-6{grid-gap:1.5rem;gap:1.5rem;}
 .gap-x-4{grid-column-gap:1rem;column-gap:1rem;}

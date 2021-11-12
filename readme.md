@@ -12,7 +12,6 @@ Pages:
 * User page: add video type tag(text) to items? hover?
 * Add scroll and shadwo to search sidebar
 * add line-clamp
-* grid and grid layout have overlap. rename grid layout
 
 ### Explore/Try
 * twinspark.js

@@ -44,33 +44,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
   padding: calc(var(--grid-gap, 1rem) * 0.5);
 }
 
-.grid {
-  display: grid;
-  grid-gap: var(--grid-gap, 1rem);
-  /*
-    This will produce horizontal scrollbar when going below minimum value (--grid-min).
-    Solutions:
-    1) Use CSS min function to figure out if provided value or 100% is smaller.
-    2) For wider browser support can manually write media query that changes
-       attribute grid-template-columns value.
-  */
-  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
-}
-
-@supports (width: min(250px, 100%)) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
-  }
-}
-
-.grid-min-72 {
-  --grid-min: 18rem
-}
-
-.grid-min-64 {
-  --grid-min: 16rem
-}
-
 .cover {
   display: flex;
   flex-direction: column;
