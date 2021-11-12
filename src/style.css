@@ -12,33 +12,10 @@ img {
   width: 100%;
 }
 
-.stack-m-4 {
-  --space: 1rem
-}
-
-.stack-m-2 {
-  --space: 0.5rem
-}
-
-.stack-m-0 {
-  --space: 0
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-/* To deal with template elements */
-.stack > template + *,
-.stack > * {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.stack > * + * {
-  margin-top: var(--space, 1.5rem);
+#main input {
+  border: 1px solid black;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 /*
@@ -231,12 +208,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 
 .list-general input {
   width: 5rem;
-}
-
-#main input {
-  border: 1px solid black;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
 }
 
 .fade-in {

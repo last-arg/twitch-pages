@@ -143,7 +143,7 @@ const streamsHtml = (streams: Video[]): string => {
             >
               <img class="w-14 border border-truegray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
             </a>
-            <div class="stack stack-m-0 ml-2">
+            <div class="stack stack-0 ml-2">
               <div class="flex items-center mb-auto">
                 <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
                   hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"

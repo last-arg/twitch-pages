@@ -9,6 +9,7 @@ const srcStyleCss = fs.readFileSync('src/style.css')
 const config = defineConfig({
   rules: [
     ['fill-current', { fill: 'currentColor' }],
+    [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
@@ -115,6 +116,29 @@ async function ruleFilterCheckboxBtn([], { rawSelector, generator }) {
   }
   
   return result
+}
+
+function ruleStack([selector, nr, unit]) {
+  const classSelector = "." + escapeSelector(selector)
+  const css_attr = "--space"
+
+  if (nr === '' && unit === '') {
+    return `
+${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
+${classSelector} > template + *,
+${classSelector} > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+${classSelector} > * + * { margin-top: var(${css_attr}, 1.5rem); }
+    `
+  }
+
+  if (unit !== '') return `${classSelector} { ${css_attr}: ${nr}${unit}; }`
+  if (nr !== '') return `${classSelector} { ${css_attr}: ${nr / 4}rem; }`
+
+  return `/* Failed to generate rule from ${selector} */`
 }
 
 export default config
