@@ -377,33 +377,10 @@ img {
   width: 100%;
 }
 
-.stack-4 {
-  --space: 1rem
-}
-
-.stack-2 {
-  --space: 0.5rem
-}
-
-.stack-0 {
-  --space: 0
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-/* To deal with template elements */
-.stack > template + *,
-.stack > * {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.stack > * + * {
-  margin-top: var(--space, 1.5rem);
+#main input {
+  border: 1px solid black;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 /*
@@ -459,15 +436,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   --grid-min: 16rem
 }
 
-.grid-gap-6 {
-  --grid-gap: 1.5rem
-}
-
 .cover {
   display: flex;
   flex-direction: column;
 }
-.cover > h1 {
+.cover > .cover-main {
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -476,14 +449,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.cover > h1 {
+.cover > .cover-main {
   margin-top: auto;
   margin-bottom: auto;
 }
-.cover > :first-child:not(h1) {
+.cover > :first-child:not(.cover-main) {
   margin-top: 0;
 }
-.cover > :last-child:not(h1) {
+.cover > :last-child:not(.cover-main) {
   margin-bottom: 0;
 }
 
@@ -598,12 +571,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
   width: 5rem;
 }
 
-#main input {
-  border: 1px solid black;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-}
-
 .fade-in {
   animation-name: fadein;
   animation-duration: 300ms;
@@ -637,9 +604,9 @@ For example if you have white-space: nowrap on some element (to truncate it).
 
 .stack > * + * { margin-top: var(--space, 1.5rem); }
     
-.stack-4 { --space: 4rem; }
+.stack-4 { --space: 1rem; }
 .stack-0 { --space: 0rem; }
-.stack-2 { --space: 2rem; }
+.stack-2 { --space: 0.5rem; }
 .sidebar-button{padding-left:0.75rem;padding-right:0.75rem;padding-top:0.375rem;padding-bottom:0.125rem;margin-right:1rem;display:block;--un-bg-opacity:1;background-color:rgba(24,24,27,var(--un-bg-opacity));border-bottom-width:5px;border-style:solid;--un-border-opacity:1;border-color:rgba(24,24,27,var(--un-border-opacity));--un-text-opacity:1;color:rgba(228,228,231,var(--un-text-opacity));height:100%;}
 .sidebar-button:hover{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button:focus{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
@@ -788,7 +755,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .flex{display:flex;}
 .grid{display:grid;}
 .gap-4{grid-gap:1rem;gap:1rem;}
-.grid-gap-6{grid-gap:1.5rem;gap:1.5rem;}
+.gap-6{grid-gap:1.5rem;gap:1.5rem;}
 .gap-x-4{grid-column-gap:1rem;column-gap:1rem;}
 .gap-y-6{grid-row-gap:1.5rem;row-gap:1.5rem;}
 .relative{position:relative;}

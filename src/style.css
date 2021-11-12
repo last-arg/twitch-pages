@@ -71,15 +71,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   --grid-min: 16rem
 }
 
-.grid-gap-6 {
-  --grid-gap: 1.5rem
-}
-
 .cover {
   display: flex;
   flex-direction: column;
 }
-.cover > h1 {
+.cover > .cover-main {
   margin-top: auto;
   margin-bottom: auto;
 }
@@ -88,14 +84,14 @@ For example if you have white-space: nowrap on some element (to truncate it).
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.cover > h1 {
+.cover > .cover-main {
   margin-top: auto;
   margin-bottom: auto;
 }
-.cover > :first-child:not(h1) {
+.cover > :first-child:not(.cover-main) {
   margin-top: 0;
 }
-.cover > :last-child:not(h1) {
+.cover > :last-child:not(.cover-main) {
   margin-bottom: 0;
 }
 
