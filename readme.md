@@ -10,7 +10,7 @@ Pages:
 ## TODO
 * CSS .filter-wrapper remove hardcoded number from 'top' attribute
 * User page: add video type tag(text) to items? hover?
-* Add scroll and shadwo to search sidebar
+* Add scroll and shadow to search sidebar
 * add line-clamp
 
 ### Explore/Try

@@ -10,28 +10,7 @@ const config = defineConfig({
   rules: [
     ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
-    [/^l-grid-?(.*)$/, async function([selector, min_width], {generator}) {
-      const classSelector = "." + escapeSelector(selector)
-      if (min_width === '') {
-        return `
-${classSelector} {
-  display: grid;
-  grid-gap: var(--grid-gap, 1rem);
-  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr));
-}
-@supports (width: min(250px, 100%)) {
-  ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(var(--grid-min, 20rem), 1fr)); }
-}
-        `
-      }
-
-      const [,,attrs] = await generator.parseUtil(min_width)
-      const value = attrs[0][1]
-      if (value) return `${classSelector} { --grid-min: ${value} }`
-
-      return `/* Failed to generate rule from ${selector} */`
-
-    }, {layer: "component"}],
+    [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
@@ -160,7 +139,29 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1.5rem); }
   if (unit !== '') return `${classSelector} { ${css_attr}: ${nr}${unit}; }`
   if (nr !== '') return `${classSelector} { ${css_attr}: ${nr / 4}rem; }`
 
-  return `/* Failed to generate rule from ${selector} */`
+  return `/* Failed to generate stack rule from ${selector} */`
+}
+
+async function ruleLayoutGrid([selector, min_width], {generator}) {
+  const classSelector = "." + escapeSelector(selector)
+  if (min_width === '') {
+    return `
+${classSelector} {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 100%;
+}
+@supports (width: min(var(--grid-min), 100%)) {
+  ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min), 100%), 1fr)); }
+}
+    `
+  }
+
+  const [,,attrs] = await generator.parseUtil(min_width)
+  const value = attrs[0][1]
+  if (value) return `${classSelector} { --grid-min: ${value} }`
+
+  return `/* Failed to generate l-grid rule from ${selector} */`
 }
 
 export default config
