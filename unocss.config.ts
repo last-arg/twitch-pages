@@ -11,6 +11,7 @@ const config = defineConfig({
     ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
+    [/^line\-clamp-(\d+|none)$/, ruleLineClamp, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
@@ -162,6 +163,21 @@ ${classSelector} {
   if (value) return `${classSelector} { --grid-min: ${value} }`
 
   return `/* Failed to generate l-grid rule from ${selector} */`
+}
+
+function ruleLineClamp([selector, value]) {
+  const classSelector = "." + escapeSelector(selector)
+  if (value === '') return `/* Failed to generate line-clamp rule from '${selector}' */`
+  if (value === 'none') return `${classSelector}{-webkit-line-clamp: unset;}`
+
+  return `
+${classSelector} {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${value};
+}
+  `
 }
 
 export default config
