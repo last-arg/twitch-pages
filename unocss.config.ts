@@ -1,4 +1,4 @@
-import { defineConfig, escapeSelector } from "unocss";
+import { defineConfig, escapeSelector, presetUno, createGenerator, RawUtil } from "unocss";
 import fs from 'fs';
 
 // npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
@@ -9,6 +9,10 @@ const srcStyleCss = fs.readFileSync('src/style.css')
 const config = defineConfig({
   rules: [
     ['fill-current', { fill: 'currentColor' }],
+    // CSS files' @apply rules will be replaced with CSS attributes.
+    // Don't know if good idea to do it in unocss rules.
+    // Can't do in preflights getCSS function because it isn't async.
+    [/^html$/, ruleAsCssApplyReplace, {layer: "base"}],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^line\-clamp-(\d+|none)$/, ruleLineClamp, {layer: "component"}],
@@ -27,22 +31,6 @@ const config = defineConfig({
   ],
   preflights: [
     { getCSS: () => resetTailwind.toString(), layer: 'reset' },
-    { getCSS: () => {
-      let result = srcStyleCss.toString();
-      // const ru = {
-      //   index: 0,
-      //   rawCSS: result,
-      // }
-      // const r = generator.stringifyUtil(ru)
-      // console.log(r)
-      // const matched = generator.matchVariants("")
-      // result = result.replaceAll(/@apply (.+);+/g, async (_, c) => {
-      //   const [[,,css_body]] = await generator.stringifyShortcuts(matched, c.split(" "))
-      //   console.log(css_body)
-      //   return "testthis"
-      // })
-      return result;
-    } , layer: 'base' },
   ],
   layers: {
     reset: 0,
@@ -178,6 +166,20 @@ ${classSelector} {
   -webkit-line-clamp: ${value};
 }
   `
+}
+
+async function ruleAsCssApplyReplace(_, {generator: gen}) {
+  let result = srcStyleCss.toString();
+  const matched = gen.matchVariants("")
+  const promises = []
+  const regex = /@apply (.+)/g
+  result.replace(regex, (_, c) => {
+    const p = gen.stringifyShortcuts(matched, c.split(" "))
+    promises.push(p)
+    return ""
+  })
+  const data = await Promise.all(promises)
+  return result.replace(regex, () => data.shift()[0][2]);
 }
 
 export default config
