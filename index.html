@@ -111,7 +111,7 @@
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                                 <span x-text="game.name"></span>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
                                 <button x-data="{followed: false}"
                                   class="hover:text-violet-500"
                                   x-effect="followed = $store.games.hasId(game.id)"
@@ -192,7 +192,7 @@
                                 <img class="w-14 mr-2" :src="getImageSrc(game.name, 104, 144)" alt="" width="104" height="144" />
                                 <p x-text="game.name"></p>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
                                 <button class="hover:text-violet-500"
                                   x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
                                 >
@@ -277,7 +277,7 @@
                                   </div>
                                 </div>
                               </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-px text-truegray-400 px-1.5 py-1.5">
+                              <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
                                 <button class="hover:text-violet-500"
                                   x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
                                 >

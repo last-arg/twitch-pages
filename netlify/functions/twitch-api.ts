@@ -98,7 +98,7 @@ const categoryTitleHtml = (game: Game): string => {
         </svg>
       </a>
     </h2>
-    <div class="border-l-2 border-truegray-50 h-full"></div>
+    <div class="border-l-2 border-truegray-50 place-self-stretch"></div>
     <button x-data="{followed: false}"
       class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
       x-effect="followed = $store.games.hasId('${game.id}')"
