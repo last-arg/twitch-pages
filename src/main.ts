@@ -717,6 +717,7 @@ const init = async () => {
       const [key, token] = paramStr.split("=")
       if (key === "access_token") {
         twitch.setUserToken(token)
+        location.hash = ""
         break
       }
     }
