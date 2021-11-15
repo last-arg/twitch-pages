@@ -2,16 +2,7 @@
   <div class="flex">
     <h2 class="px-3 py-2 bg-white">Settings</h2>
   </div>
-  <div class="bg-white p-3 stack">
-    <section>
-      <h3 class="title-setting">Twitch</h3>
-      <button type="button" class="btn btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
-        @click="$store.global.twitch.logout()"
-      >Log out from Twitch</button>
-      <a :href="$store.global.twitch_login_url"
-        class="btn btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
-      >Log in with Twitch</a>
-    </section>
+  <div class="bg-white p-3 flex flex-wrap gap-6 justify-between">
     <section>
       <h3 class="title-setting">General</h3>
       <form id="settings-general" class="stack mt-1.5"
@@ -67,6 +58,15 @@
         <button type="submit" class="btn bg-emerald-400 text-black hover:bg-emerald-500">Save general settings</button>
         </div>
       </form>
+    </section>
+    <section>
+      <h3 class="title-setting">Twitch</h3>
+      <button type="button" class="btn btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
+        @click="$store.global.twitch.logout()"
+      >Log out from Twitch</button>
+      <a :href="$store.global.twitch_login_url"
+        class="btn btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
+      >Log in with Twitch</a>
     </section>
     <section>
       <h3 class="title-setting">Cache</h3>
