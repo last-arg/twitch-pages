@@ -46,21 +46,14 @@ const twitch: {
   login_url: string;
   twitch_token: string | null;
   user_token: string | null;
-  updateToken: () => Promise<void>;
   setTwitchToken: (token: string) => void;
   setUserToken: (token: string) => void;
   getToken: () => string | null;
-  hasValidToken(): boolean;
   logout(): void;
 } = {
   login_url: `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`,
   twitch_token: localStorage.getItem("twitch_token"),
   user_token: localStorage.getItem("user_token"),
-  updateToken: async function() {
-    const resp = await fetch("/api/twitch-api?request_token")
-    const token = await resp.text()
-    this.setTwitchToken(token)
-  },
   setTwitchToken: function(token: string): void {
     this.twitch_token = token
     localStorage.setItem("twitch_token", this.twitch_token)
@@ -76,9 +69,6 @@ const twitch: {
   getToken: function(): string | null {
     return this.twitch_token || this.user_token
   },
-  hasValidToken(): boolean {
-    return (this.twitch_token || this.user_token) !== null
-  }
 }
 
 const getUrlObject = (newPath: string): UrlResolve => {
@@ -723,11 +713,6 @@ const init = async () => {
     }
   }
 
-  // Init
-  if (!twitch.hasValidToken()) {
-    await twitch.updateToken()
-    headers["Authorization"] = `Bearer ${twitch.getToken()!}`;
-  }
   alpineInit()
   initHtmx()
   handleSidebarScroll()

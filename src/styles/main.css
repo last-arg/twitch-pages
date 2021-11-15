@@ -523,7 +523,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .filter-wrapper {
   position: sticky;
   z-index: 10;
-  /* TODO: remove hardcoded number */
   top: 37px;
   border-bottom: 1rem solid;
   border-image: linear-gradient(#fafafa, transparent) 100;
@@ -737,7 +736,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .text-truegray-500{--un-text-opacity:1;color:rgba(115,115,115,var(--un-text-opacity));}
 .text-truegray-800{--un-text-opacity:1;color:rgba(38,38,38,var(--un-text-opacity));}
 .text-violet-400{--un-text-opacity:1;color:rgba(167,139,250,var(--un-text-opacity));}
-.shadow{--un-shadow-color:0,0,0;--un-shadow:0 1px 3px 0 rgba(var(--un-shadow-color), 0.1), 0 1px 2px 0 rgba(var(--un-shadow-color), 0.06);box-shadow:var(--un-ring-offset-shadow, 0 0 #0000), var(--un-ring-shadow, 0 0 #0000), var(--un-shadow);}
 .shadow-md{--un-shadow-color:0,0,0;--un-shadow:0 4px 6px -1px rgba(var(--un-shadow-color), 0.1), 0 2px 4px -1px rgba(var(--un-shadow-color), 0.06);box-shadow:var(--un-ring-offset-shadow, 0 0 #0000), var(--un-ring-shadow, 0 0 #0000), var(--un-shadow);}
 .flex-col{flex-direction:column;}
 .flex-wrap{flex-wrap:wrap;}
