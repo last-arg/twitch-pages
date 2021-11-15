@@ -5,7 +5,8 @@
   "scripts": {
     "netlify": "netlify dev",
     "dev": "vite",
-    "build": "tsc && vite build",
+    "css": "npx unocss \"index.html\" \"netlify/functions/*.{js,ts}\" \"public/partials/*.html\" \"src/*.{js,ts}\" -o src/styles/main.css",
+    "build": "npm run css && tsc && vite build",
     "serve": "vite preview"
   },
   "dependencies": {
