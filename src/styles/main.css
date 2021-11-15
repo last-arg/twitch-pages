@@ -558,12 +558,12 @@ For example if you have white-space: nowrap on some element (to truncate it).
 /* layer: component */
 .btn-setting:hover{--un-bg-opacity:1;background-color:rgba(129,140,248,var(--un-bg-opacity));}
 .btn-twitch:hover{--un-bg-opacity:1;background-color:rgba(91,33,182,var(--un-bg-opacity));}
-.load-more-msg{padding-top:0.25rem;padding-bottom:0.25rem;border-width:2px;border-style:solid;}
 .search-wrapper{margin-left:auto;margin-right:1rem;border-bottom-width:5px;border-style:solid;--un-border-opacity:1;border-color:rgba(24,24,27,var(--un-border-opacity));}
 .search-wrapper:focus-within{--un-border-opacity:1;border-color:rgba(109,40,217,var(--un-border-opacity));}
 .btn{padding-top:0.25rem;padding-bottom:0.25rem;padding-left:0.5rem;padding-right:0.5rem;border-radius:0.125rem;}
 .btn-setting{--un-bg-opacity:1;background-color:rgba(165,180,252,var(--un-bg-opacity));--un-text-opacity:1;color:rgba(0,0,0,var(--un-text-opacity));}
 .btn-twitch{display:inline-block;--un-bg-opacity:1;background-color:rgba(124,58,237,var(--un-bg-opacity));--un-text-opacity:1;color:rgba(245,245,245,var(--un-text-opacity));}
+.load-more-msg{padding-top:0.25rem;padding-bottom:0.25rem;border-width:2px;border-style:solid;--un-border-opacity:1;border-color:rgba(212,212,212,var(--un-border-opacity));--un-text-opacity:1;color:rgba(115,115,115,var(--un-text-opacity));}
 .title-setting{font-size:1.25rem;line-height:1.75rem;--un-text-opacity:1;color:rgba(163,163,163,var(--un-text-opacity));}
 
 .stack { display: flex; flex-direction: column; justify-content: flex-start; }

@@ -27,7 +27,7 @@ const config = defineConfig({
     ['btn-twitch', 'bg-violet-600 text-truegray-100 inline-block hover:bg-violet-800'],
     ['title-setting', 'text-xl text-truegray-400'],
     ['search-wrapper', 'ml-auto mr-4 border-b-5 border-gray-900 focus-within:border-violet-700'],
-    ['load-more-msg', 'border-2 py-1 border-trueGray-300 text-trueGray-500'],
+    ['load-more-msg', 'border-2 py-1 border-truegray-300 text-truegray-500'],
   ],
   preflights: [
     { getCSS: () => resetTailwind.toString(), layer: 'reset' },
