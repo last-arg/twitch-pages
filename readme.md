@@ -7,10 +7,6 @@ Pages:
 * Settings (non-twitch api page)
 
 
-## TODO
-* CSS .filter-wrapper remove hardcoded number from 'top' attribute
-* User page: add video type tag(text) to items? hover?
-
 ### Explore/Try
 * twinspark.js
 

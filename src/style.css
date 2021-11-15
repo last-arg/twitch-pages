@@ -158,7 +158,6 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .filter-wrapper {
   position: sticky;
   z-index: 10;
-  /* TODO: remove hardcoded number */
   top: 37px;
   border-bottom: 1rem solid;
   border-image: linear-gradient(#fafafa, transparent) 100;
