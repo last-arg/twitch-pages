@@ -89,49 +89,51 @@
                       <p class="text-truegray-300 ml-3" :class="{'hidden': searchValue.length !== 0}"
                       >Enter game name to search</p>
                       <!-- search results -->
-                      <div class="overflow-y-auto relative">
-                        <div class="shadow shadow-top"></div>
-                        <div class="shadow shadow-bottom"></div>
-                        <ul class="stack stack-4" x-show="state === 'search'">
-                          <template x-for="game in searchResults" :key="game.id">
-                            <li class="flex mt-4">
-                              <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                                  text-truegray-300
-                                  border-l-6 border-transparent
-                                  hover:text-gray-50 hover:border-violet-700
-                                  focus:text-gray-50 focus:border-violet-700
-                                "
-                                x-data="{href_url: $store.global.mainContent['category'].url.replace(':name', game.name)}"
-                                :href="href_url"
-                                x-init="htmx.process($el)"
-                                x-on:click="clickSidebarGame(game.name)"
-                                hx-target="#main"
-                                :hx-push-url="href_url"
-                                hx-get="/partials/category.html">
-                                <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
-                                <span x-text="game.name"></span>
-                              </a>
-                              <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
-                                <button x-data="{followed: false}"
-                                  class="hover:text-violet-500"
-                                  x-effect="followed = $store.games.hasId(game.id)"
-                                  x-on:click="$store.games.toggle(game.id, game.name)" type="button"
-                                  :aria-label="followed ? 'UnFollow' : 'Follow'"
-                                >
-                                  <svg class="fill-current w-5 h-5">
-                                    <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
-                                    <use x-show="followed" href="/assets/icons.svg#star-full"></use>
-                                  </svg>
-                                </button>
-                                <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
-                                  <svg class="fill-current w-5 h-5">
-                                    <use href="/assets/icons.svg#external-link"></use>
-                                  </svg>
+                      <div class="scroll-container overflow-y-auto relative">
+                        <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
+                        <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
+                        <div class="scrollbox">
+                          <ul class="stack stack-4" x-show="state === 'search'">
+                            <template x-for="game in searchResults" :key="game.id">
+                              <li class="flex mt-4">
+                                <a class="flex items-center flex-grow pl-1.5 bg-gray-800
+                                    text-truegray-300
+                                    border-l-6 border-transparent
+                                    hover:text-gray-50 hover:border-violet-700
+                                    focus:text-gray-50 focus:border-violet-700
+                                  "
+                                  x-data="{href_url: $store.global.mainContent['category'].url.replace(':name', game.name)}"
+                                  :href="href_url"
+                                  x-init="htmx.process($el)"
+                                  x-on:click="clickSidebarGame(game.name)"
+                                  hx-target="#main"
+                                  :hx-push-url="href_url"
+                                  hx-get="/partials/category.html">
+                                  <img class="w-14 mr-2" :src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+                                  <span x-text="game.name"></span>
                                 </a>
-                              </div>
-                            </li>
-                          </template>
-                        </ul>
+                                <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
+                                  <button x-data="{followed: false}"
+                                    class="hover:text-violet-500"
+                                    x-effect="followed = $store.games.hasId(game.id)"
+                                    x-on:click="$store.games.toggle(game.id, game.name)" type="button"
+                                    :aria-label="followed ? 'UnFollow' : 'Follow'"
+                                  >
+                                    <svg class="fill-current w-5 h-5">
+                                      <use x-show="!followed" href="/assets/icons.svg#star-empty"></use>
+                                      <use x-show="followed" href="/assets/icons.svg#star-full"></use>
+                                    </svg>
+                                  </button>
+                                  <a class="hover:text-violet-500" :href="`https://www.twitch.tv/directory/game/${game.name}`">
+                                    <svg class="fill-current w-5 h-5">
+                                      <use href="/assets/icons.svg#external-link"></use>
+                                    </svg>
+                                  </a>
+                                </div>
+                              </li>
+                            </template>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
