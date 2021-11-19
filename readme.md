@@ -7,9 +7,6 @@ Pages:
 * Settings (non-twitch api page)
 
 
-## TODO
-* When unocss negative z-index is fixed, replace where applicable
-
 ### Explore/Try
 * twinspark.js
 

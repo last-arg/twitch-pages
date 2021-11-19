@@ -67,11 +67,9 @@ async function ruleSidebarWrapper([], { rawSelector, generator }) {
   const matched = generator.matchVariants("")
   const classSelector = "." + escapeSelector(rawSelector)
   {
-    // TODO: add negative z-index when unocss 0.9.5 release
-    // TODO: remove 'z-index:-10' from 'result += ...'
-    const default_rules = ["h-screen", "pt-11", "pb-2", "absolute", "top-0", "left-full", "max-w-20rem", "w-full", "transform"]
+    const default_rules = ["h-screen", "pt-11", "pb-2", "absolute", "top-0", "left-full", "max-w-20rem", "w-full", "transform", "-z-10"]
     const [[,,css_body]] = await generator.stringifyShortcuts(matched, default_rules)
-    result += `${classSelector}{${css_body}transition: visibility 150ms, opacity 150ms, transform 150ms;z-index:-10}\n`
+    result += `${classSelector}{${css_body}transition: visibility 150ms, opacity 150ms, transform 150ms;}\n`
   }
   {
     const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["translate-x-0", "opacity-0", "invisible"])

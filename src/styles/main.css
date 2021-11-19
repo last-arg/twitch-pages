@@ -575,8 +575,8 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .stack > * + * { margin-top: var(--space, 1.5rem); }
     
 .stack-4 { --space: 1rem; }
-.stack-2 { --space: 0.5rem; }
 .stack-0 { --space: 0rem; }
+.stack-2 { --space: 0.5rem; }
 
 .l-grid {
   display: grid;
@@ -593,7 +593,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .sidebar-button:hover{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button:focus{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button[aria-expanded="true"] {--un-border-opacity:1;border-color:rgba(109,40,217,var(--un-border-opacity));}
-.sidebar-wrapper{padding-top:2.75rem;padding-bottom:0.5rem;position:absolute;height:100vh;max-width:20rem;width:100%;top:0rem;left:100%;--un-rotate:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;transform:rotate(var(--un-rotate)) scaleX(var(--un-scale-x)) scaleY(var(--un-scale-y)) scaleZ(var(--un-scale-z)) skewX(var(--un-skew-x)) skewY(var(--un-skew-y)) translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) translateZ(var(--un-translate-z));transition: visibility 150ms, opacity 150ms, transform 150ms;z-index:-10}
+.sidebar-wrapper{padding-top:2.75rem;padding-bottom:0.5rem;position:absolute;height:100vh;max-width:20rem;width:100%;top:0rem;left:100%;z-index:-10;--un-rotate:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;transform:rotate(var(--un-rotate)) scaleX(var(--un-scale-x)) scaleY(var(--un-scale-y)) scaleZ(var(--un-scale-z)) skewX(var(--un-skew-x)) skewY(var(--un-skew-y)) translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) translateZ(var(--un-translate-z));transition: visibility 150ms, opacity 150ms, transform 150ms;}
 [aria-expanded="false"] ~ .sidebar-wrapper{opacity:0;visibility:hidden;--un-translate-x:0rem;}
 [aria-expanded="true"] ~ .sidebar-wrapper{opacity:1;visibility:visible;;--un-translate-x:-100%;}
 
