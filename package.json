@@ -18,12 +18,12 @@
     "@leanadmin/alpine-typescript": "^0.1.25",
     "@netlify/functions": "^0.8.0",
     "@types/node": "^16.11.6",
-    "@unocss/cli": "^0.8.1",
-    "@unocss/reset": "^0.8.1",
+    "@unocss/cli": "^0.11.0",
+    "@unocss/reset": "^0.11.0",
     "netlify-cli": "^6.14.19",
     "node-fetch": "^2.6.6",
     "typescript": "^4.3.2",
-    "unocss": "^0.8.1",
+    "unocss": "^0.11.0",
     "vite": "^2.6.14"
   }
 }
