@@ -575,8 +575,8 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .stack > * + * { margin-top: var(--space, 1.5rem); }
     
 .stack-4 { --space: 1rem; }
-.stack-0 { --space: 0rem; }
 .stack-2 { --space: 0.5rem; }
+.stack-0 { --space: 0rem; }
 
 .l-grid {
   display: grid;
@@ -589,19 +589,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
     
 .l-grid-min-w-72 { --grid-min: 18rem }
 .l-grid-min-w-64 { --grid-min: 16rem }
-
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-  
 .sidebar-button{padding-left:0.75rem;padding-right:0.75rem;padding-top:0.375rem;padding-bottom:0.125rem;margin-right:1rem;display:block;--un-bg-opacity:1;background-color:rgba(24,24,27,var(--un-bg-opacity));border-bottom-width:5px;border-style:solid;--un-border-opacity:1;border-color:rgba(24,24,27,var(--un-border-opacity));--un-text-opacity:1;color:rgba(228,228,231,var(--un-text-opacity));height:100%;}
 .sidebar-button:hover{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button:focus{--un-border-opacity:1;border-color:rgba(113,113,122,var(--un-border-opacity));--un-text-opacity:1;color:rgba(250,250,250,var(--un-text-opacity));}
 .sidebar-button[aria-expanded="true"] {--un-border-opacity:1;border-color:rgba(109,40,217,var(--un-border-opacity));}
-.sidebar-wrapper{padding-top:2.75rem;padding-bottom:0.5rem;position:absolute;width:100%;height:100vh;max-width:20rem;top:0rem;left:100%;--un-rotate:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;transform:rotate(var(--un-rotate)) scaleX(var(--un-scale-x)) scaleY(var(--un-scale-y)) scaleZ(var(--un-scale-z)) skewX(var(--un-skew-x)) skewY(var(--un-skew-y)) translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) translateZ(var(--un-translate-z));transition: visibility 150ms, opacity 150ms, transform 150ms;z-index:-10}
+.sidebar-wrapper{padding-top:2.75rem;padding-bottom:0.5rem;position:absolute;height:100vh;max-width:20rem;width:100%;top:0rem;left:100%;--un-rotate:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;transform:rotate(var(--un-rotate)) scaleX(var(--un-scale-x)) scaleY(var(--un-scale-y)) scaleZ(var(--un-scale-z)) skewX(var(--un-skew-x)) skewY(var(--un-skew-y)) translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) translateZ(var(--un-translate-z));transition: visibility 150ms, opacity 150ms, transform 150ms;z-index:-10}
 [aria-expanded="false"] ~ .sidebar-wrapper{opacity:0;visibility:hidden;--un-translate-x:0rem;}
 [aria-expanded="true"] ~ .sidebar-wrapper{opacity:1;visibility:visible;;--un-translate-x:-100%;}
 
@@ -661,6 +653,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .mt-1\.5{margin-top:0.375rem;}
 .mt-4{margin-top:1rem;}
 .mt-6{margin-top:1.5rem;}
+.line-clamp-2{overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;}
 .block{display:block;}
 .inline-block{display:inline-block;}
 .hidden{display:none;}
@@ -750,11 +743,10 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .relative{position:relative;}
 .absolute{position:absolute;}
 .fixed{position:fixed;}
-.w-full{width:100%;}
-.h-full{height:100%;}
 .h-4{height:1rem;}
 .h-5{height:1.25rem;}
 .h-6{height:1.5rem;}
+.h-full{height:100%;}
 .max-w-30ch{max-width:30ch;}
 .min-w-22ch{min-width:22ch;}
 .w-0{width:0rem;}
@@ -764,6 +756,7 @@ For example if you have white-space: nowrap on some element (to truncate it).
 .w-4{width:1rem;}
 .w-48{width:12rem;}
 .w-5{width:1.25rem;}
+.w-full{width:100%;}
 .max-w-screen-2xl{max-width:1536px;}
 .visible{visibility:visible;}
 .align-top{vertical-align:top;}

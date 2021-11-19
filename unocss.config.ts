@@ -15,7 +15,6 @@ const config = defineConfig({
     [/^html$/, ruleAsCssApplyReplace, {layer: "base"}],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
-    [/^line\-clamp-(\d+|none)$/, ruleLineClamp, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
@@ -68,6 +67,8 @@ async function ruleSidebarWrapper([], { rawSelector, generator }) {
   const matched = generator.matchVariants("")
   const classSelector = "." + escapeSelector(rawSelector)
   {
+    // TODO: add negative z-index when unocss 0.9.5 release
+    // TODO: remove 'z-index:-10' from 'result += ...'
     const default_rules = ["h-screen", "pt-11", "pb-2", "absolute", "top-0", "left-full", "max-w-20rem", "w-full", "transform"]
     const [[,,css_body]] = await generator.stringifyShortcuts(matched, default_rules)
     result += `${classSelector}{${css_body}transition: visibility 150ms, opacity 150ms, transform 150ms;z-index:-10}\n`
@@ -151,21 +152,6 @@ ${classSelector} {
   if (value) return `${classSelector} { --grid-min: ${value} }`
 
   return `/* Failed to generate l-grid rule from ${selector} */`
-}
-
-function ruleLineClamp([selector, value]) {
-  const classSelector = "." + escapeSelector(selector)
-  if (value === '') return `/* Failed to generate line-clamp rule from '${selector}' */`
-  if (value === 'none') return `${classSelector}{-webkit-line-clamp: unset;}`
-
-  return `
-${classSelector} {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${value};
-}
-  `
 }
 
 async function ruleAsCssApplyReplace(_, {generator: gen}) {
