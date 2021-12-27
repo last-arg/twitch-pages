@@ -6,9 +6,9 @@ Pages:
 * User videos
 * Settings (non-twitch api page)
 
-
-### Explore/Try
-* twinspark.js
+## TODO
+* ??? twinspark.js
+* Change pages' (top-games, user, streamer, category/game) initial state to loading
 
 ## Resources
 
