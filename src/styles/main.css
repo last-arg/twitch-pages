@@ -500,11 +500,11 @@ For example if you have white-space: nowrap on some element (to truncate it).
   box-shadow: 0 -2em 1em -1em #404040 inset;
 }
 
-.load-more-btn.htmx-request {
+.load-more-btn[aria-disabled="true"] {
   display: none;
 }
 
-.htmx-request + .load-more-msg {
+.load-more-btn[aria-disabled="true"] + .load-more-msg {
   display: block;
 }
 
