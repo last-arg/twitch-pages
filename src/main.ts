@@ -6,7 +6,7 @@ import 'htmx.org';
 
 // CSS
 // import 'uno.css'
-import './styles/main.css'
+// import './styles/main.css'
 
 interface Stream {
   user_id: string,
@@ -719,6 +719,3 @@ const init = async () => {
 }
 
 init()
-
-
-
