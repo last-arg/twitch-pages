@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs'
 import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc } from './common'
-import { mainContent, urlRoot, UrlResolve } from 'config'
+import { mainContent, UrlResolve } from 'config'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
@@ -72,7 +72,7 @@ const twitch: {
 }
 
 const getUrlObject = (newPath: string): UrlResolve => {
-  if (newPath === urlRoot) return mainContent["top-games"]
+  if (newPath === "/") return mainContent["top-games"]
   let contentKey = "not-found"
   const newDirs = newPath.split("/").filter((path) => path.length > 0)
   for (const key in mainContent) {
