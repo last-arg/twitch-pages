@@ -16,6 +16,8 @@ to = '/index.html'
   publish = "dist"
 
 [dev]
-autoLaunch = false
-command = "npm run dev"
+  autoLaunch = false
+  command = "npx @11ty/eleventy --serve"
+  framework = "#custom"
+  targetPort = 8080
 
