@@ -62,25 +62,7 @@ title: "Home | Twitch Pages"
             <!-- games sidebar -->
             <div class="sidebar-wrapper">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
-                <div class="flex justify-between mb-4">
-                  <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
-                    <svg class="fill-current w-4 h-4 mr-2">
-                      <use href="/public/assets/icons.svg#game-controller"></use>
-                    </svg>
-                    Games
-                  </h2>
-                  <button type="button"
-                    class="block bg-violet-700 px-2.5 text-truegray-100
-                      opacity-70 hover:opacity-100 focus:opacity-100
-                    "
-                    x-on:click="closeSidebar()"
-                  >
-                    <span class="sr-only">Close sidebar</span>
-                    <svg class="fill-current w-4 h-4">
-                      <use href="/public/assets/icons.svg#close"></use>
-                    </svg>
-                  </button>
-                </div>
+                <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
                 <!-- games list -->
                 <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
                   <div class="scrollbox">
@@ -141,25 +123,7 @@ title: "Home | Twitch Pages"
             <!-- streams sidebar -->
             <div class="sidebar-wrapper">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
-                <div class="flex justify-between mb-4">
-                  <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
-                    <svg class="fill-current w-4 h-4 mr-2">
-                      <use href="/public/assets/icons.svg#people"></use>
-                    </svg>
-                    Streams
-                  </h2>
-                  <button type="button"
-                    class="block bg-violet-700 px-2.5 text-truegray-100
-                      opacity-70 hover:opacity-100 focus:opacity-100
-                    "
-                    x-on:click="closeSidebar()"
-                  >
-                    <span class="sr-only">Close sidebar</span>
-                    <svg class="fill-current w-4 h-4">
-                      <use href="/public/assets/icons.svg#close"></use>
-                    </svg>
-                  </button>
-                </div>
+                <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
                 <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
                   <div class="scrollbox">
