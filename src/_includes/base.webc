@@ -9,6 +9,6 @@
 </head>
 <body>
   <div @html="content" webc:nokeep></div>
-  <script @html="getJS(page.url)"></script>
+  <script src="main.js"></script>
 </body>
 </html>

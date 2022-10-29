@@ -232,7 +232,6 @@ title: "Home | Twitch Pages"
   </main>
 </div>
 <div id="aria-feedback" role="status" aria-live="polite" class="sr-only"></div>
-<script type="module" src="main.js"></script>
 <style>
   /* Don't flash big svg icons */
   svg {

@@ -6,8 +6,8 @@ module.exports = function(eleventyConfig) {
 	});
   eleventyConfig.setWatchJavaScriptDependencies(true);
   eleventyConfig.addWatchTarget("src/main.js");
-  eleventyConfig.addPassthroughCopy("public/assets/icons.svg");
-  // eleventyConfig.addPassthroughCopy("src/main.js");
+  eleventyConfig.addPassthroughCopy("public");
+  eleventyConfig.addPassthroughCopy("src/main.js");
 	return {
   	dir: {
     	input: "src",
