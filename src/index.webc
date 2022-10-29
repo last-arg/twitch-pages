@@ -15,7 +15,7 @@ title: "Home | Twitch Pages"
                 hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
                 focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
               "
-              hx-get="/partials/top-games.html" hx-target="#main"
+              hx-get="/public/partials/top-games.html" hx-target="#main"
               hx-push-url="/"
             >Home</a>
           </h1>
