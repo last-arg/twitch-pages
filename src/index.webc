@@ -20,7 +20,7 @@ title: "Home | Twitch Pages"
             >Home</a>
           </h1>
           <div class="search-wrapper"
-            x-bindx-bind:class="{'border-violet-700': state === 'search', 'hover:border-gray-500': state !== 'search'}"
+            x-bind:class="{'border-violet-700': state === 'search', 'hover:border-gray-500': state !== 'search'}"
           >
             <form role="search" class="h-full flex" x-on:click.prevent="">
               <label class="sr-only" for="game_name">Enter game name</label>
