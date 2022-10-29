@@ -38,6 +38,7 @@ title: "Home | Twitch Pages"
                 x-bind:aria-expanded="(state === 'search').toString()"
                 aria-expanded="false"
               />
+              <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
                 type="submit" aria-label="Search games"
                 x-on:click="$refs.searchInput.focus()"
@@ -50,15 +51,7 @@ title: "Home | Twitch Pages"
           </div>
           <div>
             <!-- games button -->
-            <button class="sidebar-button" aria-label="Games" aria-haspopup="true"
-              x-bind:aria-expanded="(state === 'games').toString()"
-              aria-expanded="false"
-              x-on:click="toggleSidebar('games')"
-            >
-              <svg class="fill-current w-5 h-5">
-                <use href="/public/assets/icons.svg#game-controller"></use>
-              </svg>
-            </button>
+            <menu-button @name="games" @icon="game-controller"></menu-button>
             <!-- games sidebar -->
             <div class="sidebar-wrapper">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
@@ -111,15 +104,7 @@ title: "Home | Twitch Pages"
           </div>
           <div>
             <!-- streams button -->
-            <button
-              class="sidebar-button"
-              aria-label="Streams"
-              x-on:click="toggleSidebar('streams')"
-              x-bind:aria-expanded="(state === 'streams').toString()"
-              aria-expanded="false"
-            >
-              <svg class="fill-current w-5 h-5"><use href="/public/assets/icons.svg#people"></use></svg>
-            </button>
+            <menu-button @name="streams" @icon="people"></menu-button>
             <!-- streams sidebar -->
             <div class="sidebar-wrapper">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
@@ -181,7 +166,7 @@ title: "Home | Twitch Pages"
             <a href="/settings"
               class="sidebar-button mr-0 pt-2"
               aria-label="Settings"
-              hx-get="/public//partials/settings.html" hx-target="#main"
+              hx-get="/public/partials/settings.html" hx-target="#main"
               hx-push-url="/settings"
             >
               <svg class="fill-current h-5"><use href="/public/assets/icons.svg#settings"></use></svg>
