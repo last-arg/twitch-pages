@@ -1,23 +1,22 @@
 # netlify.toml
 [[redirects]]
-force = true
-from = '/api/*'
-status = 200
-to = '/.netlify/functions/:splat'
+  force = true
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
 
 [[redirects]]
-from = '/*'
-status = 200
-to = '/index.html'
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 [build]
   command = "npm run build"
   functions = "netlify/functions"
-  publish = "dist"
+  publish = "_site"
 
 [dev]
   autoLaunch = false
-  command = "npx @11ty/eleventy --serve"
-  framework = "#custom"
+  command = "npx @11ty/eleventy --port 8080 --serve"
   targetPort = 8080
 
