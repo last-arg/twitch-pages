@@ -12,7 +12,6 @@ const config = defineConfig({
     // CSS files' @apply rules will be replaced with CSS attributes.
     // Don't know if good idea to do it in unocss rules.
     // Can't do in preflights getCSS function because it isn't async.
-    [/^html$/, ruleAsCssApplyReplace, {layer: "base"}],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
@@ -40,7 +39,8 @@ const config = defineConfig({
 });
 
 
-async function ruleSidebarButton([], { rawSelector, generator }) {
+async function ruleSidebarButton([], ctx) {
+  const generator = ctx.generator;
   let result = ""
   const matched = generator.matchVariants("")
   const default_rules = [
@@ -50,57 +50,59 @@ async function ruleSidebarButton([], { rawSelector, generator }) {
     "focus:text-gray-50", "focus:text-gray-50", "focus:border-gray-500",
   ]
 
-  const selectors = await generator.stringifyShortcuts(matched, default_rules)
-  const escapedSelector = escapeSelector(rawSelector)
+  const selectors = await generator.stringifyShortcuts(matched, ctx, default_rules)
+  const escapedSelector = escapeSelector(ctx.rawSelector)
   for (const [,selector, css_body] of selectors) {
     result += selector.replace(".", "." + escapedSelector)
     result += `{${css_body}}\n`
   }
 
-  const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["border-violet-700"])
+  const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["border-violet-700"])
   result += `.${escapedSelector}[aria-expanded="true"] {${css_body}}`
   return result
 }
 
-async function ruleSidebarWrapper([], { rawSelector, generator }) {
+async function ruleSidebarWrapper([], ctx) {
+  const generator = ctx.generator;
   let result = ""
   const matched = generator.matchVariants("")
-  const classSelector = "." + escapeSelector(rawSelector)
+  const classSelector = "." + escapeSelector(ctx.rawSelector)
   {
     const default_rules = ["h-screen", "pt-11", "pb-2", "absolute", "top-0", "left-full", "max-w-20rem", "w-full", "transform", "-z-10"]
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, default_rules)
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, default_rules)
     result += `${classSelector}{${css_body}transition: visibility 150ms, opacity 150ms, transform 150ms;}\n`
   }
   {
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["translate-x-0", "opacity-0", "invisible"])
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["translate-x-0", "opacity-0", "invisible"])
     result += `[aria-expanded="false"] ~ ${classSelector}{${css_body}}\n`
   }
   {
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["opacity-100", "visible"])
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["opacity-100", "visible"])
     result += `[aria-expanded="true"] ~ ${classSelector}{${css_body};--un-translate-x:-100%;}\n`
   }
   return result
 }
 
-async function ruleFilterCheckboxBtn([], { rawSelector, generator }) {
+async function ruleFilterCheckboxBtn([], ctx) {
+  const generator = ctx.generator;
   let result = ""
   const matched = generator.matchVariants("")
-  const classSelector = "." + escapeSelector(rawSelector)
+  const classSelector = "." + escapeSelector(ctx.rawSelector)
   {
     const default_rules = ["p-1", "border-r-2", "border-truegray-50"]
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, default_rules)
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, default_rules)
     result += `${classSelector}{${css_body}}\n`
   }
   {
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["bg-lime-300"])
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["bg-lime-300"])
     result += `${classSelector}.archive.checked > span{${css_body}}\n`
   }
   {
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["bg-sky-300"])
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["bg-sky-300"])
     result += `${classSelector}.upload.checked > span{${css_body}}\n`
   }
   {
-    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ["bg-amber-300"])
+    const [[,,css_body]] = await generator.stringifyShortcuts(matched, ctx, ["bg-amber-300"])
     result += `${classSelector}.highlight.checked > span{${css_body}}\n`
   }
   
@@ -127,10 +129,14 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1.5rem); }
   if (unit !== '') return `${classSelector} { ${css_attr}: ${nr}${unit}; }`
   if (nr !== '') return `${classSelector} { ${css_attr}: ${nr / 4}rem; }`
 
+  console.error(`Failed to generate CSS for '${classSelector}'`)
   return `/* Failed to generate stack rule from ${selector} */`
 }
 
-async function ruleLayoutGrid([selector, min_width], {generator}) {
+// [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
+async function ruleLayoutGrid([selector, min_width], ctx) {
+  // console.log("======= START =======", generator)
+  const generator = ctx.generator;
   const classSelector = "." + escapeSelector(selector)
   if (min_width === '') {
     return `
@@ -145,25 +151,12 @@ ${classSelector} {
     `
   }
 
-  const [,,attrs] = await generator.parseUtil(min_width)
-  const value = attrs[0][1]
+  const  attrs = await generator.parseUtil(min_width, ctx)
+  const value = attrs[0][2][0][1]
   if (value) return `${classSelector} { --grid-min: ${value} }`
 
+  console.error(`Failed to generate CSS for '${classSelector}'`)
   return `/* Failed to generate l-grid rule from ${selector} */`
-}
-
-async function ruleAsCssApplyReplace(_, {generator: gen}) {
-  let result = srcStyleCss.toString();
-  const matched = gen.matchVariants("")
-  const promises = []
-  const regex = /@apply (.+)/g
-  result.replace(regex, (_, c) => {
-    const p = gen.stringifyShortcuts(matched, c.split(" "))
-    promises.push(p)
-    return ""
-  })
-  const data = await Promise.all(promises)
-  return result.replace(regex, () => data.shift()[0][2]);
 }
 
 export default config
