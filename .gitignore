@@ -1,9 +1,9 @@
 node_modules/
-dist/
 .env
 tmp/
 public/js
 public/css
+_site
 
 # Local Netlify folder
 .netlify
