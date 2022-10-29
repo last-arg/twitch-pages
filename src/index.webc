@@ -57,7 +57,7 @@ title: "Home | Twitch Pages"
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
                 <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
                 <!-- games list -->
-                <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
+                <scroll-container>
                   <div class="scrollbox">
                     <ul class="stack stack-4">
                       <template x-for="game in $store.games.data" x-bind:key="game.id">
@@ -96,9 +96,7 @@ title: "Home | Twitch Pages"
                       </template>
                     </ul>
                   </div>
-                  <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
-                  <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
-                </div>
+                </scroll-container>
               </div>
             </div>
           </div>
@@ -110,7 +108,7 @@ title: "Home | Twitch Pages"
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
-                <div class="scroll-container flex-grow has-bottom-shadow overflow-hidden relative">
+                <scroll-container>
                   <div class="scrollbox">
                     <ul class="stack stack-4" x-show="state === 'streams'">
                       <template x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
@@ -155,9 +153,7 @@ title: "Home | Twitch Pages"
                       </template>
                     </ul>
                   </div>
-                  <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
-                  <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
-                </div>
+                </scroll-container>
               </div>
             </div>
           </div>
