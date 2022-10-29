@@ -9,9 +9,6 @@ const srcStyleCss = fs.readFileSync('src/style.css')
 const config = defineConfig({
   rules: [
     ['fill-current', { fill: 'currentColor' }],
-    // CSS files' @apply rules will be replaced with CSS attributes.
-    // Don't know if good idea to do it in unocss rules.
-    // Can't do in preflights getCSS function because it isn't async.
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
@@ -29,6 +26,7 @@ const config = defineConfig({
   ],
   preflights: [
     { getCSS: () => resetTailwind.toString(), layer: 'reset' },
+    { getCSS: () => srcStyleCss.toString(), layer: 'component' },
   ],
   layers: {
     reset: 0,
@@ -133,9 +131,7 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1.5rem); }
   return `/* Failed to generate stack rule from ${selector} */`
 }
 
-// [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
 async function ruleLayoutGrid([selector, min_width], ctx) {
-  // console.log("======= START =======", generator)
   const generator = ctx.generator;
   const classSelector = "." + escapeSelector(selector)
   if (min_width === '') {
