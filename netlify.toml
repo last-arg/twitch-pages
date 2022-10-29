@@ -6,7 +6,17 @@
   status = 200
 
 [[redirects]]
-  from = "/*"
+  from = "/directory/game/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/:name/videos/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings"
   to = "/index.html"
   status = 200
 
