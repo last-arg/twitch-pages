@@ -1,0 +1,8 @@
+<div webc:root class="scroll-container overflow-y-auto relative">
+  <div class="scroll-shadow scroll-shadow-top" aria-hidden="true"></div>
+  <div class="scroll-shadow scroll-shadow-bottom" aria-hidden="true"></div>
+  <div class="scrollbox">
+    <slot></slot>
+  </div>
+</div>
+
