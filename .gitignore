@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 tmp/
+public/js
 
 # Local Netlify folder
 .netlify
