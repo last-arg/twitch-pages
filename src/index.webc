@@ -59,7 +59,7 @@ title: "Home | Twitch Pages"
                 <!-- games list -->
                 <scroll-container>
                   <ul class="stack stack-4">
-                    <template x-for="game in $store.games.data" x-bind:key="game.id">
+                    <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
                       <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-truegray-300
@@ -77,20 +77,10 @@ title: "Home | Twitch Pages"
                           <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, 104, 144)" alt="" width="104" height="144" />
                           <p x-text="game.name"></p>
                         </a>
-                        <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
-                          <button class="hover:text-violet-500"
-                            x-on:click="$store.games.remove(game.id)" type="button" aria-label="Unfollow"
-                          >
-                            <svg class="fill-current w-5 h-5">
-                              <use href="/public/assets/icons.svg#star-full"></use>
-                            </svg>
-                          </button>
-                          <a class="hover:text-violet-500" x-bind:href="`https://www.twitch.tv/directory/game/${game.name}`">
-                            <svg class="fill-current w-5 h-5">
-                              <use href="/public/assets/icons.svg#external-link"></use>
-                            </svg>
-                          </a>
-                        </div>
+                        <follow-star
+                          @click_fn="$store.games.remove(game.id)"
+                          @external_link="`https://www.twitch.tv/directory/game/${game.name}`"
+                        ></follow-star>
                       </li>
                     </template>
                   </ul>
@@ -102,13 +92,13 @@ title: "Home | Twitch Pages"
             <!-- streams button -->
             <menu-button @name="streams" @icon="people"></menu-button>
             <!-- streams sidebar -->
-            <div class="sidebar-wrapper">
+            <div class="sidebar-wrapper" style="visibility:visible;opacity:1;--un-translate-x:-100%;">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
                 <scroll-container>
-                  <ul class="stack stack-4" x-show="state === 'streams'">
-                    <template x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
+                  <ul class="stack stack-4">
+                    <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
                       <li class="flex">
                         <a class="flex items-center flex-grow pl-1.5 bg-gray-800
                             text-truegray-300
@@ -132,20 +122,10 @@ title: "Home | Twitch Pages"
                             </div>
                           </div>
                         </a>
-                        <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
-                          <button class="hover:text-violet-500"
-                            x-on:click="$store.streams.remove(stream.user_id)" type="button" aria-label="Unfollow"
-                          >
-                            <svg class="fill-current w-5 h-5">
-                              <use href="/public/assets/icons.svg#star-full"></use>
-                            </svg>
-                          </button>
-                          <a class="hover:text-violet-500" x-bind:href="`https://www.twitch.tv/directory/${stream.user_login}/videos`">
-                            <svg class="fill-current w-5 h-5">
-                              <use href="/public/assets/icons.svg#external-link"></use>
-                            </svg>
-                          </a>
-                        </div>
+                        <follow-star
+                          @click_fn="$store.streams.remove(stream.user_id)"
+                          @external_link="`https://www.twitch.tv/${stream.user_login}/videos`"
+                        ></follow-star>
                       </li>
                     </template>
                   </ul>

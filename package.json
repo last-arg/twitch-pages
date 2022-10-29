@@ -8,6 +8,7 @@
     "css": "npx unocss 'src/**/*.webc' 'netlify/functions/*.{js,ts}' 'public/partials/*.html' 'src/*.ts' -o public/css/main.css",
     "build": "npm run css && tsc && vite build",
     "serve": "vite preview",
+    "watch:css": "npx unocss 'src/**/*.webc' 'netlify/functions/*.{js,ts}' 'public/partials/*.html' 'src/*.ts' -o public/css/main.css --watch",
     "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch"
   },
   "dependencies": {

@@ -1,0 +1,14 @@
+<div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
+  <button class="hover:text-violet-500"
+    :x-on:click="click_fn" type="button" aria-label="unfollow"
+  >
+    <svg class="fill-current w-5 h-5">
+      <use href="/public/assets/icons.svg#star-full"></use>
+    </svg>
+  </button>
+  <a class="hover:text-violet-500" :x-bind:href="external_link">
+    <svg class="fill-current w-5 h-5">
+      <use href="/public/assets/icons.svg#external-link"></use>
+    </svg>
+  </a>
+</div>
