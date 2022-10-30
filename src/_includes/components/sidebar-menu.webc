@@ -20,14 +20,14 @@
             </link-box>
             <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
               <button x-data="{followed: false}"
-                class="hover:text-violet-500"
+                class="btn-follow hover:text-violet-500"
                 x-effect="followed = $store.games.hasId(game.id)"
                 x-on:click="$store.games.toggle(game.id, game.name)" type="button"
-                x-bind:aria-label="followed ? 'UnFollow' : 'Follow'"
+                x-bind:aria-label="followed ? 'unfollow' : 'follow'"
               >
                 <svg class="fill-current w-5 h-5">
-                  <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
-                  <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+                  <use href="/public/assets/icons.svg#star-empty"></use>
+                  <use href="/public/assets/icons.svg#star-full"></use>
                 </svg>
               </button>
               <a class="hover:text-violet-500" x-bind:href="`https://www.twitch.tv/directory/game/${game.name}`">

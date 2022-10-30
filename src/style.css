@@ -188,3 +188,13 @@ For example if you have white-space: nowrap on some element (to truncate it).
   to { opacity: 1 }
 }
 
+.btn-follow use {
+  display: none;
+}
+
+.btn-follow use[href$="star-empty"],
+.btn-follow[aria-label="follow"] use[href$="star-empty"],
+.btn-follow[aria-label="unfollow"] use[href$="star-full"] {
+  display: initial;
+}
+
