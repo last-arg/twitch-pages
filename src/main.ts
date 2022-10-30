@@ -124,8 +124,7 @@ function alpineInit() {
     init: () => void,
     closeSidebar: () => void,
     fetchSearch: (value: string) => Promise<Search[]>,
-    clickSidebarGame: (name: string) => void,
-    clickSidebarStream: (name: string) => void,
+    clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
     toggleSidebar: (current: SidebarState) => void,
     getImageSrc: (name: string, width: number, height: number) => string,
     [key: string]: any,
@@ -190,13 +189,13 @@ function alpineInit() {
           sidebarButtons[this.state].focus()
           this.state = "closed";
         },
-        clickSidebarGame(name: string) {
+        clickSideBar(sidebar: "category" | "user-videos", name: string) {
           this.closeSidebar();
-          (Alpine.store("global") as Global).setClickedGame(name);
-        },
-        clickSidebarStream(name: string) {
-          this.closeSidebar();
-          (Alpine.store("global") as Global).setClickedStream(name);
+          if (sidebar === "category") {
+            (Alpine.store("global") as Global).setClickedGame(name);
+          } else if (sidebar === "user-videos") {
+            (Alpine.store("global") as Global).setClickedStream(name);
+          }
         },
         toggleSidebar(current: SidebarState) {
           if (this.state === current) {
