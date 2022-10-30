@@ -12,24 +12,12 @@
     <!-- search results -->
     <scroll-container>
       <ul class="stack stack-4" x-show="state === 'search'">
-        <template x-for="game in searchResults" x-bind:key="game.id">
+        <template webc:root webc:keep x-for="game in searchResults" x-bind:key="game.id">
           <li class="flex mt-4">
-            <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                text-truegray-300
-                border-l-6 border-transparent
-                hover:text-gray-50 hover:border-violet-700
-                focus:text-gray-50 focus:border-violet-700
-              "
-              x-data="{href_url: $store.global.mainContent['category'].url.replace(':name', game.name)}"
-              x-bind:href="href_url"
-              x-init="htmx.process($el)"
-              x-on:click="clickSidebarGame(game.name)"
-              hx-target="#main"
-              x-bind:hx-push-url="href_url"
-              hx-get="/partials/category.html">
+            <link-box @name="category" @arg_name="game.name" @click_fn="clickSidebarGame(game.name)">
               <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
               <span x-text="game.name"></span>
-            </a>
+            </link-box>
             <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
               <button x-data="{followed: false}"
                 class="hover:text-violet-500"

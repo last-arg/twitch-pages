@@ -61,22 +61,10 @@ title: "Home | Twitch Pages"
                   <ul class="stack stack-4">
                     <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
                       <li class="flex">
-                        <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                            text-truegray-300
-                            border-l-6 border-transparent
-                            hover:text-gray-50 hover:border-violet-700
-                            focus:text-gray-50 focus:border-violet-700
-                          "
-                          x-data="{href_url: $store.global.mainContent['category'].url.replace(':name', encodeURIComponent(game.name))}"
-                          x-bind:href="href_url"
-                          x-init="htmx.process($el)"
-                          x-on:click="clickSidebarGame(game.name)"
-                          hx-target="#main"
-                          x-bind:hx-push-url="href_url"
-                          hx-get="/partials/category.html">
-                          <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, 104, 144)" alt="" width="104" height="144" />
+                        <link-box @name="category" @arg_name="game.name" @click_fn="clickSidebarGame(game.name)">
+                          <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                           <p x-text="game.name"></p>
-                        </a>
+                        </link-box>
                         <follow-star
                           @click_fn="$store.games.remove(game.id)"
                           @external_link="`https://www.twitch.tv/directory/game/${game.name}`"
@@ -92,7 +80,7 @@ title: "Home | Twitch Pages"
             <!-- streams button -->
             <menu-button @name="streams" @icon="people"></menu-button>
             <!-- streams sidebar -->
-            <div class="sidebar-wrapper" style="visibility:visible;opacity:1;--un-translate-x:-100%;">
+            <div class="sidebar-wrapper">
               <div class="flex flex-col bg-truegray-700 h-full pb-4">
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
@@ -100,19 +88,7 @@ title: "Home | Twitch Pages"
                   <ul class="stack stack-4">
                     <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
                       <li class="flex">
-                        <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-                            text-truegray-300
-                            border-l-6 border-transparent
-                            hover:text-gray-50 hover:border-violet-700
-                            focus:text-gray-50 focus:border-violet-700
-                          "
-                          x-data="{href_url: $store.global.mainContent['user-videos'].url.replace(':user', stream.user_login)}"
-                          x-bind:href="href_url"
-                          x-init="htmx.process($el)"
-                          x-on:click="clickSidebarStream(stream.user_login)"
-                          hx-target="#main"
-                          x-bind:hx-push-url="href_url"
-                          hx-get="/partials/user-videos.html">
+                        <link-box @name="user-videos" @arg_name="stream.user_login" @click_fn="clickSidebarStream(stream.user_login)">
                           <img class="w-16" x-bind:src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                           <div class="flex-grow relative h-full flex items-center px-2">
                             <p x-text="stream.user_name"></p>
@@ -121,7 +97,7 @@ title: "Home | Twitch Pages"
                               <p class="text-truegray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
                             </div>
                           </div>
-                        </a>
+                        </link-box>
                         <follow-star
                           @click_fn="$store.streams.remove(stream.user_id)"
                           @external_link="`https://www.twitch.tv/${stream.user_login}/videos`"

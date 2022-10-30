@@ -1,0 +1,16 @@
+<a class="flex items-center flex-grow pl-1.5 bg-gray-800
+    text-truegray-300
+    border-l-6 border-transparent
+    hover:text-gray-50 hover:border-violet-700
+    focus:text-gray-50 focus:border-violet-700
+  "
+  :x-data="`{href_url: $store.global.mainContent['${name}'].url.replace(':${name}', encodeURIComponent(${arg_name}))}`"
+  x-bind:href="href_url"
+  x-init="htmx.process($el)"
+  :x-on:click="click_fn"
+  hx-target="#main"
+  x-bind:hx-push-url="href_url"
+  :hx-get="`/public/partials/${name}.html`">
+  <slot></slot>
+</a>
+

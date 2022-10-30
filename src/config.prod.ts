@@ -9,11 +9,11 @@ export const mainContent: Record<string, UrlResolve> = {
     html: "/public/partials/top-games.html",
   },
   "category": {
-    url: "/directory/game/:name",
+    url: "/directory/game/:category",
     html: "/public/partials/category.html",
   },
   "user-videos": {
-    url: "/:user/videos",
+    url: "/:user-videos/videos",
     html: "/public/partials/user-videos.html",
   },
   "settings": {
