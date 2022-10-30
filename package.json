@@ -9,7 +9,8 @@
     "build": "npm run css && tsc && vite build",
     "serve": "vite preview",
     "watch:css": "npx unocss 'src/**/*.webc' 'netlify/functions/*.{js,ts}' 'public/partials/*.html' 'src/*.ts' 'src/style.css' -o _site/public/css/main.css --watch",
-    "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch"
+    "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch",
+    "config": "npx esbuild src/config.prod.ts --format=cjs --outdir=src/js/"
   },
   "dependencies": {
     "@alpinejs/persist": "^3.2.4",

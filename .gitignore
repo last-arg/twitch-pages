@@ -4,6 +4,7 @@ tmp/
 public/js
 public/css
 _site
+src/js/
 
 # Local Netlify folder
 .netlify

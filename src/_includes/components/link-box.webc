@@ -8,24 +8,24 @@
     }
     const name = this.name;
     const arg_name = this.arg_name;
+    const path = this.global.paths[name];
+    const href_url = `'${path.url}'.replace(':${name}', encodeURIComponent(${arg_name}))`;
     const names = {
       "category": {
-        click_fn: `clickSidebarGame(${arg_name})`,
-        href_url: `$store.global.mainContent['${name}'].url.replace(':${name}', encodeURIComponent(${arg_name}))`
+        click_fn: `clickSidebarGame(${arg_name})`
       },
       "user-videos": {
         click_fn: `clickSidebarStream(${arg_name})`
       }
     };
     const obj = names[name];
-    console.log(this.click_fn)
     return `
       <a class="flex items-center flex-grow pl-1.5 bg-gray-800
           text-truegray-300 border-l-6 border-transparent
           hover:text-gray-50 hover:border-violet-700
           focus:text-gray-50 focus:border-violet-700
         "
-        x-data="{href_url: ${obj.href_url}}"
+        x-data="{href_url: ${href_url}}"
         x-bind:href="href_url"
         x-init="htmx.process($el)"
         x-on:click="${obj.click_fn}"
