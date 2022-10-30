@@ -172,6 +172,8 @@ function alpineInit() {
                 }
                 setAriaMsg(aria_msg)
               }, 400)
+            } else {
+              this.searchResults = [];
             }
           })
         },
