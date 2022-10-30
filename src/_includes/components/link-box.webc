@@ -14,7 +14,7 @@
         width: 104,
         height: 144,
         classes: "w-14 m-2",
-        bind_src: "getImageSrc(game.name, $el.width, $el.height)",
+        bind_src: `getImageSrc(${arg_name}, $el.width, $el.height)`,
       },
       "user-videos": {
         width: 300,
