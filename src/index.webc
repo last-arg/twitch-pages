@@ -62,7 +62,6 @@ title: "Home | Twitch Pages"
                     <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
                       <li class="flex">
                         <link-box @name="category" @arg_name="game.name">
-                          <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
                           <p x-text="game.name"></p>
                         </link-box>
                         <follow-star
@@ -89,7 +88,6 @@ title: "Home | Twitch Pages"
                     <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
                       <li class="flex">
                         <link-box @name="user-videos" @arg_name="stream.user_login">
-                          <img class="w-16" x-bind:src="$store.profile_images.imgUrl(stream.user_id)" alt="" width="300" height="300" />
                           <div class="flex-grow relative h-full flex items-center px-2">
                             <p x-text="stream.user_name"></p>
                             <div class="absolute bottom-0 px-2 right-0 left-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">

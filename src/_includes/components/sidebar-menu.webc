@@ -14,8 +14,7 @@
       <ul class="stack stack-4" x-show="state === 'search'">
         <template webc:root webc:keep x-for="game in searchResults" x-bind:key="game.id">
           <li class="flex mt-4">
-            <link-box @name="category" @arg_name="game.name" @click_fn="clickSidebarGame(game.name)">
-              <img class="w-14 mr-2" x-bind:src="getImageSrc(game.name, $el.width, $el.height)" alt="" width="104" height="144" />
+            <link-box @name="category" @arg_name="game.name">
               <span x-text="game.name"></span>
             </link-box>
             <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">

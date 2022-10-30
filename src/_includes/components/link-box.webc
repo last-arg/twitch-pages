@@ -9,13 +9,21 @@
     const path = this.global.paths[name];
     const href_url = `'${path.url}'.replace(':${name}', encodeURIComponent(${arg_name}))`;
     const click_fn = `clickSideBar('${name}', ${arg_name})`;
-    const names = {
+    const configs = {
       "category": {
+        width: 104,
+        height: 144,
+        classes: "w-14 m-2",
+        bind_src: "getImageSrc(game.name, $el.width, $el.height)",
       },
       "user-videos": {
+        width: 300,
+        height: 300,
+        classes: "w-16",
+        bind_src: "$store.profile_images.imgUrl(stream.user_id)",
       }
     };
-    const obj = names[name];
+    const config = configs[name];
     return `
       <a class="flex items-center flex-grow pl-1.5 bg-gray-800
           text-truegray-300 border-l-6 border-transparent
@@ -29,6 +37,7 @@
         hx-target="#main"
         x-bind:hx-push-url="href_url"
         hx-get="/public/partials/${name}.html">
+        <img class="${config.classes}" x-bind:src="${config.bind_src}" alt="" width="${config.width}" height="${config.height}" />
         <slot></slot>
       </a>
     `;
