@@ -12,29 +12,12 @@
     <!-- search results -->
     <scroll-container>
       <ul class="stack stack-4" x-show="state === 'search'">
-        <template webc:root webc:keep x-for="game in searchResults" x-bind:key="game.id">
+        <template webc:root webc:keep x-for="search in searchResults" x-bind:key="search.id">
           <li class="flex mt-4">
-            <link-box @name="category" @arg_name="game.name">
-              <span x-text="game.name"></span>
+            <link-box @name="category" @arg_name="search.name">
+              <span x-text="search.name"></span>
             </link-box>
-            <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
-              <button x-data="{followed: false}"
-                class="btn-follow hover:text-violet-500"
-                x-effect="followed = $store.games.hasId(game.id)"
-                x-on:click="$store.games.toggle(game.id, game.name)" type="button"
-                x-bind:aria-label="followed ? 'unfollow' : 'follow'"
-              >
-                <svg class="fill-current w-5 h-5">
-                  <use href="/public/assets/icons.svg#star-empty"></use>
-                  <use href="/public/assets/icons.svg#star-full"></use>
-                </svg>
-              </button>
-              <a class="hover:text-violet-500" x-bind:href="`https://www.twitch.tv/directory/game/${game.name}`">
-                <svg class="fill-current w-5 h-5">
-                  <use href="/public/assets/icons.svg#external-link"></use>
-                </svg>
-              </a>
-            </div>
+            <follow-star @arg="search"></follow-star>
           </li>
         </template>
       </ul>
