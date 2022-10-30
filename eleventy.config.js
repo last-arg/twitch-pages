@@ -4,8 +4,9 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPlugin(pluginWebc, {
     components: "src/_includes/components/*.webc"
 	});
-  eleventyConfig.addWatchTarget("src/main.js");
-  eleventyConfig.addPassthroughCopy("public");
+  eleventyConfig.addWatchTarget("public/js/main.js");
+  eleventyConfig.addWatchTarget("public/css/main.css");
+  eleventyConfig.addPassthroughCopy("public/");
 	return {
   	dir: {
     	input: "src",
