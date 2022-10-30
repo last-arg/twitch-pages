@@ -4,9 +4,7 @@ import { mainContent, UrlResolve } from 'config'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
-// CSS
-// import 'uno.css'
-// import './styles/main.css'
+// TODO: Search: emptying search value leaves old results
 
 interface Stream {
   user_id: string,

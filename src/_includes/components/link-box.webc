@@ -13,7 +13,7 @@
       "category": {
         width: 104,
         height: 144,
-        classes: "w-14 m-2",
+        classes: "w-14 mr-2",
         bind_src: `getImageSrc(${arg_name}, $el.width, $el.height)`,
       },
       "user-videos": {
