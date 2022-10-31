@@ -67,7 +67,7 @@ permalink: public/partials/settings.html
       <button type="button" class="btn btn-twitch" x-bind:class="{ 'hidden': ! $store.global.twitch.user_token }"
         @click="$store.global.twitch.logout()"
       >Log out from Twitch</button>
-      <a x-bind:href="$store.global.twitch_login_url"
+      <a x-bind:href="$store.global.twitch.login_url"
         class="btn btn-twitch" x-bind:class="{ 'hidden': $store.global.twitch.user_token }"
       >Log in with Twitch</a>
     </section>
