@@ -14,7 +14,7 @@ permalink: public{{ page.filePathStem }}.html
         <p class="w-48"></p>
       </h2>
     </div>
-    <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" @reset="formReset()" x-on:submit.prevent="">
+    <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
       <label class="sr-only" for="search">Search stream title</label>
       <input class="w-full" type="search" id="search" placeholder="Stream title" @input.debounce.100ms="searchTitle()" value="">
       <button type="reset" class="ml-2 btn bg-truegray-200 hover:bg-truegray-300">Reset</button>

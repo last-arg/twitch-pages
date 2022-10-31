@@ -245,10 +245,14 @@ function alpineInit() {
           this.stylesheet = this.$el.insertAdjacentElement('afterend', document.createElement('style')).sheet
         },
         searchTitle() {
-          if (this.stylesheet.cssRules.length) this.stylesheet.deleteRule(0)
+          this.formReset();
           const value = this.$el.value
           if (value.length === 0) return
           this.stylesheet.insertRule(`.filter-search > :not(li[data-title*='${escape(value)}' i]) { display: none !important }`, 0)
+        },
+        // used in 'partials/category.html'
+        formReset() {
+          if (this.stylesheet.cssRules.length) this.stylesheet.deleteRule(0)
         }
       }
     })
