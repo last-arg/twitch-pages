@@ -14,7 +14,7 @@
         width: 104,
         height: 144,
         classes: "w-14 mr-2",
-        bind_src: `getImageSrc(${arg_name}, $el.width, $el.height)`,
+        bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url, $el.width, $el.height)`,
       },
       "user-videos": {
         width: 300,

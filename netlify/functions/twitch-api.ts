@@ -1,6 +1,6 @@
 import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
-import { TWITCH_CLIENT_ID, VideoType, twitchCatImageSrc } from "../../src/common"
+import { TWITCH_CLIENT_ID, VideoType, twitchCatImageSrc, Game } from "../../src/common"
 import { mainContent } from "../../src/config.prod"
 
 const CAT_IMG_WIDTH = 104
@@ -18,12 +18,6 @@ const twitch_headers = {
   "Accept": "application/vnd.twitchtv.v5+json",
 };
 
-// Category and Top Games have same structure
-interface Game {
-  name: string,
-  id: string,
-}
-
 interface Video {
   user_id: string,
   user_login: string,
@@ -38,6 +32,7 @@ function createLiveUserImageUrl(url_template: string, w: number, h: number): str
 }
 
 const topGamesHtml = (games: Game[]): string => {
+  console.log("GAMES", games)
   let result = ""
   for (const game of games) {
     const game_url = mainContent['category'].url.replace(":name", game.name)
@@ -50,7 +45,7 @@ const topGamesHtml = (games: Game[]): string => {
             class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
             @click="$store.global.setClickedGame('${game.name}')"
           >
-            <img class="w-16" src="${twitchCatImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt=""
+            <img class="w-16" src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt=""
               width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
             <p class="ml-2 text-lg">${game.name}</p>
           </a>
@@ -58,7 +53,7 @@ const topGamesHtml = (games: Game[]): string => {
             <button x-data="{followed: false}"
               class="hover:text-violet-700"
               x-effect="followed = $store.games.hasId('${game.id}')"
-              @click="$store.games.toggle('${game.id}', '${game.name}')"
+              @click="$store.games.toggle(game)"
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
               <svg class="fill-current w-5 h-5">
@@ -91,7 +86,7 @@ const categoryTitleHtml = (game: Game): string => {
         "
         href="https://www.twitch.tv/directory/game/${game.name}"
       >
-        <img class="w-10" src="${twitchCatImageSrc(game.name, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+        <img class="w-10" src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
         <p class="line-clamp-2 pl-3">${game.name}</p>
         <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
           <use href="/public/assets/icons.svg#external-link"></use>

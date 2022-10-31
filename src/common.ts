@@ -7,7 +7,14 @@ export const TOP_GAMES_COUNT = 5
 
 export type VideoType = "archive" | "upload" | "highlight"
 
-export const twitchCatImageSrc = (name: string, width: number, height: number): string => {
-  return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
+// Category and Top Games have same structure
+export interface Game {
+  name: string,
+  id: string,
+  box_art_url: string,
+}
+
+export const twitchCatImageSrc = (url_template: string, width: number, height: number): string => {
+  return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
 }
 
