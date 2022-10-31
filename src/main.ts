@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs'
-import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc } from './common'
+import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
 import { mainContent, UrlResolve } from 'config'
 import 'htmx.org';
 // import './libs/twinspark.js'
@@ -124,7 +124,7 @@ function alpineInit() {
     fetchSearch: (value: string) => Promise<Search[]>,
     clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
     toggleSidebar: (current: SidebarState) => void,
-    getImageSrc: (name: string, width: number, height: number) => string,
+    getImageSrc: (url_template: string, width: number, height: number) => string,
     [key: string]: any,
   }
 
@@ -204,8 +204,8 @@ function alpineInit() {
           }
           this.state = current
         },
-        getImageSrc(name: string, width: number, height: number): string {
-          return twitchCatImageSrc(name, width, height)
+        getImageSrc(url_template: string, width: number, height: number): string {
+          return twitchCatImageSrc(url_template, width, height)
         },
       }
     })
@@ -266,22 +266,22 @@ function alpineInit() {
       hasId(id: string): boolean {
         return this.ids.includes(id)
       },
-      toggle(id: string, name: string): boolean {
-        if (this.hasId(id)) {
-          this.remove(id)
+      toggle(game: Game): boolean {
+        if (this.hasId(game.id)) {
+          this.remove(game.id)
           return false
         } else {
-          this.add(id, name)
+          this.add(game)
           return true
         }
       },
-      add(id: string, name: string) {
+      add(game: Game) {
         let index = 0;
         for (const {name: dataName} of this.data) {
-          if (name < dataName) break
+          if (game.name < dataName) break
           index += 1
         }
-        this.data.splice(index, 0, {id, name})
+        this.data.splice(index, 0, game)
       },
       remove(id: string) {
         const index = this.ids.indexOf(id)

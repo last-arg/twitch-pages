@@ -102,6 +102,7 @@ title: "Home | Twitch Pages"
             </div>
           </div>
           <div>
+            <!-- TODO: move settings button next to home? -->
             <!-- Settings button/link -->
             <a href="/settings"
               class="sidebar-button mr-0 pt-2"

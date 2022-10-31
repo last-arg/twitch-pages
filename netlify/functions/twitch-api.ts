@@ -32,7 +32,6 @@ function createLiveUserImageUrl(url_template: string, w: number, h: number): str
 }
 
 const topGamesHtml = (games: Game[]): string => {
-  console.log("GAMES", games)
   let result = ""
   for (const game of games) {
     const game_url = mainContent['category'].url.replace(":name", game.name)
@@ -53,7 +52,7 @@ const topGamesHtml = (games: Game[]): string => {
             <button x-data="{followed: false}"
               class="hover:text-violet-700"
               x-effect="followed = $store.games.hasId('${game.id}')"
-              @click="$store.games.toggle(game)"
+              @click='$store.games.toggle(${JSON.stringify(game)})'
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
               <svg class="fill-current w-5 h-5">
@@ -98,7 +97,7 @@ const categoryTitleHtml = (game: Game): string => {
       class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
       x-effect="followed = $store.games.hasId('${game.id}')"
       aria-label="followed ? 'UnFollow' : 'Follow'"
-      x-on:click="$store.games.toggle('${game.id}', '${game.name}')"
+      x-on:click='$store.games.toggle(${JSON.stringify(game)})'
     >
       <svg class="fill-current w-5 h-5">
         <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
