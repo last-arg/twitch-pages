@@ -131,7 +131,7 @@ const streamsHtml = (streams: Video[]): string => {
               hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
               @click="$store.global.setClickedStream('${stream.user_login}')"
             >
-              <img class="w-14 border border-truegray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="300" height="300">
+              <img class="w-14 border border-truegray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="${config.image.user.width}" height="${config.image.user.height}">
             </a>
             <div class="stack stack-0 ml-2">
               <div class="flex items-center mb-auto">
@@ -185,7 +185,7 @@ const userHtml = (user: User): string => {
           "
           href="https://www.twitch.tv/${user.login}/videos"
         >
-          <img class="block w-10 mr-3" src="${user.profile_image_url}" width="300" height="300">
+          <img class="block w-10 mr-3" src="${user.profile_image_url}" width="${config.image.user.width}" height="${config.image.user.height}">
           <p>${user.display_name}</p>
           <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
             <use href="/public/assets/icons.svg#external-link"></use>

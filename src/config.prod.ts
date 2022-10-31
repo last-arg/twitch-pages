@@ -35,6 +35,10 @@ export const config = {
     video: {
       width: 440,
       height: 248,
+    },
+    user: {
+      width: 300,
+      height: 300,
     }
   }
 }
