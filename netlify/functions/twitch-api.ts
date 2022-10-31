@@ -107,7 +107,7 @@ const categoryTitleHtml = (game: Game): string => {
 const streamsHtml = (streams: Video[]): string => {
   let result = ""
   for (const stream of streams) {
-    const videoUrl = mainContent['user-videos'].url.replace(":user", stream.user_login)
+    const videoUrl = mainContent['user-videos'].url.replace(":user-videos", stream.user_login)
     result += `
       <li class="fade-in overflow-hidden" data-user-id='${stream.user_id}' data-title="${escape(stream.title)}">
         <div>
