@@ -4,8 +4,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPlugin(pluginWebc, {
     components: "src/_includes/components/*.webc"
 	});
-  eleventyConfig.addWatchTarget("public/js/main.js");
-  eleventyConfig.addWatchTarget("public/css/main.css");
+  eleventyConfig.setUseGitIgnore(false);
   eleventyConfig.addPassthroughCopy("public/");
 	return {
   	dir: {
