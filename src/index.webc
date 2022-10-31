@@ -7,7 +7,7 @@ title: "Home | Twitch Pages"
   <header class="fixed top-0 w-full z-20 bg-gray-700">
     <div class="relative bg-gray-700  max-w-screen-2xl mx-auto px-3">
       <div x-data="sidebar" class="flex shadow-md justify-between">
-        <nav class="flex w-full">
+        <nav class="flex gap-4 w-full">
           <h1>
             <a href="/"
               class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
@@ -19,6 +19,14 @@ title: "Home | Twitch Pages"
               hx-push-url="/"
             >Home</a>
           </h1>
+          <div>
+            <a href="/settings"
+              class="sidebar-button"
+              aria-label="Settings"
+              hx-get="/public/partials/settings.html" hx-target="#main"
+              hx-push-url="/settings"
+            >Settings</a>
+          </div>
           <div class="search-wrapper"
             x-bind:class="{'border-violet-700': state === 'search', 'hover:border-gray-500': state !== 'search'}"
           >
@@ -100,18 +108,6 @@ title: "Home | Twitch Pages"
                 </scroll-container>
               </div>
             </div>
-          </div>
-          <div>
-            <!-- TODO: move settings button next to home? -->
-            <!-- Settings button/link -->
-            <a href="/settings"
-              class="sidebar-button mr-0 pt-2"
-              aria-label="Settings"
-              hx-get="/public/partials/settings.html" hx-target="#main"
-              hx-push-url="/settings"
-            >
-              <svg class="fill-current h-5"><use href="/public/assets/icons.svg#settings"></use></svg>
-            </a>
           </div>
         </nav>
       </div>

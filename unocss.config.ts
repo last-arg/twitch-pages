@@ -21,7 +21,7 @@ const config = defineConfig({
     ['btn-setting', 'bg-indigo-300 text-black hover:bg-indigo-400'],
     ['btn-twitch', 'bg-violet-600 text-truegray-100 inline-block hover:bg-violet-800'],
     ['title-setting', 'text-xl text-truegray-400'],
-    ['search-wrapper', 'ml-auto mr-4 border-b-5 border-gray-900 focus-within:border-violet-700'],
+    ['search-wrapper', 'ml-auto border-b-5 border-gray-900 focus-within:border-violet-700'],
     ['load-more-msg', 'border-2 py-1 border-truegray-300 text-truegray-500'],
   ],
   preflights: [
@@ -42,7 +42,7 @@ async function ruleSidebarButton([], ctx) {
   let result = ""
   const matched = generator.matchVariants("")
   const default_rules = [
-    "block", "h-full", "mr-4", "px-3", "pt-1.5", "pb-0.5", "border-b-5",
+    "block", "h-full", "px-3", "pt-1.5", "pb-0.5", "border-b-5",
     "text-gray-200", "bg-gray-900", "border-gray-900",
     "hover:text-gray-50", "hover:text-gray-50", "hover:border-gray-500",
     "focus:text-gray-50", "focus:text-gray-50", "focus:border-gray-500",
