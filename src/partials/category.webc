@@ -9,10 +9,7 @@ permalink: public/partials/category.html
         hx-trigger="load"
         hx-target="#category-header"
       ></div>
-      <h2 aria-hidden="true">
-          <img class="w-10 bg-truegray-100" :width="global.config.image.category.width" :height="global.config.image.category.height">
-        <p class="w-48"></p>
-      </h2>
+      <placeholder-title name="category"></placeholder-title>
     </div>
     <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
       <label class="sr-only" for="search">Search stream title</label>

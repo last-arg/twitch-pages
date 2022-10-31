@@ -1,0 +1,18 @@
+<template webc:type="render">
+function() {
+  const valid_names = ["category", "user"]
+  if (!valid_names.includes(this.name)) {
+    throw new Error(`'name' attribute must be one of these values: ${valid_names.join(", ")}`)
+  }
+  
+  const width = this.global.config.image[this.name].width;
+  const height = this.global.config.image[this.name].height;
+
+  return `
+  <h2 aria-hidden="true" class="flex items-center bg-white">
+    <img class="block w-10 bg-truegray-100" width="${width}" height="${height}">
+    <p class="w-48"></p>
+  </h2>
+  `;
+}
+</template>

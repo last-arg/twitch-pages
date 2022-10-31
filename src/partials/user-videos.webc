@@ -9,10 +9,7 @@ permalink: public/partials/user-videos.html
         hx-trigger="load"
         hx-target="#user-header"
       ></div>
-      <h2 aria-hidden="true" class="flex items-center bg-white">
-        <img class="block w-10" :width="global.config.image.user.width" :height="global.config.image.user.height">
-        <p class="w-48"></p>
-      </h2>
+      <placeholder-title name="user"></placeholder-title>
     </div>
   </div>
   <div>
