@@ -1,5 +1,5 @@
 ---
-permalink: public{{ page.filePathStem }}.html
+permalink: public/partials/category.html
 ---
 <div class="stack">
   <div class="flex items-center justify-between">
@@ -10,7 +10,7 @@ permalink: public{{ page.filePathStem }}.html
         hx-target="#category-header"
       ></div>
       <h2 aria-hidden="true">
-        <img class="w-10 bg-truegray-100" :width="global.config.image.category.width" :height="global.config.image.category.height">
+          <img class="w-10 bg-truegray-100" :width="global.config.image.category.width" :height="global.config.image.category.height">
         <p class="w-48"></p>
       </h2>
     </div>

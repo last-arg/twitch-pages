@@ -1,5 +1,5 @@
 ---
-permalink: public{{ page.filePathStem }}.html
+permalink: public/partials/settings.html
 ---
 <div class="stack">
   <div class="flex">
@@ -9,7 +9,7 @@ permalink: public{{ page.filePathStem }}.html
     <section>
       <h3 class="title-setting">General</h3>
       <form id="settings-general" class="stack mt-1.5"
-        @submit.prevent = "$store.global.saveSettingsForm($el)"
+        x-on:submit.prevent = "$store.global.saveSettingsForm($el)"
       >
         <fieldset>
           <legend>Number of items to load with one request</legend>
@@ -17,17 +17,17 @@ permalink: public{{ page.filePathStem }}.html
             <li>
               <label for="top-games-count">Top Games:</label>
               <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
-                :value="$store.global.settings['top-games-count']" value="5">
+                x-bind:value="$store.global.settings['top-games-count']" value="5">
             </li>
             <li>
               <label for="category-count">Category/Games:</label>
               <input type="number" id="category-count" name="category-count" min="1" max="100"
-                :value="$store.global.settings['category-count']" value="5">
+                x-bind:value="$store.global.settings['category-count']" value="5">
             </li>
             <li>
               <label for="user-videos-count">User videos:</label>
               <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100"
-                :value="$store.global.settings['user-videos-count']" value="5">
+                x-bind:value="$store.global.settings['user-videos-count']" value="5">
             </li>
           </ul>
         </fieldset>
@@ -44,7 +44,7 @@ permalink: public{{ page.filePathStem }}.html
             <li>
               <label for="video-uploads">
                 <input type="checkbox" id="video-uploads" name="video-uploads"
-                :checked="$store.global.settings['video-uploads'] === 'on'">
+                x-bind:checked="$store.global.settings['video-uploads'] === 'on'">
                 <span>Uploads</span>
               </label>
             </li>
@@ -64,11 +64,11 @@ permalink: public{{ page.filePathStem }}.html
     </section>
     <section>
       <h3 class="title-setting">Twitch</h3>
-      <button type="button" class="btn btn-twitch" :class="{ 'hidden': ! $store.global.twitch.user_token }"
+      <button type="button" class="btn btn-twitch" x-bind:class="{ 'hidden': ! $store.global.twitch.user_token }"
         @click="$store.global.twitch.logout()"
       >Log out from Twitch</button>
-      <a :href="$store.global.twitch_login_url"
-        class="btn btn-twitch" :class="{ 'hidden': $store.global.twitch.user_token }"
+      <a x-bind:href="$store.global.twitch_login_url"
+        class="btn btn-twitch" x-bind:class="{ 'hidden': $store.global.twitch.user_token }"
       >Log in with Twitch</a>
     </section>
     <section>
