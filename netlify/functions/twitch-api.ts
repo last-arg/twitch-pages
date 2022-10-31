@@ -1,12 +1,12 @@
 import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
 import { TWITCH_CLIENT_ID, VideoType, twitchCatImageSrc, Game } from "../../src/common"
-import { mainContent } from "../../src/config.prod"
+import { mainContent, config } from "../../src/config.prod"
 
-const CAT_IMG_WIDTH = 104
-const CAT_IMG_HEIGHT = 144
-const VIDEO_IMG_WIDTH = 440
-const VIDEO_IMG_HEIGHT = 248
+const CAT_IMG_WIDTH = config.image.category.width;
+const CAT_IMG_HEIGHT = config.image.category.height;
+const VIDEO_IMG_WIDTH = config.image.video.width;
+const VIDEO_IMG_HEIGHT = config.image.video.height;
 
 const API_URL = "https://api.twitch.tv"
 const { TWITCH_CLIENT_SECRET } = process.env

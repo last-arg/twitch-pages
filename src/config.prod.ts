@@ -25,3 +25,16 @@ export const mainContent: Record<string, UrlResolve> = {
     html: "/public/partials/not-found.html",
   }
 }
+
+export const config = {
+  image: {
+    category: {
+      width: 104,
+      height: 144,
+    },
+    video: {
+      width: 440,
+      height: 248,
+    }
+  }
+}
