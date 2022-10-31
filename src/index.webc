@@ -42,13 +42,13 @@ title: "Home | Twitch Pages"
                 name="game_name"
                 type="search"
                 class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
-                placeholder="Search for game"
+                placeholder="Search for games"
                 x-bind:aria-expanded="(state === 'search').toString()"
                 aria-expanded="false"
               />
               <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
-                type="submit" aria-label="Search games"
+                type="submit" aria-label="Search for games"
                 x-on:click="$refs.searchInput.focus()"
               >
                 <svg class="fill-current w-5 h-5"><use href="/public/assets/icons.svg#looking-class"></use></svg>
