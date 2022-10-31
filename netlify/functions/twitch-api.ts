@@ -27,10 +27,6 @@ interface Video {
   viewer_count: number,
 }
 
-function createLiveUserImageUrl(url_template: string, w: number, h: number): string {
-  return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
-}
-
 const topGamesHtml = (games: Game[]): string => {
   let result = ""
   for (const game of games) {
@@ -119,7 +115,7 @@ const streamsHtml = (streams: Video[]): string => {
             class="hover:text-violet-700 hover:underline"
           >
             <div class="relative">
-              <img class="rounded" src="${createLiveUserImageUrl(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+              <img class="rounded" src="${twitchCatImageSrc(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
               <p class="absolute bottom-0 left-0 bg-truegray-800 text-truegray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
             </div>
             <div class="flex items-center px-1 py-1 rounded bg-white">
