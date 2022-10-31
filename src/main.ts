@@ -189,7 +189,7 @@ function alpineInit() {
           sidebarButtons[this.state].focus()
           this.state = "closed";
         },
-        clickSideBar(sidebar: "category" | "user-videos", name: string) {
+        clickSidebar(sidebar: "category" | "user-videos", name: string) {
           this.closeSidebar();
           if (sidebar === "category") {
             (Alpine.store("global") as Global).setClickedGame(name);
