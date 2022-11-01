@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<title @html="title"></title>
-  <link rel="stylesheet" href="/public/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="public/css/main.css">
+  <!--
 	<style @html="getCSS(page.url)"></style>
+  -->
 </head>
 <body class="bg-truegray-50 text-truegray-800">
   <div @html="content" webc:nokeep></div>
