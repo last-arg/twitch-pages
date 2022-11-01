@@ -48,22 +48,30 @@
 </div>
 <style> 
   follow-star { 
+    --star-color: rgb(163,163,163);
+    --bg-color: rgb(245,245,245);
+    --hover-color: rgb(109,40,217);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     
     /* TODO: CSS var */
     padding: 0.4rem;
-    background-color: rgba(31,41,55);
-    color: rgba(163,163,163);
+    background-color: var(--bg-color);
+    color: var(--star-color);
   } 
   
   follow-star button:hover,
   follow-star button:focus,
   follow-star a:hover,
   follow-star a:focus {
-    /* TODO: CSS var */
-    color: rgba(139,92,246);
+    color: var(--hover-color);
+  }
+
+  follow-star[data-colormode=dark] { 
+    --star-color: rgb(163,163,163);
+    --bg-color: rgb(31,41,55);
+    --hover-color: rgb(139,92,246);
   }
   
   .btn-follow use { display: none; }

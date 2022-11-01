@@ -17,7 +17,7 @@
             <link-box @name="category" @arg_name="search.name">
               <span x-text="search.name"></span>
             </link-box>
-            <follow-star class="ml-1px" @arg="search"></follow-star>
+            <follow-star class="ml-1px" data-colormode="dark" @arg="search"></follow-star>
           </li>
         </template>
       </ul>
