@@ -384,7 +384,6 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
   if (oauth_resp.status !== 200) {
     return undefined
   }
-  console.log(await oauth_resp.text())
   const data = (await oauth_resp.json()) as Record<string, string>
   return data.access_token;
 }
@@ -408,7 +407,6 @@ const handler: Handler = async (event) => {
   try {
     // console.log(requestUrl.toString())
     // console.log(headers)
-    token = ""
     if (token === "" || token === "null" || token === "undefined") {
       console.log("INFO: Getting new token")
       const new_token = await requestTwitchToken()

@@ -27,7 +27,7 @@
 
 [dev]
   autoLaunch = false
-  command = "npx @11ty/eleventy --port 8080 --serve --incremental"
+  command = "npx @11ty/eleventy --port 8080 --serve"
   port = 8888
   targetPort = 8080
 
