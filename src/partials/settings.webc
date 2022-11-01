@@ -13,7 +13,7 @@ permalink: public/partials/settings.html
       >
         <fieldset>
           <legend>Number of items to load with one request</legend>
-          <ul class="list-general stack stack-4 mt-1.5 pl-4">
+          <ul class="list-general stack stack-4 mt-1.5 pl-4" role="list">
             <li>
               <label for="top-games-count">Top Games:</label>
               <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
@@ -33,7 +33,7 @@ permalink: public/partials/settings.html
         </fieldset>
         <fieldset>
           <legend>Default selected user video types</legend>
-          <ul class="stack stack-2 pl-4 mt-1.5">
+          <ul class="stack stack-2 pl-4 mt-1.5" role="list" role="list">
             <li>
               <label for="video-archives">
                 <input type="checkbox" id="video-archives" name="video-archives"
@@ -73,7 +73,7 @@ permalink: public/partials/settings.html
     </section>
     <section>
       <h3 class="title-setting">Cache</h3>
-      <ul class="stack stack-4 mt-1.5">
+      <ul class="stack stack-4 mt-1.5" role="list">
         <li>
           <button @click="$store.games.clear()" type="button" class="btn btn-setting"
           >Clear games cache</button>

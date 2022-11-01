@@ -17,7 +17,7 @@ permalink: public/partials/user-videos.html
     <div class="filter-wrapper">
       <div class="flex justify-between items-center flex-wrap gap-y-6 gap-x-4 bg-truegray-50 pt-4 pb-1">
         <div x-data="userVideosFilter()" class="flex">
-          <ul class="flex flex-wrap gap-4">
+          <ul class="flex flex-wrap gap-4" role="list">
             <li class="flex items-center">
               <button type="button" class="filter-checkbox-btn archive bg-lime-300 hover:bg-lime-400"
                 x-bind:class="{checked: $store.global.settings['video-archives'] === 'on'}"
@@ -76,7 +76,7 @@ permalink: public/partials/user-videos.html
       </div>
     </div>
     <div id="feedback" class="hidden"></div>
-    <ul class="filter-search user-videos l-grid l-grid-min-w-64 gap-6 mt-6"
+    <ul class="filter-search user-videos l-grid l-grid-min-w-64 gap-6 mt-6" role="list"
       x-init="
         if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
         if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')

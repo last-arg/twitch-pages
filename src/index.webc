@@ -2,6 +2,14 @@
 layout: "base.webc"
 title: "Home | Twitch Pages"
 ---
+<!-- Debug: see how text looks and reacts in different screen sizes -->
+<div class="debug" style="display:none">
+  <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</h1>
+  <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</h3>
+  <p>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+</div>
 <a href="#main" class="skip-content">skip to content</a>
 <div id="app">
   <header class="fixed top-0 w-full z-20 bg-gray-700">
@@ -66,7 +74,7 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
                 <!-- games list -->
                 <scroll-container>
-                  <ul class="stack stack-4">
+                  <ul class="stack stack-4" role="list">
                     <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
                       <li class="flex">
                         <link-box @name="category" @arg_name="game.name">
@@ -89,7 +97,7 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
                 <scroll-container>
-                  <ul class="stack stack-4">
+                  <ul class="stack stack-4" role="list">
                     <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
                       <li class="flex">
                         <link-box @name="user-videos" @arg_name="stream.user_login">
@@ -118,10 +126,3 @@ title: "Home | Twitch Pages"
   </main>
 </div>
 <div id="aria-feedback" role="status" aria-live="polite" class="sr-only"></div>
-<style>
-  /* Don't flash big svg icons */
-  svg {
-    width: 1em;
-    height: 1em;
-  }
-</style>

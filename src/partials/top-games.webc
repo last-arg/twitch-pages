@@ -5,7 +5,7 @@ permalink: public/partials/top-games.html
   <div class="flex">
     <h2 class="px-3 py-2 bg-white">Top games</h2>
   </div>
-  <ul id="list-top-games" class="l-grid l-grid-min-w-72">
+  <ul id="list-top-games" class="l-grid l-grid-min-w-72" role="list">
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <div id="load-more-wrapper" class="text-center my-12">
