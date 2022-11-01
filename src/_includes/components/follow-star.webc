@@ -1,47 +1,88 @@
-<template webc:type="render">
-  function() {
-    const arg_names = ["game", "stream", "search"]
-    if (!arg_names.includes(this.arg)) {
-      throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
-    }
-    const arg = this.arg;
+<div webc:root>
+  <template webc:type="render">
+    function() {
+      const arg_names = ["game", "stream", "search"]
+      if (!arg_names.includes(this.arg)) {
+        throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
+      }
+      const arg = this.arg;
 
-    let click_fn = "";
-    let external_link = "";
-    let classes = "";
-    let extra_args = "";
-    let svg_empty = "";
-    if (arg === "game") {
-      click_fn = `$store.games.remove(game.id)`;
-      external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-    } else if (arg === "stream") {
-      click_fn = `$store.streams.remove(game.id)`;
-      external_link = `\`https://www.twitch.tv/${arg}.user_login/videos\``;
-    } else if (arg === "search") {
-      click_fn = `$store.games.toggle(${arg}.id, ${arg}.name)`;
-      external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-      classes = "btn-follow";
-      extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)" x-bind:aria-label="followed ? 'unfollow' : 'follow'"`
-      svg_empty = `<use href="/public/assets/icons.svg#star-empty"></use>`;
-    }
+      let click_fn = "";
+      let external_link = "";
+      let classes = "";
+      let extra_args = "";
+      let svg_empty = "";
+      if (arg === "game") {
+        click_fn = `$store.games.remove(game.id)`;
+        external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
+      } else if (arg === "stream") {
+        click_fn = `$store.streams.remove(game.id)`;
+        external_link = `\`https://www.twitch.tv/${arg}.user_login/videos\``;
+      } else if (arg === "search") {
+        click_fn = `$store.games.toggle(${arg}.id, ${arg}.name)`;
+        external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
+        classes = "btn-follow";
+        extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)" x-bind:aria-label="followed ? 'unfollow' : 'follow'"`
+        svg_empty = `<use href="/public/assets/icons.svg#star-empty"></use>`;
+      }
 
-    return `
-    <div class="flex flex-col justify-between bg-gray-800 ml-1px text-truegray-400 px-1.5 py-1.5">
-      <button class="hover:text-violet-500 ${classes}"
-        x-on:click="${click_fn}" type="button" aria-label="unfollow"
-        ${extra_args}
-      >
-        <svg class="fill-current w-5 h-5">
-          ${svg_empty}
-          <use href="/public/assets/icons.svg#star-full"></use>
-        </svg>
-      </button>
-      <a class="hover:text-violet-500" x-bind:href="${external_link}">
-        <svg class="fill-current w-5 h-5">
-          <use href="/public/assets/icons.svg#external-link"></use>
-        </svg>
-      </a>
-    </div>
-    `
+      // 'ml-1px' should no be part of this component
+      return `
+        <button class="${classes}"
+          x-on:click="${click_fn}" type="button" aria-label="unfollow"
+          ${extra_args}
+        >
+          <svg class="fill-current w-5 h-5">
+            ${svg_empty}
+            <use href="/public/assets/icons.svg#star-full"></use>
+          </svg>
+        </button>
+        <a x-bind:href="${external_link}">
+          <svg class="fill-current w-5 h-5">
+            <use href="/public/assets/icons.svg#external-link"></use>
+          </svg>
+        </a>
+      `
+    }
+  </template>
+</div>
+<style> 
+  follow-star { 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* TODO: CSS var */
+    padding: 0.4rem;
+    background-color: rgba(31,41,55);
+    color: rgba(163,163,163);
+  } 
+  
+  follow-star button:hover,
+  follow-star button:focus,
+  follow-star a:hover,
+  follow-star a:focus {
+    /* TODO: CSS var */
+    color: rgba(139,92,246);
   }
-</template>
+  
+  .btn-follow use { display: none; }
+ 
+  /*
+   * Could also use '... use:first-child' or '... use:nth-child(2)' if order
+   * is known and won't change. Might be safer choice because svg icon name
+   * might change. Although somebody might also change <use> order without
+   * knowing order is important. In both cases a comment might be helpful.
+   * 
+   * Adding a class probably be the safest bet. Choosing a solution comes
+   * down to how often and how the HTML code might be changed.
+   * 
+   * Could also write some defensive CSS which indicates that something is
+   * wrong.
+   */
+  .btn-follow use[href$="star-empty"],
+  .btn-follow[aria-label="follow"] use[href$="star-empty"],
+  .btn-follow[aria-label="unfollow"] use[href$="star-full"] {
+    display: initial;
+  }
+</style>

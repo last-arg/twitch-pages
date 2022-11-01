@@ -72,7 +72,7 @@ title: "Home | Twitch Pages"
                         <link-box @name="category" @arg_name="game.name">
                           <p x-text="game.name"></p>
                         </link-box>
-                        <follow-star @arg="game"></follow-star>
+                        <follow-star class="ml-1px" @arg="game"></follow-star>
                       </li>
                     </template>
                   </ul>
@@ -101,7 +101,7 @@ title: "Home | Twitch Pages"
                             </div>
                           </div>
                         </link-box>
-                        <follow-star @arg="stream"></follow-star>
+                        <follow-star class="ml-1px" @arg="stream"></follow-star>
                       </li>
                     </template>
                   </ul>
@@ -118,3 +118,10 @@ title: "Home | Twitch Pages"
   </main>
 </div>
 <div id="aria-feedback" role="status" aria-live="polite" class="sr-only"></div>
+<style>
+  /* Don't flash big svg icons */
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+</style>
