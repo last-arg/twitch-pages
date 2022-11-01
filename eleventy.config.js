@@ -6,7 +6,8 @@ module.exports = function(eleventyConfig) {
 	});
   // eleventyConfig.setWatchThrottleWaitTime(15);
   eleventyConfig.setUseGitIgnore(false);
-  eleventyConfig.addPassthroughCopy("public/");
+  eleventyConfig.addPassthroughCopy("public");
+  eleventyConfig.addPassthroughCopy("favicon.svg");
 	return {
   	dir: {
     	input: "src",

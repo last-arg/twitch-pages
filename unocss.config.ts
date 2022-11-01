@@ -1,12 +1,10 @@
 import { defineConfig, escapeSelector, presetUno, createGenerator, RawUtil } from "unocss";
-import fs from 'fs';
+import * as fs from 'fs/promises';
 
 // npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
 
-const resetTailwind = fs.readFileSync('node_modules/@unocss/reset/tailwind.css')
-const srcStyleCss = fs.readFileSync('src/style.css')
-
 const config = defineConfig({
+  safelist: [],
   rules: [
     ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
@@ -25,8 +23,10 @@ const config = defineConfig({
     ['load-more-msg', 'border-2 py-1 border-truegray-300 text-truegray-500'],
   ],
   preflights: [
-    { getCSS: () => resetTailwind.toString(), layer: 'reset' },
-    { getCSS: () => srcStyleCss.toString(), layer: 'component' },
+    { getCSS: async () => {
+      const srcStyleCss = await fs.readFile('src/style.css')
+      return srcStyleCss.toString();
+    }, layer: 'component' },
   ],
   layers: {
     reset: 0,
