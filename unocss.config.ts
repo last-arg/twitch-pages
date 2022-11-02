@@ -4,14 +4,17 @@ import * as fs from 'fs/promises';
 // npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
 
 const config = defineConfig({
-  safelist: [],
+  // TODO: re-evaluate safelist and blocklist when done with (CUBE) CSS
+  safelist: ["stack", "sr-only", "ml-auto", "max-w-screen-2xl", "mx-auto", "relative", "fixed"],
+  blocklist: ["block", "absolute", "h1", "h2", "h3", "underline", "flex", "sidebar-button"],
+  exclude: ["**/*"],
   rules: [
-    ['fill-current', { fill: 'currentColor' }],
-    [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
-    [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
-    [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
-    [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
-    [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
+    // ['fill-current', { fill: 'currentColor' }],
+    // [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
+    // [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
+    // [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
+    // [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
+    // [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
   ],
   shortcutsLayer: "component",
   shortcuts: [
@@ -26,7 +29,7 @@ const config = defineConfig({
     { getCSS: async () => {
       const srcStyleCss = await fs.readFile('src/style.css')
       return srcStyleCss.toString();
-    }, layer: 'component' },
+    }, layer: 'reset' },
   ],
   layers: {
     reset: 0,
@@ -109,7 +112,7 @@ async function ruleFilterCheckboxBtn([], ctx) {
 
 function ruleStack([selector, nr, unit]) {
   const classSelector = "." + escapeSelector(selector)
-  const css_attr = "--space"
+  const css_attr = "--stack-space"
 
   if (nr === '' && unit === '') {
     return `
@@ -120,7 +123,7 @@ ${classSelector} > * {
   margin-bottom: 0;
 }
 
-${classSelector} > * + * { margin-top: var(${css_attr}, 1.5rem); }
+${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
     `
   }
 

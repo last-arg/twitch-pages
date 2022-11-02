@@ -3,126 +3,119 @@ layout: "base.webc"
 title: "Home | Twitch Pages"
 ---
 <!-- Debug: see how text looks and reacts in different screen sizes -->
-<div class="debug" style="display:none">
+<div style="display:none">
   <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</h1>
   <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</h3>
   <p>
   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
   </p>
 </div>
-<a href="#main" class="skip-content">skip to content</a>
+<a class="skip-content" href="#main">skip to content</a>
+<h1 class="sr-only">Twich Pages</h1>
 <div id="app">
-  <header class="fixed top-0 w-full z-20 bg-gray-700">
-    <div class="relative bg-gray-700  max-w-screen-2xl mx-auto px-3">
-      <div x-data="sidebar" class="flex shadow-md justify-between">
-        <nav class="flex gap-4 w-full">
-          <h1>
-            <a href="/"
-              class="block px-3 pt-1.5 pb-0.5 bg-gray-900 text-gray-50
-                border-b-5 border-gray-900
-                hover:text-gray-50 hover:text-gray-50 hover:border-gray-500
-                focus:text-gray-50 focus:text-gray-50 focus:border-gray-500
-              "
-              hx-get="/public/partials/top-games.html" hx-target="#main"
-              hx-push-url="/"
-            >Home</a>
-          </h1>
-          <div>
-            <a href="/settings"
-              class="sidebar-button"
-              aria-label="Settings"
-              hx-get="/public/partials/settings.html" hx-target="#main"
-              hx-push-url="/settings"
-            >Settings</a>
-          </div>
-          <div class="search-wrapper"
-            x-bind:class="{'border-violet-700': state === 'search', 'hover:border-gray-500': state !== 'search'}"
-          >
-            <form role="search" class="h-full flex" x-on:click.prevent="">
-              <label class="sr-only" for="game_name">Enter game name</label>
-              <input
-                x-on:focus="state = 'search'"
-                x-on:blur="if ($el.value.length === 0) state = 'closed'"
-                x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
-                x-ref="searchInput"
-                x-model="searchValue"
-                id="game_name"
-                name="game_name"
-                type="search"
-                class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 focus:bg-gray-50 px-1 align-top w-full"
-                placeholder="Search for games"
-                x-bind:aria-expanded="(state === 'search').toString()"
-                aria-expanded="false"
-              />
-              <!-- TODO: see if I can make this <button> into <menu-button> -->
-              <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50"
-                type="submit" aria-label="Search for games"
-                x-on:click="$refs.searchInput.focus()"
-              >
-                <svg class="fill-current w-5 h-5"><use href="/public/assets/icons.svg#looking-class"></use></svg>
-              </button>
-              <!-- search sidebar -->
-              <sidebar-menu></sidebar-menu>
-            </form>
-          </div>
-          <div>
-            <!-- games button -->
-            <menu-button @name="games" @icon="game-controller"></menu-button>
-            <!-- games sidebar -->
-            <div class="sidebar-wrapper">
-              <div class="flex flex-col bg-truegray-700 h-full pb-4">
-                <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
-                <!-- games list -->
-                <scroll-container>
-                  <ul class="stack stack-4" role="list">
-                    <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
-                      <li class="flex">
-                        <link-box @name="category" @arg_name="game.name">
-                          <p x-text="game.name"></p>
-                        </link-box>
-                        <follow-star class="ml-1px" data-colormode="dark" @arg="game"></follow-star>
-                      </li>
-                    </template>
-                  </ul>
-                </scroll-container>
+  <header class="wrapper fixed">
+    <div>
+      <div x-data="sidebar">
+        <nav>
+          <ul role="list">
+            <li>
+              <a href="/"
+                class="menu-item"           
+                hx-get="/public/partials/top-games.html" hx-target="#main"
+                hx-push-url="/"
+              >Home</a>
+            </li>
+            <li>
+              <a href="/settings"
+                class="menu-item"           
+                aria-label="Settings"
+                hx-get="/public/partials/settings.html" hx-target="#main"
+                hx-push-url="/settings"
+              >Settings</a>
+            </li>
+            <li class="ml-auto">
+              <form role="search" x-on:submit.prevent="">
+                <label class="sr-only" for="game_name">Search for games</label>
+                <input
+                  x-on:focus="state = 'search'"
+                  x-on:blur="if ($el.value.length === 0) state = 'closed'"
+                  x-on:keyup.enter="if ($el.value.length) $dispatch('submit')"
+                  x-ref="searchInput"
+                  x-model="searchValue"
+                  id="game_name"
+                  name="game_name"
+                  type="search"
+                  placeholder="Search for games"
+                  x-bind:aria-expanded="(state === 'search').toString()"
+                  aria-expanded="false"
+                />
+                <!-- TODO: see if I can make this <button> into <menu-button> -->
+                <button class="menu-item" type="submit" aria-label="Search for games">
+                  <svg><use href="/public/assets/icons.svg#looking-class"></use></svg>
+                </button>
+                <!-- search sidebar -->
+                <sidebar-menu></sidebar-menu>
+              </form>
+            </li>
+            <li>
+              <!-- games button -->
+              <menu-button @name="games" @icon="game-controller"></menu-button>
+              <!-- games sidebar -->
+              <div class="sidebar-position">
+                <div class="sidebar-content">
+                  <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
+                  <!-- games list -->
+                  <scroll-container>
+                    <ul role="list">
+                      <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
+                        <li>
+                          <link-box @name="category" @arg_name="game.name">
+                            <p x-text="game.name"></p>
+                          </link-box>
+                          <follow-star data-colormode="dark" @arg="game"></follow-star>
+                        </li>
+                      </template>
+                    </ul>
+                  </scroll-container>
+                </div>
               </div>
-            </div>
-          </div>
-          <div>
-            <!-- streams button -->
-            <menu-button @name="streams" @icon="people"></menu-button>
-            <!-- streams sidebar -->
-            <div class="sidebar-wrapper">
-              <div class="flex flex-col bg-truegray-700 h-full pb-4">
-                <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
-                <!-- streams list -->
-                <scroll-container>
-                  <ul class="stack stack-4" role="list">
-                    <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
-                      <li class="flex">
-                        <link-box @name="user-videos" @arg_name="stream.user_login">
-                          <div class="flex-grow relative h-full flex items-center px-2">
-                            <p x-text="stream.user_name"></p>
-                            <div class="absolute bottom-0 px-2 right-0 left-0 mb-0.5 text-xs flex items-center" x-show="$store.streams.isLive(stream.user_id)">
-                              <span class="bg-red-900 opacity-60 rounded-sm px-1 text-truegray-50">LIVE</span>
-                              <p class="text-truegray-400 ml-1 truncate" x-text="$store.streams.live[stream.user_id]"></p>
+            </li>
+            <li>
+              <!-- streams button -->
+              <menu-button @name="streams" @icon="people"></menu-button>
+              <!-- streams sidebar -->
+              <div class="sidebar-position">
+                <div class="sidebar-content">
+                  <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
+                  <!-- streams list -->
+                  <scroll-container>
+                    <ul role="list">
+                      <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
+                        <li>
+                          <link-box @name="user-videos" @arg_name="stream.user_login">
+                            <div>
+                              <p x-text="stream.user_name"></p>
+                              <div x-show="$store.streams.isLive(stream.user_id)">
+                                <span>LIVE</span>
+                                <p x-text="$store.streams.live[stream.user_id]"></p>
+                              </div>
                             </div>
-                          </div>
-                        </link-box>
-                        <follow-star class="ml-1px" data-colormode="dark" @arg="stream"></follow-star>
-                      </li>
-                    </template>
-                  </ul>
-                </scroll-container>
+                          </link-box>
+                          <follow-star data-colormode="dark" @arg="stream"></follow-star>
+                        </li>
+                      </template>
+                    </ul>
+                  </scroll-container>
+                </div>
               </div>
-            </div>
-          </div>
+            </li>
+          </ul>
         </nav>
       </div>
     </div>
   </header>
-  <main id="main" class="pt-14 px-3 pb-3 max-w-screen-2xl mx-auto" tabindex="-1" hx-history-elt>
+  <main class="wrapper" id="main" tabindex="-1" hx-history-elt>
     Loading...
   </main>
 </div>
-<div id="aria-feedback" role="status" aria-live="polite" class="sr-only"></div>
+<div id="aria-feedback" role="status" aria-live="polite"></div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
 	<style @html="getCSS(page.url)"></style>
   -->
 </head>
-<body class="bg-truegray-50 text-truegray-800">
+<body>
   <div @html="content" webc:nokeep></div>
   <script src="/public/js/main.js"></script>
 </body>

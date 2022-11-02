@@ -122,13 +122,21 @@ select {
   /* TODO: Change font? */
   --font-base: system-ui,-apple-system,sans-serif;
   --tracking: 0;
-  --color-light: rgb(250, 250, 250);
-  --color-dark: rgb(38, 38, 38);
+  --color-truegray-50: rgb(250, 250, 250);
+  --color-truegray-100: rgba(245, 245, 245);
+  --color-truegray-300: rgb(212, 212, 212);
+  --color-truegray-500: rgba(115, 115, 115);
+  --color-truegray-800: rgb(38, 38, 38);
+  --color-truegray-700: rgb(64, 64, 64);
+  --color-truegray-900: rgb(17, 24, 39);
+  --color-violet-700: rgb(109,40,217);
+  
+  --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 }
 
 body {
-  background: var(--color-light);
-  color: var(--color-dark);
+  background: var(--color-truegray-50);
+  color: var(--color-truegray-800);
   font-family: var(--font-base);
   font-size: var(--step-0);
   letter-spacing: var(--tracking);
@@ -151,15 +159,169 @@ h3 {
   font-size: var(--step-3)
 }
 
-p {
+p,
+li {
   max-width: 65ch;
 }
 
 [role=list] {
   padding: 0;
+  margin: 0;
 }
 
 svg {
-  width: 1em; 
-  height: 1em;
+  width: 1.2em; 
+  height: 1.2em;
+}
+
+button {
+  border: none;
+}
+
+.skip-content {
+  text-decoration: underline;
+  position: absolute;
+  z-index: 30;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid #404040;
+  bottom: calc(100% + 1rem);
+  left: 0;
+}
+
+.skip-content:focus {
+  bottom: auto;
+}
+
+header {
+  position: fixed;
+  background: var(--color-truegray-700);
+  top: 0;
+  width: 100%;
+}
+
+
+/* Blocks */
+nav > ul {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-s);
+}
+
+.menu-item {
+  --border-color: var(--color-truegray-900);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: var(--step--1);
+  text-decoration: none;
+  background-color: var(--color-truegray-900);
+  color: var(--color-truegray-100);
+  padding-block-start: var(--space-3xs);
+  padding-inline: var(--space-2xs);
+  border-bottom: var(--space-3xs) solid var(--border-color);
+  display: block;
+  cursor: pointer;
+}
+
+.menu-item:hover,
+.menu-item:focus {
+  --border-color: var(--color-truegray-500);
+}
+
+.menu-item[aria-expanded=true] {
+  border-bottom-color: var(--color-violet-700);
+}
+
+.menu-item[aria-expanded=false] + .sidebar-position,
+#game_name[aria-expanded=false] ~ .sidebar-position {
+  opacity: 0;
+  visibility: hidden;
+  --sidebar-x: 100%;
+}
+
+.menu-item[aria-expanded=true] + .sidebar-position,
+#game_name[aria-expanded=true] ~ .sidebar-position {
+  opacity: 1;
+  visibility: visible;
+  --sidebar-x: 0%;
+}
+
+.menu-item svg {
+  display: block;
+  fill: currentColor
+}
+
+.sidebar-position {
+  z-index: -1;
+  display: flex !important;
+  flex-direction: column;
+  position: absolute;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  --block-padding: var(--space-2xs);
+  padding-top: calc(var(--header-height) + var(--block-padding));
+  padding-bottom: var(--block-padding);
+  --sidebar-x: 100%;
+  transform: translateX(var(--sidebar-x));
+  transition: visibility .15s, opacity .15s, transform .15s;
+}
+
+.sidebar-content {
+  height: 100%;
+  background-color: rgba(0,0,0, .3);
+  overflow: hidden;
+}
+
+.scrollbox {
+  height: 100%;
+  overflow: auto;
+}
+
+/* TODO: redo form[role=search] CSS */
+form[role="search"] {
+  font-size: var(--step--1);
+  display: flex;
+  height: 100%;
+}
+
+form[role="search"] input {
+  --border-color: var(--color-truegray-900);
+  border: none;
+  border-bottom: var(--space-3xs) solid var(--border-color);
+}
+
+form[role=search] input[aria-expanded=true],
+form[role=search] input[aria-expanded=true] + .menu-item {
+  border-bottom-color: var(--color-violet-700);
+}
+
+form[role=search] input[aria-expanded=false] ~ sidebar-menu {
+  display: none;
+}
+
+form[role="search"]:hover input,
+form[role="search"]:hover .menu-item,
+form[role="search"]:focus-within input,
+form[role="search"]:focus-within .menu-item {
+  --border-color: var(--color-truegray-500);
+}
+
+/*
+form[role="search"] input:focus,
+form[role="search"] input:hover {
+  --border-color: var(--color-truegray-500);
+}
+*/
+
+main {
+  margin-top: var(--space-l);
+}
+
+/* Utilities */
+.wrapper {
+  max-width: 70rem;
+  margin-inline: auto;
+  padding-inline: var(--space-xs);
 }
