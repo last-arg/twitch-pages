@@ -213,9 +213,8 @@ header {
 
 .menu-item {
   --border-color: var(--color-truegray-900);
+  display: block;
   height: 100%;
-  display: flex;
-  align-items: center;
   font-size: var(--step--1);
   text-decoration: none;
   background-color: var(--color-truegray-900);
@@ -223,7 +222,6 @@ header {
   padding-block-start: var(--space-3xs);
   padding-inline: var(--space-2xs);
   border-bottom: var(--space-3xs) solid var(--border-color);
-  display: block;
   cursor: pointer;
 }
 
@@ -292,6 +290,7 @@ form[role="search"] {
 form[role="search"] input {
   --border-color: var(--color-truegray-900);
   border: none;
+  border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
 }
 
