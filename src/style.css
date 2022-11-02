@@ -212,7 +212,6 @@ header {
 }
 
 .menu-item {
-  --border-color: var(--color-truegray-900);
   display: block;
   height: 100%;
   font-size: var(--step--1);
@@ -221,6 +220,7 @@ header {
   color: var(--color-truegray-100);
   padding-block-start: var(--space-3xs);
   padding-inline: var(--space-2xs);
+  --border-color: var(--color-truegray-900);
   border-bottom: var(--space-3xs) solid var(--border-color);
   cursor: pointer;
 }
@@ -292,6 +292,7 @@ form[role="search"] input {
   border: none;
   border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
+  padding-inline: var(--space-2xs);
 }
 
 form[role=search] input[aria-expanded=true],
