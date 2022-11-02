@@ -301,19 +301,9 @@ form[role=search] input[aria-expanded=false] ~ sidebar-menu {
   display: none;
 }
 
-form[role="search"]:hover input,
-form[role="search"]:hover .menu-item,
-form[role="search"]:focus-within input,
-form[role="search"]:focus-within .menu-item {
+form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
   --border-color: var(--color-truegray-500);
 }
-
-/*
-form[role="search"] input:focus,
-form[role="search"] input:hover {
-  --border-color: var(--color-truegray-500);
-}
-*/
 
 main {
   margin-top: var(--space-l);
