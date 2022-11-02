@@ -178,6 +178,17 @@ button {
   border: none;
 }
 
+/* Composition */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gutter, var(--space-s));
+  justify-content: var(--cluster-horizontal-alignment, flex-start);
+  align-items: var(--cluster-vertical-alignment, center)
+}
+
+
+/* Blocks */
 .skip-content {
   text-decoration: underline;
   position: absolute;
@@ -198,14 +209,6 @@ header {
   background: var(--color-truegray-700);
   top: 0;
   width: 100%;
-}
-
-
-/* Blocks */
-nav > ul {
-  display: flex;
-  align-items: stretch;
-  gap: var(--space-s);
 }
 
 .menu-item {
@@ -315,3 +318,4 @@ main {
   margin-inline: auto;
   padding-inline: var(--space-xs);
 }
+
