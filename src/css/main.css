@@ -235,20 +235,6 @@ header {
   border-bottom-color: var(--color-violet-700);
 }
 
-.menu-item[aria-expanded=false] + .sidebar-position,
-#game_name[aria-expanded=false] ~ .sidebar-position {
-  opacity: 0;
-  visibility: hidden;
-  --sidebar-x: 100%;
-}
-
-.menu-item[aria-expanded=true] + .sidebar-position,
-#game_name[aria-expanded=true] ~ .sidebar-position {
-  opacity: 1;
-  visibility: visible;
-  --sidebar-x: 0%;
-}
-
 .menu-item svg {
   width: 1.2em;
   height: 1.2em;
@@ -271,6 +257,20 @@ header {
   transition: visibility .15s, opacity .15s, transform .15s;
   max-width: 20rem;
   width: 100%;
+}
+
+.menu-item[aria-expanded=false] + .sidebar-position,
+#game_name[aria-expanded=false] ~ .sidebar-position {
+  opacity: 0;
+  visibility: hidden;
+  --sidebar-x: 100%;
+}
+
+.menu-item[aria-expanded=true] + .sidebar-position,
+#game_name[aria-expanded=true] ~ .sidebar-position {
+  opacity: 1;
+  visibility: visible;
+  --sidebar-x: 0%;
 }
 
 .sidebar-content {
