@@ -684,13 +684,13 @@ const initHtmx = async () => {
       if (path === "/helix/games" && xhr.status !== 200) {
         const pathArr = location.pathname.split("/")
         result = `
-          <h2 class="text-lg px-3 py-2">${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
+          <h2>${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
           <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
         `;
       } else if (path === "/helix/users" && xhr.status !== 200) {
         const pathArr = location.pathname.split("/")
         result = `
-          <h2 class="text-lg px-3 py-2 bg-white">${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
+          <h2>${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
           <div id="feedback" hx-swap-oob="true">User not found</div>
         `;
       }

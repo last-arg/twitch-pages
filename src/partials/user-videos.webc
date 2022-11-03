@@ -1,9 +1,9 @@
 ---
 permalink: public/partials/user-videos.html
 ---
-<div class="stack">
-  <div class="flex items-center">
-    <div id="user-header" class="flex items-center">
+<div>
+  <div>
+    <div id="user-header">
       <div hx-ext="twitch-api"
         hx-get="/helix/users"
         hx-trigger="load"
@@ -13,70 +13,70 @@ permalink: public/partials/user-videos.html
     </div>
   </div>
   <div>
-    <h3 class="px-2 py-1 bg-white inline-block">Videos</h3>
-    <div class="filter-wrapper">
-      <div class="flex justify-between items-center flex-wrap gap-y-6 gap-x-4 bg-truegray-50 pt-4 pb-1">
-        <div x-data="userVideosFilter()" class="flex">
-          <ul class="flex flex-wrap gap-4" role="list">
-            <li class="flex items-center">
-              <button type="button" class="filter-checkbox-btn archive bg-lime-300 hover:bg-lime-400"
+    <h3>Videos</h3>
+    <div>
+      <div>
+        <div x-data="userVideosFilter()">
+          <ul role="list">
+            <li>
+              <button type="button"
                 x-bind:class="{checked: $store.global.settings['video-archives'] === 'on'}"
                 x-on:click="toggleFilter('archive')"
               >
-                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
+                <span>&nbsp;</span>
               </button>
-              <button type="button" class="filter-only-btn bg-lime-200 hover:bg-lime-300"
+              <button type="button"
                 x-on:click="onlyFilter('archive')"
               >
                 Archives (<span id="archives-count">0</span>)
               </button>
             </li>
-            <li class="flex items-center">
-              <button type="button" class="filter-checkbox-btn upload bg-sky-300 hover:bg-sky-400"
+            <li>
+              <button type="button"
                 x-bind:class="{checked: $store.global.settings['video-uploads'] === 'on'}"
                 x-on:click="toggleFilter('upload')"
               >
-                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
+                <span>&nbsp;</span>
               </button>
-              <button type="button" class="filter-only-btn bg-sky-200 hover:bg-sky-300"
+              <button type="button"
                 x-on:click="onlyFilter('upload')"
               >
                 Uploads (<span id="uploads-count">0</span>)
               </button>
             </li>
-            <li class="flex items-center">
-              <button type="button" class="filter-checkbox-btn highlight bg-amber-300 hover:bg-amber-400"
+            <li>
+              <button type="button"
                 x-bind:class="{checked: $store.global.settings['video-highlights'] === 'on'}"
                 x-on:click="toggleFilter('highlight')"
               >
-                <span class="border-2 block w-5 h-5 border-truegray-50 bg-truegray-100">&nbsp;</span>
+                <span>&nbsp;</span>
               </button>
-              <button type="button" class="filter-only-btn bg-amber-200 hover:bg-amber-300"
+              <button type="button"
                 x-on:click="onlyFilter('highlight')"
               >
                 Highlights (<span id="highlights-count">0</span>)
               </button>
             </li>
           </ul>
-          <div class="flex items-center">
-            <span class="w-0 border-l mx-2 h-full">&nbsp;</span>
+          <div>
+            <span>&nbsp;</span>
             <div>
               <button type="button"
-                class="whitespace-nowrap bg-truegray-600 rounded-sm px-2 hover:bg-truegray-800 text-truegray-100"
+               
                 x-on:click="showAll()"
               >Show all</button>
             </div>
           </div>
         </div>
-        <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" @reset="formReset()">
-          <label class="sr-only" for="search">Search video title</label>
-          <input class="w-full" type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
-          <button type="reset" class="ml-2 btn bg-truegray-200 hover:bg-truegray-300">Reset</button>
+        <form style="" x-data="search" @reset="formReset()">
+          <label for="search">Search video title</label>
+          <input type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
+          <button type="reset">Reset</button>
         </form>
       </div>
     </div>
-    <div id="feedback" class="hidden"></div>
-    <ul class="filter-search user-videos l-grid l-grid-min-w-64 gap-6 mt-6" role="list"
+    <div id="feedback"></div>
+    <ul role="list"
       x-init="
         if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
         if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')
@@ -84,10 +84,10 @@ permalink: public/partials/user-videos.html
       "
     >
     </ul>
-    <div id="load-more-wrapper" class="text-center my-12">
+    <div id="load-more-wrapper">
       <button type="button"
         id="load-more-streams"
-        class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+       
         hx-ext="twitch-api"
         hx-trigger="click"
         hx-get="/helix/videos"
@@ -96,11 +96,11 @@ permalink: public/partials/user-videos.html
         hx-swap="beforeend"
         aria-disabled="true"
       >
-        <input id="param-after" type="hidden" class="req-param" name="after" value="">
-        <input id="param-user_id" type="hidden" class="req-param" name="user_id" value="">
+        <input id="param-after" type="hidden" name="after" value="">
+        <input id="param-user_id" type="hidden" name="user_id" value="">
         <span>Load more videos</span>
       </button>
-      <p class="load-more-msg hidden">Loading...</p>
+      <p>Loading...</p>
     </div>
   </div>
 </div>

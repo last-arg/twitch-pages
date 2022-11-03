@@ -1,9 +1,9 @@
 ---
 permalink: public/partials/category.html
 ---
-<div class="stack">
-  <div class="flex items-center justify-between">
-    <div id="category-header" class="flex items-center bg-white rounded-r-sm">
+<div>
+  <div>
+    <div id="category-header">
       <div hx-ext="twitch-api"
         hx-get="/helix/games"
         hx-trigger="load"
@@ -11,20 +11,20 @@ permalink: public/partials/category.html
       ></div>
       <placeholder-title name="category"></placeholder-title>
     </div>
-    <form class="flex flex-1 min-w-22ch max-w-30ch" style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
-      <label class="sr-only" for="search">Search stream title</label>
-      <input class="w-full" type="search" id="search" placeholder="Stream title" @input.debounce.100ms="searchTitle()" value="">
-      <button type="reset" class="ml-2 btn bg-truegray-200 hover:bg-truegray-300">Reset</button>
+    <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
+      <label for="search">Search stream title</label>
+      <input type="search" id="search" placeholder="Stream title" @input.debounce.100ms="searchTitle()" value="">
+      <button type="reset">Reset</button>
     </form>
   </div>
-  <div class="list-wrapper">
+  <div>
     <div id="feedback"></div>
-    <ul class="filter-search l-grid l-grid-min-w-72 gap-6">
+    <ul>
     </ul>
-    <div id="load-more-wrapper" class="text-center my-12">
+    <div id="load-more-wrapper">
       <button type="button"
         id="load-more-streams"
-        class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+       
         hx-ext="twitch-api"
         hx-get="/helix/streams"
         hx-include=".req-param"
@@ -33,11 +33,11 @@ permalink: public/partials/category.html
         hx-swap="beforeend"
         aria-disabled="true"
       >
-        <input id="param-after" type="hidden" class="req-param" name="after" value="">
-        <input id="param-game_id" type="hidden" class="req-param" name="game_id" value="">
+        <input id="param-after" type="hidden" name="after" value="">
+        <input id="param-game_id" type="hidden" name="game_id" value="">
         <span>Load more videos</span>
       </button>
-      <p class="load-more-msg hidden border-2 py-1 border-truegray-300 text-truegray-500">
+      <p>
         Loading...
       </p>
     </div>

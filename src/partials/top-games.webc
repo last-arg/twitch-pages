@@ -1,24 +1,24 @@
 ---
 permalink: public/partials/top-games.html
 ---
-<div class="stack">
-  <div class="flex">
-    <h2 class="px-3 py-2 bg-white">Top games</h2>
+<div>
+  <div>
+    <h2>Top games</h2>
   </div>
-  <ul id="list-top-games" class="l-grid l-grid-min-w-72" role="list">
+  <ul id="list-top-games" role="list">
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
-  <div id="load-more-wrapper" class="text-center my-12">
+  <div id="load-more-wrapper">
     <button type="button"
-      class="load-more-btn border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50"
+     
       hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
       hx-include="#param-after"
       aria-disabled="true"
     >
       <input type="hidden" id="param-after" name="after" value="">
-      <span class="">Load more games</span>
+      <span>Load more games</span>
     </button>
-    <p class="load-more-msg hidden border-2 py-1 border-truegray-300 text-truegray-500">
+    <p>
       Loading...
     </p>
   </div>
