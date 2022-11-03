@@ -386,19 +386,25 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
 const handler: Handler = async (event) => {
   // return { statusCode: 200, body: "test", headers: {"this": "that"} }
   // console.log("EVENT:", event)
-  if (TWITCH_CLIENT_SECRET === undefined) {
+  if (TWITCH_CLIENT_SECRET === null) {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
+  }
+  // TODO: check that all query params exist
+  if (event.queryStringParameters === null) {
+    return errorReturn(500, "No queryStringParameters object in request handler");
   }
   if (event.queryStringParameters['request_token'] === '') {
     const new_token = await requestTwitchToken()
     return { statusCode: 200, body: new_token };
   }
-  let {path, token, ...attrs} = event.queryStringParameters
+  let params = event.queryStringParameters;
+  const path = params.path;
+  let token = params.token;
   const requestUrl = new URL(path, API_URL)
   requestUrl.search = Object.entries(attrs).map((key_val: string[]) => key_val.join("=")).join("&")
 
   let result_headers = {}
-  let response: Response
+  let response: Response | undefined = undefined;
   try {
     // console.log(requestUrl.toString())
     // console.log(headers)
@@ -406,7 +412,7 @@ const handler: Handler = async (event) => {
       console.log("INFO: Getting new token")
       const new_token = await requestTwitchToken()
       if (new_token === undefined) {
-        return errorReturn(response.status || 500, "Failed to get twitch access token")
+        return errorReturn(500, "Failed to get twitch access token")
       }
       result_headers["Twitch-Access-Token"] = new_token
       twitch_headers["Authorization"] = `Bearer ${new_token}`
@@ -419,10 +425,10 @@ const handler: Handler = async (event) => {
     })
 
     // Unauthorized access try to get new token and remake the request
-    if (response.status === 401) {
+    if (response?.status === 401) {
       const new_token = await requestTwitchToken()
       if (new_token === undefined) {
-        return errorReturn(response.status || 500,
+        return errorReturn(response?.status || 500,
           "Failed to get twitch access token after unauthorized access")
       }
       result_headers["Twitch-Access-Token"] = new_token
@@ -433,6 +439,10 @@ const handler: Handler = async (event) => {
     }
   } catch (err) {
     return errorReturn(err.statusCode || 500, err.message)
+  }
+
+  if (response === undefined) {
+    return errorReturn(500, "Failed to get response from twitch request");
   }
 
   const json = await response.json()
