@@ -20,7 +20,8 @@
       "user-videos": {
         width: this.global.config.image.user.width,
         height: this.global.config.image.user.height,
-        classes: "w-16",
+        // TODO: reevaluate when re-styling 
+        // classes: "w-16",
         bind_src: "$store.profile_images.imgUrl(stream.user_id)",
       }
     };
