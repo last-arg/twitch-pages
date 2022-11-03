@@ -386,20 +386,14 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
 const handler: Handler = async (event) => {
   // return { statusCode: 200, body: "test", headers: {"this": "that"} }
   // console.log("EVENT:", event)
-  if (TWITCH_CLIENT_SECRET === null) {
+  if (TWITCH_CLIENT_SECRET === undefined) {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
-  }
-  // TODO: check that all query params exist
-  if (event.queryStringParameters === null) {
-    return errorReturn(500, "No queryStringParameters object in request handler");
   }
   if (event.queryStringParameters['request_token'] === '') {
     const new_token = await requestTwitchToken()
     return { statusCode: 200, body: new_token };
   }
-  let params = event.queryStringParameters;
-  const path = params.path;
-  let token = params.token;
+  let {path, token, ...attrs} = event.queryStringParameters
   const requestUrl = new URL(path, API_URL)
   requestUrl.search = Object.entries(attrs).map((key_val: string[]) => key_val.join("=")).join("&")
 
