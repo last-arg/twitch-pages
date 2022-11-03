@@ -117,10 +117,8 @@ function ruleStack([selector, nr, unit]) {
   if (nr === '' && unit === '') {
     return `
 ${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
-${classSelector} > template + *,
-${classSelector} > * {
+${classSelector} > template + * {
   margin-top: 0;
-  margin-bottom: 0;
 }
 
 ${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
