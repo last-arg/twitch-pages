@@ -21,7 +21,8 @@
       } else if (arg === "search") {
         click_fn = `$store.games.toggle(${arg}.id, ${arg}.name)`;
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-        classes = "btn-follow";
+        // TODO: reenable class when styling this again
+        // classes = "btn-follow";
         extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)" x-bind:aria-label="followed ? 'unfollow' : 'follow'"`
         svg_empty = `<use href="/public/assets/icons.svg#star-empty"></use>`;
       }
@@ -32,13 +33,13 @@
           x-on:click="${click_fn}" type="button" aria-label="unfollow"
           ${extra_args}
         >
-          <svg class="fill-current w-5 h-5">
+          <svg>
             ${svg_empty}
             <use href="/public/assets/icons.svg#star-full"></use>
           </svg>
         </button>
         <a x-bind:href="${external_link}">
-          <svg class="fill-current w-5 h-5">
+          <svg>
             <use href="/public/assets/icons.svg#external-link"></use>
           </svg>
         </a>

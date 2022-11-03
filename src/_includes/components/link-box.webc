@@ -13,7 +13,8 @@
       "category": {
         width: this.global.config.image.category.width,
         height: this.global.config.image.category.height,
-        classes: "w-14 mr-2",
+        // TODO: reenable class when redoing styling
+        // classes: "w-14 mr-2",
         bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url, $el.width, $el.height)`,
       },
       "user-videos": {
@@ -25,11 +26,7 @@
     };
     const config = configs[name];
     return `
-      <a class="flex items-center flex-grow pl-1.5 bg-gray-800
-          text-truegray-300 border-l-6 border-transparent
-          hover:text-gray-50 hover:border-violet-700
-          focus:text-gray-50 focus:border-violet-700
-        "
+      <a
         x-data="{href_url: ${href_url}}"
         x-bind:href="href_url"
         x-init="htmx.process($el)"

@@ -1,23 +1,23 @@
 <div webc:root class="sidebar-position">
   <div class="sidebar-content">
     <sidebar-header @sb_title="Search results" @icon="looking-class"></sidebar-header>
-    <p class="text-truegray-300 ml-3"
+    <p
       x-bind:class="{'hidden': searchValue.length === 0 || !loading}"
     >Searching games</p>
-    <p class="text-truegray-300 ml-3"
+    <p
       x-bind:class="{'hidden': loading || searchValue.length === 0 || searchResults.length !== 0}"
     >Found no results</p>
-    <p class="text-truegray-300 ml-3" x-bind:class="{'hidden': searchValue.length !== 0}"
+    <p x-bind:class="{'hidden': searchValue.length !== 0}"
     >Enter game name to search</p>
     <!-- search results -->
     <scroll-container>
-      <ul class="stack stack-4" x-show="state === 'search'" role="list">
+      <ul x-show="state === 'search'" role="list">
         <template webc:root webc:keep x-for="search in searchResults" x-bind:key="search.id">
-          <li class="flex mt-4">
+          <li>
             <link-box @name="category" @arg_name="search.name">
               <span x-text="search.name"></span>
             </link-box>
-            <follow-star class="ml-1px" data-colormode="dark" @arg="search"></follow-star>
+            <follow-star data-colormode="dark" @arg="search"></follow-star>
           </li>
         </template>
       </ul>

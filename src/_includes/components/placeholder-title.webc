@@ -9,9 +9,9 @@ function() {
   const height = this.global.config.image[this.name].height;
 
   return `
-  <h2 aria-hidden="true" class="flex items-center bg-white">
-    <img class="block w-10 bg-truegray-100" width="${width}" height="${height}">
-    <p class="w-48"></p>
+  <h2 aria-hidden="true">
+    <img width="${width}" height="${height}">
+    <p></p>
   </h2>
   `;
 }
