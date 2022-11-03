@@ -267,6 +267,8 @@ header {
   --sidebar-x: 100%;
   transform: translateX(var(--sidebar-x));
   transition: visibility .15s, opacity .15s, transform .15s;
+  max-width: 20rem;
+  width: 100%;
 }
 
 .sidebar-content {
