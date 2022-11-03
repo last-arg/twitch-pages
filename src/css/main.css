@@ -274,9 +274,10 @@ header {
 }
 
 .sidebar-content {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   background-color: var(--color-truegray-700);
-  overflow: hidden;
 }
 
 .sidebar-content h2 {
@@ -311,6 +312,10 @@ header {
 .btn-close svg {
   width: 0.9em;
   height: 0.9em;
+}
+
+.scroll-container {
+  overflow: hidden;
 }
 
 .scrollbox {
