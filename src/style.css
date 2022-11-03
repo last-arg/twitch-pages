@@ -182,9 +182,9 @@ button {
 .cluster {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--gutter, var(--space-s));
-  justify-content: var(--cluster-horizontal-alignment, flex-start);
-  align-items: var(--cluster-vertical-alignment, center)
+  gap: var(--cluster-gap, var(--space-s));
+  justify-content: var(--cluster-justify-content, flex-start);
+  align-items: var(--cluster-align-items, center)
 }
 
 

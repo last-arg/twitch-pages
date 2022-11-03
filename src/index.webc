@@ -15,7 +15,7 @@ title: "Home | Twitch Pages"
 <div id="app">
   <header class="wrapper fixed">
     <nav x-data="sidebar">
-      <ul class="cluster" style="--cluster-vertical-alignment: stretch" role="list">
+      <ul class="cluster" style="--cluster-align-items: stretch" role="list">
         <li>
           <a href="/"
             class="menu-item"           
