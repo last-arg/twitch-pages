@@ -7,7 +7,6 @@ const config = defineConfig({
   // TODO: re-evaluate safelist and blocklist when done with (CUBE) CSS
   safelist: ["stack", "sr-only", "ml-auto", "max-w-screen-2xl", "mx-auto", "relative", "fixed"],
   blocklist: ["block", "absolute", "h1", "h2", "h3", "underline", "flex", "sidebar-button"],
-  exclude: ["**/*"],
   rules: [
     // ['fill-current', { fill: 'currentColor' }],
     // [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
@@ -26,10 +25,7 @@ const config = defineConfig({
     ['load-more-msg', 'border-2 py-1 border-truegray-300 text-truegray-500'],
   ],
   preflights: [
-    { getCSS: async () => {
-      const srcStyleCss = await fs.readFile('src/style.css')
-      return srcStyleCss.toString();
-    }, layer: 'reset' },
+    { getCSS: fileContent("src/css/main.css"), layer: 'reset' },
   ],
   layers: {
     reset: 0,
@@ -38,6 +34,13 @@ const config = defineConfig({
     default: 3,
   },
 });
+
+function fileContent(filename: string) {
+  return async function() {
+    const srcStyleCss = await fs.readFile(filename)
+    return srcStyleCss.toString();
+  }
+}
 
 
 async function ruleSidebarButton([], ctx) {
