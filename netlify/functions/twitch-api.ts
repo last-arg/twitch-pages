@@ -32,34 +32,34 @@ const topGamesHtml = (games: Game[]): string => {
   for (const game of games) {
     const game_url = mainContent['category'].url.replace(":name", game.name)
     result += `
-      <li class="fade-in flex">
-        <div class="flex w-full border-2 border-white">
+      <li>
+        <div>
           <a href="${game_url}"
             hx-push-url="${game_url}"
             hx-get="${mainContent['category'].html}" hx-target="#main"
-            class="flex flex-grow items-center bg-white hover:text-violet-700 hover:underline"
+           
             @click="$store.global.setClickedGame('${game.name}')"
           >
-            <img class="w-16" src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt=""
+            <img src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" alt=""
               width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
-            <p class="ml-2 text-lg">${game.name}</p>
+            <p>${game.name}</p>
           </a>
-          <div class="bg-truegray-100 text-truegray-400 flex flex-col justify-between p-2">
+          <div>
             <button x-data="{followed: false}"
-              class="hover:text-violet-700"
+             
               x-effect="followed = $store.games.hasId('${game.id}')"
               @click='$store.games.toggle(${JSON.stringify(game)})'
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
-              <svg class="fill-current w-5 h-5">
+              <svg>
                 <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
                 <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
               </svg>
             </button>
-            <a class="hover:text-violet-700"
+            <a
               href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
             >
-              <svg class="fill-current w-5 h-5">
+              <svg>
                 <use href="/public/assets/icons.svg#external-link"></use>
               </svg>
             </a>
@@ -75,27 +75,24 @@ const topGamesHtml = (games: Game[]): string => {
 const categoryTitleHtml = (game: Game): string => {
   return `
     <h2>
-      <a class="flex items-center text-lg group block pr-3
-          hover:underline hover:text-violet-700
-          focus:underline focus:text-violet-700
-        "
+      <a
         href="https://www.twitch.tv/directory/game/${game.name}"
       >
-        <img class="w-10" src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
-        <p class="line-clamp-2 pl-3">${game.name}</p>
-        <svg class="flex-none fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+        <img src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
+        <p>${game.name}</p>
+        <svg>
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>
       </a>
     </h2>
-    <div class="border-l-2 border-truegray-50 place-self-stretch"></div>
+    <div></div>
     <button x-data="{followed: false}"
-      class="text-gray-400 hover:text-violet-700 transition duration-100 px-3" type="button"
+      type="button"
       x-effect="followed = $store.games.hasId('${game.id}')"
       aria-label="followed ? 'UnFollow' : 'Follow'"
       x-on:click='$store.games.toggle(${JSON.stringify(game)})'
     >
-      <svg class="fill-current w-5 h-5">
+      <svg>
         <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
         <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
       </svg>
@@ -109,52 +106,52 @@ const streamsHtml = (streams: Video[]): string => {
   for (const stream of streams) {
     const videoUrl = mainContent['user-videos'].url.replace(":user-videos", stream.user_login)
     result += `
-      <li class="fade-in overflow-hidden" data-user-id='${stream.user_id}' data-title="${escape(stream.title)}">
+      <li data-user-id='${stream.user_id}' data-title="${escape(stream.title)}">
         <div>
           <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
-            class="hover:text-violet-700 hover:underline"
+           
           >
-            <div class="relative">
-              <img class="rounded" src="${twitchCatImageSrc(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
-              <p class="absolute bottom-0 left-0 bg-truegray-800 text-truegray-100 text-sm px-1 rounded-sm mb-1 ml-1">${stream.viewer_count} viewers</p>
+            <div>
+              <img src="${twitchCatImageSrc(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+              <p>${stream.viewer_count} viewers</p>
             </div>
-            <div class="flex items-center px-1 py-1 rounded bg-white">
-              <p class="truncate">${stream.title}</p>
-              <svg class="ml-1 flex-none fill-current w-4 h-4">
+            <div>
+              <p>${stream.title}</p>
+              <svg>
                 <use href="/public/assets/icons.svg#external-link"></use>
               </svg>
             </div>
           </a>
-          <div class="flex bg-white rounded px-1 py-1.5 border-t-2 border-truegray-50">
+          <div>
             
             <a aria-hidden="true" href="${videoUrl}"
               hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
               @click="$store.global.setClickedStream('${stream.user_login}')"
             >
-              <img class="w-14 border border-truegray-200 hover:border-violet-700" :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="${config.image.user.width}" height="${config.image.user.height}">
+              <img :src="$store.profile_images.imgUrl('${stream.user_id}')" alt="" width="${config.image.user.width}" height="${config.image.user.height}">
             </a>
-            <div class="stack stack-0 ml-2">
-              <div class="flex items-center mb-auto">
-                <a class="hover:underline hover:text-violet-700" href="${videoUrl}"
+            <div>
+              <div>
+                <a href="${videoUrl}"
                   hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
                   @click="$store.global.setClickedStream('${stream.user_login}')"
                 >${stream.user_name}</a>
-                <div class="ml-4 mr-2 border-l h-6 w-0 border-truegray-300"></div>
+                <div></div>
                 <button type="button"
-                  class="text-gray-400 hover:text-violet-700"
+                 
                   x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
                 >
-                  <svg class="fill-current w-5 h-5">
+                  <svg>
                     <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/public/assets/icons.svg#star-empty"></use>
                     <use x-show="$store.streams.hasId('${stream.user_id}')" href="/public/assets/icons.svg#star-full"></use>
                   </svg>
                 </button>
               </div>
-              <a class="flex items-center hover:underline hover:text-violet-700"
+              <a
                 href="https://www.twitch.tv/${stream.user_login}/videos"
               >
                 <p>Go to Twitch videos</p>
-                <svg class="fill-current w-4 h-4 ml-1">
+                <svg>
                   <use href="/public/assets/icons.svg#external-link"></use>
                 </svg>
               </a>
@@ -176,41 +173,38 @@ interface User {
 
 const userHtml = (user: User): string => {
   return `
-    <div class="flex items-center rounded-r-sm pr-2 bg-white">
+    <div>
       <h2>
         <a
-          class="flex items-center text-lg group block
-            hover:underline hover:text-violet-700
-            focus:underline focus:text-violet-700
-          "
+         
           href="https://www.twitch.tv/${user.login}/videos"
         >
-          <img class="block w-10 mr-3" src="${user.profile_image_url}" width="${config.image.user.width}" height="${config.image.user.height}">
+          <img src="${user.profile_image_url}" width="${config.image.user.width}" height="${config.image.user.height}">
           <p>${user.display_name}</p>
-          <svg class="fill-current w-4 h-4 ml-2 text-violet-400 group-hover:text-violet-700 group-focus:text-violet-700">
+          <svg>
             <use href="/public/assets/icons.svg#external-link"></use>
           </svg>
         </a>
       </h2>
-      <div class="ml-6 mr-2 border-l-2 border-truegray-50 place-self-stretch"></div>
+      <div></div>
       <button x-data="{followed: false}"
-        class="text-gray-400 hover:text-violet-700" type="button"
+        type="button"
         x-init="$store.profile_images.setImage('${user.id}', '${user.profile_image_url}')"
         x-effect="followed = $store.streams.hasId('${user.id}')"
         aria-label="followed ? 'UnFollow' : 'Follow'"
         x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
       >
-        <svg class="fill-current w-5 h-5">
+        <svg>
           <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
           <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
         </svg>
       </button>
     </div>
-    <div class="ml-4" :class="{hidden: game === ''}"
+    <div :class="{hidden: game === ''}"
       x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame('${user.id}')"
     >
-      <span class="bg-red-500 opacity-60 rounded-sm p-0.5 text-truegray-50 text-xs">LIVE</span>
-      <p class="text-sm" x-text="game"></p>
+      <span>LIVE</span>
+      <p x-text="game"></p>
     </div>
     <input type="hidden" id="param-user_id" class="req-param" hx-swap-oob="true" name="user_id" value="${user.id}">
    `
@@ -297,28 +291,28 @@ const videosHtml = (videos: UserVideo[]): string => {
     const date = new Date(video.published_at)
     const img = video.thumbnail_url ? getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT) : twitch_404_img
     result += `
-      <li class="fade-in overflow-hidden ${video.type}" data-title="${escape(video.title)}">
-        <a class="block group" href="${video.url}" title="${video.title}">
-          <div class="relative">
-          <img class="w-full rounded-sm" src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
-            <span class="opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-0.5 rounded-sm ${VIDEO_COLORS[video.type]}"
+      <li class="${video.type}" data-title="${escape(video.title)}">
+        <a href="${video.url}" title="${video.title}">
+          <div>
+          <img src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+            <span
               title="${VIDEO_TITLES[video.type]}"
             >
-              <svg class="fill-current w-4 h-4">
+              <svg>
                 <use href="/public/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
               </svg>
             </span>
-            <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
-              <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+            <div>
+              <span
               >${twitchDurationToString(video.duration)}</span>
-              <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70"
+              <span
                 title="${date.toString()}"
               >${twitchDateToString(date)}</span>
             </div>
           </div>
-          <div class="rounded-sm flex items-center bg-white group-hover:text-violet-700 group-hover:underline px-1">
-            <p class="truncate flex-grow">${video.title}</p>
-            <svg class="flex-none ml-1 fill-current w-4 h-4">
+          <div>
+            <p>${video.title}</p>
+            <svg>
               <use href="/public/assets/icons.svg#external-link"></use>
             </svg>
           </div>
@@ -334,7 +328,7 @@ const cursorHtml = (pagination: {cursor: string | undefined} | undefined, msg: s
     return `<input type="hidden" id="param-after" class="req-param" hx-swap-oob="true" name="after" value="${pagination.cursor}">`
   }
   return `<div id="load-more-wrapper" hx-swap-oob="innerHTML">
-    <p class="load-more-msg">${msg}</p>
+    <p>${msg}</p>
   </div>`
 }
 
