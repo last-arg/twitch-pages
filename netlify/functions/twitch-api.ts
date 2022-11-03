@@ -106,7 +106,7 @@ const streamsHtml = (streams: Video[]): string => {
   for (const stream of streams) {
     const videoUrl = mainContent['user-videos'].url.replace(":user-videos", stream.user_login)
     result += `
-      <li data-user-id='${stream.user_id}' data-title="${escape(stream.title)}">
+      <li data-user-id='${stream.user_id}' data-title="${encodeURIComponent(stream.title)}">
         <div>
           <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
            
@@ -290,8 +290,9 @@ const videosHtml = (videos: UserVideo[]): string => {
   for (const video of videos) {
     const date = new Date(video.published_at)
     const img = video.thumbnail_url ? getVideoImageSrc(video.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT) : twitch_404_img
+    // TODO?: move video.type class to data-* attribute?
     result += `
-      <li class="${video.type}" data-title="${escape(video.title)}">
+      <li class="${video.type}" data-title="${encodeURIComponent(video.title)}">
         <a href="${video.url}" title="${video.title}">
           <div>
           <img src="${img}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
