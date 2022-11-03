@@ -170,8 +170,9 @@ li {
 }
 
 svg {
-  width: 1.2em; 
-  height: 1.2em;
+  width: 1.0em; 
+  height: 1.0em;
+  fill: currentColor;
 }
 
 button {
@@ -249,8 +250,9 @@ header {
 }
 
 .menu-item svg {
+  width: 1.2em;
+  height: 1.2em;
   display: block;
-  fill: currentColor
 }
 
 .sidebar-position {
@@ -273,8 +275,42 @@ header {
 
 .sidebar-content {
   height: 100%;
-  background-color: rgba(0,0,0, .3);
+  background-color: var(--color-truegray-700);
   overflow: hidden;
+}
+
+.sidebar-content h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font-size: var(--step--1);
+  background-color: var(--color-violet-700);
+  color: var(--color-truegray-100);
+  padding: var(--space-3xs) var(--space-2xs);
+}
+
+.sidebar-content svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-violet-700);  
+  color: var(--color-truegray-100);
+  padding: var(--space-3xs) var(--space-2xs);
+  opacity: .7;
+}
+
+.btn-close:hover,
+.btn-close:focus {
+  opacity: 1;
+}
+
+.btn-close svg {
+  width: 0.9em;
+  height: 0.9em;
 }
 
 .scrollbox {

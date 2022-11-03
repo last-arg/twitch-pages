@@ -1,16 +1,12 @@
-<div class="flex justify-between mb-4">
-  <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-truegray-100">
-    <svg class="fill-current w-4 h-4 mr-2">
+<div class="cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
+  <h2>
+    <svg>
       <use :href="'/public/assets/icons.svg#' + icon"></use>
     </svg>
     <span webc:nokeep @html="sb_title"></span>
   </h2>
-
-  <button type="button"
-    class="block bg-violet-700 px-2.5 text-truegray-100 opacity-70 hover:opacity-100 focus:opacity-100"
-    x-on:click="closeSidebar()"
-  >
+  <button type="button" class="btn-close" x-on:click="closeSidebar()">
     <span class="sr-only">Close sidebar</span>
-    <svg class="fill-current w-4 h-4"><use href="/public/assets/icons.svg#close"></use></svg>
+    <svg><use href="/public/assets/icons.svg#close"></use></svg>
   </button>
 </div>
