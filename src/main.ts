@@ -203,6 +203,14 @@ function alpineInit() {
             return
           }
           this.state = current
+          let scroll_position = sidebarButtons[current].nextElementSibling;
+          while (scroll_position && !scroll_position.classList.contains("sidebar-position")) {
+            scroll_position = scroll_position.nextElementSibling;
+          }
+          if (scroll_position) {
+            const scrollbox = scroll_position.querySelector(".scrollbox")!;
+            sidebarShadows(scrollbox as HTMLElement);
+          }
         },
         getImageSrc(url_template: string, width: number, height: number): string {
           return twitchCatImageSrc(url_template, width, height)
@@ -529,40 +537,46 @@ function alpineInit() {
   Alpine.start()
 }
 
+const sidebarShadows = (scrollbox: HTMLElement) => {
+    const scroll_container = scrollbox.closest('.scroll-container')!;
+    const ul = scroll_container.querySelector("ul")!;
+    const has_top_shadow = scrollbox.scrollTop > 0;  
+    const has_bottom_shadow = scrollbox.scrollTop + scrollbox.offsetHeight < ul.offsetHeight
+    let shadow_type = undefined;
+    if (has_top_shadow && has_bottom_shadow) {
+      shadow_type = "both";
+    } else if (has_top_shadow) {
+      shadow_type = "top";
+    } else if (has_bottom_shadow) {
+      shadow_type = "bottom";
+    }
+    if (shadow_type) {
+      scroll_container.setAttribute("data-scroll-shadow", shadow_type);
+    } else {
+      scroll_container.removeAttribute("data-scroll-shadow");
+    }
+};
+
+
+
 const handleSidebarScroll = () => {
-  const scrollBoxes = document.querySelectorAll('.scrollbox') as any
-  for (const box of scrollBoxes) {
-    const scrollContainer = box.closest('.scroll-container')
-    const ul = box.querySelector('ul');
+  const scrollContainers = document.querySelectorAll('.scroll-container') as any;
+  for (const scrollContainer of scrollContainers) {
+    const scrollbox = scrollContainer.querySelector('.scrollbox');
     let scrolling = false;
-    const setShadow = (event: Event) => {
+    scrollbox.addEventListener("scroll", (event: Event) => {
+      const scrollbox = event.target as HTMLElement
+
       if (!scrolling) {
-        const elem = event.target as HTMLElement
         // TODO: need to fire this event when: 
-        // 1) sidebar is opened
-        // 2) Amount of items changes. Only when sidebar open?
+        // 1) Amount of items changes. Only when sidebar open?
         window.requestAnimationFrame(function() {
-          const has_top_shadow = elem.scrollTop > 0;  
-          const has_bottom_shadow = elem.scrollTop + elem.offsetHeight < ul.offsetHeight
-          let shadow_type = undefined;
-          if (has_top_shadow && has_bottom_shadow) {
-            shadow_type = "both";
-          } else if (has_top_shadow) {
-            shadow_type = "top";
-          } else if (has_bottom_shadow) {
-            shadow_type = "bottom";
-          }
-          if (shadow_type) {
-            scrollContainer.setAttribute("data-scroll-shadow", shadow_type);
-          } else {
-            scrollContainer.removeAttribute("data-scroll-shadow");
-          }
+          sidebarShadows(scrollbox);
           scrolling = false;
         });
         scrolling = true;
       }
-    };
-    box.addEventListener("scroll", setShadow)
+    });
   }
 }
 
