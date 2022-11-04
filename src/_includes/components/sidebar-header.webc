@@ -1,4 +1,4 @@
-<div class="cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
+<div class="sidebar-header cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
   <h2>
     <svg>
       <use :href="'/public/assets/icons.svg#' + icon"></use>

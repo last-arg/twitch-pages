@@ -64,9 +64,9 @@ title: "Home | Twitch Pages"
               <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
               <!-- games list -->
               <scroll-container>
-                <ul role="list">
+                <ul class="stack-s" style="--stack-space: var(--space-s)" role="list">
                   <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
-                    <li>
+                    <li class="sidebar-card">
                       <link-box @name="category" @arg_name="game.name">
                         <p x-text="game.name"></p>
                       </link-box>
@@ -87,7 +87,7 @@ title: "Home | Twitch Pages"
               <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
               <!-- streams list -->
               <scroll-container>
-                <ul role="list">
+                <ul class="stack-s" role="list">
                   <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
                     <li>
                       <link-box @name="user-videos" @arg_name="stream.user_login">

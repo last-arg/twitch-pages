@@ -125,10 +125,12 @@ select {
   --color-truegray-50: rgb(250, 250, 250);
   --color-truegray-100: rgba(245, 245, 245);
   --color-truegray-300: rgb(212, 212, 212);
+  --color-truegray-400: rgba(163,163,163);
   --color-truegray-500: rgba(115, 115, 115);
   --color-truegray-800: rgb(38, 38, 38);
   --color-truegray-700: rgb(64, 64, 64);
   --color-truegray-900: rgb(17, 24, 39);
+  --color-violet-500: rgb(139,92,246);
   --color-violet-700: rgb(109,40,217);
   
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
@@ -274,6 +276,7 @@ header {
 }
 
 .sidebar-content {
+  font-size: var(--step-0);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -290,7 +293,7 @@ header {
   padding: var(--space-3xs) var(--space-2xs);
 }
 
-.sidebar-content svg {
+.sidebar-header svg {
   width: 1.2em;
   height: 1.2em;
 }
@@ -378,6 +381,68 @@ form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
 
 main {
   margin-top: var(--space-l);
+}
+
+.sidebar-card {
+  display: flex;
+}
+
+.sidebar-card > a {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  background: var(--color-truegray-800);
+  border-left: var(--space-3xs) solid var(--color-truegray-800);
+  padding-inline-start: var(--space-3xs);
+  text-decoration: none;
+  color: var(--color-truegray-300);
+}
+
+.sidebar-card > a p {
+  padding: var(--space-2xs);
+  font-size: var(--step--1);
+}
+
+.sidebar-card > a:hover,
+.sidebar-card > a:focus {
+  border-left-color: var(--color-violet-700);
+  color: var(--color-truegray-50);
+}
+
+.sidebar-card img {
+  width: 3.5rem;
+}
+
+follow-star {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--color-truegray-800);
+  line-height: 1;
+  padding: var(--space-3xs) var(--space-2xs);
+  color: var(--color-truegray-400);
+}
+
+scroll-container follow-star {
+  margin-inline-start: 1px;
+}
+
+follow-star button {
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+follow-star a {
+  color: inherit;
+}
+
+follow-star a:hover,
+follow-star a:focus,
+follow-star button:hover,
+follow-star button:focus {
+  color: var(--color-violet-500);
 }
 
 /* Utilities */

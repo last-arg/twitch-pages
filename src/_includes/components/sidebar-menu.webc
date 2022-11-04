@@ -11,11 +11,11 @@
     >Enter game name to search</p>
     <!-- search results -->
     <scroll-container>
-      <ul x-show="state === 'search'" role="list">
+      <ul class="stack-s" x-show="state === 'search'" role="list">
         <template webc:root webc:keep x-for="search in searchResults" x-bind:key="search.id">
-          <li>
+          <li class="sidebar-card">
             <link-box @name="category" @arg_name="search.name">
-              <span x-text="search.name"></span>
+              <p x-text="search.name"></p>
             </link-box>
             <follow-star data-colormode="dark" @arg="search"></follow-star>
           </li>

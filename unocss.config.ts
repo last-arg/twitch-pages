@@ -1,4 +1,4 @@
-import { defineConfig, escapeSelector, presetUno, createGenerator, RawUtil } from "unocss";
+import { defineConfig, escapeSelector } from "unocss";
 import * as fs from 'fs/promises';
 
 // npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
@@ -9,7 +9,8 @@ const config = defineConfig({
   blocklist: ["block", "absolute", "h1", "h2", "h3", "underline", "flex", "sidebar-button"],
   rules: [
     // ['fill-current', { fill: 'currentColor' }],
-    // [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
+    [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
+    [/^stack\-?(\w*)$/, ruleStackFluid, {layer: "component"}],
     // [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     // [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     // [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
@@ -129,10 +130,24 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
   }
 
   if (unit !== '') return `${classSelector} { ${css_attr}: ${nr}${unit}; }`
-  if (nr !== '') return `${classSelector} { ${css_attr}: ${nr / 4}rem; }`
+  if (nr !== '') return `${classSelector} { ${css_attr}: ${+nr / 4}rem; }`
 
   console.error(`Failed to generate CSS for '${classSelector}'`)
   return `/* Failed to generate stack rule from ${selector} */`
+}
+
+function ruleStackFluid([selector, size]: RegExpMatchArray) {
+  const classSelector = "." + escapeSelector(selector)
+  const var_name = `--space-${size}`;
+
+    return `
+${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
+${classSelector} > template + * {
+  margin-top: 0;
+}
+
+${classSelector} > * + * { margin-top: var(${var_name}, 1em); }
+    `
 }
 
 async function ruleLayoutGrid([selector, min_width], ctx) {
