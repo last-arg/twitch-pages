@@ -6,6 +6,8 @@ import 'htmx.org';
 
 // TODO: Search: old value is visible when searching new
 
+// TODO: check shadows on streams sidebar
+
 interface Stream {
   user_id: string,
   game_name: string,
@@ -100,6 +102,14 @@ const headers = {
   "Client-id": TWITCH_CLIENT_ID,
   "Accept": "application/vnd.twitchtv.v5+json",
 };
+
+function menuItemToScrollPosition(menuitem: Element): Element | null {
+  let scroll_position = menuitem.nextElementSibling;
+  while (scroll_position && !scroll_position.classList.contains("sidebar-position")) {
+    scroll_position = scroll_position.nextElementSibling;
+  }
+  return scroll_position;
+}
 
 function alpineInit() {
   const fetchUsers = async (ids: string[]): Promise<any[]> => {
@@ -203,10 +213,8 @@ function alpineInit() {
             return
           }
           this.state = current
-          let scroll_position = sidebarButtons[current].nextElementSibling;
-          while (scroll_position && !scroll_position.classList.contains("sidebar-position")) {
-            scroll_position = scroll_position.nextElementSibling;
-          }
+
+          const scroll_position = menuItemToScrollPosition(sidebarButtons[current]);
           if (scroll_position) {
             const scrollbox = scroll_position.querySelector(".scrollbox")!;
             sidebarShadows(scrollbox as HTMLElement);
@@ -270,6 +278,16 @@ function alpineInit() {
       ids: [] as string[],
       init() {
         Alpine.effect(() => {
+          const menu_item = document.querySelector(".menu-item[aria-expanded=true]")!;
+          if (menu_item) {
+            const scroll_position = menuItemToScrollPosition(menu_item);
+            if (scroll_position) {
+              const scrollbox = scroll_position.querySelector(".scrollbox")!;
+              window.requestAnimationFrame(function() {
+                sidebarShadows(scrollbox as HTMLElement);
+              });
+            }
+          }
           this.ids = this.data.map(({id}:{id:string}) => id)
           localStorage.setItem("games", JSON.stringify(this.data))
         })
