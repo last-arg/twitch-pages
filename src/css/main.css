@@ -328,7 +328,6 @@ scroll-container::after {
   pointer-events: none;
   position: absolute;
   content: '';
-  background: #ff000044;
   box-shadow: var(--box-shadow);
 }
 
