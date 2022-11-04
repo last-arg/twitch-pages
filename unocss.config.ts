@@ -113,14 +113,14 @@ async function ruleFilterCheckboxBtn([], ctx) {
   return result
 }
 
-function ruleStack([selector, nr, unit]) {
+function ruleStack([selector, nr, unit]: RegExpMatchArray) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--stack-space"
 
   if (nr === '' && unit === '') {
     return `
 ${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
-${classSelector} > template + * {
+${classSelector} > template:first-child + * {
   margin-top: 0;
 }
 
