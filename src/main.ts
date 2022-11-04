@@ -538,16 +538,24 @@ const handleSidebarScroll = () => {
     const setShadow = (event: Event) => {
       if (!scrolling) {
         const elem = event.target as HTMLElement
+        // TODO: need to fire this event when: 
+        // 1) sidebar is opened
+        // 2) Amount of items changes. Only when sidebar open?
         window.requestAnimationFrame(function() {
-          if (elem.scrollTop > 0) {
-            scrollContainer.classList.add('has-top-shadow');
-          } else {
-            scrollContainer.classList.remove('has-top-shadow');
+          const has_top_shadow = elem.scrollTop > 0;  
+          const has_bottom_shadow = elem.scrollTop + elem.offsetHeight < ul.offsetHeight
+          let shadow_type = undefined;
+          if (has_top_shadow && has_bottom_shadow) {
+            shadow_type = "both";
+          } else if (has_top_shadow) {
+            shadow_type = "top";
+          } else if (has_bottom_shadow) {
+            shadow_type = "bottom";
           }
-          if (elem.scrollTop + elem.offsetHeight < ul.offsetHeight) {
-            scrollContainer.classList.add('has-bottom-shadow');
+          if (shadow_type) {
+            scrollContainer.setAttribute("data-scroll-shadow", shadow_type);
           } else {
-            scrollContainer.classList.remove('has-bottom-shadow');
+            scrollContainer.removeAttribute("data-scroll-shadow");
           }
           scrolling = false;
         });
