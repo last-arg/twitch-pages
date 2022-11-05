@@ -103,7 +103,11 @@ const headers = {
   "Accept": "application/vnd.twitchtv.v5+json",
 };
 
-function menuItemToScrollPosition(menuitem: Element): Element | null {
+function menuItemToScrollPosition(menuitem: Element | undefined): Element | null {
+  if (!menuitem) {
+    menuitem = document.querySelector(".menu-item[aria-expanded=true]")!;
+    if (!menuitem) return null;
+  }
   let scroll_position = menuitem.nextElementSibling;
   while (scroll_position && !scroll_position.classList.contains("sidebar-position")) {
     scroll_position = scroll_position.nextElementSibling;
@@ -183,8 +187,8 @@ function alpineInit() {
                 if (this.state !== "closed") {
                   const scroll_position = menuItemToScrollPosition(sidebarButtons[this.state]);
                   if (scroll_position) {
-                    const scrollbox = scroll_position.querySelector(".scrollbox")!;
                     window.requestAnimationFrame(function() {
+                      const scrollbox = scroll_position.querySelector(".scrollbox")!;
                       sidebarShadows(scrollbox as HTMLElement);
                     });
                   }
@@ -225,7 +229,6 @@ function alpineInit() {
           this.state = current
 
           const scroll_position = menuItemToScrollPosition(sidebarButtons[current]);
-
           if (scroll_position) {
             const scrollbox = scroll_position.querySelector(".scrollbox")!;
             sidebarShadows(scrollbox as HTMLElement);
@@ -368,6 +371,13 @@ function alpineInit() {
         Alpine.effect(() => {
           this.ids = this.data.map(({user_id}:{user_id:string}) => user_id)
           localStorage.setItem(keyStreams, JSON.stringify(this.data))
+            const scroll_position = menuItemToScrollPosition(undefined);
+            if (scroll_position) {
+              window.requestAnimationFrame(function() {
+                const scrollbox = scroll_position.querySelector(".scrollbox")!;
+                sidebarShadows(scrollbox as HTMLElement);
+              });
+            }
         })
         Alpine.effect(() => {
           localStorage.setItem(keyUserLive, JSON.stringify(this.live))
