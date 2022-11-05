@@ -408,10 +408,25 @@ main {
   position: relative;
 }
 
+.link-title p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
 .link-box:hover,
 .link-box:focus {
   border-left-color: var(--color-violet-700);
   color: var(--color-truegray-50);
+}
+
+.link-box[data-card=category] .link-title p {
+  -webkit-line-clamp: 2;
+}
+
+.link-box[data-card=user-videos] .link-title p {
+  -webkit-line-clamp: 1;
 }
 
 .link-box[data-card=user-videos] img {
