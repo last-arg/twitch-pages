@@ -180,11 +180,21 @@ function alpineInit() {
                 } else {
                   aria_msg = "Found no games"
                 }
+                if (this.state !== "closed") {
+                  const scroll_position = menuItemToScrollPosition(sidebarButtons[this.state]);
+                  if (scroll_position) {
+                    const scrollbox = scroll_position.querySelector(".scrollbox")!;
+                    window.requestAnimationFrame(function() {
+                      sidebarShadows(scrollbox as HTMLElement);
+                    });
+                  }
+                }
                 setAriaMsg(aria_msg)
               }, 400)
             } else {
               this.searchResults = [];
             }
+
           })
         },
         async fetchSearch(value: string): Promise<Search[]> {
@@ -215,6 +225,7 @@ function alpineInit() {
           this.state = current
 
           const scroll_position = menuItemToScrollPosition(sidebarButtons[current]);
+
           if (scroll_position) {
             const scrollbox = scroll_position.querySelector(".scrollbox")!;
             sidebarShadows(scrollbox as HTMLElement);
