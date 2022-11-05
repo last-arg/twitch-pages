@@ -19,12 +19,12 @@ permalink: public/partials/category.html
   </div>
   <div>
     <div id="feedback"></div>
-    <ul class="filter-search">
+    <ul class="filter-search" role="list">
     </ul>
     <div id="load-more-wrapper">
       <button type="button"
         id="load-more-streams"
-       
+        class="load-more-btn"
         hx-ext="twitch-api"
         hx-get="/helix/streams"
         hx-include=".req-param"

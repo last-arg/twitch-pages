@@ -61,10 +61,7 @@ permalink: public/partials/user-videos.html
           <div>
             <span>&nbsp;</span>
             <div>
-              <button type="button"
-               
-                x-on:click="showAll()"
-              >Show all</button>
+              <button type="button" x-on:click="showAll()">Show all</button>
             </div>
           </div>
         </div>
@@ -76,7 +73,7 @@ permalink: public/partials/user-videos.html
       </div>
     </div>
     <div id="feedback"></div>
-    <ul role="list"
+    <ul class="filter-search" role="list"
       x-init="
         if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
         if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')
@@ -87,7 +84,7 @@ permalink: public/partials/user-videos.html
     <div id="load-more-wrapper">
       <button type="button"
         id="load-more-streams"
-       
+        class="load-more-btn"
         hx-ext="twitch-api"
         hx-trigger="click"
         hx-get="/helix/videos"
@@ -96,8 +93,8 @@ permalink: public/partials/user-videos.html
         hx-swap="beforeend"
         aria-disabled="true"
       >
-        <input id="param-after" type="hidden" name="after" value="">
-        <input id="param-user_id" type="hidden" name="user_id" value="">
+        <input class="req-param" id="param-after" type="hidden" name="after" value="">
+        <input class="req-param" id="param-user_id" type="hidden" name="user_id" value="">
         <span>Load more videos</span>
       </button>
       <p>Loading...</p>
