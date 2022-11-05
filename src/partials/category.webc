@@ -19,7 +19,7 @@ permalink: public/partials/category.html
   </div>
   <div>
     <div id="feedback"></div>
-    <ul>
+    <ul class="filter-search">
     </ul>
     <div id="load-more-wrapper">
       <button type="button"
@@ -33,8 +33,8 @@ permalink: public/partials/category.html
         hx-swap="beforeend"
         aria-disabled="true"
       >
-        <input id="param-after" type="hidden" name="after" value="">
-        <input id="param-game_id" type="hidden" name="game_id" value="">
+        <input class="req-param" id="param-after" type="hidden" name="after" value="">
+        <input class="req-param" id="param-game_id" type="hidden" name="game_id" value="">
         <span>Load more videos</span>
       </button>
       <p>
