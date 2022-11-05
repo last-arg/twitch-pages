@@ -108,9 +108,7 @@ const streamsHtml = (streams: Video[]): string => {
     result += `
       <li data-user-id='${stream.user_id}' data-title="${encodeURIComponent(stream.title)}">
         <div>
-          <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}"
-           
-          >
+          <a href="https://twitch.tv/${stream.user_login}" title="${stream.title}">
             <div>
               <img src="${twitchCatImageSrc(stream.thumbnail_url, VIDEO_IMG_WIDTH, VIDEO_IMG_HEIGHT)}" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
               <p>${stream.viewer_count} viewers</p>
@@ -123,7 +121,6 @@ const streamsHtml = (streams: Video[]): string => {
             </div>
           </a>
           <div>
-            
             <a aria-hidden="true" href="${videoUrl}"
               hx-push-url="${videoUrl}" hx-get="${mainContent['user-videos'].html}" hx-target="#main"
               @click="$store.global.setClickedStream('${stream.user_login}')"

@@ -626,7 +626,7 @@ const initHtmx = async () => {
             setAriaMsg("Loading more items")
           }
         }
-
+        
         const token = twitch.getToken() || ""
         const path = evt.detail.path
         evt.detail.path = "/api/twitch-api"
