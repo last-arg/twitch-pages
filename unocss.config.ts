@@ -4,9 +4,6 @@ import * as fs from 'fs/promises';
 // npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
 
 const config = defineConfig({
-  // TODO: re-evaluate safelist and blocklist when done with (CUBE) CSS
-  safelist: ["stack", "sr-only", "ml-auto", "max-w-screen-2xl", "mx-auto", "relative", "fixed"],
-  blocklist: ["block", "absolute", "h1", "h2", "h3", "underline", "flex", "sidebar-button"],
   rules: [
     // ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
@@ -17,14 +14,6 @@ const config = defineConfig({
     // [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
   ],
   shortcutsLayer: "component",
-  shortcuts: [
-    ['btn', 'py-1 px-2 rounded-sm'],
-    ['btn-setting', 'bg-indigo-300 text-black hover:bg-indigo-400'],
-    ['btn-twitch', 'bg-violet-600 text-truegray-100 inline-block hover:bg-violet-800'],
-    ['title-setting', 'text-xl text-truegray-400'],
-    ['search-wrapper', 'ml-auto border-b-5 border-gray-900 focus-within:border-violet-700'],
-    ['load-more-msg', 'border-2 py-1 border-truegray-300 text-truegray-500'],
-  ],
   preflights: [
     { getCSS: fileContent("src/css/main.css"), layer: 'reset' },
   ],
