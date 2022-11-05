@@ -132,6 +132,7 @@ select {
   --color-truegray-900: rgb(17, 24, 39);
   --color-violet-500: rgb(139,92,246);
   --color-violet-700: rgb(109,40,217);
+  --color-red-900: rgb(127, 29, 29);
   
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 }
@@ -383,34 +384,65 @@ main {
   margin-top: var(--space-l);
 }
 
-.sidebar-card {
+.link-box {
   display: flex;
-}
-
-.sidebar-card > a {
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
   background: var(--color-truegray-800);
   border-left: var(--space-3xs) solid var(--color-truegray-800);
   padding-inline-start: var(--space-3xs);
   text-decoration: none;
   color: var(--color-truegray-300);
+  width: 100%;
 }
 
-.sidebar-card > a p {
-  padding: var(--space-2xs);
+.link-box img {
+  width: 3.5rem;
+}
+
+.link-title {
+  padding: var(--space-3xs) var(--space-2xs);
   font-size: var(--step--1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  position: relative;
 }
 
-.sidebar-card > a:hover,
-.sidebar-card > a:focus {
+.link-box:hover,
+.link-box:focus {
   border-left-color: var(--color-violet-700);
   color: var(--color-truegray-50);
 }
 
-.sidebar-card img {
-  width: 3.5rem;
+.link-box[data-card=user-videos] img {
+  width: 4rem;
+}
+
+.card-live {
+  display: flex;
+  font-size: var(--step--2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: var(--color-truegray-400);
+  padding-left: var(--space-2xs);
+  padding-bottom: 2px;
+}
+
+.card-live span {
+  padding-inline: var(--space-3xs);
+  background-color: var(--color-red-900);
+  opacity: .9;
+  border-radius: 2px;
+}
+
+.card-live p {
+  margin-left: var(--space-3xs);
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 follow-star {
@@ -451,4 +483,5 @@ follow-star button:focus {
   margin-inline: auto;
   padding-inline: var(--space-xs);
 }
+
 

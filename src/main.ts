@@ -198,7 +198,6 @@ function alpineInit() {
             } else {
               this.searchResults = [];
             }
-
           })
         },
         async fetchSearch(value: string): Promise<Search[]> {

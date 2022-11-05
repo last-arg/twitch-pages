@@ -66,7 +66,7 @@ title: "Home | Twitch Pages"
               <scroll-container>
                 <ul class="stack-s" style="--stack-space: var(--space-s)" role="list">
                   <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
-                    <li class="sidebar-card">
+                    <li class="flex">
                       <link-box @name="category" @arg_name="game.name">
                         <p x-text="game.name"></p>
                       </link-box>
@@ -89,15 +89,13 @@ title: "Home | Twitch Pages"
               <scroll-container>
                 <ul class="stack-s" role="list">
                   <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
-                    <li>
+                    <li class="flex" data-card="stream">
                       <link-box @name="user-videos" @arg_name="stream.user_login">
-                        <div>
-                          <p x-text="stream.user_name"></p>
-                          <div x-show="$store.streams.isLive(stream.user_id)">
+                          <p class="card-title" x-text="stream.user_name"></p>
+                          <div class="card-live" x-show="$store.streams.isLive(stream.user_id)">
                             <span>LIVE</span>
                             <p x-text="$store.streams.live[stream.user_id]"></p>
                           </div>
-                        </div>
                       </link-box>
                       <follow-star data-colormode="dark" @arg="stream"></follow-star>
                     </li>
