@@ -30,7 +30,7 @@ interface Video {
 const topGamesHtml = (games: Game[]): string => {
   let result = ""
   for (const game of games) {
-    const game_url = mainContent['category'].url.replace(":name", game.name)
+    const game_url = mainContent['category'].url.replace(":category", game.name)
     result += `
       <li>
         <div>
