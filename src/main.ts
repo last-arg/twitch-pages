@@ -145,8 +145,8 @@ function alpineInit() {
   document.addEventListener("alpine:init", function() {
     Alpine.data("sidebar", (): Sidebar => {
       const sidebarButtons: Record<string, HTMLElement> = {
-        "games": document.querySelector(".menu-item[aria-label='games']")!,
-        "streams": document.querySelector(".menu-item[aria-label='streams']")!,
+        "games": document.querySelector("[data-menu-item='games']")!,
+        "streams": document.querySelector("[data-menu-item='streams']")!,
         "search": document.querySelector("#game_name")!,
       }
       return {
