@@ -48,7 +48,7 @@ title: "Home | Twitch Pages"
             />
             <!-- TODO: see if I can make this <button> into <menu-button> -->
             <button class="menu-item" type="submit">
-              <svg><use href="/public/assets/icons.svg#looking-class"></use></svg>
+              <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#looking-class"></use></svg>
               <span class="sr-only">Search for games</span>
             </button>
             <!-- search sidebar -->

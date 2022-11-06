@@ -3,7 +3,7 @@
   :x-bind:aria-expanded="`(state === '${name}').toString()`"
   :x-on:click="`toggleSidebar('${name}')`"
 >
-  <svg><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
+  <svg aria-hidden="true" focusable="false"><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
   <span class="sr-only" @text="name"></span>
 </button>
 

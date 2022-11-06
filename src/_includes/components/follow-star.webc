@@ -33,13 +33,13 @@
           x-on:click="${click_fn}" type="button" aria-label="unfollow"
           ${extra_args}
         >
-          <svg>
+          <svg aria-hidden="true" focusable="false">
             ${svg_empty}
             <use href="/public/assets/icons.svg#star-full"></use>
           </svg>
         </button>
         <a x-bind:href="${external_link}">
-          <svg>
+          <svg aria-hidden="true" focusable="false">
             <use href="/public/assets/icons.svg#external-link"></use>
           </svg>
         </a>

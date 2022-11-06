@@ -51,14 +51,14 @@ const topGamesHtml = (games: Game[]): string => {
               @click='$store.games.toggle(${JSON.stringify(game)})'
               :aria-label="followed ? 'UnFollow' : 'Follow'"
             >
-              <svg>
+              <svg aria-hidden="true" focusable="false">
                 <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
                 <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
               </svg>
             </button>
             <a href="https://www.twitch.tv/directory/games/${game.name}">
               <span class="sr-only">Got to game's Twitch page</span>
-              <svg>
+              <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#external-link"></use>
               </svg>
             </a>
@@ -79,7 +79,7 @@ const categoryTitleHtml = (game: Game): string => {
       >
         <img src="${twitchCatImageSrc(game.box_art_url, CAT_IMG_WIDTH, CAT_IMG_HEIGHT)}" width="${CAT_IMG_WIDTH}" height="${CAT_IMG_HEIGHT}">
         <p>${game.name}</p>
-        <svg>
+        <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>
       </a>
@@ -91,7 +91,7 @@ const categoryTitleHtml = (game: Game): string => {
       aria-label="followed ? 'UnFollow' : 'Follow'"
       x-on:click='$store.games.toggle(${JSON.stringify(game)})'
     >
-      <svg>
+      <svg aria-hidden="true" focusable="false">
         <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
         <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
       </svg>
@@ -114,7 +114,7 @@ const streamsHtml = (streams: Video[]): string => {
             </div>
             <div>
               <p>${stream.title}</p>
-              <svg>
+              <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#external-link"></use>
               </svg>
             </div>
@@ -137,7 +137,7 @@ const streamsHtml = (streams: Video[]): string => {
                  
                   x-on:click="$store.streams.toggle('${stream.user_id}', '${stream.user_login}', '${stream.user_name}')"
                 >
-                  <svg>
+                  <svg aria-hidden="true" focusable="false">
                     <use x-show="!$store.streams.hasId('${stream.user_id}')" href="/public/assets/icons.svg#star-empty"></use>
                     <use x-show="$store.streams.hasId('${stream.user_id}')" href="/public/assets/icons.svg#star-full"></use>
                   </svg>
@@ -147,7 +147,7 @@ const streamsHtml = (streams: Video[]): string => {
                 href="https://www.twitch.tv/${stream.user_login}/videos"
               >
                 <p>Go to Twitch videos</p>
-                <svg>
+                <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#external-link"></use>
                 </svg>
               </a>
@@ -177,7 +177,7 @@ const userHtml = (user: User): string => {
         >
           <img src="${user.profile_image_url}" width="${config.image.user.width}" height="${config.image.user.height}">
           <p>${user.display_name}</p>
-          <svg>
+          <svg aria-hidden="true" focusable="false">
             <use href="/public/assets/icons.svg#external-link"></use>
           </svg>
         </a>
@@ -190,7 +190,7 @@ const userHtml = (user: User): string => {
         aria-label="followed ? 'UnFollow' : 'Follow'"
         x-on:click="$store.streams.toggle('${user.id}', '${user.login}', '${user.display_name}')"
       >
-        <svg>
+        <svg aria-hidden="true" focusable="false">
           <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
           <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
         </svg>
@@ -295,7 +295,7 @@ const videosHtml = (videos: UserVideo[]): string => {
             <span
               title="${VIDEO_TITLES[video.type]}"
             >
-              <svg>
+              <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#${VIDEO_ICONS[video.type]}"></use>
               </svg>
             </span>
@@ -309,7 +309,7 @@ const videosHtml = (videos: UserVideo[]): string => {
           </div>
           <div>
             <p>${video.title}</p>
-            <svg>
+            <svg aria-hidden="true" focusable="false">
               <use href="/public/assets/icons.svg#external-link"></use>
             </svg>
           </div>
