@@ -1,8 +1,9 @@
-<button class="menu-item" :aria-label="name"
+<button class="menu-item"
   aria-expanded="false"
   :x-bind:aria-expanded="`(state === '${name}').toString()`"
   :x-on:click="`toggleSidebar('${name}')`"
 >
   <svg><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
+  <span class="sr-only" @text="name"></span>
 </button>
 

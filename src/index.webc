@@ -26,7 +26,6 @@ title: "Home | Twitch Pages"
         <li>
           <a href="/settings"
             class="menu-item"           
-            aria-label="Settings"
             hx-get="/public/partials/settings.html" hx-target="#main"
             hx-push-url="/settings"
           >Settings</a>
@@ -48,8 +47,9 @@ title: "Home | Twitch Pages"
               aria-expanded="false"
             />
             <!-- TODO: see if I can make this <button> into <menu-button> -->
-            <button class="menu-item" type="submit" aria-label="Search for games">
+            <button class="menu-item" type="submit">
               <svg><use href="/public/assets/icons.svg#looking-class"></use></svg>
+              <span class="sr-only">Search for games</span>
             </button>
             <!-- search sidebar -->
             <sidebar-menu></sidebar-menu>

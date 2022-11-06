@@ -56,9 +56,8 @@ const topGamesHtml = (games: Game[]): string => {
                 <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
               </svg>
             </button>
-            <a
-              href="https://www.twitch.tv/directory/games/${game.name}" aria-label="Game's Twitch page"
-            >
+            <a href="https://www.twitch.tv/directory/games/${game.name}">
+              <span class="sr-only">Got to game's Twitch page</span>
               <svg>
                 <use href="/public/assets/icons.svg#external-link"></use>
               </svg>
