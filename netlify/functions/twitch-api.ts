@@ -55,6 +55,7 @@ const topGamesHtml = (games: Game[]): string => {
                 <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
                 <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
               </svg>
+              <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
             </button>
             <a href="https://www.twitch.tv/directory/games/${game.name}">
               <span class="sr-only">Got to game's Twitch page</span>
@@ -94,6 +95,7 @@ const categoryTitleHtml = (game: Game): string => {
       <svg aria-hidden="true" focusable="false">
         <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
         <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+        <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
       </svg>
     </button>
     <input type="hidden" id="param-game_id" class="req-param" hx-swap-oob="true" name="game_id" value="${game.id}">
@@ -194,6 +196,7 @@ const userHtml = (user: User): string => {
           <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
           <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
         </svg>
+        <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
       </button>
     </div>
     <div :class="{hidden: game === ''}"

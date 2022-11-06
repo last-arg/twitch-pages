@@ -23,20 +23,23 @@
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
         // TODO: reenable class when styling this again
         // classes = "btn-follow";
-        extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)" x-bind:aria-label="followed ? 'unfollow' : 'follow'"`
+        extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)"`
         svg_empty = `<use href="/public/assets/icons.svg#star-empty"></use>`;
+      }
+      
+      let span_extra = "";
+      if (extra_args.length > 0) {
+        span_extra = `x-text="followed ? 'UnFollow' : 'Follow'"`;
       }
 
       // 'ml-1px' should no be part of this component
       return `
-        <button class="${classes}"
-          x-on:click="${click_fn}" type="button" aria-label="unfollow"
-          ${extra_args}
-        >
+        <button class="${classes}" x-on:click="${click_fn}" type="button" ${extra_args}>
           <svg aria-hidden="true" focusable="false">
             ${svg_empty}
             <use href="/public/assets/icons.svg#star-full"></use>
           </svg>
+          <span class="sr-only" ${span_extra}>Follow/Unfollow</span>
         </button>
         <a x-bind:href="${external_link}">
           <svg aria-hidden="true" focusable="false">
@@ -89,6 +92,8 @@
    * Could also write some defensive CSS which indicates that something is
    * wrong.
    */
+  /* TODO: don't use aria-label anymore
+  */
   .btn-follow use[href$="star-empty"],
   .btn-follow[aria-label="follow"] use[href$="star-empty"],
   .btn-follow[aria-label="unfollow"] use[href$="star-full"] {
