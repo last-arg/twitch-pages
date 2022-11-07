@@ -8,7 +8,7 @@ const config = defineConfig({
     // ['fill-current', { fill: 'currentColor' }],
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^stack\-?(\w*)$/, ruleStackFluid, {layer: "component"}],
-    // [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
+    [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     // [/^sidebar\-button$/, ruleSidebarButton, {layer: "component"}],
     // [/^sidebar\-wrapper$/, ruleSidebarWrapper, {layer: "component"}],
     // [/^filter\-checkbox\-btn$/, ruleFilterCheckboxBtn, {layer: "component"}],
@@ -139,18 +139,17 @@ ${classSelector} > * + * { margin-top: var(${var_name}, 1em); }
     `
 }
 
-async function ruleLayoutGrid([selector, min_width], ctx) {
+async function ruleLayoutGrid([selector, min_width]: RegExpMatchArray, ctx) {
   const generator = ctx.generator;
   const classSelector = "." + escapeSelector(selector)
   if (min_width === '') {
     return `
 ${classSelector} {
   display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 100%;
+  grid-gap: var(--l-grid-gap, 1em);
 }
 @supports (width: min(var(--grid-min), 100%)) {
-  ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(min(var(--grid-min), 100%), 1fr)); }
+  ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(min(var(--l-grid-min), 100%), 1fr)); }
 }
     `
   }

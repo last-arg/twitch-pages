@@ -5,12 +5,11 @@ permalink: public/partials/top-games.html
   <div>
     <h2>Top games</h2>
   </div>
-  <ul id="list-top-games" role="list">
+  <ul id="list-top-games" class="l-grid" style="--l-grid-min: 18rem" role="list">
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <div id="load-more-wrapper">
     <button type="button"
-     
       hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
       hx-include="#param-after"
       aria-disabled="true"
