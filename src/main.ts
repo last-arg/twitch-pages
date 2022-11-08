@@ -71,14 +71,23 @@ const twitch: {
 }
 
 class Twitch {
+  static headers = {
+    "Authorization": "",
+    "Client-id": TWITCH_CLIENT_ID,
+    "Accept": "application/vnd.twitchtv.v5+json",
+  }
+
   client_id: string
-  twitch_token: string | undefined
+  twitch_token: string | null = null
   is_fetching_token: boolean = false
 
   constructor(client_id: string) {
     this.client_id = client_id;
+    this.twitch_token = localStorage.getItem("twitch_token");
+    if (this.twitch_token) {
+      this.setTwitchToken(this.twitch_token);
+    }
   }
-
   async fetchToken() {
     let token = this.getTwitchToken();
     if (!token) {
@@ -99,9 +108,10 @@ class Twitch {
   setTwitchToken(token: string) {
     this.twitch_token = token
     localStorage.setItem("twitch_token", token)
+    Twitch.headers["Authorization"] = `Bearer ${token}`;
   }
 
-  getTwitchToken(): string | null { return localStorage.getItem("twitch_token"); }
+  getTwitchToken(): string | null { return this.twitch_token; }
 }
 
 const t = new Twitch(TWITCH_CLIENT_ID);
@@ -133,7 +143,7 @@ const getUrlObject = (newPath: string): UrlResolve => {
 }
 
 const headers = {
-  "Host": "api.twitch.tv",
+  // "Host": "api.twitch.tv",
   "Authorization": `Bearer ${twitch.getToken()}`,
   "Client-id": TWITCH_CLIENT_ID,
   "Accept": "application/vnd.twitchtv.v5+json",
@@ -663,15 +673,24 @@ const initHtmx = async () => {
       if (name === "htmx:configRequest") {
         console.log(name, evt.detail);
         const path = evt.detail.path;
-        const requestUrl = new URL(path, API_URL)
-        evt.detail.path = requestUrl.toString();
-        evt.detail.parameters["first"] = global.settings["top-games-count"]
-        // evt.detail.headers = Object.assign(evt.detail.headers, headers);
-        evt.detail.headers = headers;
-        console.log(requestUrl);
+        const url = new URL(path, API_URL)
+        evt.detail.path = url.toString();
+        evt.detail.headers = Twitch.headers;
 
+        if (url.pathname === "/helix/games/top") {
+          evt.detail.parameters["first"] = global.settings["top-games-count"]
+        } else if (url.pathname === "/helix/games") {
+          let gameName = ""
+          if (global.clickedGame) {
+            gameName = global.clickedGame
+          } else {
+            const pathArr = location.pathname.split("/")
+            gameName = decodeURIComponent(pathArr[pathArr.length - 1])
+          }
+          evt.detail.parameters["name"] = gameName
+          global.setClickedGame(null)
+        }
       }
-      return;
     },
     transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
       // console.log(text, xhr, _elt);
@@ -692,7 +711,24 @@ const initHtmx = async () => {
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
         }
+        // TODO: need to save json.pagination.cursor in DOM probably
         return result;
+      } else if (path === "/helix/games") {
+        const json = JSON.parse(text);
+        const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
+        if (json.data.length >= 0) {
+          let result = "";
+          const item = json.data[0];
+          const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+          const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+          result += tmpl.innerHTML
+            .replaceAll(":game_name", item.name)
+            .replace("#game_img_url", img_url)
+            .replace(":game_id", item.id)
+            .replace(":json_game", game_obj_str)
+          return result;
+        }
+        return "TODO: category/game doesn't exist";
       }
       return text;
     },

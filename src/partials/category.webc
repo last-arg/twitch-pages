@@ -10,6 +10,32 @@ permalink: public/partials/category.html
         hx-target="#category-header"
       ></div>
       <placeholder-title name="category"></placeholder-title>
+      <template id="category-header-template">
+        <h2>
+          <a href="https://www.twitch.tv/directory/game/:game_name">
+            <img src="#game_img_url" alt=""
+              :width="global.config.image.category.width" 
+              :height="global.config.image.category.height">
+            <p>:game_name</p>
+            <svg aria-hidden="true" focusable="false">
+              <use href="/public/assets/icons.svg#external-link"></use>
+            </svg>
+          </a>
+        </h2>
+        <div></div>
+        <button x-data="{followed: false}"
+          type="button"
+          x-effect="followed = $store.games.hasId(':game_id')"
+          x-on:click="$store.games.toggle(:json_game)"
+        >
+          <svg aria-hidden="true" focusable="false">
+            <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
+            <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+            <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
+          </svg>
+        </button>
+        <input type="hidden" id="param-game_id" class="req-param" hx-swap-oob="true" name="game_id" value=":game_id">
+      </template>
     </div>
     <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
       <label for="search">Search stream title</label>
