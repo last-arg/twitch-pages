@@ -323,7 +323,7 @@ function alpineInit() {
           this.formReset();
           const value = this.$el.value
           if (value.length === 0) return
-          this.stylesheet.insertRule(`.filter-search > :not(li[data-title*='${escape(value)}' i]) { display: none !important }`, 0)
+          this.stylesheet.insertRule(`.filter-search > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0)
         },
         // used in 'partials/category.html'
         formReset() {

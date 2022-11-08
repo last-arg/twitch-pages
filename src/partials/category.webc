@@ -39,7 +39,7 @@ permalink: public/partials/category.html
     </div>
     <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
       <label for="search">Search stream title</label>
-      <input type="search" id="search" placeholder="Stream title" @input.debounce.100ms="searchTitle()" value="">
+      <input type="search" id="search" placeholder="Stream title" x-on:input.debounce.100ms="searchTitle()" value="">
       <button type="reset">Reset</button>
     </form>
   </div>
