@@ -1,12 +1,11 @@
 import Alpine from 'alpinejs'
-import { TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
-import { mainContent, UrlResolve } from 'config'
+import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
+import { mainContent, UrlResolve, config } from 'config'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
 // TODO: Search: old value is visible when searching new
 
-// TODO: check shadows on streams sidebar
 
 interface Stream {
   user_id: string,
@@ -70,6 +69,43 @@ const twitch: {
     return this.twitch_token || this.user_token
   },
 }
+
+class Twitch {
+  client_id: string
+  twitch_token: string | undefined
+  is_fetching_token: boolean = false
+
+  constructor(client_id: string) {
+    this.client_id = client_id;
+  }
+
+  async fetchToken() {
+    let token = this.getTwitchToken();
+    if (!token) {
+      this.is_fetching_token = true;
+      console.log("fetch new token")
+      const r = await fetch("/api/twitch-api/?new-token");
+      if (r.status !== 200) {
+        console.warn("Failed to get new twitch token");
+        // TODO: handle failed request
+      } else {
+        const token = await r.text();
+        this.setTwitchToken(token);
+      }
+      this.is_fetching_token = false;
+    }
+  }
+
+  setTwitchToken(token: string) {
+    this.twitch_token = token
+    localStorage.setItem("twitch_token", token)
+  }
+
+  getTwitchToken(): string | null { return localStorage.getItem("twitch_token"); }
+}
+
+const t = new Twitch(TWITCH_CLIENT_ID);
+t.fetchToken();
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === "/") return mainContent["top-games"]
@@ -622,6 +658,46 @@ const initHtmx = async () => {
   const global = Alpine.store("global") as Global
 
   htmx.defineExtension("twitch-api", {
+    onEvent: (name: string, evt: any) => {
+      // console.log(name, evt);
+      if (name === "htmx:configRequest") {
+        console.log(name, evt.detail);
+        const path = evt.detail.path;
+        const requestUrl = new URL(path, API_URL)
+        evt.detail.path = requestUrl.toString();
+        evt.detail.parameters["first"] = global.settings["top-games-count"]
+        // evt.detail.headers = Object.assign(evt.detail.headers, headers);
+        evt.detail.headers = headers;
+        console.log(requestUrl);
+
+      }
+      return;
+    },
+    transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
+      // console.log(text, xhr, _elt);
+      const pathUrl = new URL(xhr.responseURL)
+      const path = pathUrl.pathname;
+      if (path === "/helix/games/top") {
+        const json = JSON.parse(text);
+        const tmpl = (document.querySelector("#top-games-template") as HTMLTemplateElement);
+        let result = "";
+        for (const item of json.data) {
+            const game_url = mainContent['category'].url.replace(":category", item.name)
+            const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+            const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+            result += tmpl.innerHTML
+              .replaceAll("#game_url", game_url)
+              .replaceAll(":game_name", item.name)
+              .replace("#game_img_url", img_url)
+              .replace(":game_id", item.id)
+              .replace(":json_game", game_obj_str)
+        }
+        return result;
+      }
+      return text;
+    },
+  });
+  htmx.defineExtension("twitch-api1", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
       // console.log("Fired event: " + name, evt);

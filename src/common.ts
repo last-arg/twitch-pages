@@ -4,6 +4,7 @@ export const SEARCH_COUNT = 10
 export const STREAMS_COUNT = 5
 export const USER_VIDEOS_COUNT = 10
 export const TOP_GAMES_COUNT = 5
+export const API_URL = "https://api.twitch.tv"
 
 export type VideoType = "archive" | "upload" | "highlight"
 

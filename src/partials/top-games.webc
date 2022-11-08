@@ -6,6 +6,43 @@ permalink: public/partials/top-games.html
     <h2>Top games</h2>
   </div>
   <ul id="list-top-games" class="l-grid" style="--l-grid-min: 18rem" role="list">
+    <template id="top-games-template">
+      <li>
+        <div>
+          <a class="game-link" href="#game_url"
+            hx-push-url="#game_url"
+            :hx-get="global.paths.category.html" hx-target="#main"
+            x-on:click="$store.global.setClickedGame(':game_name')"
+          >
+            <!-- TODO: option to get twitchCatImageSrc width and height in JS -->
+            <img 
+              src="#game_img_url" alt=""
+              :width="global.config.image.category.width" 
+              :height="global.config.image.category.height">
+            <p>:game_name</p>
+          </a>
+          <div>
+            <button x-data="{followed: false}"
+              x-effect="followed = $store.games.hasId(':game_id')"
+              x-on:click="$store.games.toggle(:json_game)"
+            >
+              <!-- TODO: remove x-show from <use>. Use CSS to show/hide icons by using an attribute on button. -->
+              <svg aria-hidden="true" focusable="false">
+                <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
+                <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+              </svg>
+              <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
+            </button>
+            <a class="game-link-external" href="https://www.twitch.tv/directory/games/:game_name">
+              <span class="sr-only">Got to game's Twitch page</span>
+              <svg aria-hidden="true" focusable="false">
+                <use href="/public/assets/icons.svg#external-link"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </li>
+    </template>
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <div id="load-more-wrapper">
