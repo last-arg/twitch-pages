@@ -46,6 +46,61 @@ permalink: public/partials/category.html
   <div>
     <div id="feedback"></div>
     <ul class="filter-search" role="list">
+      <template id="category-streams-template">
+        <li data-user-id=":user_id" data-title=":title_encoded">
+          <div>
+            <a href="https://twitch.tv/:user_login" title=":title">
+              <div>
+                <img src="#video_img_url" alt="" 
+                  :width="global.config.image.video.width" 
+                  :height="global.config.image.video.height" />
+                <p>:viewer_count viewers</p>
+              </div>
+              <div>
+                <p>:title</p>
+                <svg aria-hidden="true" focusable="false">
+                  <use href="/public/assets/icons.svg#external-link"></use>
+                </svg>
+              </div>
+            </a>
+            <div>
+              <a aria-hidden="true" href="#video_url"
+                hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
+                @click="$store.global.setClickedStream(':user_login')"
+              >
+                <img x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
+                  :width="global.config.image.user.width" 
+                  :height="global.config.image.user.height" />
+              </a>
+              <div>
+                <div>
+                  <a href="#video_url"
+                    hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
+                    @click="$store.global.setClickedStream(':user_login')"
+                  >:user_name</a>
+                  <div></div>
+                  <button type="button"
+                    x-on:click="$store.streams.toggle(':user_id', ':user_login', ':user_name')"
+                  >
+                    <svg aria-hidden="true" focusable="false">
+                      <use x-show="!$store.streams.hasId(':user_id')" href="/public/assets/icons.svg#star-empty"></use>
+                      <use x-show="$store.streams.hasId(':user_id')" href="/public/assets/icons.svg#star-full"></use>
+                    </svg>
+                  </button>
+                </div>
+                <a
+                  href="https://www.twitch.tv/:user_login/videos"
+                >
+                  <p>Go to Twitch videos</p>
+                  <svg aria-hidden="true" focusable="false">
+                    <use href="/public/assets/icons.svg#external-link"></use>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+      </template>
     </ul>
     <div id="load-more-wrapper">
       <button type="button"

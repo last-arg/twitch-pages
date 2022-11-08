@@ -671,7 +671,6 @@ const initHtmx = async () => {
     onEvent: (name: string, evt: any) => {
       // console.log(name, evt);
       if (name === "htmx:configRequest") {
-        console.log(name, evt.detail);
         const path = evt.detail.path;
         const url = new URL(path, API_URL)
         evt.detail.path = url.toString();
@@ -689,6 +688,12 @@ const initHtmx = async () => {
           }
           evt.detail.parameters["name"] = gameName
           global.setClickedGame(null)
+        } else if (url.pathname === "/helix/streams") {
+          const game_id = evt.detail.triggeringEvent.detail.game_id;
+          if (game_id) {
+            evt.detail.parameters.game_id = game_id;
+          }
+          evt.detail.parameters["first"] = global.settings["category-count"]
         }
       }
     },
@@ -698,7 +703,7 @@ const initHtmx = async () => {
       const path = pathUrl.pathname;
       if (path === "/helix/games/top") {
         const json = JSON.parse(text);
-        const tmpl = (document.querySelector("#top-games-template") as HTMLTemplateElement);
+        const tmpl = document.querySelector("#top-games-template") as HTMLTemplateElement;
         let result = "";
         for (const item of json.data) {
             const game_url = mainContent['category'].url.replace(":category", item.name)
@@ -711,28 +716,56 @@ const initHtmx = async () => {
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
         }
-        // TODO: need to save json.pagination.cursor in DOM probably
+        const cursor = json.pagination.cursor;
+        if (cursor) {
+          document.querySelector("#param-after")!.setAttribute("value", cursor);
+        }
         return result;
       } else if (path === "/helix/games") {
         const json = JSON.parse(text);
         const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
         if (json.data.length >= 0) {
-          let result = "";
           const item = json.data[0];
+          document.querySelector("#param-game_id")!.setAttribute("value", item.id);
+          htmx.trigger("#load-more-streams", "click", {})
+          let result = "";
           const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
           const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
           result += tmpl.innerHTML
             .replaceAll(":game_name", item.name)
+            .replaceAll(":game_id", item.id)
             .replace("#game_img_url", img_url)
-            .replace(":game_id", item.id)
             .replace(":json_game", game_obj_str)
           return result;
         }
         return "TODO: category/game doesn't exist";
+      } else if (path === "/helix/streams") {
+        const json = JSON.parse(text);
+        const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
+        let result = "";
+        for (const item of json.data) {
+            const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
+            const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+            result += tmpl.innerHTML
+              .replaceAll("#video_url", video_url)
+              .replaceAll(":user_id", item.user_id)
+              .replaceAll(":user_login", item.user_login)
+              .replaceAll(":user_name", item.user_name)
+              .replaceAll(":title", item.title)
+              .replace(":viewer_count", item.viewer_count)
+              .replace("#video_img_url", img_url)
+              .replace(":title_encoded", encodeURIComponent(item.title))
+        }
+        const cursor = json.pagination.cursor;
+        if (cursor) {
+          document.querySelector("#param-after")!.setAttribute("value", cursor);
+        }
+        return result;
       }
       return text;
     },
   });
+
   htmx.defineExtension("twitch-api1", {
     lastElem: null,
     onEvent: function(name: string, evt: any) {
