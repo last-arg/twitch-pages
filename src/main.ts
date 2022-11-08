@@ -743,7 +743,9 @@ const initHtmx = async () => {
         const json = JSON.parse(text);
         const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
         let result = "";
+        let user_ids = [];
         for (const item of json.data) {
+            user_ids.push(item.user_id);
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             result += tmpl.innerHTML
@@ -756,6 +758,12 @@ const initHtmx = async () => {
               .replace("#video_img_url", img_url)
               .replace(":title_encoded", encodeURIComponent(item.title))
         }
+        
+        const storeProfileImages = Alpine.store("profile_images") as ProfileImages
+        const imageIds = Object.keys(storeProfileImages.data)
+        user_ids = user_ids.filter((id: string) => !imageIds.includes(id))
+        storeProfileImages.fetchProfileImages(user_ids)
+        
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
