@@ -723,22 +723,27 @@ const initHtmx = async () => {
         return result;
       } else if (path === "/helix/games") {
         const json = JSON.parse(text);
-        const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
-        if (json.data.length >= 0) {
-          const item = json.data[0];
-          document.querySelector("#param-game_id")!.setAttribute("value", item.id);
-          htmx.trigger("#load-more-streams", "click", {})
-          let result = "";
-          const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-          const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
-          result += tmpl.innerHTML
-            .replaceAll(":game_name", item.name)
-            .replaceAll(":game_id", item.id)
-            .replace("#game_img_url", img_url)
-            .replace(":json_game", game_obj_str)
-          return result;
+        if (xhr.status !== 200 || json.data.length === 0) {
+          const pathArr = location.pathname.split("/")
+          return `
+            <h2>${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
+            <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
+          `;
         }
-        return "TODO: category/game doesn't exist";
+
+        const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
+        const item = json.data[0];
+        document.querySelector("#param-game_id")!.setAttribute("value", item.id);
+        htmx.trigger("#load-more-streams", "click", {})
+        let result = "";
+        const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+        const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+        result += tmpl.innerHTML
+          .replaceAll(":game_name", item.name)
+          .replaceAll(":game_id", item.id)
+          .replace("#game_img_url", img_url)
+          .replace(":json_game", game_obj_str)
+        return result;
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);
         const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
