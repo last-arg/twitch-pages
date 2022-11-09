@@ -6,7 +6,7 @@ permalink: public/partials/top-games.html
     <h2>Top games</h2>
   </div>
   <ul id="list-top-games" class="l-grid" style="--l-grid-min: 18rem" role="list">
-    <template id="top-games-template">
+    <template webc:keep webc:type="11ty" id="top-games-template">
       <li>
         <div>
           <a class="game-link" href="#game_url"
@@ -20,19 +20,7 @@ permalink: public/partials/top-games.html
             <p>:game_name</p>
           </a>
           <div>
-            <button class="btn-follow" x-data="{followed: false}" 
-              data-is-followed="false"
-              x-bind:data-is-followed="followed"
-              x-effect="followed = $store.games.hasId(':game_id')"
-              x-on:click="$store.games.toggle(:json_game)"
-            >
-              <!-- TODO: remove x-show from <use>. Use CSS to show/hide icons by using an attribute on button. -->
-              <svg aria-hidden="true" focusable="false">
-                <use href="/public/assets/icons.svg#star-empty"></use>
-                <use href="/public/assets/icons.svg#star-full"></use>
-              </svg>
-              <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
-            </button>
+            <follow-game></follow-game>
             <a class="game-link-external" href="https://www.twitch.tv/directory/games/:game_name">
               <span class="sr-only">Got to game's Twitch page</span>
               <svg aria-hidden="true" focusable="false">

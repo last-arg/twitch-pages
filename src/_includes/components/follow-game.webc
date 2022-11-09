@@ -1,0 +1,12 @@
+<button class="btn-follow" x-data="{followed: false}" 
+  data-is-followed="false"
+  x-bind:data-is-followed="followed"
+  x-effect="followed = $store.games.hasId(':game_id')"
+  x-on:click="$store.games.toggle(:json_game)"
+>
+  <svg aria-hidden="true" focusable="false">
+    <use href="/public/assets/icons.svg#star-empty"></use>
+    <use href="/public/assets/icons.svg#star-full"></use>
+  </svg>
+  <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
+</button>
