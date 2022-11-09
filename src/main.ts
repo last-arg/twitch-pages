@@ -689,11 +689,17 @@ const initHtmx = async () => {
           evt.detail.parameters["name"] = gameName
           global.setClickedGame(null)
         } else if (url.pathname === "/helix/streams") {
-          const game_id = evt.detail.triggeringEvent.detail.game_id;
-          if (game_id) {
-            evt.detail.parameters.game_id = game_id;
-          }
           evt.detail.parameters["first"] = global.settings["category-count"]
+        } else if (url.pathname === "/helix/users") {
+          let loginName = ""
+          if (global.clickedStream) {
+            loginName = global.clickedStream
+          } else {
+            const pathArr = location.pathname.split("/")
+            loginName = decodeURIComponent(pathArr[pathArr.length - 2])
+          }
+          evt.detail.parameters["login"] = loginName
+          global.setClickedStream(null)
         }
       }
     },
@@ -773,6 +779,28 @@ const initHtmx = async () => {
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
         }
+        return result;
+      } else if (path === "/helix/users") {
+        const json = JSON.parse(text);
+        console.log(json)
+        if (xhr.status !== 200 || json.data.length === 0) {
+          const pathArr = location.pathname.split("/")
+          return `
+            <h2>${decodeURIComponent(pathArr[1])}</h2>
+            <div id="feedback" hx-swap-oob="true">User not found</div>
+          `;
+        }
+
+        const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
+        const item = json.data[0];
+        document.querySelector("#param-user_id")!.setAttribute("value", item.id);
+        htmx.trigger("#load-more-streams", "click", {})
+        let result = "";
+        result += tmpl.innerHTML
+          .replaceAll(":user_login", item.login)
+          .replaceAll(":user_display_name", item.display_name)
+          .replaceAll("#user_profile_image_url", item.profile_image_url)
+          .replaceAll(":user_id", item.id)
         return result;
       }
       return text;

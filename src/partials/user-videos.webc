@@ -10,6 +10,44 @@ permalink: public/partials/user-videos.html
         hx-target="#user-header"
       ></div>
       <placeholder-title name="user"></placeholder-title>
+      <template id="user-header-template">
+        <div>
+          <h2>
+            <a
+         
+              href="https://www.twitch.tv/:user_login/videos"
+            >
+              <img src="#user_profile_image_url" 
+                :width="global.config.image.user.width" :height="global.config.image.user.height">
+              <p>:user_display_name</p>
+              <svg aria-hidden="true" focusable="false">
+                <use href="/public/assets/icons.svg#external-link"></use>
+              </svg>
+            </a>
+          </h2>
+          <div></div>
+          <button x-data="{followed: false}"
+            type="button"
+            x-init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
+            x-effect="followed = $store.streams.hasId(':user_id')"
+            aria-label="followed ? 'UnFollow' : 'Follow'"
+            x-on:click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
+          >
+            <svg aria-hidden="true" focusable="false">
+              <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
+              <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+            </svg>
+            <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
+          </button>
+        </div>
+        <div :class="{hidden: game === ''}"
+          x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
+        >
+          <span>LIVE</span>
+          <p x-text="game"></p>
+        </div>
+        <input type="hidden" id="param-user_id" class="req-param" hx-swap-oob="true" name="user_id" value=":user_id">
+      </template>
     </div>
   </div>
   <div>
