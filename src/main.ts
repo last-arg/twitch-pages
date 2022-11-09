@@ -6,6 +6,15 @@ import 'htmx.org';
 
 // TODO: Search: old value is visible when searching new
 
+interface UserVideo {
+  url: string,
+  type: VideoType,
+  duration: string,
+  published_at: string,
+  title: string,
+  thumbnail_url: string,
+}
+
 function getVideoImageSrc(url: string, width: number, height: number): string {
   return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
 }
@@ -900,144 +909,6 @@ const initHtmx = async () => {
       return text;
     },
   });
-
-  htmx.defineExtension("twitch-api1", {
-    lastElem: null,
-    onEvent: function(name: string, evt: any) {
-      // console.log("Fired event: " + name, evt);
-      const target = evt.detail.target
-      const isVideoListSwap = target !== undefined && (target.id === 'list-top-games'
-        || (target.classList !== undefined && target.classList.contains('filter-search')))
-      if (name === "htmx:configRequest") {
-        if (isVideoListSwap) {
-          document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "true")
-          if (this.lastElem !== null) {
-            setAriaMsg("Loading more items")
-          }
-        }
-        
-        const token = twitch.getToken() || ""
-        const path = evt.detail.path
-        evt.detail.path = "/api/twitch-api"
-        evt.detail.parameters["path"] = path
-        evt.detail.parameters["token"] = token
-
-        if (path === "/helix/games/top") {
-          evt.detail.parameters["first"] = global.settings["top-games-count"]
-        } else if (path === "/helix/games") {
-          let gameName = ""
-          if (global.clickedGame) {
-            gameName = global.clickedGame
-          } else {
-            const pathArr = location.pathname.split("/")
-            gameName = decodeURIComponent(pathArr[pathArr.length - 1])
-          }
-          evt.detail.parameters["name"] = gameName
-          global.setClickedGame(null)
-        } else if (path === "/helix/videos") {
-          evt.detail.parameters["first"] = global.settings["user-videos-count"]
-        } else if (path === "/helix/streams") {
-          evt.detail.parameters["first"] = global.settings["category-count"]
-        } else if (path === "/helix/users") {
-          let loginName = ""
-          if (global.clickedStream) {
-            loginName = global.clickedStream
-          } else {
-            const pathArr = location.pathname.split("/")
-            loginName = decodeURIComponent(pathArr[pathArr.length - 2])
-          }
-          evt.detail.parameters["login"] = loginName
-          global.setClickedStream(null)
-        }
-      } else if (isVideoListSwap) {
-        if (name === "htmx:beforeOnLoad") {
-          this.lastElem = evt.detail.target.lastElementChild
-        } else if (name === "htmx:afterOnLoad") {
-          // Focus first new element if visible
-          if (this.lastElem !== null) {
-            setAriaMsg("Loading done")
-            let elem = this.lastElem.nextElementSibling
-            while (elem) {
-              const styles = window.getComputedStyle(elem);
-              if (styles.getPropertyValue("display") !== "none") {
-                elem.setAttribute("tabindex", "-1")
-                elem.focus()
-                break;
-              }
-              elem = elem.nextElementSibling
-            }
-          }
-          document.querySelector(".load-more-btn")?.setAttribute("aria-disabled", "false")
-
-          const path = evt.target.getAttribute("hx-get")
-          if (path === "/helix/streams") {
-            // Get user ids to update/get profile images
-            let elem = this.lastElem ? this.lastElem.nextElementSibling : evt.detail.target.children[0]
-            let ids = []
-            while (elem) {
-              ids.push(elem.getAttribute("data-user-id"))
-              elem = elem.nextElementSibling
-            }
-            const storeProfileImages = Alpine.store("profile_images") as ProfileImages
-            const imageIds = Object.keys(storeProfileImages.data)
-            ids = ids.filter((id: string) => !imageIds.includes(id))
-            storeProfileImages.fetchProfileImages(ids)
-          } else if (path === "/helix/videos") {
-            // User page: Update filter counts
-            const elHighlights = document.querySelector("#highlights-count")!;
-            const elUploads = document.querySelector("#uploads-count")!;
-            const elArchives = document.querySelector("#archives-count")!;
-
-            elHighlights.textContent = evt.detail.target.querySelectorAll(".highlight").length
-            elUploads.textContent = evt.detail.target.querySelectorAll(".upload").length
-            elArchives.textContent = evt.detail.target.querySelectorAll(".archive").length
-          }
-        }
-      } else if (name === "htmx:afterSwap") {
-        if (evt.target.id === "param-game_id") {
-          const pathUrl = new URL(evt.detail.xhr.responseURL)
-          const path = pathUrl.searchParams.get("path")
-          if (path === "/helix/games" && evt.detail.xhr.status === 200) {
-            htmx.trigger("#load-more-streams", "click", {})
-          }
-        } else if (evt.target.id === "param-user_id") {
-          const pathUrl = new URL(evt.detail.xhr.responseURL)
-          const path = pathUrl.searchParams.get("path")
-          if (path === "/helix/users" && evt.detail.xhr.status === 200) {
-            htmx.trigger(".load-more-btn", "click", {})
-          }
-        }
-      }
-    },
-    transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
-      // console.log("xhr", xhr)
-      // console.log("elt", _elt)
-      const token = xhr.getResponseHeader("Twitch-Access-Token")
-      if (token) {
-        twitch.setTwitchToken(token)
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      let result = text
-      const pathUrl = new URL(xhr.responseURL)
-      const path = pathUrl.searchParams.get("path")
-      if (path === "/helix/games" && xhr.status !== 200) {
-        const pathArr = location.pathname.split("/")
-        result = `
-          <h2>${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
-          <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
-        `;
-      } else if (path === "/helix/users" && xhr.status !== 200) {
-        const pathArr = location.pathname.split("/")
-        result = `
-          <h2>${decodeURIComponent(pathArr[pathArr.length - 2])}</h2>
-          <div id="feedback" hx-swap-oob="true">User not found</div>
-        `;
-      }
-
-      return result
-    },
-  })
 
   htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
 }
