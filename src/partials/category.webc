@@ -44,7 +44,7 @@ permalink: public/partials/category.html
   </div>
   <div>
     <div id="feedback"></div>
-    <ul class="filter-search" role="list">
+    <ul class="filter-search l-grid" style="--l-grid-min: 18rem;" role="list">
       <template id="category-streams-template">
         <li data-user-id=":user_id" data-title=":title_encoded">
           <div>
