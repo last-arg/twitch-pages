@@ -14,21 +14,22 @@ permalink: public/partials/top-games.html
             :hx-get="global.paths.category.html" hx-target="#main"
             x-on:click="$store.global.setClickedGame(':game_name')"
           >
-            <img 
-              src="#game_img_url" alt=""
+            <img  src="#game_img_url" alt=""
               :width="global.config.image.category.width" 
               :height="global.config.image.category.height">
             <p>:game_name</p>
           </a>
           <div>
-            <button x-data="{followed: false}"
+            <button class="btn-follow" x-data="{followed: false}" 
+              data-is-followed="false"
+              x-bind:data-is-followed="followed"
               x-effect="followed = $store.games.hasId(':game_id')"
               x-on:click="$store.games.toggle(:json_game)"
             >
               <!-- TODO: remove x-show from <use>. Use CSS to show/hide icons by using an attribute on button. -->
               <svg aria-hidden="true" focusable="false">
-                <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
-                <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
+                <use href="/public/assets/icons.svg#star-empty"></use>
+                <use href="/public/assets/icons.svg#star-full"></use>
               </svg>
               <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
             </button>

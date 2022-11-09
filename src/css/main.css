@@ -492,6 +492,28 @@ follow-star button:focus {
   color: var(--color-violet-500);
 }
 
+.btn-follow use { display: none; }
+
+/*
+ * Could also use '... use:first-child' or '... use:nth-child(2)' if order
+ * is known and won't change. Might be safer choice because svg icon name
+ * might change. Although somebody might also change <use> order without
+ * knowing order is important. In both cases a comment might be helpful.
+ * 
+ * Adding a class probably be the safest bet. Choosing a solution comes
+ * down to how often and how the HTML code might be changed.
+ * 
+ * Could also write some defensive CSS which indicates that something is
+ * wrong.
+ */
+/* TODO: don't use aria-label anymore
+*/
+.btn-follow use[href$="star-empty"],
+.btn-follow[data-is-followed="false"] use[href$="star-empty"],
+.btn-follow[data-is-followed="true"] use[href$="star-full"] {
+  display: initial;
+}
+
 /* Utilities */
 .wrapper {
   max-width: 70rem;
