@@ -6,6 +6,52 @@ import 'htmx.org';
 
 // TODO: Search: old value is visible when searching new
 
+function getVideoImageSrc(url: string, width: number, height: number): string {
+  return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
+}
+
+const twitchDateToString = (d: Date): string => {
+  const round = (nr: number): number => {
+    const nr_floor = Math.floor(nr)
+    return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
+  }
+  const seconds_f = (Date.now() - d.getTime()) / 1000
+  const minutes_f = seconds_f / 60
+  const hours_f = minutes_f / 60
+  const days_f = hours_f / 24
+  const minutes = round(minutes_f)
+  const hours = round(hours_f)
+  const days = round(days_f)
+  const weeks = round(days_f / 7)
+  const months = round(days_f / 30)
+  const years = round(days_f / 365)
+
+  let result_str = "1 minute ago"
+  if (years > 0 && months > 11) {
+    result_str = (years === 1) ? "1 year ago" : `${years} years ago`
+  } else if (months > 0 && weeks > 4) {
+    result_str = (months === 1) ? "1 month ago" : `${months} months ago`
+  } else if (weeks > 0 && days > 6) {
+    result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
+  } else if (days > 0 && hours > 23) {
+    result_str = (days === 1) ? "Yesterday" : `${days} days ago`
+  } else if (hours > 0 && minutes > 59) {
+    result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
+  } else if (minutes > 1) {
+    result_str = `${minutes} minutes ago`
+  }
+
+  return result_str
+};
+
+const twitchDurationToString = (duration: string): string => {
+  const time = duration.slice(0,-1).split(/[hm]/).reverse()
+  const hours = (time.length >= 3) ? `${time[2]}:` : ""
+  const minutes = (time.length >= 2) ? `${time[1].padStart(2, "0")}:` : ""
+  const seconds = (time.length >= 1) ? time[0].padStart(2, "0") : ""
+  return `${hours}${minutes}${seconds}`
+}
+
 
 interface Stream {
   user_id: string,
@@ -700,6 +746,8 @@ const initHtmx = async () => {
           }
           evt.detail.parameters["login"] = loginName
           global.setClickedStream(null)
+        } else if (path === "/helix/videos") {
+          evt.detail.parameters["first"] = global.settings["user-videos-count"]
         }
       }
     },
@@ -782,7 +830,6 @@ const initHtmx = async () => {
         return result;
       } else if (path === "/helix/users") {
         const json = JSON.parse(text);
-        console.log(json)
         if (xhr.status !== 200 || json.data.length === 0) {
           const pathArr = location.pathname.split("/")
           return `
@@ -801,6 +848,53 @@ const initHtmx = async () => {
           .replaceAll(":user_display_name", item.display_name)
           .replaceAll("#user_profile_image_url", item.profile_image_url)
           .replaceAll(":user_id", item.id)
+        return result;
+      } else if (path === "/helix/videos") {
+        const VIDEO_ICONS: Record<string, string> = {
+          archive: "video-camera",
+          upload: "video-upload",
+          highlight: "video-reel",
+        }
+
+        const json = JSON.parse(text);
+        const tmpl = document.querySelector("#user-video-template") as HTMLTemplateElement;
+        let result = "";
+        const counts: any = { archive: 0, upload: 0, highlight: 0 };
+        for (const item of json.data) {
+            counts[item.type] += 1;
+            const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+            const date = new Date(item.published_at)
+            result += tmpl.innerHTML
+              .replaceAll(":video_title", item.title)
+              .replace(":video_type", item.type)
+              .replace("#video_url", item.url)
+              .replace(":video_duration_str", twitchDurationToString(item.duration))
+              .replace(":date_str", date.toString())
+              .replace(":video_date_str", twitchDateToString(date))
+              .replace(":video_type_title", item.type.toUpperCase())
+              .replace("#img_url", img_url)
+              .replace(":video_icon", VIDEO_ICONS[item.type])
+              .replace(":encoded_video_title", encodeURIComponent(item.title));
+        }
+        
+        // User page: Update filter counts
+        const elHighlights = document.querySelector("#highlights-count")!;
+        const elUploads = document.querySelector("#uploads-count")!;
+        const elArchives = document.querySelector("#archives-count")!;
+
+        const new_len_highlight = (+elHighlights.textContent!) + counts.highlight;
+        const new_len_upload = (+elUploads.textContent!) + counts.upload;
+        const new_len_archive = (+elArchives.textContent!) + counts.archive;
+        
+        elHighlights.textContent = new_len_highlight;
+        elUploads.textContent = new_len_upload;
+        elArchives.textContent = new_len_archive;
+        
+        const cursor = json.pagination.cursor;
+        if (cursor) {
+          document.querySelector("#param-after")!.setAttribute("value", cursor);
+        }
+
         return result;
       }
       return text;

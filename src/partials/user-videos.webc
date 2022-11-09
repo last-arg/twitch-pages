@@ -46,7 +46,6 @@ permalink: public/partials/user-videos.html
           <span>LIVE</span>
           <p x-text="game"></p>
         </div>
-        <input type="hidden" id="param-user_id" class="req-param" hx-swap-oob="true" name="user_id" value=":user_id">
       </template>
     </div>
   </div>
@@ -118,6 +117,31 @@ permalink: public/partials/user-videos.html
         if ($store.global.settings['video-highlights'] !== 'on') $el.classList.add('no-highlights')
       "
     >
+      <template id="user-video-template">
+        <li class=":video_type" data-title=":encoded_video_title">
+          <a href="#video_url" title=":video_title">
+            <div>
+            <img src="#img_url" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+              <span title=":video_type_title">
+                <svg aria-hidden="true" focusable="false">
+                  <use href="/public/assets/icons.svg#:video_icon"></use>
+                </svg>
+                <span class="sr-only">:video_type</span>
+              </span>
+              <div>
+                <span>:video_duration_str</span>
+                <span title=":date_str">:video_date_str</span>
+              </div>
+            </div>
+            <div>
+              <p>:video_title</p>
+              <svg aria-hidden="true" focusable="false">
+                <use href="/public/assets/icons.svg#external-link"></use>
+              </svg>
+            </div>
+          </a>
+        </li>
+      </template>
     </ul>
     <div id="load-more-wrapper">
       <button type="button"
