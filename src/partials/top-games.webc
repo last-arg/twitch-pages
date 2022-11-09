@@ -14,7 +14,6 @@ permalink: public/partials/top-games.html
             :hx-get="global.paths.category.html" hx-target="#main"
             x-on:click="$store.global.setClickedGame(':game_name')"
           >
-            <!-- TODO: option to get twitchCatImageSrc width and height in JS -->
             <img 
               src="#game_img_url" alt=""
               :width="global.config.image.category.width" 

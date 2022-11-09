@@ -96,35 +96,6 @@ const setAriaMsg = (function() {
   return (msg: string) => container.textContent = msg
 })()
 
-const twitch: {
-  login_url: string;
-  twitch_token: string | null;
-  user_token: string | null;
-  setTwitchToken: (token: string) => void;
-  setUserToken: (token: string) => void;
-  getToken: () => string | null;
-  logout(): void;
-} = {
-  login_url: `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${window.location.origin + window.location.pathname}&response_type=token&scope=`,
-  twitch_token: localStorage.getItem("twitch_token"),
-  user_token: localStorage.getItem("user_token"),
-  setTwitchToken: function(token: string): void {
-    this.twitch_token = token
-    localStorage.setItem("twitch_token", this.twitch_token)
-  },
-  setUserToken: function(token: string): void {
-    this.user_token = token
-    localStorage.setItem("user_token", this.user_token)
-  },
-  logout: function(): void {
-    this.user_token = null
-    localStorage.removeItem("user_token")
-  },
-  getToken: function(): string | null {
-    return this.twitch_token || this.user_token
-  },
-}
-
 class Twitch {
   static headers = {
     "Authorization": "",
@@ -167,6 +138,10 @@ class Twitch {
   }
 
   getTwitchToken(): string | null { return this.twitch_token; }
+  
+  setUserToken(token: string) {
+    console.log("TODO: setUserToken")
+  }
 }
 
 const t = new Twitch(TWITCH_CLIENT_ID);
@@ -197,13 +172,6 @@ const getUrlObject = (newPath: string): UrlResolve => {
   return mainContent[contentKey]
 }
 
-const headers = {
-  // "Host": "api.twitch.tv",
-  "Authorization": `Bearer ${twitch.getToken()}`,
-  "Client-id": TWITCH_CLIENT_ID,
-  "Accept": "application/vnd.twitchtv.v5+json",
-};
-
 function menuItemToScrollPosition(menuitem: Element | undefined): Element | null {
   if (!menuitem) {
     menuitem = document.querySelector(".menu-item[aria-expanded=true]")!;
@@ -220,7 +188,7 @@ function alpineInit() {
   const fetchUsers = async (ids: string[]): Promise<any[]> => {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    return (await (await fetch(url, {method: "GET", headers})).json()).data;
+    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
   }
 
   interface Search {
@@ -305,7 +273,7 @@ function alpineInit() {
           const searchTerm = value.trim()
           if (searchTerm.length === 0) return []
           const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${searchTerm}`;
-          const r = await fetch(url, { method: "GET", headers: headers })
+          const r = await fetch(url, { method: "GET", headers: Twitch.headers })
           const results = await r.json()
           return results.data ?? []
         },
@@ -435,11 +403,10 @@ function alpineInit() {
       clear() { this.data = [] }
     }
 
-
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
       const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-      return (await (await fetch(url, {method: "GET", headers: headers})).json()).data;
+      return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
     };
 
     interface StoreStreams {
@@ -638,7 +605,7 @@ function alpineInit() {
         "video-uploads": false,
         "video-highlights": false,
       },
-      twitch: twitch,
+      twitch: t,
       mainContent: mainContent,
       init() {
         const settings_str = localStorage.getItem("settings")
@@ -707,8 +674,6 @@ const handleSidebarScroll = () => {
       const scrollbox = event.target as HTMLElement
 
       if (!scrolling) {
-        // TODO: need to fire this event when: 
-        // 1) Amount of items changes. Only when sidebar open?
         window.requestAnimationFrame(function() {
           sidebarShadows(scrollbox);
           scrolling = false;
@@ -919,7 +884,7 @@ const init = async () => {
     for (const paramStr of window.location.hash.slice(1).split("&")) {
       const [key, token] = paramStr.split("=")
       if (key === "access_token") {
-        twitch.setUserToken(token)
+        t.setUserToken(token)
         location.hash = ""
         break
       }
