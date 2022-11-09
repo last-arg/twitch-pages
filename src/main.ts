@@ -740,7 +740,7 @@ const initHtmx = async () => {
         const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
         result += tmpl.innerHTML
           .replaceAll(":game_name", item.name)
-          .replaceAll(":game_id", item.id)
+          .replace(":game_id", item.id)
           .replace("#game_img_url", img_url)
           .replace(":json_game", game_obj_str)
         return result;
