@@ -381,7 +381,7 @@ form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
 }
 
 main {
-  margin-top: var(--space-l);
+  margin-top: calc(var(--header-height) + var(--space-m));
 }
 
 .link-box {
@@ -512,6 +512,14 @@ follow-star button:focus {
 .btn-follow[data-is-followed="false"] use[href$="star-empty"],
 .btn-follow[data-is-followed="true"] use[href$="star-full"] {
   display: initial;
+}
+
+.heading-top-games {
+  background: white;
+  display: inline-block;
+  padding: var(--space-3xs) var(--space-2xs);
+  font-size: var(--step-0);
+  font-weight: normal;
 }
 
 /* Utilities */

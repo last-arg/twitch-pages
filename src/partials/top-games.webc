@@ -3,7 +3,7 @@ permalink: public/partials/top-games.html
 ---
 <div>
   <div>
-    <h2>Top games</h2>
+    <h2 class="heading-top-games">Top games</h2>
   </div>
   <ul id="list-top-games" class="l-grid" style="--l-grid-min: 18rem" role="list">
     <template webc:keep webc:type="11ty" id="top-games-template">
