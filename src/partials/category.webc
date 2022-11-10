@@ -3,15 +3,15 @@ permalink: public/partials/category.html
 ---
 <div>
   <div>
-    <div id="category-header">
+    <div id="category-header" class="heading-wrapper">
       <div hx-ext="twitch-api"
         hx-get="/helix/games"
         hx-trigger="load"
         hx-target="#category-header"
       ></div>
       <placeholder-title name="category"></placeholder-title>
-      <template id="category-header-template">
-        <h2>
+      <template webc:keep webc:type="11ty" id="category-header-template">
+        <h2 class="heading-category">
           <a href="https://www.twitch.tv/directory/game/:game_name">
             <img src="#game_img_url" alt=""
               :width="global.config.image.category.width" 
@@ -22,18 +22,7 @@ permalink: public/partials/category.html
             </svg>
           </a>
         </h2>
-        <div></div>
-        <button x-data="{followed: false}"
-          type="button"
-          x-effect="followed = $store.games.hasId(':game_id')"
-          x-on:click="$store.games.toggle(:json_game)"
-        >
-          <svg aria-hidden="true" focusable="false">
-            <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
-            <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
-            <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
-          </svg>
-        </button>
+        <follow-game></follow-game>
       </template>
     </div>
     <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
