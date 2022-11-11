@@ -22,7 +22,9 @@ permalink: public/partials/category.html
             </svg>
           </a>
         </h2>
-        <follow-game></follow-game>
+        <div class="btn-container">
+          <follow-game></follow-game>
+        </div>
       </template>
     </div>
     <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">

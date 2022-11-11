@@ -1,4 +1,4 @@
-<button class="btn-follow" x-data="{followed: false}" 
+<button class="btn-follow-game" x-data="{followed: false}" 
   data-is-followed="false"
   x-bind:data-is-followed="followed"
   x-effect="followed = $store.games.hasId(':game_id')"
