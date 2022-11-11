@@ -1,0 +1,8 @@
+---
+permalink: public/css/components.css
+---
+<template webc:type="render">
+function() {
+  return this.helpers.getCSS('/');
+}
+</template>
