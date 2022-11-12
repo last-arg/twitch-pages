@@ -1,5 +1,5 @@
 ---
-permalink: public/partials/category.html
+permalink: "public/partials/category.html"
 ---
 <div>
   <div>

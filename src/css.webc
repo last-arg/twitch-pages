@@ -4,6 +4,10 @@ eleventyExcludeFromCollections: true
 ---
 <template webc:type="render">
 function() {
-  return this.helpers.getCSS('/');
+  let result = "";
+  for (const c of this.collections.all) {
+    result += this.helpers.getCSS(c.url);
+  }
+  return result;
 }
 </template>
