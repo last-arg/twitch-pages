@@ -1,42 +1,94 @@
-<template webc:type="render">
-  function() {
-    const valid_names = ["category", "user-videos"]
-    if (!valid_names.includes(this.name)) {
-      throw new Error(`'name' attribute must be one of these values: ${valid_names.join(", ")}`)
-    }
-    const name = this.name;
-    const arg_name = this.arg_name;
-    const path = this.global.paths[name];
-    const href_url = `'${path.url}'.replace(':${name}', encodeURIComponent(${arg_name}))`;
-    const click_fn = `clickSidebar('${name}', ${arg_name})`;
-    const configs = {
-      "category": {
-        width: this.global.config.image.category.width,
-        height: this.global.config.image.category.height,
-        bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url, $el.width, $el.height)`,
-      },
-      "user-videos": {
-        width: this.global.config.image.user.width,
-        height: this.global.config.image.user.height,
-        bind_src: "$store.profile_images.imgUrl(stream.user_id)",
+<div webc:root class="flex-grow">
+  <template webc:type="render">
+    function() {
+      const valid_names = ["category", "user-videos"]
+      if (!valid_names.includes(this.name)) {
+        throw new Error(`'name' attribute must be one of these values: ${valid_names.join(", ")}`)
       }
-    };
-    const config = configs[name];
-    return `
-      <a class="link-box"
-        data-card="${name}"
-        x-data="{href_url: ${href_url}}"
-        x-bind:href="href_url"
-        x-init="htmx.process($el)"
-        x-on:click="${click_fn}"
-        hx-target="#main"
-        x-bind:hx-push-url="href_url"
-        hx-get="/public/partials/${name}.html">
-        <img x-bind:src="${config.bind_src}" alt="" width="${config.width}" height="${config.height}" />
-        <div class="link-title">
-          <slot></slot>
-        </div>
-      </a>
-    `;
-  }
-</template>
+      const name = this.name;
+      const arg_name = this.arg_name;
+      const path = this.global.paths[name];
+      const href_url = `'${path.url}'.replace(':${name}', encodeURIComponent(${arg_name}))`;
+      const click_fn = `clickSidebar('${name}', ${arg_name})`;
+      const configs = {
+        "category": {
+          width: this.global.config.image.category.width,
+          height: this.global.config.image.category.height,
+          bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url, $el.width, $el.height)`,
+        },
+        "user-videos": {
+          width: this.global.config.image.user.width,
+          height: this.global.config.image.user.height,
+          bind_src: "$store.profile_images.imgUrl(stream.user_id)",
+        }
+      };
+      const config = configs[name];
+      return `
+        <a class="link-box"
+          data-card="${name}"
+          x-data="{href_url: ${href_url}}"
+          x-bind:href="href_url"
+          x-init="htmx.process($el)"
+          x-on:click="${click_fn}"
+          hx-target="#main"
+          x-bind:hx-push-url="href_url"
+          hx-get="/public/partials/${name}.html">
+          <img x-bind:src="${config.bind_src}" alt="" width="${config.width}" height="${config.height}" />
+          <div class="link-title">
+            <slot></slot>
+          </div>
+        </a>
+      `;
+    }
+  </template>
+</div>
+<style>
+.link-box {
+  display: flex;
+  background: var(--color-truegray-800);
+  border-left: var(--space-3xs) solid var(--color-truegray-800);
+  padding-inline-start: var(--space-3xs);
+  text-decoration: none;
+  color: var(--color-truegray-300);
+  width: 100%;
+}
+
+.link-box img {
+  width: 3.5rem;
+}
+
+.link-title {
+  padding: var(--space-3xs) var(--space-2xs);
+  font-size: var(--step--1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+.link-title p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+.link-box:hover,
+.link-box:focus {
+  border-left-color: var(--color-violet-700);
+  color: var(--color-truegray-50);
+}
+
+.link-box[data-card=category] .link-title p {
+  -webkit-line-clamp: 2;
+}
+
+.link-box[data-card=user-videos] .link-title p {
+  -webkit-line-clamp: 1;
+}
+
+.link-box[data-card=user-videos] img {
+  width: 4rem;
+}
+</style>
