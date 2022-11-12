@@ -1,4 +1,4 @@
-<div class="sidebar-header cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
+<div webc:root webc:keep class="sidebar-header cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
   <h2>
     <svg aria-hidden="true" focusable="false">
       <use :href="'/public/assets/icons.svg#' + icon"></use>
@@ -10,3 +10,38 @@
     <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#close"></use></svg>
   </button>
 </div>
+<style>
+.sidebar-header h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font-size: var(--step--1);
+  background-color: var(--color-violet-700);
+  color: var(--color-truegray-100);
+  padding: var(--space-3xs) var(--space-2xs);
+}
+
+.sidebar-header svg {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.btn-close {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-violet-700);  
+  color: var(--color-truegray-100);
+  padding: var(--space-3xs) var(--space-2xs);
+  opacity: .7;
+}
+
+.btn-close:hover,
+.btn-close:focus {
+  opacity: 1;
+}
+
+.btn-close svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+</style>
