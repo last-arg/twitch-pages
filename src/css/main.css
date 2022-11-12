@@ -397,38 +397,6 @@ main {
   text-overflow: ellipsis;
 }
 
-follow-star {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: var(--color-truegray-800);
-  line-height: 1;
-  padding: var(--space-3xs) var(--space-2xs);
-  color: var(--color-truegray-400);
-}
-
-scroll-container follow-star {
-  margin-inline-start: 1px;
-}
-
-follow-star button {
-  background-color: transparent;
-  padding: 0;
-  cursor: pointer;
-  color: inherit;
-}
-
-follow-star a {
-  color: inherit;
-}
-
-follow-star a:hover,
-follow-star a:focus,
-follow-star button:hover,
-follow-star button:focus {
-  color: var(--color-violet-500);
-}
-
 .heading-top-games {
   background: white;
   display: inline-block;
