@@ -6,4 +6,3 @@
   <svg aria-hidden="true" focusable="false"><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
   <span class="sr-only" @text="name"></span>
 </button>
-
