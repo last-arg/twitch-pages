@@ -2,7 +2,7 @@
 permalink: "public/css/components.css"
 eleventyExcludeFromCollections: true
 ---
-<template webc:type="render">
+<template webc:raw webc:nokeep webc:type="render">
 function() {
   let result = "";
   for (const c of this.collections.all) {
