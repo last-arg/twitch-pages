@@ -289,40 +289,6 @@ header {
   height: 0.9em;
 }
 
-scroll-container {
-  padding-block: var(--space-s);
-  overflow: hidden;
-  position: relative;
-}
-
-scroll-container::after {
-  --shadow-top: 0 2em 1em -1em #404040 inset;
-  --shadow-bottom: 0 -2em 1em -1em #404040 inset;
-  --box-shadow: none;
-  inset: var(--space-s) 0;
-  pointer-events: none;
-  position: absolute;
-  content: '';
-  box-shadow: var(--box-shadow);
-}
-
-scroll-container[data-scroll-shadow=top]::after {
-  --box-shadow: var(--shadow-top);
-}
-
-scroll-container[data-scroll-shadow=bottom]::after {
-  --box-shadow: var(--shadow-bottom);
-}
-
-scroll-container[data-scroll-shadow=both]::after {
-  --box-shadow: var(--shadow-top), var(--shadow-bottom);
-}
-
-.scrollbox {
-  height: 100%;
-  overflow: auto;
-}
-
 /* TODO: redo form[role=search] CSS */
 form[role="search"] {
   font-size: var(--step--1);
