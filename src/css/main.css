@@ -215,35 +215,6 @@ header {
   width: 100%;
 }
 
-.menu-item {
-  display: block;
-  height: 100%;
-  font-size: var(--step--1);
-  text-decoration: none;
-  background-color: var(--color-truegray-900);
-  color: var(--color-truegray-100);
-  padding-block-start: var(--space-3xs);
-  padding-inline: var(--space-2xs);
-  --border-color: var(--color-truegray-900);
-  border-bottom: var(--space-3xs) solid var(--border-color);
-  cursor: pointer;
-}
-
-.menu-item:hover,
-.menu-item:focus {
-  --border-color: var(--color-truegray-500);
-}
-
-.menu-item[aria-expanded=true] {
-  border-bottom-color: var(--color-violet-700);
-}
-
-.menu-item svg {
-  width: 1.2em;
-  height: 1.2em;
-  display: block;
-}
-
 .sidebar-position {
   z-index: -1;
   display: flex !important;
