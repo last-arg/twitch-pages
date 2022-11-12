@@ -10,3 +10,35 @@
   </svg>
   <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
 </button>
+<style>
+.btn-follow-game {
+  padding: 0;
+  background: transparent;
+  color: var(--color-truegray-400);
+}
+
+.btn-follow-game:focus,
+.btn-follow-game:hover {
+  color: var(--color-violet-700);
+}
+
+.btn-follow-game use { display: none; }
+
+/*
+ * Could also use '... use:first-child' or '... use:nth-child(2)' if order
+ * is known and won't change. Might be safer choice because svg icon name
+ * might change. Although somebody might also change <use> order without
+ * knowing order is important. In both cases a comment might be helpful.
+ * 
+ * Adding a class probably be the safest bet. Choosing a solution comes
+ * down to how often and how the HTML code might be changed.
+ * 
+ * Could also write some defensive CSS which indicates that something is
+ * wrong.
+ */
+.btn-follow-game use[href$="star-empty"],
+.btn-follow-game[data-is-followed="false"] use[href$="star-empty"],
+.btn-follow-game[data-is-followed="true"] use[href$="star-full"] {
+  display: initial;
+}
+</style>
