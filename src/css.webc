@@ -1,5 +1,6 @@
 ---
-permalink: public/css/components.css
+permalink: "public/css/components.css"
+eleventyExcludeFromCollections: true
 ---
 <template webc:type="render">
 function() {
