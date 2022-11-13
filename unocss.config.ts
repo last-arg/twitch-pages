@@ -6,7 +6,6 @@ import * as fs from 'fs/promises';
 const config = defineConfig({
   rules: [
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
-    [/^stack\-?(\w*)$/, ruleStackFluid, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
   ],
   shortcutsLayer: "component",
@@ -28,11 +27,11 @@ function fileContent(filename: string) {
   }
 }
 
-function ruleStack([selector, nr, unit]: RegExpMatchArray) {
+function ruleStack([selector, nr, unit_or_fluid]: RegExpMatchArray) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--stack-space"
 
-  if (nr === '' && unit === '') {
+  if (nr === '' && unit_or_fluid === '') {
     return `
 ${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
 ${classSelector} > template:first-child + * {
@@ -42,26 +41,19 @@ ${classSelector} > template:first-child + * {
 ${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
     `
   }
-
-  if (unit !== '') return `${classSelector} { ${css_attr}: ${nr}${unit}; }`
-  if (nr !== '') return `${classSelector} { ${css_attr}: ${+nr / 4}rem; }`
+  
+  if (nr === '' && unit_or_fluid) {
+    // Is fluid value
+    const var_name = `--space-${unit_or_fluid}`;
+    return `${classSelector} { ${css_attr}: var(${var_name}); }`
+  } else if (unit_or_fluid !== '') {
+    return `${classSelector} { ${css_attr}: ${nr}${unit_or_fluid}; }`
+  } else if (nr !== '') {
+    return `${classSelector} { ${css_attr}: ${+nr / 4}rem; }`
+  }
 
   console.error(`Failed to generate CSS for '${classSelector}'`)
   return `/* Failed to generate stack rule from ${selector} */`
-}
-
-function ruleStackFluid([selector, size]: RegExpMatchArray) {
-  const classSelector = "." + escapeSelector(selector)
-  const var_name = `--space-${size}`;
-
-    return `
-${classSelector} { display: flex; flex-direction: column; justify-content: flex-start; }
-${classSelector} > template + * {
-  margin-top: 0;
-}
-
-${classSelector} > * + * { margin-top: var(${var_name}, 1em); }
-    `
 }
 
 async function ruleLayoutGrid([selector, min_width]: RegExpMatchArray, ctx: any) {

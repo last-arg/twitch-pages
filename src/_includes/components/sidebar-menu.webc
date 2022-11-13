@@ -11,7 +11,7 @@
     >Enter game name to search</p>
     <!-- search results -->
     <scroll-container>
-      <ul class="stack-s" x-show="state === 'search'" role="list">
+      <ul class="stack stack-s" x-show="state === 'search'" role="list">
         <template webc:root webc:keep x-for="search in searchResults" x-bind:key="search.id">
           <li class="flex">
             <link-box @name="category" @arg_name="search.name">
