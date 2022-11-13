@@ -14,7 +14,7 @@
         "category": {
           width: this.global.config.image.category.width,
           height: this.global.config.image.category.height,
-          bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url, $el.width, $el.height)`,
+          bind_src: `getImageSrc(${arg_name.split(".")[0]}.box_art_url)`,
         },
         "user-videos": {
           width: this.global.config.image.user.width,
@@ -54,7 +54,7 @@
 }
 
 .link-box img {
-  width: 4rem;
+  width: 3.3rem;
 }
 
 .link-title {

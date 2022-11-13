@@ -207,7 +207,7 @@ function alpineInit() {
     fetchSearch: (value: string) => Promise<Search[]>,
     clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
     toggleSidebar: (current: SidebarState) => void,
-    getImageSrc: (url_template: string, width: number, height: number) => string,
+    getImageSrc: (url_template: string) => string,
     [key: string]: any,
   }
 
@@ -302,8 +302,8 @@ function alpineInit() {
             sidebarShadows(scrollbox as HTMLElement);
           }
         },
-        getImageSrc(url_template: string, width: number, height: number): string {
-          return twitchCatImageSrc(url_template, width, height)
+        getImageSrc(url_template: string): string {
+          return twitchCatImageSrc(url_template, config.image.category.width, config.image.category.height)
         },
       }
     })
