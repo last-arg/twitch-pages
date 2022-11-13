@@ -54,7 +54,7 @@
 }
 
 .link-box img {
-  width: 3.5rem;
+  width: 4rem;
 }
 
 .link-title {
