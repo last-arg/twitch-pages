@@ -689,7 +689,6 @@ const initHtmx = async () => {
 
   htmx.defineExtension("twitch-api", {
     onEvent: (name: string, evt: any) => {
-      // console.log(name, evt);
       if (name === "htmx:configRequest") {
         const path = evt.detail.path;
         const url = new URL(path, API_URL)
@@ -722,6 +721,16 @@ const initHtmx = async () => {
           global.setClickedStream(null)
         } else if (path === "/helix/videos") {
           evt.detail.parameters["first"] = global.settings["user-videos-count"]
+        }
+      } else if (name === "htmx:beforeRequest") {
+        const url = new URL(evt.detail.pathInfo.requestPath);
+        if (url.pathname === "/helix/games/top") {
+          document.querySelector(".btn-load-more")?.setAttribute("aria-disabled", "true");
+        }
+      } else if (name === "htmx:afterOnLoad") {
+        const url = new URL(evt.detail.pathInfo.requestPath);
+        if (url.pathname === "/helix/games/top") {
+          document.querySelector(".btn-load-more")?.setAttribute("aria-disabled", "false");
         }
       }
     },
@@ -765,6 +774,8 @@ const initHtmx = async () => {
         htmx.trigger("#load-more-streams", "click", {})
         let result = "";
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+        // TODO: need to encode string values. Quotes in strings will cause problems.
+        // Like: 'I'm Only Sleeping'
         const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
         result += tmpl.innerHTML
           .replaceAll(":game_name", item.name)
