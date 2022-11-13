@@ -65,7 +65,7 @@ ${classSelector} {
   display: grid;
   grid-gap: var(--l-grid-gap, 1em);
 }
-@supports (width: min(var(--grid-min), 100%)) {
+@supports (width: min(var(--l-grid-min), 100%)) {
   ${classSelector} { grid-template-columns: repeat(auto-fill, minmax(min(var(--l-grid-min), 100%), 1fr)); }
 }
     `
@@ -73,10 +73,10 @@ ${classSelector} {
 
   const  attrs = await generator.parseUtil(min_width, ctx)
   const value = attrs[0][2][0][1]
-  if (value) return `${classSelector} { --grid-min: ${value} }`
+  if (value) return `${classSelector} { --l-grid-min: ${value} }`
 
   console.error(`Failed to generate CSS for '${classSelector}'`)
-  return `/* Failed to generate l-grid rule from ${selector} */`
+  return `/* Failed to generate grid rule from ${selector} */`
 }
 
 export default config
