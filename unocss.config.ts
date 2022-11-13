@@ -7,6 +7,7 @@ const config = defineConfig({
   rules: [
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
+    [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
   ],
   shortcutsLayer: "component",
   preflights: [
@@ -25,6 +26,53 @@ function fileContent(filename: string) {
     const srcStyleCss = await fs.readFile(filename)
     return srcStyleCss.toString();
   }
+}
+
+function dirToWords(dir: string) {
+  let result: string[] = [];
+  if (dir === "t") {
+    result.push("top");
+  } else if (dir === "r") {
+    result.push("right");
+  } else if (dir === "bottom") {
+    result.push("bottom");
+  } else if (dir === "l") {
+    result.push("left");
+  } else if (dir === "x") {
+    result.push("left", "right");
+  } else if (dir === "y") {
+    result.push("top", "bottom");
+  }
+  return result;
+}
+
+function fluidSpace([selector, attr, dir, variable]: RegExpMatchArray) {
+  const classSelector = "." + escapeSelector(selector)
+  let property = "";
+  if (attr === "m") {
+    property = "margin";
+  } else if (attr === "p") {
+    property = "padding";
+  } else {
+    console.error(`Failed to generate CSS for '${classSelector}'`)
+    return;
+  }
+  const css_attr = "--space-" + variable;
+  if (dir) {
+    let result = "";
+    const dirs = dirToWords(dir);
+    if (dirs.length === 0) {
+      console.error(`Invalid margin/padding direction was provided '${dir}'. Valid values: t, r, b, l, x, y`);
+      return;
+    }
+    for (const d of dirs) {
+      result += `${classSelector} { ${property}-${d}: var(${css_attr}); }`
+    }
+    return result;
+  }
+  return `
+${classSelector} { ${property}: var(${css_attr}); }
+    `;
 }
 
 function ruleStack([selector, nr, unit_or_fluid]: RegExpMatchArray) {
