@@ -8,7 +8,7 @@ permalink: public/partials/top-games.html
   <ul id="list-top-games" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list">
     <template webc:keep webc:type="11ty" id="top-games-template">
       <li>
-        <div>
+        <div class="game">
           <a class="game-link" href="#game_url"
             hx-push-url="#game_url"
             :hx-get="global.paths.category.html" hx-target="#main"
@@ -19,9 +19,9 @@ permalink: public/partials/top-games.html
               :height="global.config.image.category.height">
             <p>:game_name</p>
           </a>
-          <div>
+          <div class="game-actions">
             <follow-game></follow-game>
-            <a class="game-link-external" href="https://www.twitch.tv/directory/games/:game_name">
+            <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name">
               <span class="sr-only">Got to game's Twitch page</span>
               <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#external-link"></use>
@@ -47,3 +47,52 @@ permalink: public/partials/top-games.html
     </p>
   </div>
 </div>
+<style>
+.game {
+  display: flex;
+  background: white;
+  padding: 2px;
+}
+.game-link {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-truegray-800);
+}
+
+.game-link:focus,
+.game-link:hover {
+  color: var(--color-violet-700);
+  text-decoration: underline;
+}
+
+.game-link p {
+  padding-inline: var(--space-xs);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.game-link img {
+  width: 4rem;
+}
+
+.game-actions {
+  flex: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--color-truegray-100);
+  padding: var(--space-3xs) var(--space-2xs);
+}
+
+.external-link {
+  color: var(--color-truegray-400);
+}
+
+.external-link:is(:hover, :focus) {
+  color: var(--color-violet-700);
+}
+</style>
