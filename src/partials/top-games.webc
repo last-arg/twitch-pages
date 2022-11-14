@@ -33,63 +33,9 @@ permalink: public/partials/top-games.html
     </template>
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
-  <div id="load-more-wrapper" class="fluid-my-xl">
-    <input type="hidden" class="req-param" id="param-after" name="after" value="">
-    <button type="button" class="btn-frame btn-load-more"
-      hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
-      hx-include=".req-param"
-      aria-disabled="true"
-    >
-      <span>Load more games</span>
-    </button>
-    <p class="btn-frame msg-loading">Loading...</p>
-    <p class="btn-frame msg-no-more">Nothing more to load</p>
-  </div>
+  <btn-load-more class="block fluid-my-xl" @hx_get="/helix/games/top" @hx_target="#list-top-games"></btn-load-more>
 </div>
 <style>
-.btn-frame {
-  display: block;
-  text-align: center;
-  width: 100%;
-  background: transparent;
-  --border-color: var(--color-violet-700);
-  border: 2px solid var(--border-color);
-  max-width: initial;
-  font-size: var(--step-0);
-  padding-block: var(--space-3xs);
-}
-
-.btn-load-more,
-.msg-no-more,
-.msg-loading {
-  display: none;
-}
-
-.msg-no-more,
-.msg-loading {
-  --border-color: var(--color-truegray-300);
-  color: var(--color-truegray-500)
-}
-
-.btn-load-more[aria-disabled=false],
-.btn-load-more[aria-disabled=true] + .msg-loading {
-  display: block;
-}
-
-.btn-load-more:focus,
-.btn-load-more:hover {
-  background: var(--color-violet-700);
-  color: var(--color-truegray-50);
-}
-
-.req-param[name="after"]:not([value]) ~ * {
-  display: none;
-}
-
-.req-param[name="after"]:not([value]) ~ .msg-no-more {
-  display: block;
-}
-
 .game {
   display: flex;
   background: white;
