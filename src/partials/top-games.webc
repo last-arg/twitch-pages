@@ -37,7 +37,7 @@ permalink: public/partials/top-games.html
     <input type="hidden" class="req-param" id="param-after" name="after" value="">
     <button type="button" class="btn-frame btn-load-more"
       hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
-      hx-include="#param-after"
+      hx-include=".req-param"
       aria-disabled="true"
     >
       <span>Load more games</span>

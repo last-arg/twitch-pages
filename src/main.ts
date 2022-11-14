@@ -756,6 +756,8 @@ const initHtmx = async () => {
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
+        } else {
+          document.querySelector("#param-after")!.removeAttribute("value");
         }
         return result;
       } else if (path === "/helix/games") {
@@ -811,6 +813,8 @@ const initHtmx = async () => {
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
+        } else {
+          document.querySelector("#param-after")!.removeAttribute("value");
         }
         return result;
       } else if (path === "/helix/users") {
@@ -878,6 +882,8 @@ const initHtmx = async () => {
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
+        } else {
+          document.querySelector("#param-after")!.removeAttribute("value");
         }
 
         return result;
