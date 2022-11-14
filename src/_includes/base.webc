@@ -8,9 +8,6 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/public/css/main.css">
   <link rel="stylesheet" href="/public/css/components.css">
-  <!--
-	<style @html="getCSS(page.url)"></style>
-  -->
 </head>
 <body>
   <div @html="content" webc:nokeep></div>

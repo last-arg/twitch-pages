@@ -284,7 +284,7 @@ form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
 }
 
 main {
-  margin-top: calc(var(--header-height) + var(--space-m));
+  padding-top: calc(var(--header-height) + var(--space-m));
 }
 
 .card-live {
