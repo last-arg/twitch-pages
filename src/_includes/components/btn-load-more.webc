@@ -3,7 +3,7 @@
 <button type="button" class="btn-frame btn-load-more"
   hx-ext="twitch-api" 
   :hx-get="hx_get" 
-  :hx-target="hx_target" 
+  :hx-target="hx_target ? hx_target : '#output-list'" 
   hx-swap="beforeend"
   hx-include=".req-param"
   aria-disabled="true"

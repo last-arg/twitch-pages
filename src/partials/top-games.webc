@@ -5,7 +5,7 @@ permalink: public/partials/top-games.html
   <div>
     <h2 class="heading-top-games">Top games</h2>
   </div>
-  <ul id="list-top-games" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list">
+  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list">
     <template webc:keep webc:type="11ty" id="top-games-template">
       <li>
         <div class="game">
@@ -33,7 +33,7 @@ permalink: public/partials/top-games.html
     </template>
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
-  <btn-load-more class="block fluid-my-xl" @hx_get="/helix/games/top" @hx_target="#list-top-games"></btn-load-more>
+  <btn-load-more class="block fluid-my-xl" @hx_get="/helix/games/top"></btn-load-more>
 </div>
 <style>
 .game {
