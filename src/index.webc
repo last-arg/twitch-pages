@@ -68,7 +68,7 @@ title: "Home | Twitch Pages"
                   <template webc:root webc:keep x-for="game in $store.games.data" x-bind:key="game.id">
                     <li class="flex">
                       <link-box @name="category" @arg_name="game.name">
-                        <p x-text="game.name"></p>
+                        <p x-text="decodeURIComponent(game.name)"></p>
                       </link-box>
                       <follow-star data-colormode="dark" @arg="game"></follow-star>
                     </li>
