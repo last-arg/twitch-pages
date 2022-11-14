@@ -10,13 +10,10 @@ permalink: public/partials/user-videos.html
         hx-target="#user-header"
       ></div>
       <placeholder-title name="user"></placeholder-title>
-      <template id="user-header-template">
+      <template webc:keep webc:type="11ty" id="user-header-template">
         <div>
           <h2>
-            <a
-         
-              href="https://www.twitch.tv/:user_login/videos"
-            >
+            <a href="https://www.twitch.tv/:user_login/videos">
               <img src="#user_profile_image_url" 
                 :width="global.config.image.user.width" :height="global.config.image.user.height">
               <p>:user_display_name</p>
@@ -26,19 +23,11 @@ permalink: public/partials/user-videos.html
             </a>
           </h2>
           <div></div>
-          <button x-data="{followed: false}"
-            type="button"
-            x-init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
-            x-effect="followed = $store.streams.hasId(':user_id')"
-            aria-label="followed ? 'UnFollow' : 'Follow'"
-            x-on:click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
-          >
-            <svg aria-hidden="true" focusable="false">
-              <use x-show="!followed" href="/public/assets/icons.svg#star-empty"></use>
-              <use x-show="followed" href="/public/assets/icons.svg#star-full"></use>
-            </svg>
-            <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
-          </button>
+          <button-follow 
+            @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
+            @effect="followed = $store.streams.hasId(':user_id')"
+            @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
+          ></button-follow>
         </div>
         <div :class="{hidden: game === ''}"
           x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
