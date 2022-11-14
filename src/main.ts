@@ -723,14 +723,14 @@ const initHtmx = async () => {
           evt.detail.parameters["first"] = global.settings["user-videos-count"]
         }
       } else if (name === "htmx:beforeRequest") {
-        const url = new URL(evt.detail.pathInfo.requestPath);
-        if (url.pathname === "/helix/games/top") {
-          document.querySelector(".btn-load-more")?.setAttribute("aria-disabled", "true");
+        const btn = document.querySelector(".btn-load-more");
+        if (btn) {
+          btn.setAttribute("aria-disabled", "true");
         }
       } else if (name === "htmx:afterOnLoad") {
-        const url = new URL(evt.detail.pathInfo.requestPath);
-        if (url.pathname === "/helix/games/top") {
-          document.querySelector(".btn-load-more")?.setAttribute("aria-disabled", "false");
+        const btn = document.querySelector(".btn-load-more");
+        if (btn) {
+          btn.setAttribute("aria-disabled", "false");
         }
       }
     },
@@ -773,7 +773,7 @@ const initHtmx = async () => {
         const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.querySelector("#param-game_id")!.setAttribute("value", item.id);
-        htmx.trigger("#load-more-streams", "click", {})
+        htmx.trigger(".btn-load-more", "click", {})
         let result = "";
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
         // TODO: need to encode string values. Quotes in strings will cause problems.
@@ -830,7 +830,7 @@ const initHtmx = async () => {
         const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.querySelector("#param-user_id")!.setAttribute("value", item.id);
-        htmx.trigger("#load-more-streams", "click", {})
+        htmx.trigger(".btn-load-more", "click", {})
         let result = "";
         result += tmpl.innerHTML
           .replaceAll(":user_login", item.login)

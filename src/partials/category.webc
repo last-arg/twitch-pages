@@ -92,25 +92,8 @@ permalink: "public/partials/category.html"
         </li>
       </template>
     </ul>
-    <div id="load-more-wrapper">
-      <button type="button"
-        id="load-more-streams"
-        class="load-more-btn"
-        hx-ext="twitch-api"
-        hx-get="/helix/streams"
-        hx-include=".req-param"
-        hx-trigger="click"
-        hx-target=".filter-search"
-        hx-swap="beforeend"
-        aria-disabled="true"
-      >
-        <input class="req-param" id="param-after" type="hidden" name="after" value="">
-        <input class="req-param" id="param-game_id" type="hidden" name="game_id" value="">
-        <span>Load more videos</span>
-      </button>
-      <p>
-        Loading...
-      </p>
-    </div>
+    <btn-load-more class="block fluid-my-xl" @hx_get="/helix/streams" @hx_target=".filter-search">
+      <input class="req-param" id="param-game_id" type="hidden" name="game_id" value="">
+    </btn-load-more>
   </div>
 </div>
