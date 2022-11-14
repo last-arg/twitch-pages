@@ -32,7 +32,8 @@
         span_extra = `x-text="followed ? 'UnFollow' : 'Follow'"`;
       }
 
-      // 'ml-1px' should no be part of this component
+      // TODO: replace button with <follow-game>/<follow-user>?
+      // TODO: in search sidebar follow icons are wrong
       return `
         <button class="${classes}" x-on:click="${click_fn}" type="button" ${extra_args}>
           <svg aria-hidden="true" focusable="false">
