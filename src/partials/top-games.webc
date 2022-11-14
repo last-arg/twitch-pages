@@ -40,7 +40,7 @@ permalink: public/partials/top-games.html
       hx-include="#param-after"
       aria-disabled="true"
     >
-      <span class="btn-title">Load more games</span>
+      <span>Load more games</span>
     </button>
     <p class="btn-frame msg-loading">Loading...</p>
     <p class="btn-frame msg-no-more">Nothing more to load</p>
