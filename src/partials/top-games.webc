@@ -34,15 +34,16 @@ permalink: public/partials/top-games.html
     <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <div id="load-more-wrapper" class="fluid-my-xl">
+    <input type="hidden" class="req-param" id="param-after" name="after" value="">
     <button type="button" class="btn-frame btn-load-more"
       hx-ext="twitch-api" hx-get="/helix/games/top" hx-target="#list-top-games" hx-swap="beforeend"
       hx-include="#param-after"
       aria-disabled="true"
     >
       <span class="btn-title">Load more games</span>
-      <input type="hidden" id="param-after" name="after" value="">
     </button>
     <p class="btn-frame msg-loading">Loading...</p>
+    <p class="btn-frame msg-no-more">Nothing more to load</p>
   </div>
 </div>
 <style>
@@ -59,10 +60,12 @@ permalink: public/partials/top-games.html
 }
 
 .btn-load-more,
+.msg-no-more,
 .msg-loading {
   display: none;
 }
 
+.msg-no-more,
 .msg-loading {
   --border-color: var(--color-truegray-300);
   color: var(--color-truegray-500)
@@ -77,6 +80,14 @@ permalink: public/partials/top-games.html
 .btn-load-more:hover {
   background: var(--color-violet-700);
   color: var(--color-truegray-50);
+}
+
+.req-param[name="after"]:not([value]) ~ * {
+  display: none;
+}
+
+.req-param[name="after"]:not([value]) ~ .msg-no-more {
+  display: block;
 }
 
 .game {
