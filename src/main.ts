@@ -738,17 +738,21 @@ const initHtmx = async () => {
       // console.log(text, xhr, _elt);
       const pathUrl = new URL(xhr.responseURL)
       const path = pathUrl.pathname;
+
       if (path === "/helix/games/top") {
         const json = JSON.parse(text);
         const tmpl = document.querySelector("#top-games-template") as HTMLTemplateElement;
         let result = "";
         for (const item of json.data) {
-            const game_url = mainContent['category'].url.replace(":category", item.name)
+            const url_name = encodeURIComponent(item.name);
+            const game_url = mainContent['category'].url.replace(":category", url_name)
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-            const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+            const game_obj_str = `{name: '${url_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
             result += tmpl.innerHTML
               .replaceAll("#game_url", game_url)
-              .replaceAll(":game_name", item.name)
+              .replace(":game_name_text", item.name)
+              .replace(":game_name_attr", url_name)
+              .replace(":game_name_url", url_name)
               .replace("#game_img_url", img_url)
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
@@ -891,6 +895,7 @@ const initHtmx = async () => {
       return text;
     },
   });
+  htmx.config.useTemplateFragments = true;
 
   htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
 }

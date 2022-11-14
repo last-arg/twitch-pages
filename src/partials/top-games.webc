@@ -12,16 +12,16 @@ permalink: public/partials/top-games.html
           <a class="game-link" href="#game_url"
             hx-push-url="#game_url"
             :hx-get="global.paths.category.html" hx-target="#main"
-            x-on:click="$store.global.setClickedGame(':game_name')"
+            x-on:click="$store.global.setClickedGame(':game_name_attr')"
           >
             <img  src="#game_img_url" alt=""
               :width="global.config.image.category.width" 
               :height="global.config.image.category.height">
-            <p>:game_name</p>
+            <p>:game_name_text</p>
           </a>
           <div class="game-actions">
             <follow-game></follow-game>
-            <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name">
+            <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url">
               <span class="sr-only">Got to game's Twitch page</span>
               <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#external-link"></use>
