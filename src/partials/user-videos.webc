@@ -143,23 +143,8 @@ permalink: public/partials/user-videos.html
         </li>
       </template>
     </ul>
-    <div id="load-more-wrapper">
-      <button type="button"
-        id="load-more-streams"
-        class="load-more-btn"
-        hx-ext="twitch-api"
-        hx-trigger="click"
-        hx-get="/helix/videos"
-        hx-include=".req-param"
-        hx-target=".filter-search"
-        hx-swap="beforeend"
-        aria-disabled="true"
-      >
-        <input class="req-param" id="param-after" type="hidden" name="after" value="">
-        <input class="req-param" id="param-user_id" type="hidden" name="user_id" value="">
-        <span>Load more videos</span>
-      </button>
-      <p>Loading...</p>
-    </div>
+    <btn-load-more class="block fluid-my-xl" @hx_get="/helix/videos" @hx_target=".filter-search">
+      <input class="req-param" id="param-user_id" type="hidden" name="user_id" value="">
+    </btn-load-more>
   </div>
 </div>
