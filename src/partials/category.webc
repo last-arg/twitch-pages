@@ -59,7 +59,7 @@ permalink: "public/partials/category.html"
             <div>
               <a aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
-                @click="$store.global.setClickedStream(':user_login')"
+                x-on:click="$store.global.setClickedStream(':user_login')"
               >
                 <img x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
                   :width="global.config.image.user.width" 
@@ -69,7 +69,7 @@ permalink: "public/partials/category.html"
                 <div>
                   <a href="#video_url"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
-                    @click="$store.global.setClickedStream(':user_login')"
+                    x-on:click="$store.global.setClickedStream(':user_login')"
                   >:user_name</a>
                   <div></div>
                   <button type="button"
