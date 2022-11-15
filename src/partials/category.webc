@@ -41,31 +41,31 @@ permalink: "public/partials/category.html"
     <ul class="filter-search l-grid" style="--l-grid-min: 18rem;" role="list" x-on:click="$store.global.changePath">
       <template id="category-streams-template">
         <li data-user-id=":user_id" data-title=":title_encoded">
-          <div>
-            <a href="https://twitch.tv/:user_login" title=":title">
-              <div>
-                <img src="#video_img_url" alt="" 
+          <div class="user">
+            <a class="user-link" href="https://twitch.tv/:user_login" title=":title">
+              <div class="relative">
+                <img class="block" src="#video_img_url" alt="" 
                   :width="global.config.image.video.width" 
                   :height="global.config.image.video.height" />
-                <p>:viewer_count viewers</p>
+                <p class="user-count">:viewer_count viewers</p>
               </div>
-              <div>
-                <p>:title</p>
-                <svg aria-hidden="true" focusable="false">
+              <div class="flex items-center justify-between">
+                <p class="stream-title">:title</p>
+                <svg class="shrink-0" aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#external-link"></use>
                 </svg>
               </div>
             </a>
-            <div>
+            <div class="user-info">
               <a aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
               >
-                <img x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
+                <img class="w-20" x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
                   :width="global.config.image.user.width" 
                   :height="global.config.image.user.height" />
               </a>
               <div>
-                <div>
+                <div class="flex">
                   <a href="#video_url"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
@@ -79,9 +79,7 @@ permalink: "public/partials/category.html"
                     </svg>
                   </button>
                 </div>
-                <a
-                  href="https://www.twitch.tv/:user_login/videos"
-                >
+                <a class="flex items-center" href="https://www.twitch.tv/:user_login/videos">
                   <p>Go to Twitch videos</p>
                   <svg aria-hidden="true" focusable="false">
                     <use href="/public/assets/icons.svg#external-link"></use>
@@ -98,3 +96,36 @@ permalink: "public/partials/category.html"
     </btn-load-more>
   </div>
 </div>
+<style>
+.user-count {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: var(--space-3xs);
+  background-color: var(--color-truegray-800);
+  color: var(--color-truegray-100);
+  padding-inline: var(--space-3xs);
+  font-size: var(--step--2);
+}
+
+.stream-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-link {
+  color: var(--color-truegray-800);
+  text-decoration: none;
+}
+
+.user-link:focus,
+.user-link:hover {
+  color: var(--color-violet-700);
+  text-decoration: underline;
+}
+
+.user-info {
+  display: flex;
+}
+</style>
