@@ -8,26 +8,26 @@
       const arg = this.arg;
 
       let click_fn = "";
-      let btn_effect = "";
+      let fn_has_id = "";
       let external_link = "";
       if (arg === "game") {
         const game_id_arg = `${arg}.id`;
         click_fn = `$store.games.remove(${game_id_arg})`;
-        btn_effect = `followed = $store.games.hasId(${game_id_arg})`
+        fn_has_id = `followed = $store.games.hasId(${game_id_arg})`
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
       } else if (arg === "stream") {
         const user_id_arg = `${arg}.user_id`;
         click_fn = `$store.streams.remove(${user_id_arg})`;
-        btn_effect = `followed = $store.streams.hasId(${user_id_arg})`;
+        fn_has_id = `followed = $store.streams.hasId(${user_id_arg})`;
         external_link = `\`https://www.twitch.tv/\${${arg}.user_login}/videos\``;
       } else if (arg === "search") {
         click_fn = `$store.games.toggle(${arg})`;
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-        btn_effect = `followed = $store.games.hasId(${arg}.id)`;
+        fn_has_id = `followed = $store.games.hasId(${arg}.id)`;
       }
       
       return `
-        <button-follow @on_click="${click_fn}" @effect="${btn_effect}"></button-follow>
+        <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
         <a x-bind:href="${external_link}">
           <svg aria-hidden="true" focusable="false">
             <use href="/public/assets/icons.svg#external-link"></use>

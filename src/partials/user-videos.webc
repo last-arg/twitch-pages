@@ -25,7 +25,7 @@ permalink: public/partials/user-videos.html
           <div></div>
           <button-follow 
             @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
-            @effect="followed = $store.streams.hasId(':user_id')"
+            @fn_has_id="$store.streams.hasId(':user_id')"
             @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
           ></button-follow>
         </div>

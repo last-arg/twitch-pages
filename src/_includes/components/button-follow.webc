@@ -4,7 +4,7 @@
   data-is-followed="false"
   x-bind:data-is-followed="followed"
   :x-init="init ?? ''"
-  :x-effect="effect"
+  :x-effect="'followed = ' + fn_has_id"
   :x-on:click="on_click"
 >
   <svg aria-hidden="true" focusable="false">
