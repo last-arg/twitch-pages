@@ -38,7 +38,7 @@ permalink: "public/partials/category.html"
   </div>
   <div>
     <div id="feedback"></div>
-    <ul class="filter-search l-grid" style="--l-grid-min: 18rem;" role="list">
+    <ul class="filter-search l-grid" style="--l-grid-min: 18rem;" role="list" x-on:click="$store.global.changePath">
       <template id="category-streams-template">
         <li data-user-id=":user_id" data-title=":title_encoded">
           <div>
@@ -59,7 +59,6 @@ permalink: "public/partials/category.html"
             <div>
               <a aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
-                x-on:click="$store.global.setClickedStream(':user_login')"
               >
                 <img x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
                   :width="global.config.image.user.width" 
@@ -69,7 +68,6 @@ permalink: "public/partials/category.html"
                 <div>
                   <a href="#video_url"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
-                    x-on:click="$store.global.setClickedStream(':user_login')"
                   >:user_name</a>
                   <div></div>
                   <button type="button"

@@ -5,14 +5,13 @@ permalink: public/partials/top-games.html
   <div>
     <h2 class="heading-top-games">Top games</h2>
   </div>
-  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list">
+  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list" x-on:click="$store.global.changePath">
     <template webc:keep webc:type="11ty" id="top-games-template">
       <li>
         <div class="game">
           <a class="game-link" href="#game_url"
             hx-push-url="#game_url"
             :hx-get="global.paths.category.html" hx-target="#main"
-            x-on:click="$store.global.setClickedGame(':game_name_attr')"
           >
             <img  src="#game_img_url" alt=""
               :width="global.config.image.category.width" 

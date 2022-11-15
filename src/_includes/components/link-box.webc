@@ -9,7 +9,7 @@
       const arg_name = this.arg_name;
       const path = this.global.paths[name];
       const href_url = `'${path.url}'.replace(':${name}', encodeURIComponent(${arg_name}))`;
-      const click_fn = `clickSidebar('${name}', ${arg_name})`;
+      const click_fn = `clickSidebar('${name}', href_url)`;
       const configs = {
         "category": {
           width: this.global.config.image.category.width,

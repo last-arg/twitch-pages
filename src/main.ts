@@ -85,10 +85,9 @@ interface ProfileImages {
 
 interface Global {
   settings: Record<string, number | "on" | false>,
-  clickedGame: string | null,
-  clickedStream: string | null,
-  setClickedGame: (name: string | null) => void,
-  setClickedStream: (name: string | null) => void,
+  clicked_path: string | null,
+  changePath: (e: Event) => void,  
+  setPath: (name: string | null) => void,
 }
 
 const setAriaMsg = (function() {
@@ -283,10 +282,8 @@ function alpineInit() {
         },
         clickSidebar(sidebar: "category" | "user-videos", name: string) {
           this.closeSidebar();
-          if (sidebar === "category") {
-            (Alpine.store("global") as Global).setClickedGame(name);
-          } else if (sidebar === "user-videos") {
-            (Alpine.store("global") as Global).setClickedStream(name);
+          if (sidebar === "category" || sidebar === "user-videos") {
+            (Alpine.store("global") as Global).setPath(name);
           }
         },
         toggleSidebar(current: SidebarState) {
@@ -595,8 +592,7 @@ function alpineInit() {
       clear() { this.data = {} }
     }
 
-
-    Alpine.store("global", {
+    const storeGlobal: Global = {
       settings: {
         "top-games-count": TOP_GAMES_COUNT,
         "category-count": STREAMS_COUNT,
@@ -605,8 +601,8 @@ function alpineInit() {
         "video-uploads": false,
         "video-highlights": false,
       },
-      twitch: t,
       mainContent: mainContent,
+      clicked_path: null,
       init() {
         const settings_str = localStorage.getItem("settings")
         if (settings_str) {
@@ -630,11 +626,15 @@ function alpineInit() {
         }
         return result
       },
-      clickedGame: null,
-      clickedStream: null,
-      setClickedGame(name: string | null) { this.clickedGame = name },
-      setClickedStream(name: string | null) { this.clickedStream = name },
-    } as Global)
+      changePath(e: Event) {
+        const target = e.target as Element;
+        if (target.nodeName === "A" && target.hasAttribute("hx-push-url")) {
+          storeGlobal.clicked_path = target.getAttribute("hx-push-url");
+        }
+      },
+      setPath(name: string | null) { this.clicked_path = name },
+    };
+    Alpine.store("global", storeGlobal)
     Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
@@ -698,27 +698,18 @@ const initHtmx = async () => {
         if (url.pathname === "/helix/games/top") {
           evt.detail.parameters["first"] = global.settings["top-games-count"]
         } else if (url.pathname === "/helix/games") {
-          let gameName = "";
-          if (global.clickedGame) {
-            gameName = global.clickedGame;
-          } else {
-            const pathArr = location.pathname.split("/")
-            gameName = pathArr[pathArr.length - 1];
-          }
-          evt.detail.parameters["name"] = decodeURIComponent(gameName);
-          global.setClickedGame(null)
+          const path = global.clicked_path || location.pathname;
+          const path_arr = path.split("/")
+          evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
+          global.setPath(null)
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = global.settings["category-count"]
         } else if (url.pathname === "/helix/users") {
-          let loginName = ""
-          if (global.clickedStream) {
-            loginName = global.clickedStream
-          } else {
-            const pathArr = location.pathname.split("/")
-            loginName = decodeURIComponent(pathArr[pathArr.length - 2])
-          }
-          evt.detail.parameters["login"] = loginName
-          global.setClickedStream(null)
+          console.log(global.clicked_path, location.pathname)
+          const path = global.clicked_path || location.pathname;
+          const path_arr = path.split("/")
+          evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
+          global.setPath(null)
         } else if (path === "/helix/videos") {
           evt.detail.parameters["first"] = global.settings["user-videos-count"]
         }
