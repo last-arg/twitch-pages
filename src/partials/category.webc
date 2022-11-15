@@ -13,7 +13,7 @@ permalink: "public/partials/category.html"
       <template webc:keep webc:type="11ty" id="category-header-template">
         <h2 class="heading-category">
           <a href="https://www.twitch.tv/directory/game/:game_name">
-            <img src="#game_img_url" alt=""
+            <img class="w-10" src="#game_img_url" alt=""
               :width="global.config.image.category.width" 
               :height="global.config.image.category.height">
             <p>:game_name</p>
@@ -60,24 +60,24 @@ permalink: "public/partials/category.html"
               <a aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
               >
-                <img class="w-20" x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
+                <img class="block w-16" x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
                   :width="global.config.image.user.width" 
                   :height="global.config.image.user.height" />
               </a>
-              <div>
-                <div class="flex">
+              <div class="fluid-ml-2xs flex flex-col justify-between">
+                <div class="flex items-center">
                   <a href="#video_url"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
-                  <div></div>
+                  <div class="border color-truegray-300 h-full fluid-mx-xs"></div>
                   <button-follow 
                     @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_name')"
                     @fn_has_id="$store.streams.hasId(':user_id')"
                   ></button-follow>
                 </div>
-                <a class="flex items-center" href="https://www.twitch.tv/:user_login/videos">
+                <a class="external-video flex items-center" href="https://www.twitch.tv/:user_login/videos">
                   <p>Go to Twitch videos</p>
-                  <svg aria-hidden="true" focusable="false">
+                  <svg class="fluid-ml-2xs" aria-hidden="true" focusable="false">
                     <use href="/public/assets/icons.svg#external-link"></use>
                   </svg>
                 </a>
@@ -123,5 +123,9 @@ permalink: "public/partials/category.html"
 
 .user-info {
   display: flex;
+}
+
+.external-video {
+  font-size: var(--step--1);
 }
 </style>

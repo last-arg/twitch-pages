@@ -132,8 +132,8 @@ select {
   --color-truegray-900: rgb(17, 24, 39);
   --color-violet-500: rgb(139,92,246);
   --color-violet-700: rgb(109,40,217);
+  --color-red-500: #ef4444;
   --color-red-900: rgb(127, 29, 29);
-  
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 }
 
@@ -180,6 +180,7 @@ svg {
 
 button {
   border: none;
+  line-height: 1;
 }
 
 /* Composition */
@@ -345,7 +346,6 @@ main {
 }
 
 .heading-category img {
-  width: 2.5rem;  
   margin-inline-end: var(--space-xs);
 }
 
