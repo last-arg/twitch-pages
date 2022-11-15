@@ -20,7 +20,10 @@ permalink: public/partials/top-games.html
             <p>:game_name_text</p>
           </a>
           <div class="game-actions">
-            <follow-game></follow-game>
+            <button-follow
+              @effect="followed = $store.games.hasId(':game_id')"
+              @on_click="$store.games.toggle(:json_game)"
+            ></button-follow>
             <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url">
               <span class="sr-only">Got to game's Twitch page</span>
               <svg aria-hidden="true" focusable="false">

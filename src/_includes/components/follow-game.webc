@@ -1,4 +1,0 @@
-<button-follow
-  @effect="followed = $store.games.hasId(':game_id')"
-  @on_click="$store.games.toggle(:json_game)"
-></button-follow>

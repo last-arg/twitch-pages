@@ -23,7 +23,10 @@ permalink: "public/partials/category.html"
           </a>
         </h2>
         <div class="btn-container">
-          <follow-game></follow-game>
+          <button-follow
+            @effect="followed = $store.games.hasId(':game_id')"
+            @on_click="$store.games.toggle(:json_game)"
+          ></button-follow>
         </div>
       </template>
     </div>
