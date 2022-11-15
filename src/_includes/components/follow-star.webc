@@ -8,40 +8,26 @@
       const arg = this.arg;
 
       let click_fn = "";
+      let btn_effect = "";
       let external_link = "";
-      let classes = "";
-      let extra_args = "";
-      let svg_empty = "";
       if (arg === "game") {
-        click_fn = `$store.games.remove(game.id)`;
+        const game_id_arg = `${arg}.id`;
+        click_fn = `$store.games.remove(${game_id_arg})`;
+        btn_effect = `followed = $store.games.hasId(${game_id_arg})`
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
       } else if (arg === "stream") {
-        click_fn = `$store.streams.remove(${arg}.user_id)`;
+        const user_id_arg = `${arg}.user_id`;
+        click_fn = `$store.streams.remove(${user_id_arg})`;
+        btn_effect = `followed = $store.streams.hasId(${user_id_arg})`;
         external_link = `\`https://www.twitch.tv/\${${arg}.user_login}/videos\``;
       } else if (arg === "search") {
         click_fn = `$store.games.toggle(${arg})`;
         external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-        // TODO: reenable class when styling this again
-        // classes = "btn-follow";
-        extra_args = `x-data="{followed: false}" x-effect="followed = $store.games.hasId(${arg}.id)"`
-        svg_empty = `<use href="/public/assets/icons.svg#star-empty"></use>`;
+        btn_effect = `followed = $store.games.hasId(${arg}.id)`;
       }
       
-      let span_extra = "";
-      if (extra_args.length > 0) {
-        span_extra = `x-text="followed ? 'UnFollow' : 'Follow'"`;
-      }
-
-      // TODO: replace button with <follow-game>/<follow-user>?
-      // TODO: in search sidebar follow icons are wrong
       return `
-        <button class="${classes}" x-on:click="${click_fn}" type="button" ${extra_args}>
-          <svg aria-hidden="true" focusable="false">
-            ${svg_empty}
-            <use href="/public/assets/icons.svg#star-full"></use>
-          </svg>
-          <span class="sr-only" ${span_extra}>Follow/Unfollow</span>
-        </button>
+        <button-follow @on_click="${click_fn}" @effect="${btn_effect}"></button-follow>
         <a x-bind:href="${external_link}">
           <svg aria-hidden="true" focusable="false">
             <use href="/public/assets/icons.svg#external-link"></use>
@@ -66,21 +52,12 @@ scroll-container follow-star {
   margin-inline-start: 1px;
 }
 
-follow-star button {
-  background-color: transparent;
-  padding: 0;
-  cursor: pointer;
-  color: inherit;
-}
-
 follow-star a {
   color: inherit;
 }
 
 follow-star a:hover,
-follow-star a:focus,
-follow-star button:hover,
-follow-star button:focus {
+follow-star a:focus {
   color: var(--color-violet-500);
 }
 </style>
