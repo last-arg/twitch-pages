@@ -630,6 +630,9 @@ function alpineInit() {
         const target = e.target as Element;
         if (target.nodeName === "A" && target.hasAttribute("hx-push-url")) {
           storeGlobal.clicked_path = target.getAttribute("hx-push-url");
+        } else {
+          const hx_link = target.closest("a[hx-push-url]");
+          storeGlobal.clicked_path = hx_link?.getAttribute("hx-push-url") || null;
         }
       },
       setPath(name: string | null) { this.clicked_path = name },
@@ -705,7 +708,6 @@ const initHtmx = async () => {
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = global.settings["category-count"]
         } else if (url.pathname === "/helix/users") {
-          console.log(global.clicked_path, location.pathname)
           const path = global.clicked_path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
