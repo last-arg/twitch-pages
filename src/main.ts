@@ -698,14 +698,14 @@ const initHtmx = async () => {
         if (url.pathname === "/helix/games/top") {
           evt.detail.parameters["first"] = global.settings["top-games-count"]
         } else if (url.pathname === "/helix/games") {
-          let gameName = ""
+          let gameName = "";
           if (global.clickedGame) {
-            gameName = global.clickedGame
+            gameName = global.clickedGame;
           } else {
             const pathArr = location.pathname.split("/")
-            gameName = decodeURIComponent(pathArr[pathArr.length - 1])
+            gameName = pathArr[pathArr.length - 1];
           }
-          evt.detail.parameters["name"] = gameName
+          evt.detail.parameters["name"] = decodeURIComponent(gameName);
           global.setClickedGame(null)
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = global.settings["category-count"]
