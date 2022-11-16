@@ -127,8 +127,7 @@ main {
   background: white;
   display: inline-block;
   padding: var(--space-3xs) var(--space-2xs);
-  font-size: var(--step-0);
-  font-weight: normal;
+  font-size: var(--heading-size);
 }
 
 .btn-container {

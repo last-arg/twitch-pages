@@ -109,14 +109,14 @@ select {
   /* Custom pairs */
   --space-s-l: clamp(1.13rem, calc(0.59rem + 2.68vw), 2.50rem);
 
-  --step--2: clamp(0.78rem, calc(0.77rem + 0.04vw), 0.80rem);
-  --step--1: clamp(0.94rem, calc(0.91rem + 0.12vw), 1.00rem);
-  --step-0: clamp(1.13rem, calc(1.08rem + 0.24vw), 1.25rem);
-  --step-1: clamp(1.35rem, calc(1.27rem + 0.41vw), 1.56rem);
-  --step-2: clamp(1.62rem, calc(1.49rem + 0.65vw), 1.95rem);
-  --step-3: clamp(1.94rem, calc(1.75rem + 0.97vw), 2.44rem);
-  --step-4: clamp(2.33rem, calc(2.05rem + 1.40vw), 3.05rem);
-  --step-5: clamp(2.80rem, calc(2.40rem + 1.98vw), 3.82rem);
+  --step--2: clamp(0.79rem, calc(0.75rem + 0.22vw), 0.89rem);
+  --step--1: clamp(0.89rem, calc(0.84rem + 0.25vw), 1.00rem);
+  --step-0: clamp(1.00rem, calc(0.94rem + 0.28vw), 1.13rem);
+  --step-1: clamp(1.13rem, calc(1.06rem + 0.32vw), 1.27rem);
+  --step-2: clamp(1.27rem, calc(1.19rem + 0.36vw), 1.42rem);
+  --step-3: clamp(1.42rem, calc(1.34rem + 0.40vw), 1.60rem);
+  --step-4: clamp(1.60rem, calc(1.51rem + 0.45vw), 1.80rem);
+  --step-5: clamp(1.80rem, calc(1.70rem + 0.51vw), 2.03rem);
 
   /* TODO: Change font? */
   --tracking: 0;
@@ -132,10 +132,9 @@ select {
   --color-violet-700: rgb(109,40,217);
   --color-red-500: #ef4444;
   --color-red-900: rgb(127, 29, 29);
-
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 
-  --heading-size: var(--step-0);
+  --heading-size: var(--step-2);
   --body-size: var(--step-0);
   --bg: var(--gray-0);
   --fg: var(--gray-11);
@@ -157,13 +156,14 @@ h3 {
   max-width: 30ch;
 }
 h1 {
-  font-size: var(--step-5)
+  font-size: var(--step-5);
 }
 h2 {
-  font-size: var(--step-4)
+  font-size: var(--step-4);
+  font-weight: var(--font-weight-3);
 }
 h3 {
-  font-size: var(--step-3)
+  font-size: var(--step-3);
 }
 
 p,
