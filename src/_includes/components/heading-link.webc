@@ -14,7 +14,7 @@
   align-items: center;
   font-size: var(--heading-size);
   justify-items: center;
-  color: var(--color-truegray-800);
+  color: var(--fg);
   text-decoration: none;
 }
 
