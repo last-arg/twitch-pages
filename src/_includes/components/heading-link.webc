@@ -1,0 +1,34 @@
+<h2 webc:root webc:keep class="heading-link">
+  <a :href="href">
+    <slot></slot>
+    <svg aria-hidden="true" focusable="false">
+      <use href="/public/assets/icons.svg#external-link"></use>
+    </svg>
+  </a>
+</h2>
+<style>
+.heading-link a {
+  background:white;
+  display:flex;
+  align-items: center;
+  font-size: var(--step-0);
+  font-weight: normal;
+  justify-items: center;
+  color: var(--color-truegray-800);
+  text-decoration: none;
+}
+
+.heading-link a:focus,
+.heading-link a:hover {
+  text-decoration: underline;
+  color: var(--color-violet-700)
+}
+
+.heading-link img {
+  margin-inline-end: var(--space-xs);
+}
+
+.heading-link svg {
+  margin-inline: var(--space-2xs) var(--space-xs);
+}
+</style>

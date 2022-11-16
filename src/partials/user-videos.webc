@@ -3,7 +3,7 @@ permalink: public/partials/user-videos.html
 ---
 <div>
   <div>
-    <div id="user-header" class="heading-wrapper">
+    <div id="user-header" class="flex">
       <div hx-ext="twitch-api"
         hx-get="/helix/users"
         hx-trigger="load"
@@ -11,16 +11,11 @@ permalink: public/partials/user-videos.html
       ></div>
       <placeholder-title name="user"></placeholder-title>
       <template webc:keep webc:type="11ty" id="user-header-template">
-        <h2 class="heading-category">
-          <a href="https://www.twitch.tv/:user_login/videos">
-            <img class="w-12" src="#user_profile_image_url" 
-              :width="global.config.image.user.width" :height="global.config.image.user.height">
-            <p>:user_display_name</p>
-            <svg aria-hidden="true" focusable="false">
-              <use href="/public/assets/icons.svg#external-link"></use>
-            </svg>
-          </a>
-        </h2>
+        <heading-link @href="https://www.twitch.tv/:user_login/videos">
+          <img class="w-12" src="#user_profile_image_url" 
+            :width="global.config.image.user.width" :height="global.config.image.user.height">
+          <p>:user_display_name</p>
+        </heading-link>
         <div class="btn-container">
           <button-follow 
             @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"

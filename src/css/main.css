@@ -324,35 +324,6 @@ main {
   font-weight: normal;
 }
 
-.heading-wrapper {
-  display: flex;
-}
-
-.heading-category a {
-  background:white;
-  display:flex;
-  align-items: center;
-  font-size: var(--step-0);
-  font-weight: normal;
-  justify-items: center;
-  color: var(--color-truegray-800);
-  text-decoration: none;
-}
-
-.heading-category a:focus,
-.heading-category a:hover {
-  text-decoration: underline;
-  color: var(--color-violet-700)
-}
-
-.heading-category img {
-  margin-inline-end: var(--space-xs);
-}
-
-.heading-category svg {
-  margin-inline: var(--space-2xs) var(--space-xs);
-}
-
 .btn-container {
   background: white;
   margin-inline-start: 2px;
