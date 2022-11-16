@@ -1,4 +1,5 @@
 @import "open-props/open-props.min.css";
+@import "color-vars.css";
 @import "base.css";
 @import "utilities.css";
 @import "blocks.css";

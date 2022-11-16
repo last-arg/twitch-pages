@@ -119,7 +119,6 @@ select {
   --step-5: clamp(2.80rem, calc(2.40rem + 1.98vw), 3.82rem);
 
   /* TODO: Change font? */
-  --font-base: system-ui,-apple-system,sans-serif;
   --tracking: 0;
   --color-truegray-50: rgb(250, 250, 250);
   --color-truegray-100: rgba(245, 245, 245);
@@ -134,13 +133,18 @@ select {
   --color-red-500: #ef4444;
   --color-red-900: rgb(127, 29, 29);
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
+
+  --heading-size: var(--step-0);
+  --body-size: var(--step-0);
+  --bg: var(--gray-0);
+  --fg: var(--gray-11);
 }
 
 body {
-  background: var(--color-truegray-50);
-  color: var(--color-truegray-800);
-  font-family: var(--font-base);
-  font-size: var(--step-0);
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--body-size);
   letter-spacing: var(--tracking);
   line-height: 1.4
 }
