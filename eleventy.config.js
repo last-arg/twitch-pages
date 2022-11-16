@@ -5,6 +5,7 @@ module.exports = function(eleventyConfig) {
     components: "src/_includes/components/*.webc"
 	});
   eleventyConfig.setUseGitIgnore(false);
+	eleventyConfig.ignores.add("src/css");
   eleventyConfig.addPassthroughCopy("public");
   eleventyConfig.addPassthroughCopy("favicon.svg");
 	return {
