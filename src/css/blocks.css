@@ -73,6 +73,7 @@ form[role="search"] {
 form[role="search"] input {
   --border-color: var(--gray-10);
   border: none;
+  background-color: var(--gray-2);
   border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
   padding-inline: var(--space-2xs);
