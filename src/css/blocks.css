@@ -17,7 +17,7 @@
 
 header {
   position: fixed;
-  background: var(--color-truegray-700);
+  background: var(--gray-12);
   top: 0;
   width: 100%;
 }
@@ -71,7 +71,7 @@ form[role="search"] {
 }
 
 form[role="search"] input {
-  --border-color: var(--color-truegray-900);
+  --border-color: var(--gray-10);
   border: none;
   border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
@@ -80,7 +80,7 @@ form[role="search"] input {
 
 form[role=search] input[aria-expanded=true],
 form[role=search] input[aria-expanded=true] + .menu-item {
-  border-bottom-color: var(--color-violet-700);
+  border-bottom-color: var(--violet-8);
 }
 
 form[role=search] input[aria-expanded=false] ~ sidebar-menu {
@@ -88,7 +88,7 @@ form[role=search] input[aria-expanded=false] ~ sidebar-menu {
 }
 
 form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
-  --border-color: var(--color-truegray-500);
+  --border-color: var(--gray-7);
 }
 
 main {

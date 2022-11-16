@@ -12,22 +12,23 @@
   height: 100%;
   font-size: var(--step--1);
   text-decoration: none;
-  background-color: var(--color-truegray-900);
-  color: var(--color-truegray-100);
+  --_bg-item: var(--gray-10);
+  background-color: var(--_bg-item);
+  color: var(--bg);
   padding-block-start: var(--space-3xs);
   padding-inline: var(--space-2xs);
-  --border-color: var(--color-truegray-900);
+  --border-color: var(--_bg-item);
   border-bottom: var(--space-3xs) solid var(--border-color);
   cursor: pointer;
 }
 
 .menu-item:hover,
 .menu-item:focus {
-  --border-color: var(--color-truegray-500);
+  --border-color: var(--gray-7);
 }
 
 .menu-item[aria-expanded=true] {
-  border-bottom-color: var(--color-violet-700);
+  border-bottom-color: var(--violet-8);
 }
 
 .menu-item svg {
