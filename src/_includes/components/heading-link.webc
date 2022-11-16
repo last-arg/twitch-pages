@@ -8,11 +8,11 @@
 </h2>
 <style>
 .heading-link a {
+  --icon-color: var(--gray-5);
   background:white;
   display:flex;
   align-items: center;
-  font-size: var(--step-0);
-  font-weight: normal;
+  font-size: var(--heading-size);
   justify-items: center;
   color: var(--color-truegray-800);
   text-decoration: none;
@@ -20,8 +20,10 @@
 
 .heading-link a:focus,
 .heading-link a:hover {
+  --hover-color: var(--violet-8);
+  --icon-color: var(--hover-color);
   text-decoration: underline;
-  color: var(--color-violet-700)
+  color: var(--hover-color)
 }
 
 .heading-link img {
@@ -30,5 +32,6 @@
 
 .heading-link svg {
   margin-inline: var(--space-2xs) var(--space-xs);
+  color: var(--icon-color);
 }
 </style>
