@@ -23,7 +23,7 @@ permalink: public/partials/user-videos.html
             @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
           ></button-follow>
         </div>
-        <div class="user-live self-center fluid-ml-xs" :class="{hidden: game === ''}"
+        <div class="user-live self-center fluid-ml-xs" x-bind:class="{hidden: game === ''}"
           x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
         >
           <span>LIVE</span>
