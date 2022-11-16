@@ -1,7 +1,4 @@
 import { defineConfig, escapeSelector } from "unocss";
-import * as fs from 'fs/promises';
-
-// npx unocss "index.html" "netlify/functions/*.{js,ts}" "public/partials/*.html" "src/*.{js,ts}" -o src/styles/main.css
 
 const config = defineConfig({
   rules: [
@@ -9,24 +6,7 @@ const config = defineConfig({
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
   ],
-  shortcutsLayer: "component",
-  preflights: [
-    { getCSS: fileContent("src/css/main.css"), layer: 'reset' },
-  ],
-  layers: {
-    reset: 0,
-    base: 1,
-    component: 2,
-    default: 3,
-  },
 });
-
-function fileContent(filename: string) {
-  return async function() {
-    const srcStyleCss = await fs.readFile(filename)
-    return srcStyleCss.toString();
-  }
-}
 
 function dirToWords(dir: string) {
   let result: string[] = [];

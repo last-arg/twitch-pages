@@ -1,5 +1,6 @@
 ---
-permalink: "public/css/components.css"
+permalink: "src/css/components.css"
+permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 ---
 <template webc:raw webc:nokeep webc:type="render">

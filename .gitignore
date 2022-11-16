@@ -8,3 +8,4 @@ src/js/
 
 # Local Netlify folder
 .netlify
+src/css/utilities_generated.css

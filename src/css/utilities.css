@@ -1,0 +1,16 @@
+@import "utilities_generated.css";
+
+.wrapper {
+  max-width: 70rem;
+  margin-inline: auto;
+  padding-inline: var(--space-xs);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cluster-gap, var(--space-s));
+  justify-content: var(--cluster-justify-content, flex-start);
+  align-items: var(--cluster-align-items, center)
+}
+

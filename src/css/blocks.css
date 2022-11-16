@@ -1,0 +1,139 @@
+@import "components.css";
+
+.skip-content {
+  text-decoration: underline;
+  position: absolute;
+  z-index: 30;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid #404040;
+  bottom: calc(100% + 1rem);
+  left: 0;
+}
+
+.skip-content:focus {
+  bottom: auto;
+}
+
+header {
+  position: fixed;
+  background: var(--color-truegray-700);
+  top: 0;
+  width: 100%;
+}
+
+.sidebar-position {
+  z-index: -1;
+  display: flex !important;
+  flex-direction: column;
+  position: absolute;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  --block-padding: var(--space-2xs);
+  padding-top: calc(var(--header-height) + var(--block-padding));
+  padding-bottom: var(--block-padding);
+  --sidebar-x: 100%;
+  transform: translateX(var(--sidebar-x));
+  transition: visibility .15s, opacity .15s, transform .15s;
+  max-width: 20rem;
+  width: 100%;
+}
+
+.menu-item[aria-expanded=false] + .sidebar-position,
+#game_name[aria-expanded=false] ~ .sidebar-position {
+  opacity: 0;
+  visibility: hidden;
+  --sidebar-x: 100%;
+}
+
+.menu-item[aria-expanded=true] + .sidebar-position,
+#game_name[aria-expanded=true] ~ .sidebar-position {
+  opacity: 1;
+  visibility: visible;
+  --sidebar-x: 0%;
+}
+
+.sidebar-content {
+  font-size: var(--step-0);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-truegray-700);
+  position: relative;
+}
+
+/* TODO: redo form[role=search] CSS */
+form[role="search"] {
+  font-size: var(--step--1);
+  display: flex;
+  height: 100%;
+}
+
+form[role="search"] input {
+  --border-color: var(--color-truegray-900);
+  border: none;
+  border-top: 1px solid var(--border-color);
+  border-bottom: var(--space-3xs) solid var(--border-color);
+  padding-inline: var(--space-2xs);
+}
+
+form[role=search] input[aria-expanded=true],
+form[role=search] input[aria-expanded=true] + .menu-item {
+  border-bottom-color: var(--color-violet-700);
+}
+
+form[role=search] input[aria-expanded=false] ~ sidebar-menu {
+  display: none;
+}
+
+form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
+  --border-color: var(--color-truegray-500);
+}
+
+main {
+  padding-top: calc(var(--header-height) + var(--space-m));
+}
+
+.card-live {
+  display: flex;
+  font-size: var(--step--2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: var(--color-truegray-400);
+  padding-left: var(--space-2xs);
+  padding-bottom: 2px;
+}
+
+.card-live span {
+  padding-inline: var(--space-3xs);
+  background-color: var(--color-red-900);
+  opacity: .9;
+  border-radius: 2px;
+}
+
+.card-live p {
+  margin-left: var(--space-3xs);
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.heading-top-games {
+  background: white;
+  display: inline-block;
+  padding: var(--space-3xs) var(--space-2xs);
+  font-size: var(--step-0);
+  font-weight: normal;
+}
+
+.btn-container {
+  background: white;
+  margin-inline-start: 2px;
+  display: flex;
+  align-items: center;
+  padding-inline: var(--space-2xs);
+}
