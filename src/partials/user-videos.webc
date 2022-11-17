@@ -12,7 +12,7 @@ permalink: public/partials/user-videos.html
       <placeholder-title name="user"></placeholder-title>
       <template webc:keep webc:type="11ty" id="user-header-template">
         <heading-link @href="https://www.twitch.tv/:user_login/videos">
-          <img class="w-12" src="#user_profile_image_url" 
+          <img class="w-14" src="#user_profile_image_url" 
             :width="global.config.image.user.width" :height="global.config.image.user.height">
           <p>:user_display_name</p>
         </heading-link>

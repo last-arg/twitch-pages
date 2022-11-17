@@ -7,11 +7,12 @@ function() {
   
   const width = this.global.config.image[this.name].width;
   const height = this.global.config.image[this.name].height;
+  const classes = this.name === "user" ? "w-14" : "w-10";
 
   return `
-  <h2 aria-hidden="true">
-    <img width="${width}" height="${height}">
-    <p></p>
+  <h2 class="flex" aria-hidden="true">
+    <img class="${classes}" width="${width}" height="${height}">
+    <p class="w-50 h-full bg-white"></p>
   </h2>
   `;
 }
