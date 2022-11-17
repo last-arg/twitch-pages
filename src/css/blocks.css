@@ -36,6 +36,7 @@ header {
   --sidebar-x: 100%;
   transform: translateX(var(--sidebar-x));
   transition: visibility .15s, opacity .15s, transform .15s;
+  transition-timing-function: var(--ease-in-out-1);
   max-width: 20rem;
   width: 100%;
 }
@@ -55,11 +56,12 @@ header {
 }
 
 .sidebar-content {
+  --sidebar-bg: var(--fg);
   font-size: var(--step-0);
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: var(--color-truegray-700);
+  background-color: var(--sidebar-bg);
   position: relative;
 }
 
@@ -103,16 +105,16 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  color: var(--color-truegray-400);
+  color: var(--gray-4);
+  opacity: .9;
   padding-left: var(--space-2xs);
   padding-bottom: 2px;
 }
 
 .card-live span {
   padding-inline: var(--space-3xs);
-  background-color: var(--color-red-900);
-  opacity: .9;
-  border-radius: 2px;
+  background-color: var(--red-12);
+  border-radius: var(--radius-1);
 }
 
 .card-live p {

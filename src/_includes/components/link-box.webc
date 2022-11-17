@@ -45,11 +45,12 @@
 <style>
 .link-box {
   display: flex;
-  background: var(--color-truegray-800);
-  border-left: var(--space-3xs) solid var(--color-truegray-800);
+  --card-bg: var(--gray-10);
+  background: var(--card-bg);
+  border-left: var(--space-3xs) solid var(--card-bg);
   padding-inline-start: var(--space-3xs);
   text-decoration: none;
-  color: var(--color-truegray-300);
+  color: var(--gray-3);
   width: 100%;
 }
 
@@ -76,8 +77,8 @@
 
 .link-box:hover,
 .link-box:focus {
-  border-left-color: var(--color-violet-700);
-  color: var(--color-truegray-50);
+  border-left-color: var(--violet-8);
+  color: var(--gray-0);
 }
 
 .link-box[data-card=category] .link-title p {

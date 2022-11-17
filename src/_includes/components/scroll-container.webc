@@ -11,8 +11,9 @@ scroll-container {
 }
 
 scroll-container::after {
-  --shadow-top: 0 2em 1em -1em #404040 inset;
-  --shadow-bottom: 0 -2em 1em -1em #404040 inset;
+  /* TODO: instead of using shadows use gradient? */
+  --shadow-top: 0 2em 1em -1em var(--sidebar-bg, black) inset;
+  --shadow-bottom: 0 -2em 1em -1em var(--sidebar-bg, black) inset;
   --box-shadow: none;
   inset: var(--space-s) 0;
   pointer-events: none;
