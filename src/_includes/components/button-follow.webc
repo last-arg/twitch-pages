@@ -17,12 +17,12 @@
 .button-follow {
   padding: 0;
   background: transparent;
-  color: var(--color-truegray-400);
+  color: var(--gray-5);
 }
 
 .button-follow:focus,
 .button-follow:hover {
-  color: var(--color-violet-700);
+  color: var(--violet-8);
 }
 
 .button-follow use { display: none; }
