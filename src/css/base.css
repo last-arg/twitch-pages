@@ -109,6 +109,7 @@ select {
   /* Custom pairs */
   --space-s-l: clamp(1.13rem, calc(0.59rem + 2.68vw), 2.50rem);
 
+  /* @link https://utopia.fyi/type/calculator?c=320,16,1.125,1024,18,1.125,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l */
   --step--2: clamp(0.79rem, calc(0.75rem + 0.22vw), 0.89rem);
   --step--1: clamp(0.89rem, calc(0.84rem + 0.25vw), 1.00rem);
   --step-0: clamp(1.00rem, calc(0.94rem + 0.28vw), 1.13rem);

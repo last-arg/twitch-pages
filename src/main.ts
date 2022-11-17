@@ -4,7 +4,7 @@ import { mainContent, UrlResolve, config } from 'config'
 import 'htmx.org';
 // import './libs/twinspark.js'
 
-// TODO: Search: old value is visible when searching new
+// TODO: Search: Show old values when searching for new ones?
 
 interface UserVideo {
   url: string,

@@ -7,7 +7,6 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-* Use https://open-props.style/
 * ??? twinspark.js
 * Change pages' (top-games, user, streamer, category/game) initial state to loading
 * ??? Category/Game add viewer range filter
