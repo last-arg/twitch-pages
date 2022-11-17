@@ -123,7 +123,8 @@ main {
   text-overflow: ellipsis;
 }
 
-.heading-top-games {
+.main-heading {
+  font-weight: var(--font-weight-3);
   background: white;
   display: inline-block;
   padding: var(--space-3xs) var(--space-2xs);

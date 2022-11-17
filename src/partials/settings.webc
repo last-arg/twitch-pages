@@ -3,7 +3,7 @@ permalink: public/partials/settings.html
 ---
 <div>
   <div>
-    <h2>Settings</h2>
+    <h2 class="main-heading">Settings</h2>
   </div>
   <div>
     <section>

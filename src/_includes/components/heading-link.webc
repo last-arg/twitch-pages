@@ -8,6 +8,7 @@
 </h2>
 <style>
 .heading-link a {
+  font-weight: var(--font-weight-3);
   --icon-color: var(--gray-6);
   background:white;
   display:flex;

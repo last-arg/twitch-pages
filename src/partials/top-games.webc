@@ -3,7 +3,7 @@ permalink: public/partials/top-games.html
 ---
 <div>
   <div>
-    <h2 class="heading-top-games">Top games</h2>
+    <h2 class="main-heading">Top games</h2>
   </div>
   <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list" x-on:click="$store.global.changePath">
     <template webc:keep webc:type="11ty" id="top-games-template">
