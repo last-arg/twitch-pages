@@ -8,7 +8,7 @@
 </h2>
 <style>
 .heading-link a {
-  --icon-color: var(--gray-5);
+  --icon-color: var(--gray-6);
   background:white;
   display:flex;
   align-items: center;
@@ -33,5 +33,6 @@
 .heading-link svg {
   margin-inline: var(--space-2xs) var(--space-xs);
   color: var(--icon-color);
+  width: 0.7em;
 }
 </style>
