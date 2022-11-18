@@ -1,17 +1,7 @@
-<script webc:type="js">
-const valid_names = ["category", "user"]
-if (!valid_names.includes(this.name)) {
-  throw new Error(`'name' attribute must be one of these values: ${valid_names.join(", ")}`)
-}
-
-const width = this.global.config.image[this.name].width;
-const height = this.global.config.image[this.name].height;
-const classes = this.name === "user" ? "w-14" : "w-10";
-
-`
-<h2 class="flex" aria-hidden="true">
-  <img class="${classes}" width="${width}" height="${height}">
-  <p class="w-50 h-full bg-white"></p>
+<!-- Valid values for 'name': category, user  -->
+<h2 class="flex w-full max-w-60 bg-white resize" aria-hidden="true">
+  <img :class="name === 'user' ? 'w-14' : 'w-10'" 
+    :width="global.config.image[name].width" 
+    :height="global.config.image[name].height"
+  >
 </h2>
-`;
-</script>
