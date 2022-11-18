@@ -99,6 +99,7 @@ main {
 }
 
 .card-live {
+  line-height: 1.1;
   display: flex;
   font-size: var(--step--2);
   position: absolute;
@@ -107,22 +108,20 @@ main {
   right: 0;
   color: var(--gray-4);
   opacity: .9;
-  padding-left: var(--space-2xs);
+  padding-inline: var(--space-2xs);
   padding-bottom: 2px;
 }
 
 .card-live span {
-  padding-inline: var(--space-3xs);
+  padding-inline: 3px;
   background-color: var(--red-12);
   border-radius: var(--radius-1);
 }
 
 .card-live p {
   margin-left: var(--space-3xs);
-  padding: 0;
-  overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .main-heading {
