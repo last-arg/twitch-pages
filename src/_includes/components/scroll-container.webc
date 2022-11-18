@@ -1,4 +1,4 @@
-<div webc:root webc:keep class="scroll-container">
+<div webc:root class="scroll-container">
   <div class="scrollbox">
     <slot></slot>
   </div>

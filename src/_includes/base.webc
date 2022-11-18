@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/public/css/main.css">
 </head>
 <body>
-  <div @html="content" webc:nokeep></div>
+  <div @raw="content" webc:nokeep></div>
   <script src="/public/js/main.js"></script>
 </body>
 </html>
