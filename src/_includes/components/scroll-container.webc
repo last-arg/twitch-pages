@@ -1,16 +1,16 @@
-<div webc:root class="scroll-container">
+<div webc:root webc:keep class="scroll-container">
   <div class="scrollbox">
     <slot></slot>
   </div>
 </div>
 <style>
-scroll-container {
+.scroll-container {
   padding-block: var(--space-s);
   overflow: hidden;
   position: relative;
 }
 
-scroll-container::after {
+.scroll-container::after {
   /* TODO: instead of using shadows use gradient? */
   --shadow-top: 0 2em 1em -1em var(--sidebar-bg, black) inset;
   --shadow-bottom: 0 -2em 1em -1em var(--sidebar-bg, black) inset;
@@ -22,15 +22,15 @@ scroll-container::after {
   box-shadow: var(--box-shadow);
 }
 
-scroll-container[data-scroll-shadow=top]::after {
+.scroll-container[data-scroll-shadow=top]::after {
   --box-shadow: var(--shadow-top);
 }
 
-scroll-container[data-scroll-shadow=bottom]::after {
+.scroll-container[data-scroll-shadow=bottom]::after {
   --box-shadow: var(--shadow-bottom);
 }
 
-scroll-container[data-scroll-shadow=both]::after {
+.scroll-container[data-scroll-shadow=both]::after {
   --box-shadow: var(--shadow-top), var(--shadow-bottom);
 }
 
