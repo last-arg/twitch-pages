@@ -3,7 +3,7 @@
     <svg aria-hidden="true" focusable="false">
       <use :href="'/public/assets/icons.svg#' + icon"></use>
     </svg>
-    <span webc:nokeep @html="sb_title"></span>
+    <span webc:nokeep @text="sb_title"></span>
   </h2>
   <button type="button" class="btn-close" x-on:click="closeSidebar()">
     <span class="sr-only">Close sidebar</span>
