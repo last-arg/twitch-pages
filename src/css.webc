@@ -4,12 +4,10 @@ permalink: "{{ 'src/css/components.css' }}"
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 ---
-<template webc:raw webc:nokeep webc:type="render">
-function() {
-  let result = "";
-  for (const c of this.collections.all) {
-    result += this.helpers.getCSS(c.url);
-  }
-  return result;
+<script webc:raw webc:nokeep webc:type="js">
+let result = "";
+for (const c of this.collections.all) {
+  result += this.helpers.getCSS(c.url);
 }
-</template>
+result;
+</script>
