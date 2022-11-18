@@ -1,5 +1,4 @@
 <div webc:root webc:keep class="flex-grow">
-<span @text="hello">common</span>
   <script webc:type="js" webc:is="template">
     const valid_names = ["category", "user-videos"]
     if (!valid_names.includes(this.name)) {
