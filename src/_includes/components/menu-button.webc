@@ -19,7 +19,6 @@
   padding-inline: var(--space-2xs);
   --border-color: var(--_bg-item);
   border-bottom: var(--space-3xs) solid var(--border-color);
-  cursor: pointer;
 }
 
 .menu-item:hover,
