@@ -1,8 +1,8 @@
-<div webc:root class="flex-grow">
-  <script webc:type="js">
+<div webc:root webc:keep class="flex-grow">
+  <script webc:type="js" webc:is="template">
     const valid_names = ["category", "user-videos"]
     if (!valid_names.includes(this.name)) {
-      throw new Error(`'name' attribute must be one of these values: ${valid_names.join(", ")}`)
+      throw new Error(`Invalid 'name' attribute '${this.name}'. Valid values: ${valid_names.join(", ")}`)
     }
     const name = this.name;
     const arg_name = this.arg_name;

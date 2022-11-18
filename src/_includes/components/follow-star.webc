@@ -1,5 +1,5 @@
 <div webc:root>
-  <script webc:type="js">
+  <script webc:type="js" webc:is="template">
     const arg_names = ["game", "stream", "search"]
     if (!arg_names.includes(this.arg)) {
       throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
