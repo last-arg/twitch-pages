@@ -46,7 +46,7 @@ follow-star {
   color: var(--color-truegray-400);
 }
 
-scroll-container follow-star {
+.scroll-container follow-star {
   margin-inline-start: 2px;
 }
 
