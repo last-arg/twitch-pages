@@ -1,4 +1,4 @@
 ---
-permalink: public/partials/not-found.html
+permalink: "{{'public/partials/not-found.html'}}"
 ---
 <div>404 Not Found</div>

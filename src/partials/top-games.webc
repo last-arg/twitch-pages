@@ -1,5 +1,5 @@
 ---
-permalink: public/partials/top-games.html
+permalink: "{{'public/partials/top-games.html'}}"
 ---
 <div>
   <div>

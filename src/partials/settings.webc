@@ -1,5 +1,5 @@
 ---
-permalink: public/partials/settings.html
+permalink: "{{'public/partials/settings.html'}}"
 ---
 <div>
   <div>

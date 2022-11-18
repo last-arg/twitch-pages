@@ -1,5 +1,6 @@
 ---
-permalink: "src/css/components.css"
+permalink: "{{ 'src/css/components.css' }}"
+
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 ---
