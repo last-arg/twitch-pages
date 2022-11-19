@@ -31,7 +31,8 @@
         x-on:click="${click_fn}"
         hx-target="#main"
         x-bind:hx-push-url="href_url"
-        hx-get="/public/partials/${name}.html">
+        hx-get="/public/partials/${name}.html"
+      >
         <img x-bind:src="${config.bind_src}" alt="" width="${config.width}" height="${config.height}" />
         <div class="link-title">
           <slot></slot>

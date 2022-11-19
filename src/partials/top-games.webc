@@ -5,31 +5,37 @@ permalink: "{{'public/partials/top-games.html'}}"
   <div>
     <h2 class="main-heading">Top games</h2>
   </div>
-  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 18rem" role="list" x-on:click="$store.global.changePath">
+  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 10rem; --l-grid-gap: 2em 0.5em" role="list" x-on:click="$store.global.changePath">
     <template webc:keep webc:type="11ty" id="top-games-template">
       <li>
         <div class="game">
-          <a class="game-link" href="#game_url"
-            hx-push-url="#game_url"
-            :hx-get="global.paths.category.html" hx-target="#main"
-          >
-            <img  src="#game_img_url" alt=""
-              :width="global.config.image.category.width" 
-              :height="global.config.image.category.height">
+          <div class="img-wrapper">
+            <a class="game-img-link" href="#game_url"
+              hx-push-url="#game_url"
+              :hx-get="global.paths.category.html" hx-target="#main"
+            >
+              <img class="game-img" src="#game_img_url" alt=""
+                :width="global.config.image.category.width" 
+                :height="global.config.image.category.height">
+            </a>
+            <div class="game-action" data-pos="left">
+              <button-follow
+                @fn_has_id="$store.games.hasId(':game_id')"
+                @on_click="$store.games.toggle(:json_game)"
+              ></button-follow>
+            </div>
+            <div class="game-action" data-pos="right">
+              <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url">
+                <span class="sr-only">Got to game's Twitch page</span>
+                <svg aria-hidden="true" focusable="false">
+                  <use href="/public/assets/icons.svg#external-link"></use>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <a class="game-link" href="#game_url">
             <p>:game_name_text</p>
           </a>
-          <div class="game-actions">
-            <button-follow
-              @fn_has_id="$store.games.hasId(':game_id')"
-              @on_click="$store.games.toggle(:json_game)"
-            ></button-follow>
-            <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url">
-              <span class="sr-only">Got to game's Twitch page</span>
-              <svg aria-hidden="true" focusable="false">
-                <use href="/public/assets/icons.svg#external-link"></use>
-              </svg>
-            </a>
-          </div>
         </div>
       </li>
     </template>
@@ -40,49 +46,80 @@ permalink: "{{'public/partials/top-games.html'}}"
 <style>
 .game {
   display: flex;
-  background: white;
-  padding: 2px;
+  flex-direction: column;
+  height: 100%;
 }
+
 .game-link {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
+  height: 100%;
+  font-size: var(--step--1);
   text-decoration: none;
-  color: var(--color-truegray-800);
-}
-
-.game-link:focus,
-.game-link:hover {
-  color: var(--color-violet-700);
-  text-decoration: underline;
-}
-
-.game-link p {
-  padding-inline: var(--space-xs);
+  color: var(--gray-11);
+  background: white;
+  padding-inline: var(--space-2xs);
+  padding-block: var(--space-3xs);
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 
-.game-link img {
-  width: 4rem;
+.img-wrapper:is(:hover, :focus) + .game-link,
+.game-link:is(:hover, :focus) {
+  color: var(--violet-8);
+  text-decoration: underline;
 }
 
-.game-actions {
-  flex: 0;
+.img-wrapper {
+  padding-inline: var(--space-2xs);
+  position: relative;
+}
+
+.game-img-link {
+  display: block;
+  border-top: 3px solid white;
+  border-left: 3px solid white;
+  border-right: 3px solid white;
+}
+
+.game-img {
+  width: 100%;
+  background: white;
+  display: block;
+}
+
+.game-action {
+  position: absolute;
+  bottom: -8px;
+  line-height: 1;
+  width: 2.3em;
+  height: 2.3em;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: var(--color-truegray-100);
-  padding: var(--space-3xs) var(--space-2xs);
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(rgba(255,255,255, 90%), white 80%);
+}
+
+.game-action svg {
+  width: 1.1em; 
+  height: 1.1em;
+}
+
+.game-action[data-pos=left] {
+  left: 0;
+  border-radius: 100% 100% 80% 0 / 100% 100% 100% 0;
+}
+
+.game-action[data-pos=right] {
+  border-radius: 100% 100% 0 80% / 100% 100% 0 100%;
+  right: 0;
 }
 
 .external-link {
-  color: var(--color-truegray-400);
+  color: var(--gray-5);
 }
 
 .external-link:is(:hover, :focus) {
-  color: var(--color-violet-700);
+  color: var(--violet-8);
 }
 </style>
