@@ -14,6 +14,7 @@ permalink: "{{'public/partials/top-games.html'}}"
               hx-push-url="#game_url"
               :hx-get="global.paths.category.html" hx-target="#main"
             >
+             <!-- TODO: fix image dimensions here and in JS -->
               <img class="game-img" src="#game_img_url" alt=""
                 :width="global.config.image.category.width" 
                 :height="global.config.image.category.height">
@@ -33,7 +34,10 @@ permalink: "{{'public/partials/top-games.html'}}"
               </a>
             </div>
           </div>
-          <a class="game-link" href="#game_url">
+          <a class="game-link" href="#game_url"
+            hx-push-url="#game_url"
+            :hx-get="global.paths.category.html" hx-target="#main"
+          >
             <p>:game_name_text</p>
           </a>
         </div>
