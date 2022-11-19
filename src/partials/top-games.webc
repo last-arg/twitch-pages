@@ -14,10 +14,9 @@ permalink: "{{'public/partials/top-games.html'}}"
               hx-push-url="#game_url"
               :hx-get="global.paths.category.html" hx-target="#main"
             >
-             <!-- TODO: fix image dimensions here and in JS -->
               <img class="game-img" src="#game_img_url" alt=""
-                :width="global.config.image.category.width" 
-                :height="global.config.image.category.height">
+                :width="global.config.image.category.width * 2" 
+                :height="global.config.image.category.height * 2">
             </a>
             <div class="game-action" data-pos="left">
               <button-follow

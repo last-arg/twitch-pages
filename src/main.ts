@@ -739,7 +739,7 @@ const initHtmx = async () => {
         for (const item of json.data) {
             const url_name = encodeURIComponent(item.name);
             const game_url = mainContent['category'].url.replace(":category", url_name)
-            const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+            const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
             const game_obj_str = `{name: '${url_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
             result += tmpl.innerHTML
               .replaceAll("#game_url", game_url)
