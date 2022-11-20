@@ -65,6 +65,8 @@ permalink: "{{'public/partials/top-games.html'}}"
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+  border-bottom-right-radius: var(--radius-2);
+  border-bottom-left-radius: var(--radius-2);
 }
 
 .img-wrapper:is(:hover, :focus) + .game-link,
