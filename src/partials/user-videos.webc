@@ -182,10 +182,6 @@ permalink: "{{'public/partials/user-videos.html'}}"
   padding-inline: 3px;
 }
 
-.video-type svg {
-  display: block;
-}
-
 .video-duration {
   bottom: 0;
   right: 0;

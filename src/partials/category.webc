@@ -159,10 +159,6 @@ permalink: "{{ 'public/partials/category.html' }}"
   border-left: 1px solid var(--gray-3);
 }
 
-.user-info-follow svg {
-  display: block;
-}
-
 .user a:is(:hover, :focus),
 .user-info-img-link:is(:hover, :focus) + div .user-info-link {
   color: var(--violet-8);
