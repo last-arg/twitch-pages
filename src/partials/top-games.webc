@@ -19,18 +19,18 @@ permalink: "{{'public/partials/top-games.html'}}"
                 :height="global.config.image.category.height * 2">
             </a>
             <div class="game-action" data-pos="left">
-              <button-follow
-                @fn_has_id="$store.games.hasId(':game_id')"
-                @on_click="$store.games.toggle(:json_game)"
-              ></button-follow>
-            </div>
-            <div class="game-action" data-pos="right">
               <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url">
                 <span class="sr-only">Got to game's Twitch page</span>
                 <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#external-link"></use>
                 </svg>
               </a>
+            </div>
+            <div class="game-action" data-pos="right">
+              <button-follow
+                @fn_has_id="$store.games.hasId(':game_id')"
+                @on_click="$store.games.toggle(:json_game)"
+              ></button-follow>
             </div>
           </div>
           <a class="game-link" href="#game_url"
