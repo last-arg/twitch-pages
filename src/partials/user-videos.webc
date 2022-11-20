@@ -101,25 +101,25 @@ permalink: "{{'public/partials/user-videos.html'}}"
       "
     >
       <template id="user-video-template">
-        <li class="video :video_type" data-title=":encoded_video_title">
-          <a href="#video_url" title=":video_title">
-            <div>
-            <img src="#img_url" alt="" 
-              :width="global.config.image.video.width" 
-              :height="global.config.image.video.height"
-            >
-              <span title=":video_type_title">
+        <li class="video" data-video-type=":video_type" data-title=":encoded_video_title">
+          <a class="video-link" href="#video_url" title=":video_title">
+            <div class="video-img-wrapper">
+              <img src="#img_url" alt="" 
+                :width="global.config.image.video.width" 
+                :height="global.config.image.video.height"
+              >
+              <span class="video-info video-type" title=":video_type_title">
                 <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#:video_icon"></use>
                 </svg>
                 <span class="sr-only">:video_type</span>
               </span>
-              <div>
+              <div class="video-info video-duration">
                 <span>:video_duration_str</span>
                 <span title=":date_str">:video_date_str</span>
               </div>
             </div>
-            <div>
+            <div class="video-title">
               <p>:video_title</p>
               <svg aria-hidden="true" focusable="false">
                 <use href="/public/assets/icons.svg#external-link"></use>
@@ -145,5 +145,94 @@ permalink: "{{'public/partials/user-videos.html'}}"
   color: var(--bg);
   padding-inline: var(--space-3xs);
 }
+
+.video-link {
+  display: block;
+  text-decoration: none;
+  color: currentColor;
+}
+
+.video-link:is(:hover, :focus) {
+  color: var(--violet-8);
+  text-decoration: underline;
+}
+
+.video-img-wrapper {
+  position: relative;
+}
+
+.video-img-wrapper img {
+  display: block;
+  border-radius: var(--radius-2);
+}
+
+.video-info {
+  opacity: .9;
+  position: absolute;
+  left: 0;
+  margin: var(--space-3xs);
+}
+
+.video-type {
+  top: 0;
+  border-radius: var(--radius-1);
+  --bg-icon: white;
+  color: var(--gray-10);
+  background-color: var(--bg-icon);
+  padding-inline: 3px;
+}
+
+.video-type svg {
+  display: block;
+}
+
+.video-duration {
+  bottom: 0;
+  right: 0;
+  font-size: var(--step--2);
+  color: var(--gray-1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.video-duration span {
+  padding-inline: 3px;
+  background-color: var(--gray-10);
+  display: block;
+  border-radius: var(--radius-1);
+}
+
+.video[data-video-type=archive] .video-type {
+  --bg-icon: var(--lime-3);
+}
+
+.video[data-video-type=upload] .video-type {
+  --bg-icon: var(--blue-3);
+}
+
+.video[data-video-type=highlight] .video-type {
+  --bg-icon: var(--orange-3);
+}
+
+.video-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: var(--space-3xs);
+  border-radius: var(--radius-2);
+}
+
+.video-title p {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.video-title svg {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
 </style>
 

@@ -1,5 +1,6 @@
 import { defineConfig, escapeSelector } from "unocss";
 
+// TODO: add clamp and truncate rules
 const config = defineConfig({
   rules: [
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
