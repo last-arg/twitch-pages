@@ -93,7 +93,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
       </div>
     </div>
     <div id="feedback"></div>
-    <ul class="filter-search l-grid" style="--l-grid-min: 18rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
+    <ul class="filter-search l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
       x-init="
         if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
         if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')
