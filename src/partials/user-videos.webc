@@ -35,9 +35,9 @@ permalink: "{{'public/partials/user-videos.html'}}"
   <div>
     <h3>Videos</h3>
     <div>
-      <div>
+      <div class="flex">
         <div x-data="userVideosFilter()">
-          <ul role="list">
+          <ul class="flex" role="list">
             <li>
               <button type="button"
                 x-bind:class="{checked: $store.global.settings['video-archives'] === 'on'}"
@@ -101,10 +101,13 @@ permalink: "{{'public/partials/user-videos.html'}}"
       "
     >
       <template id="user-video-template">
-        <li class=":video_type" data-title=":encoded_video_title">
+        <li class="video :video_type" data-title=":encoded_video_title">
           <a href="#video_url" title=":video_title">
             <div>
-            <img src="#img_url" alt="" width="${VIDEO_IMG_WIDTH}" height="${VIDEO_IMG_HEIGHT}" />
+            <img src="#img_url" alt="" 
+              :width="global.config.image.video.width" 
+              :height="global.config.image.video.height"
+            >
               <span title=":video_type_title">
                 <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#:video_icon"></use>
