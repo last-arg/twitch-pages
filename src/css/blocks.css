@@ -122,6 +122,7 @@ main {
   margin-left: var(--space-3xs);
   text-overflow: ellipsis;
   overflow: hidden;
+  font-style: italic;
 }
 
 .main-heading {
