@@ -1,39 +1,66 @@
-<h2 webc:root webc:keep class="heading-link">
-  <a :href="href">
-    <slot></slot>
-    <svg aria-hidden="true" focusable="false">
-      <use href="/public/assets/icons.svg#external-link"></use>
-    </svg>
-  </a>
-</h2>
+<div class="heading-main">
+  <slot name="heading-img"></slot>
+  <h2 class="clamp-2"><slot></slot></h2>
+</div>
+<div class="heading-actions">
+  <div class="action-box">
+    <a :href="href">
+      <span class="sr-only">Go to twitch page</span>
+      <svg aria-hidden="true" focusable="false">
+        <use href="/public/assets/icons.svg#external-link"></use>
+      </svg>
+    </a>
+  </div>
+  <div class="action-box">
+    <!-- TODO: try to get this working without <script>
+    Not sure how passing params should work in webc.
+    -->
+    <script webc:type="js" webc:is="template">
+    `<button-follow @fn_has_id="${this.fn_has_id}" @on_click="${this.on_click}" @init="${this.init}"></button-follow>`
+    </script>
+  </div>
+</div>
+
 <style>
-.heading-link a {
-  font-weight: var(--font-weight-3);
-  --icon-color: var(--gray-6);
-  background:white;
-  display:flex;
+.heading-main {
+  display: flex;  
   align-items: center;
+  background:white;
+  flex-grow: 1;
+}
+
+.heading-main h2 {
+  font-weight: var(--font-weight-3);
   font-size: var(--heading-size);
-  justify-items: center;
   color: var(--fg);
-  text-decoration: none;
+  margin-inline: var(--space-xs);
 }
 
-.heading-link a:focus,
-.heading-link a:hover {
-  --hover-color: var(--violet-8);
-  --icon-color: var(--hover-color);
-  text-decoration: underline;
-  color: var(--hover-color)
+heading-link {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
 }
 
-.heading-link img {
-  margin-inline-end: var(--space-xs);
+.heading-actions {
+  align-self: start;
+  display: flex;
+  justify-content: end;
+  gap: 2px;
+  flex-grow: 1;
 }
 
-.heading-link svg {
-  margin-inline: var(--space-2xs) var(--space-xs);
-  color: var(--icon-color);
-  width: 0.7em;
+.action-box {
+  background: white;
+  color: var(--gray-6);
+  padding: var(--space-2xs);
+}
+
+.action-box a {
+  color: currentColor;
+}
+
+.action-box a:is(:hover, :focus) {
+  color: var(--violet-8);
 }
 </style>

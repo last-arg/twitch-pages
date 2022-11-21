@@ -11,18 +11,16 @@ permalink: "{{ 'public/partials/category.html' }}"
       ></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
-        <heading-link @href="https://www.twitch.tv/directory/game/:game_name">
-          <img class="w-10" src="#game_img_url" alt=""
+        <heading-link
+          @href="https://www.twitch.tv/directory/game/:game_name"
+          @fn_has_id="$store.games.hasId(':game_id')"
+          @on_click="'$store.games.toggle(:json_game)'"
+        >
+          <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
             :height="global.config.image.category.height">
-          <p>:game_name</p>
+          :game_name
         </heading-link>
-        <div class="btn-container">
-          <button-follow
-            @fn_has_id="$store.games.hasId(':game_id')"
-            @on_click="$store.games.toggle(:json_game)"
-          ></button-follow>
-        </div>
       </template>
     </div>
     <form style="" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">

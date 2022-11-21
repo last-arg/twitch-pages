@@ -11,18 +11,16 @@ permalink: "{{'public/partials/user-videos.html'}}"
       ></div>
       <placeholder-title name="user"></placeholder-title>
       <template webc:keep webc:type="11ty" id="user-header-template">
-        <heading-link @href="https://www.twitch.tv/:user_login/videos">
-          <img class="w-14" src="#user_profile_image_url" 
+        <heading-link 
+          @href="https://www.twitch.tv/:user_login/videos"
+          @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
+          @fn_has_id="$store.streams.hasId(':user_id')"
+          @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
+        >
+          <img slot="heading-img" class="w-14" src="#user_profile_image_url" 
             :width="global.config.image.user.width" :height="global.config.image.user.height">
-          <p>:user_display_name</p>
+          :user_display_name
         </heading-link>
-        <div class="btn-container">
-          <button-follow 
-            @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
-            @fn_has_id="$store.streams.hasId(':user_id')"
-            @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
-          ></button-follow>
-        </div>
         <div class="user-live self-center fluid-ml-xs" x-bind:class="{hidden: game === ''}"
           x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
         >

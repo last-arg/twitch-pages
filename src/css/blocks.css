@@ -132,10 +132,3 @@ main {
   font-size: var(--heading-size);
 }
 
-.btn-container {
-  background: white;
-  margin-inline-start: 2px;
-  display: flex;
-  align-items: center;
-  padding-inline: var(--space-2xs);
-}
