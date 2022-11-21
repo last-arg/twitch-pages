@@ -7,6 +7,7 @@ const config = defineConfig({
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
     [/^clamp-?(\d)$/, ruleClamp, {layer: "component"}],
+    ["debug-resize", {overflow: "scroll", resize: "both"}, {layer: "component"}],
   ],
 });
 
