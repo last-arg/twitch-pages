@@ -3,7 +3,7 @@ permalink: "{{ 'public/partials/category.html' }}"
 ---
 <div>
   <div>
-    <div id="category-header" class="flex">
+    <div id="category-header" class="flex place-items-start">
       <div hx-ext="twitch-api"
         hx-get="/helix/games"
         hx-trigger="load"

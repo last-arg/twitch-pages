@@ -3,7 +3,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 ---
 <div>
   <div>
-    <div id="user-header" class="flex">
+    <div id="user-header" class="user-heading-box">
       <div hx-ext="twitch-api"
         hx-get="/helix/users"
         hx-trigger="load"
@@ -21,7 +21,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
             :width="global.config.image.user.width" :height="global.config.image.user.height">
           :user_display_name
         </heading-link>
-        <div class="user-live self-center fluid-ml-xs" x-bind:class="{hidden: game === ''}"
+        <div class="user-live" x-bind:class="{hidden: game === ''}"
           x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
         >
           <span>LIVE</span>
@@ -228,5 +228,12 @@ permalink: "{{'public/partials/user-videos.html'}}"
   flex-shrink: 0;
 }
 
+.user-heading-box {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  place-items: start;
+  place-content: start;
+}
 </style>
 
