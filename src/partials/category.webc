@@ -14,7 +14,7 @@ permalink: "{{ 'public/partials/category.html' }}"
         <heading-link
           @href="https://www.twitch.tv/directory/game/:game_name"
           @fn_has_id="$store.games.hasId(':game_id')"
-          @on_click="'$store.games.toggle(:json_game)'"
+          @on_click="$store.games.toggle(:json_game)"
         >
           <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
