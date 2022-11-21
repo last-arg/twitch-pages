@@ -188,3 +188,7 @@ button {
   line-height: 1;
   cursor: pointer;
 }
+
+header {
+  color: var(--bg);
+}

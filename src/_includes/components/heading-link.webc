@@ -60,6 +60,10 @@ heading-link {
   color: currentColor;
 }
 
+.action-box .sr-only {
+  color: initial;
+}
+
 .action-box a:is(:hover, :focus) {
   color: var(--violet-8);
 }

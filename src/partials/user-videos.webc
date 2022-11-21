@@ -4,7 +4,8 @@ permalink: "{{'public/partials/user-videos.html'}}"
 <div>
   <div>
     <div id="user-header" class="user-heading-box">
-      <div hx-ext="twitch-api"
+      <div class="hidden"
+        hx-ext="twitch-api"
         hx-get="/helix/users"
         hx-trigger="load"
         hx-target="#user-header"
@@ -17,7 +18,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
           @fn_has_id="$store.streams.hasId(':user_id')"
           @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
         >
-          <img slot="heading-img" class="w-14" src="#user_profile_image_url" 
+          <img slot="heading-img" class="w-14" src="#user_profile_image_url" alt=""
             :width="global.config.image.user.width" :height="global.config.image.user.height">
           :user_display_name
         </heading-link>
@@ -138,7 +139,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 }
 
 .user-live span {
-  background-color: var(--red-4);
+  background-color: var(--red-10);
   border-radius: var(--radius-1);
   color: var(--bg);
   padding-inline: var(--space-3xs);
