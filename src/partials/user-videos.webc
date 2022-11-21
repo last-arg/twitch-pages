@@ -144,6 +144,11 @@ permalink: "{{'public/partials/user-videos.html'}}"
   padding-inline: var(--space-3xs);
 }
 
+.user-live p {
+  color: var(--gray-7);
+  font-style: italic;
+}
+
 .video-link {
   display: block;
   text-decoration: none;
