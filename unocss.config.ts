@@ -6,6 +6,7 @@ const config = defineConfig({
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
+    [/^clamp-?(\d)$/, ruleClamp, {layer: "component"}],
   ],
 });
 
@@ -25,6 +26,19 @@ function dirToWords(dir: string) {
     result.push("top", "bottom");
   }
   return result;
+}
+
+function ruleClamp([selector, nr]: RegExpMatchArray) {
+  const classSelector = "." + escapeSelector(selector)
+  
+  return `
+${classSelector} {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: ${nr};
+}
+  `;
 }
 
 function fluidSpace([selector, attr, dir, variable]: RegExpMatchArray) {
