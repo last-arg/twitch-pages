@@ -44,7 +44,7 @@
 <style webc:nokeep>
 .link-box {
   display: flex;
-  --card-bg: var(--gray-10);
+  --card-bg: var(--gray-9);
   background: var(--card-bg);
   border-left: var(--space-3xs) solid var(--card-bg);
   padding-inline-start: var(--space-3xs);

@@ -37,7 +37,7 @@
 }
 
 .search-feedback p {
-  background: var(--color-truegray-300);
+  background: var(--gray-3);
   padding: var(--space-3xs) var(--space-2xs);
   font-size: var(--step--1);
 }

@@ -73,7 +73,7 @@ form[role="search"] {
 }
 
 form[role="search"] input {
-  --border-color: var(--gray-10);
+  --border-color: var(--gray-8);
   border: none;
   background-color: var(--gray-2);
   border-top: 1px solid var(--border-color);
@@ -91,7 +91,7 @@ form[role=search] input[aria-expanded=false] ~ sidebar-menu {
 }
 
 form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
-  --border-color: var(--gray-7);
+  --border-color: var(--stone-7);
 }
 
 main {

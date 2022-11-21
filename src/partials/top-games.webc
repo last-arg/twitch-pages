@@ -94,6 +94,7 @@ permalink: "{{'public/partials/top-games.html'}}"
 }
 
 .game-action {
+  --actions-color: var(--gray-5);
   position: absolute;
   bottom: -8px;
   line-height: 1;

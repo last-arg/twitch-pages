@@ -40,10 +40,12 @@ follow-star {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--gray-10);
+  background: var(--gray-9);
   line-height: 1;
   padding: var(--space-3xs) var(--space-2xs);
-  color: var(--color-truegray-400);
+  --actions-color: var(--gray-6);
+  color: var(--actions-color);
+
 }
 
 .scroll-container follow-star {
@@ -56,6 +58,6 @@ follow-star a {
 
 follow-star a:hover,
 follow-star a:focus {
-  color: var(--color-violet-500);
+  color: var(--violet-8);
 }
 </style>
