@@ -5,6 +5,7 @@ permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 ---
 <script webc:raw webc:nokeep webc:type="js">
+// NOTE: This duplicates CSS if pages contain same components
 let result = "";
 for (const c of this.collections.all) {
   result += this.helpers.getCSS(c.url);
