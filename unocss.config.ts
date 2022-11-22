@@ -1,6 +1,6 @@
 import { defineConfig, escapeSelector } from "unocss";
 
-// TODO: add clamp and truncate rules
+// TODO: add l-gap for l-grid
 const config = defineConfig({
   rules: [
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
