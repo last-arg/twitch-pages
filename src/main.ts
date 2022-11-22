@@ -318,12 +318,6 @@ function alpineInit() {
             // Hide videos
             outputList.classList.add(outputClass)
           }
-        },
-        showAll() {
-          for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
-            btn.classList.add("checked")
-          }
-          outputList.classList.remove("no-highlights", "no-uploads", "no-archives")
         }
       }
     })

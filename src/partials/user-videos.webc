@@ -60,11 +60,6 @@ permalink: "{{'public/partials/user-videos.html'}}"
               <label for="check-highlight">Highlights (<span id="highlights-count">0</span>)</label>
             </div>
           </fieldset>
-          <div>
-            <div>
-              <button type="button" x-on:click="showAll()">Show all</button>
-            </div>
-          </div>
         </div>
         <form style="" x-data="search" x-on:reset="formReset()">
           <label for="search">Search video title</label>
