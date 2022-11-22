@@ -306,23 +306,18 @@ function alpineInit() {
     })
 
     Alpine.data("userVideosFilter", (): any => {
-      const outputList = document.querySelector(".user-videos")!
+      const outputList = document.querySelector(".output-list")!
       return {
-        toggleFilter(videoType: VideoType) {
-          const outputClass = `no-${videoType}s`
-          if (this.$el.classList.toggle("checked")) {
+        changeEvent(e: InputEvent) {
+          const input_elem = e.target as HTMLInputElement;
+          const outputClass = `no-${input_elem.value}s`
+          if (input_elem.checked) {
+            // Show videos
             outputList.classList.remove(outputClass)
           } else {
+            // Hide videos
             outputList.classList.add(outputClass)
           }
-        },
-        onlyFilter(videoType: VideoType) {
-          for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
-            btn.classList.remove("checked")
-          }
-          outputList.classList.add("no-highlights", "no-uploads", "no-archives")
-          this.$el.previousElementSibling.classList.add("checked")
-          outputList.classList.remove(`no-${videoType}s`)
         },
         showAll() {
           for (const btn of this.$root.querySelectorAll(".filter-checkbox-btn")) {
@@ -597,7 +592,7 @@ function alpineInit() {
         "top-games-count": TOP_GAMES_COUNT,
         "category-count": STREAMS_COUNT,
         "user-videos-count": USER_VIDEOS_COUNT,
-        "video-archives": "on",
+        "video-archives": true,
         "video-uploads": false,
         "video-highlights": false,
       },

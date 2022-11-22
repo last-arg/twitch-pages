@@ -36,63 +36,44 @@ permalink: "{{'public/partials/user-videos.html'}}"
     <div>
       <div class="flex">
         <div x-data="userVideosFilter()">
-          <ul class="flex" role="list">
-            <li>
-              <button type="button"
-                x-bind:class="{checked: $store.global.settings['video-archives'] === 'on'}"
-                x-on:click="toggleFilter('archive')"
+          <fieldset class="filter-video-type"
+            <legend class="sr-only">Video types</legend>
+            <div>
+              <input type="checkbox" id="check-archive"
+                x-init="$el.checked = $store.global.settings['video-archives']"
+                x-on:change="changeEvent" value="archive"
               >
-                <span>&nbsp;</span>
-              </button>
-              <button type="button"
-                x-on:click="onlyFilter('archive')"
+              <label for="check-archive">Archives (<span id="archives-count">0</span>)</label>
+            </div>
+            <div>
+              <input type="checkbox" id="check-upload"
+                x-init="$el.checked = $store.global.settings['video-uploads']"
+                x-on:change="changeEvent" value="upload"
               >
-                Archives (<span id="archives-count">0</span>)
-              </button>
-            </li>
-            <li>
-              <button type="button"
-                x-bind:class="{checked: $store.global.settings['video-uploads'] === 'on'}"
-                x-on:click="toggleFilter('upload')"
+              <label for="check-upload">Uploads (<span id="uploads-count">0</span>)</button>
+            </div>
+            <div>
+              <input type="checkbox" id="check-highlight"
+                x-init="$el.checked = $store.global.settings['video-highlights']"
+                x-on:change="changeEvent" value="highlight"
               >
-                <span>&nbsp;</span>
-              </button>
-              <button type="button"
-                x-on:click="onlyFilter('upload')"
-              >
-                Uploads (<span id="uploads-count">0</span>)
-              </button>
-            </li>
-            <li>
-              <button type="button"
-                x-bind:class="{checked: $store.global.settings['video-highlights'] === 'on'}"
-                x-on:click="toggleFilter('highlight')"
-              >
-                <span>&nbsp;</span>
-              </button>
-              <button type="button"
-                x-on:click="onlyFilter('highlight')"
-              >
-                Highlights (<span id="highlights-count">0</span>)
-              </button>
-            </li>
-          </ul>
+              <label for="check-highlight">Highlights (<span id="highlights-count">0</span>)</label>
+            </div>
+          </fieldset>
           <div>
-            <span>&nbsp;</span>
             <div>
               <button type="button" x-on:click="showAll()">Show all</button>
             </div>
           </div>
         </div>
-        <form style="" x-data="search" @reset="formReset()">
+        <form style="" x-data="search" x-on:reset="formReset()">
           <label for="search">Search video title</label>
           <input type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
           <button type="reset">Reset</button>
         </form>
       </div>
     </div>
-    <div id="feedback"></div>
-    <ul class="filter-search l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
+    <ul class="output-list l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
       x-init="
         if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
         if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')
@@ -128,7 +109,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @hx_get="/helix/videos" @hx_target=".filter-search">
+    <btn-load-more class="block fluid-my-xl" @hx_get="/helix/videos" @hx_target=".output-list">
       <input class="req-param" id="param-user_id" type="hidden" name="user_id" value="">
     </btn-load-more>
   </div>
@@ -240,6 +221,22 @@ permalink: "{{'public/partials/user-videos.html'}}"
   flex-wrap: wrap;
   place-items: start;
   place-content: start;
+}
+
+.output-list.no-uploads li[data-video-type=upload],
+.output-list.no-archives li[data-video-type=archive],
+.output-list.no-highlights li[data-video-type=highlight] {
+  display: none;
+}
+
+.filter-video-type {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-video-type div {
+  background: var(--gray-4);
 }
 </style>
 
