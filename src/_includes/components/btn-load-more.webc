@@ -26,6 +26,12 @@
   background: var(--bg-color);
   border-radius: var(--radius-round);
   color: var(--violet-12);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.btn-load-more {
+  border-color: var(--bg-color);
 }
 
 .btn-load-more,
@@ -47,7 +53,11 @@
 
 .btn-load-more:focus,
 .btn-load-more:hover {
-  background: var(--violet-3);
+  --bg-color: var(--violet-3);
+}
+
+.btn-load-more:active {
+  border-color: transparent;
 }
 
 .req-param[name="after"]:not([value]) ~ * {
