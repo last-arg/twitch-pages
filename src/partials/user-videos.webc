@@ -61,11 +61,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
             </div>
           </fieldset>
         </div>
-        <form style="" x-data="search" x-on:reset="formReset()">
-          <label for="search">Search video title</label>
-          <input type="search" id="search" placeholder="Video title" @input.debounce.100ms="searchTitle()" value="">
-          <button type="reset">Reset</button>
-        </form>
+        <form-filter></form-filter>
       </div>
     </div>
     <ul class="output-list l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"

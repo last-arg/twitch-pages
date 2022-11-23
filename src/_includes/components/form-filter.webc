@@ -1,0 +1,46 @@
+<form webc:root class="search-form" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
+  <label class="sr-only" for="search">Search title</label>
+  <input type="search" id="search" placeholder="Filter title" x-on:input.debounce.100ms="searchTitle()" value="">
+  <button type="reset">Reset</button>
+</form>
+<style>
+.search-form {
+  display: flex;
+  align-self: start;
+  justify-content: end;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
+.search-form input {
+  flex-shrink: 1;
+  flex-grow: 1;
+  width: 0;
+  min-width: 11rem;
+  max-width: 17rem;
+  
+  border: 2px solid var(--gray-3);
+  border-radius: var(--radius-round);
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-xs) calc(var(--space-xl) - var(--space-2xs));
+}
+
+.search-form input:focus,
+.search-form input:hover {
+  border-color: var(--violet-3);
+}
+
+.search-form button {
+  color: var(--violet-12);
+  background: var(--violet-1);
+  border-radius: var(--radius-round);
+  padding-inline: var(--space-xs);
+  margin-left: calc(var(--space-l) * -1);
+}
+
+.search-form button:focus,
+.search-form button:hover {
+  background: var(--violet-3);
+}
+</style>
+
