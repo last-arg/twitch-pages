@@ -196,7 +196,7 @@ permalink: "{{ 'public/partials/category.html' }}"
   flex-shrink: 1;
   flex-grow: 1;
   width: 0;
-  min-width: 10rem;
+  min-width: 11rem;
   max-width: 17rem;
   
   border: 2px solid var(--gray-3);
@@ -211,6 +211,7 @@ permalink: "{{ 'public/partials/category.html' }}"
 }
 
 .search-form button {
+  color: var(--violet-12);
   background: var(--violet-1);
   border-radius: var(--radius-round);
   padding-inline: var(--space-xs);
