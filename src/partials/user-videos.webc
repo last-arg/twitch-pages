@@ -23,7 +23,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
           :user_display_name
         </heading-link>
         <div class="user-live" x-bind:class="{hidden: game === ''}"
-          x-data="{game: ''}" x-init="game = await $store.global.getLiveUserGame(':user_id')"
+          x-data="{game: ''}" x-effect="game = await $store.global.getLiveUserGame(':user_id')"
         >
           <span>LIVE</span>
           <p x-text="game"></p>
