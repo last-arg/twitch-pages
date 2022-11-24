@@ -122,18 +122,6 @@ select {
 
   /* TODO: Change font? */
   --tracking: 0;
-  --color-truegray-50: rgb(250, 250, 250);
-  --color-truegray-100: rgba(245, 245, 245);
-  --color-truegray-300: rgb(212, 212, 212);
-  --color-truegray-400: rgba(163,163,163);
-  --color-truegray-500: rgba(115, 115, 115);
-  --color-truegray-800: rgb(38, 38, 38);
-  --color-truegray-700: rgb(64, 64, 64);
-  --color-truegray-900: rgb(17, 24, 39);
-  --color-violet-500: rgb(139,92,246);
-  --color-violet-700: rgb(109,40,217);
-  --color-red-500: #ef4444;
-  --color-red-900: rgb(127, 29, 29);
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 
   --heading-size: var(--step-2);

@@ -16,8 +16,8 @@
   align-items: center;
   gap: var(--space-3xs);
   font-size: var(--step--1);
-  background-color: var(--color-violet-700);
-  color: var(--color-truegray-100);
+  background-color: var(--violet-9);
+  color: var(--bg);
   padding: var(--space-3xs) var(--space-2xs);
 }
 
@@ -29,8 +29,8 @@
 .btn-close {
   display: flex;
   align-items: center;
-  background-color: var(--color-violet-700);  
-  color: var(--color-truegray-100);
+  background-color: var(--violet-9);  
+  color: var(--bg);
   padding: var(--space-3xs) var(--space-2xs);
   opacity: .7;
 }
