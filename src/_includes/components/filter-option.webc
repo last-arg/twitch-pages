@@ -9,11 +9,10 @@
 </div>
 <style>
 .filter-option {
-  background-color: var(--gray-4);
   display: flex;
   align-items: center;
   color: var(--violet-12);
-  background: var(--violet-1);
+  background-color: var(--violet-1);
   border-radius: var(--radius-3) var(--radius-6) var(--radius-6) var(--radius-3);
   padding-block: 4px;
   padding-inline: 4px var(--space-xs);
