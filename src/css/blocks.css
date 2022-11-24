@@ -99,7 +99,8 @@ form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
 }
 
 main {
-  padding-top: calc(var(--header-height) + var(--space-m));
+  --base-padding: calc(var(--space-m) + var(--header-height));
+  padding-top: clamp(var(--base-padding), calc(100vw - 444px) * -999, calc(var(--base-padding) + var(--header-height) + var(--space-s)));
 }
 
 .card-live {
@@ -141,4 +142,3 @@ main h3 {
   font-weight: var(--font-weight-3);
   font-size: var(--step-2);
 }
-
