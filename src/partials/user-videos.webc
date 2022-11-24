@@ -38,27 +38,9 @@ permalink: "{{'public/partials/user-videos.html'}}"
         <div x-data="userVideosFilter()">
           <fieldset class="filter-video-type">
             <legend class="sr-only">Fitler based on video type</legend>
-            <div class="filter-option">
-              <input type="checkbox" id="check-archive"
-                x-init="$el.checked = $store.global.settings['video-archives']"
-                x-on:change="changeEvent" value="archive"
-              >
-              <label for="check-archive">Archives (<span id="archives-count">0</span>)</label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="check-upload"
-                x-init="$el.checked = $store.global.settings['video-uploads']"
-                x-on:change="changeEvent" value="upload"
-              >
-              <label for="check-upload">Uploads (<span id="uploads-count">0</span>)</button>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="check-highlight"
-                x-init="$el.checked = $store.global.settings['video-highlights']"
-                x-on:change="changeEvent" value="highlight"
-              >
-              <label for="check-highlight">Highlights (<span id="highlights-count">0</span>)</label>
-            </div>
+            <filter-option @name="archive"></filter-option>
+            <filter-option @name="upload"></filter-option>
+            <filter-option @name="highlight"></filter-option>
           </fieldset>
         </div>
         <form-filter></form-filter>
@@ -227,51 +209,5 @@ permalink: "{{'public/partials/user-videos.html'}}"
   display: flex;
   gap: var(--space-s);
   flex-wrap: wrap;
-}
-
-.filter-option {
-  background-color: var(--gray-4);
-  display: flex;
-  align-items: center;
-  color: var(--violet-12);
-  background: var(--violet-1);
-  border-radius: var(--radius-3) var(--radius-6) var(--radius-6) var(--radius-3);
-  padding-block: 4px;
-  padding-inline: 4px var(--space-xs);
-}
-
-.filter-option input {
-  appearance: none;
-  margin: 0;
-  /* For iOS < 15 to remove gradient background */
-  background-color: #fff;
-  color: currentColor;
-  height: 1.68em;
-  width: 1.68em;
-  border-radius: var(--radius-1);
-  display: grid;
-  place-content: center;
-}
-
-.filter-option input::before {
-  content: '';
-  height: 1.1em;
-  width: 1.1em;
-  transform-origin: center;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  background-color: var(--violet-3);
-  transform: scale(0);
-}
-
-.filter-option input:checked::before {
-  transform: scale(1);
-}
-
-.filter-option label {
-  margin-inline-start: var(--space-2xs);
-}
-
-.filter-option:is(:hover, :focus-within) {
-  background: var(--violet-3);
 }
 </style>
