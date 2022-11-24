@@ -34,7 +34,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
   <div class="fluid-mt-l">
     <h3>Videos</h3>
     <div class="fluid-mt-2xs">
-      <div class="flex">
+      <div class="flex flex-wrap fluid-gap-s">
         <div x-data="userVideosFilter()">
           <fieldset class="filter-video-type">
             <legend class="sr-only">Fitler based on video type</legend>

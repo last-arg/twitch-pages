@@ -6,6 +6,7 @@ const config = defineConfig({
     [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
+    [/^fluid-gap-(\w*)$/, fluidGap, {layer: "component"}],
     [/^clamp-?(\d)$/, ruleClamp, {layer: "component"}],
     ["debug-resize", {overflow: "scroll", resize: "both"}, {layer: "component"}],
   ],
@@ -68,6 +69,14 @@ function fluidSpace([selector, attr, dir, variable]: RegExpMatchArray) {
   }
   return `
 ${classSelector} { ${property}: var(${css_attr}); }
+    `;
+}
+
+function fluidGap([selector, space]: RegExpMatchArray) {
+  const classSelector = "." + escapeSelector(selector)
+  const css_attr = "--space-" + space;
+  return `
+${classSelector} { gap: var(${css_attr}); }
     `;
 }
 
