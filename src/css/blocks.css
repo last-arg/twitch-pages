@@ -24,15 +24,13 @@ header {
 
 .sidebar-position {
   z-index: -1;
-  display: flex !important;
-  flex-direction: column;
   position: absolute;
-  height: 100vh;
-  top: 0;
+  top: 100%;
+  /* 100% is header height. Which can change depending on viewport width */
+  bottom: calc(100% - 100vh);
   right: 0;
   --block-padding: var(--space-2xs);
-  padding-top: calc(var(--header-height) + var(--block-padding));
-  padding-bottom: var(--block-padding);
+  margin-block: var(--block-padding);
   --sidebar-x: 100%;
   transform: translateX(var(--sidebar-x));
   transition: visibility .15s, opacity .15s, transform .15s;
