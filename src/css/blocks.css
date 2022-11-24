@@ -70,6 +70,8 @@ form[role="search"] {
   font-size: var(--step--1);
   display: flex;
   height: 100%;
+  flex-grow: 1;
+  justify-content: end;
 }
 
 form[role="search"] input {
@@ -79,6 +81,10 @@ form[role="search"] input {
   border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
   padding-inline: var(--space-2xs);
+  flex: 1 1 auto;
+  min-width: 6rem;
+  width: 0;
+  max-width: 14rem;
 }
 
 form[role=search] input[aria-expanded=true],
