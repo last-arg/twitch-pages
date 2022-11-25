@@ -27,7 +27,7 @@
 
 .search-form input:focus,
 .search-form input:hover {
-  border-color: var(--violet-3);
+  border-color: var(--violet-2);
 }
 
 .search-form button {
@@ -40,7 +40,7 @@
 
 .search-form button:focus,
 .search-form button:hover {
-  background: var(--violet-3);
+  background: var(--violet-2);
 }
 </style>
 

@@ -45,7 +45,7 @@
 }
 
 .filter-option:is(:hover, :focus-within) {
-  background: var(--violet-3);
+  background: var(--violet-2);
 }
 </style>
 

@@ -53,7 +53,7 @@
 
 .btn-load-more:focus,
 .btn-load-more:hover {
-  --bg-color: var(--violet-3);
+  --bg-color: var(--violet-2);
 }
 
 .btn-load-more:active {
