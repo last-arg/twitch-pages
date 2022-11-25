@@ -101,6 +101,7 @@ form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
 main {
   --base-padding: calc(var(--space-m) + var(--header-height));
   padding-top: clamp(var(--base-padding), calc(100vw - 444px) * -999, calc(var(--base-padding) + var(--header-height) + var(--space-s)));
+  padding-bottom: var(--space-xs);
 }
 
 .card-live {

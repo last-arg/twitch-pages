@@ -203,9 +203,6 @@ permalink: "{{'public/partials/user-videos.html'}}"
 }
 
 .filter-video-type {
-  border: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   gap: var(--space-s);
   flex-wrap: wrap;

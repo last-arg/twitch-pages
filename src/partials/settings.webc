@@ -5,15 +5,16 @@ permalink: "{{'public/partials/settings.html'}}"
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
-  <div>
+  <div class="settings fluid-mt-s flex flex-wrap fluid-gap-s">
     <section>
       <h3>General</h3>
-      <form id="settings-general"
+      <form id="settings-general" class="form-general stack stack-s"
         x-on:submit.prevent = "$store.global.saveSettingsForm($el)"
       >
         <fieldset>
-          <legend>Number of items to load with one request</legend>
-          <ul role="list">
+          <legend class="sr-only">Number of items to load with one request</legend>
+          <h4 aria-hidden="true">Number of items to load with one request</h4>
+          <ul role="list" class="stack stack-xs">
             <li>
               <label for="top-games-count">Top Games:</label>
               <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
@@ -32,7 +33,8 @@ permalink: "{{'public/partials/settings.html'}}"
           </ul>
         </fieldset>
         <fieldset>
-          <legend>Default selected user video types</legend>
+          <legend class="sr-only">User page: selected video types</legend>
+          <h4 aria-hidden="true">User page: selected video types</h4>
           <ul role="list" role="list">
             <li>
               <label for="video-archives">
@@ -58,10 +60,12 @@ permalink: "{{'public/partials/settings.html'}}"
           </ul>
         </fieldset>
         <div>
-        <button type="submit">Save general settings</button>
+          <button type="submit">Save general settings</button>
         </div>
       </form>
     </section>
+    <!-- TODO: Settings: twitch login -->
+    <!--
     <section>
       <h3>Twitch</h3>
       <button type="button" x-bind:class="{ 'hidden': ! $store.global.twitch.user_token }"
@@ -71,9 +75,10 @@ permalink: "{{'public/partials/settings.html'}}"
         x-bind:class="{ 'hidden': $store.global.twitch.user_token }"
       >Log in with Twitch</a>
     </section>
+    -->
     <section>
       <h3>Cache</h3>
-      <ul role="list">
+      <ul class="stack stack-xs" role="list">
         <li>
           <button @click="$store.games.clear()" type="button"
           >Clear games cache</button>
@@ -89,9 +94,39 @@ permalink: "{{'public/partials/settings.html'}}"
         <li>
           <button type="button"
             @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
-          >Clear all cache</button>
+          >Clear all caches</button>
         </li>
       </ul>
     </section>
   </div>
 </div>
+<style>
+.settings section {
+  padding: var(--space-xs);
+  background: white;
+}
+
+.settings h4 {
+  font-weight: var(--font-weight-6);
+}
+
+.settings input[type=number] {
+  max-width: 5rem;
+}
+
+.settings h3 + * {
+  margin-top: var(--space-xs);
+}
+
+.settings button {
+  background-color: var(--violet-1);
+  color: var(--violet-12);
+  padding: var(--space-2xs);
+  border-radius: var(--radius-2);
+}
+
+.settings button:is(:hover, :focus) {
+  background-color: var(--violet-2);
+}
+
+</style>
