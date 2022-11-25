@@ -129,7 +129,6 @@ legend {
   --step-4: clamp(1.60rem, calc(1.51rem + 0.45vw), 1.80rem);
   --step-5: clamp(1.80rem, calc(1.70rem + 0.51vw), 2.03rem);
 
-  /* TODO: Change font? */
   --tracking: 0;
   --header-height: calc(var(--step--1) + var(--space-2xs) + var(--space-3xs));
 

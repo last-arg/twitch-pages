@@ -7,8 +7,10 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-* ??? twinspark.js
-* Change pages' (top-games, user, streamer, category/game) initial state to loading
+* Animations/Transitions
+* Check needed images sizes
+* service worker
+* purge CSS
 * ??? Category/Game add viewer range filter
 
 ## Resources
