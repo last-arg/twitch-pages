@@ -3,7 +3,7 @@ import { defineConfig, escapeSelector } from "unocss";
 // TODO: add l-gap for l-grid
 const config = defineConfig({
   rules: [
-    [/^stack\-?(\d*)(\w*)$/, ruleStack, {layer: "component"}],
+    [/^stack\-?(\d*)(.*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
     [/^fluid-(p|m)(\w)?-(.*)$/, fluidSpace, {layer: "component"}],
     [/^fluid-gap-(\w*)$/, fluidGap, {layer: "component"}],
@@ -83,6 +83,7 @@ ${classSelector} { gap: var(${css_attr}); }
 function ruleStack([selector, nr, unit_or_fluid]: RegExpMatchArray) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--stack-space"
+  console.log(selector, nr, unit_or_fluid);
 
   if (nr === '' && unit_or_fluid === '') {
     return `
@@ -95,12 +96,8 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
     `
   }
   
-  if (nr === '' && unit_or_fluid) {
-    // Is fluid value
-    const var_name = `--space-${unit_or_fluid}`;
-    return `${classSelector} { ${css_attr}: var(${var_name}); }`
-  } else if (unit_or_fluid !== '') {
-    return `${classSelector} { ${css_attr}: ${nr}${unit_or_fluid}; }`
+  if (unit_or_fluid) {
+    return `${classSelector} { ${css_attr}: var(--space-${nr}${unit_or_fluid}); }`
   } else if (nr !== '') {
     return `${classSelector} { ${css_attr}: ${+nr / 4}rem; }`
   }
