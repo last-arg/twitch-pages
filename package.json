@@ -5,14 +5,16 @@
   "scripts": {
     "netlify": "netlify dev",
     "dev": "bun run watch:config & bun run watch:css & bun run watch:js",
-    "css": "npx unocss 'src/**/*.webc' 'netlify/functions/*.{js,ts}' 'public/partials/*.html' 'src/*.ts' -o public/css/main.css",
     "build": "npm run css && tsc && vite build",
-    "serve": "vite preview",
     "watch:css": "bun run watch:unocss & bun run watch:postcss",
     "watch:unocss": "npx unocss src/*.webc src/**/*.webc src/**/**/*.webc -o src/css/utilities_generated.css --watch",
     "watch:postcss": "postcss src/css/main.css -o public/css/main.css --watch",
     "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch",
-    "watch:config": "npx esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch"
+    "watch:config": "npx esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
+    "build:js": "",
+    "build:11ty": "",
+    "build:css": "TODO: unocss NODE_ENV=production postcss src/css/main.css -o public/css/main.css",
+    "clean-build": "rm -rf _site"
   },
   "dependencies": {
     "alpinejs": "^3.10.5",
@@ -26,11 +28,13 @@
     "@netlify/functions": "^1.3.0",
     "@types/node": "^16.11.6",
     "@unocss/cli": "^0.46.3",
+    "cssnano": "^5.1.14",
     "netlify-cli": "^12.1.0",
     "node-fetch": "^2.6.6",
     "postcss": "^8.4.19",
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.0.0",
+    "postcss-prune-var": "^1.0.4",
     "typescript": "^4.3.2",
     "unocss": "^0.46.3"
   }
