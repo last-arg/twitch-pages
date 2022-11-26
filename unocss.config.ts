@@ -2,6 +2,7 @@ import { defineConfig, escapeSelector } from "unocss";
 
 // TODO: add l-gap for l-grid
 const config = defineConfig({
+  cli: {entry: { patterns: ["src/*.webc", "src/**/*.webc", "src/**/**/*.webc"], outFile: "src/css/utilities_generated.css"} },
   rules: [
     [/^stack\-?(\d*)(.*)$/, ruleStack, {layer: "component"}],
     [/^l-grid-?(.*)$/, ruleLayoutGrid, {layer: "component"}],
@@ -83,7 +84,6 @@ ${classSelector} { gap: var(${css_attr}); }
 function ruleStack([selector, nr, unit_or_fluid]: RegExpMatchArray) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--stack-space"
-  console.log(selector, nr, unit_or_fluid);
 
   if (nr === '' && unit_or_fluid === '') {
     return `

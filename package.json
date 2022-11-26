@@ -5,14 +5,14 @@
   "scripts": {
     "dev": "npm-run-all -p watch:* netlify",
     "netlify": "netlify dev",
-    "watch:unocss": "npx unocss src/*.webc src/**/*.webc src/**/**/*.webc -o src/css/utilities_generated.css --watch",
+    "watch:unocss": "unocss --watch",
     "watch:css": "postcss src/css/main.css -o public/css/main.css --watch",
     "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch",
     "watch:config": "npx esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
     "build": "TODO",
     "build:js": "",
     "build:11ty": "",
-    "build:css": "TODO: unocss NODE_ENV=production postcss src/css/main.css -o public/css/main.css",
+    "build:css": "unocss && NODE_ENV=production postcss src/css/main.css -o _site/public/css/main.css",
     "clean-build": "rm -rf _site/"
   },
   "dependencies": {
