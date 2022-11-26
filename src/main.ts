@@ -117,7 +117,6 @@ class Twitch {
     let token = this.getTwitchToken();
     if (!token) {
       this.is_fetching_token = true;
-      console.log("fetch new token")
       const r = await fetch("/api/twitch-api/?new-token");
       if (r.status !== 200) {
         console.warn("Failed to get new twitch token");
@@ -144,7 +143,6 @@ class Twitch {
 }
 
 const t = new Twitch(TWITCH_CLIENT_ID);
-t.fetchToken();
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === "/") return mainContent["top-games"]
@@ -884,17 +882,18 @@ const initHtmx = async () => {
 
 const init = async () => {
   // Save user access_token after login (settings page)
-  if (window.location.hash) {
-    for (const paramStr of window.location.hash.slice(1).split("&")) {
-      const [key, token] = paramStr.split("=")
-      if (key === "access_token") {
-        t.setUserToken(token)
-        location.hash = ""
-        break
-      }
-    }
-  }
+  // if (window.location.hash) {
+  //   for (const paramStr of window.location.hash.slice(1).split("&")) {
+  //     const [key, token] = paramStr.split("=")
+  //     if (key === "access_token") {
+  //       t.setUserToken(token)
+  //       location.hash = ""
+  //       break
+  //     }
+  //   }
+  // }
 
+  await t.fetchToken();
   alpineInit()
   initHtmx()
   handleSidebarScroll()

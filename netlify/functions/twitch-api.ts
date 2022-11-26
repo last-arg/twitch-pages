@@ -29,7 +29,7 @@ const handler: Handler = async (event) => {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
   }
 
-  if (event.queryStringParameters && event.queryStringParameters['new-token']) {
+  if (event.queryStringParameters && event.queryStringParameters['new-token'] === '') {
     console.log("get new token");
     const new_token = await requestTwitchToken()
 
