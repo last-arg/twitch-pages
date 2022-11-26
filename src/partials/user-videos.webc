@@ -48,9 +48,9 @@ permalink: "{{'public/partials/user-videos.html'}}"
     </div>
     <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
       x-init="
-        if ($store.global.settings['video-archives'] !== 'on') $el.classList.add('no-archives')
-        if ($store.global.settings['video-uploads'] !== 'on') $el.classList.add('no-uploads')
-        if ($store.global.settings['video-highlights'] !== 'on') $el.classList.add('no-highlights')
+        if (!$store.global.settings['video-archives']) $el.classList.add('no-archives')
+        if (!$store.global.settings['video-uploads']) $el.classList.add('no-uploads')
+        if (!$store.global.settings['video-highlights']) $el.classList.add('no-highlights')
       "
     >
       <template id="user-video-template">
