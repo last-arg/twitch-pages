@@ -120,4 +120,4 @@ title: "Home | Twitch Pages"
     Loading...
   </main>
 </div>
-<div id="aria-feedback" role="status" aria-live="polite"></div>
+<div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>
