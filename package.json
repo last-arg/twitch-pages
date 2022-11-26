@@ -3,18 +3,17 @@
   "version": "1.0.0",
   "description": "Twitch alternative page with htmx and alpine",
   "scripts": {
+    "dev": "npm-run-all -p watch:* netlify",
     "netlify": "netlify dev",
-    "dev": "bun run watch:config & bun run watch:css & bun run watch:js",
-    "build": "npm run css && tsc && vite build",
-    "watch:css": "bun run watch:unocss & bun run watch:postcss",
     "watch:unocss": "npx unocss src/*.webc src/**/*.webc src/**/**/*.webc -o src/css/utilities_generated.css --watch",
-    "watch:postcss": "postcss src/css/main.css -o public/css/main.css --watch",
+    "watch:css": "postcss src/css/main.css -o public/css/main.css --watch",
     "watch:js": "npx esbuild src/main.ts --bundle --outdir=public/js/ --watch",
     "watch:config": "npx esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
+    "build": "TODO",
     "build:js": "",
     "build:11ty": "",
     "build:css": "TODO: unocss NODE_ENV=production postcss src/css/main.css -o public/css/main.css",
-    "clean-build": "rm -rf _site"
+    "clean-build": "rm -rf _site/"
   },
   "dependencies": {
     "alpinejs": "^3.10.5",
@@ -31,6 +30,7 @@
     "cssnano": "^5.1.14",
     "netlify-cli": "^12.1.0",
     "node-fetch": "^2.6.6",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.19",
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.0.0",
