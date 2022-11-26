@@ -10,7 +10,7 @@ Pages:
 * Animations/Transitions
 * Check needed images sizes
 * service worker
-* purge CSS
+* change settings defaults for production build
 * ??? Category/Game add viewer range filter
 
 ## Resources
