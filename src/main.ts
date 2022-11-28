@@ -2,7 +2,6 @@ import Alpine from 'alpinejs'
 import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
 import { mainContent, UrlResolve, config } from 'config'
 import 'htmx.org';
-// import './libs/twinspark.js'
 
 // TODO: Search: Show old values when searching for new ones?
 
@@ -757,6 +756,7 @@ const initHtmx = async () => {
 
         const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
         const item = json.data[0];
+        document.title = `${item.name} | Twitch Pages`;
         document.querySelector("#param-game_id")!.setAttribute("value", item.id);
         htmx.trigger(".btn-load-more", "click", {})
         let result = "";
@@ -814,6 +814,7 @@ const initHtmx = async () => {
 
         const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
         const item = json.data[0];
+        document.title = `${item.display_name} | Twitch Pages`;
         document.querySelector("#param-user_id")!.setAttribute("value", item.id);
         htmx.trigger(".btn-load-more", "click", {})
         let result = "";

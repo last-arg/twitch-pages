@@ -8,7 +8,6 @@ Pages:
 
 ## TODO
 * Animations/Transitions
-* Check needed images sizes
 * service worker
 * change settings defaults for production build
 * ??? Category/Game add viewer range filter
