@@ -26,7 +26,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
           x-data="{game: ''}" x-effect="game = await $store.global.getLiveUserGame(':user_id')"
         >
           <span>LIVE</span>
-          <p x-text="game"></p>
+          <a x-bind:href="'https://www.twitch.tv/directory/game/' + game" x-text="game"></a>
         </div>
       </template>
     </div>
@@ -99,9 +99,16 @@ permalink: "{{'public/partials/user-videos.html'}}"
   padding-inline: var(--space-3xs);
 }
 
-.user-live p {
+.user-live a {
+  text-decoration: none;
+  display: block;
   color: var(--gray-7);
   font-style: italic;
+}
+
+.user-live a:is(:hover, :focus) {
+  color: var(--violet-8);
+  text-decoration: underline;
 }
 
 .video-link {
