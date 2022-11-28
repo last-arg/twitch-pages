@@ -1,6 +1,6 @@
 import Alpine from 'alpinejs'
-import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, TOP_GAMES_COUNT, STREAMS_COUNT, USER_VIDEOS_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
-import { mainContent, UrlResolve, config } from 'config'
+import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
+import { mainContent, UrlResolve, config, settings } from 'config';
 import 'htmx.org';
 
 // TODO: Search: Show old values when searching for new ones?
@@ -580,9 +580,9 @@ function alpineInit() {
 
     const storeGlobal: Global = {
       settings: {
-        "top-games-count": TOP_GAMES_COUNT,
-        "category-count": STREAMS_COUNT,
-        "user-videos-count": USER_VIDEOS_COUNT,
+        "top-games-count": settings.top_games_count,
+        "category-count": settings.streams_count,
+        "user-videos-count": settings.user_videos_count,
         "video-archives": true,
         "video-uploads": false,
         "video-highlights": false,

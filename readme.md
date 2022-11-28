@@ -9,7 +9,6 @@ Pages:
 ## TODO
 * Animations/Transitions
 * service worker
-* change settings defaults for production build
 * ??? Category/Game add viewer range filter
 
 ## Resources

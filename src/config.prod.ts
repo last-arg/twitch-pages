@@ -3,6 +3,21 @@ export interface UrlResolve {
   html: string,
 }
 
+const settings_base = {
+  streams_count: 5,
+  user_videos_count: 10,
+  top_games_count: 5,
+}
+
+if (process.env.NODE_ENV === "production") {
+  settings_base.streams_count = 15;
+  settings_base.user_videos_count = 15;
+  settings_base.top_games_count = 15;
+}
+
+export const settings = settings_base;
+
+
 export const mainContent: Record<string, UrlResolve> = {
   "top-games": {
     url: "/",
