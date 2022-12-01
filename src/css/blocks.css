@@ -17,7 +17,7 @@
 
 header {
   position: fixed;
-  background: var(--gray-12);
+  background: var(--surface2);
   top: 0;
   width: 100%;
 }
@@ -54,7 +54,7 @@ header {
 }
 
 .sidebar-content {
-  --sidebar-bg: var(--fg);
+  --sidebar-bg: var(--text1);
   font-size: var(--step-0);
   display: flex;
   flex-direction: column;
@@ -73,9 +73,9 @@ form[role="search"] {
 }
 
 form[role="search"] input {
-  --border-color: var(--gray-8);
+  --border-color: var(--surface4);
   border: none;
-  background-color: var(--gray-2);
+  background-color: var(--surface3);
   border-top: 1px solid var(--border-color);
   border-bottom: var(--space-3xs) solid var(--border-color);
   padding-inline: var(--space-2xs);
@@ -87,7 +87,7 @@ form[role="search"] input {
 
 form[role=search] input[aria-expanded=true],
 form[role=search] input[aria-expanded=true] + .menu-item {
-  border-bottom-color: var(--violet-8);
+  border-bottom-color: var(--surface5);
 }
 
 form[role=search] input[aria-expanded=false] ~ sidebar-menu {
@@ -95,7 +95,7 @@ form[role=search] input[aria-expanded=false] ~ sidebar-menu {
 }
 
 form[role="search"]:is(:hover, :focus-within) :is(.menu-item, input) {
-  --border-color: var(--stone-7);
+  --border-color: var(--surface6);
 }
 
 main {
@@ -112,7 +112,7 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  color: var(--gray-4);
+  color: var(--text3);
   opacity: .9;
   padding-inline: var(--space-2xs);
   padding-bottom: 2px;
@@ -120,7 +120,7 @@ main {
 
 .card-live span {
   padding-inline: 3px;
-  background-color: var(--red-12);
+  background-color: var(--surface7);
   border-radius: var(--radius-1);
 }
 

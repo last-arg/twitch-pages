@@ -132,7 +132,7 @@ permalink: "{{ 'public/partials/category.html' }}"
   border-bottom-right-radius: var(--radius-2);
   border-bottom-left-radius: var(--radius-2);
   padding: var(--space-2xs) var(--space-3xs);
-  background-image: linear-gradient(var(--bg), var(--info-bg) 5%);
+  background-image: linear-gradient(var(--surface1), var(--info-bg) 5%);
 }
 
 .user-info:is(:hover, :focus-within) {

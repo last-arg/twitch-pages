@@ -43,7 +43,7 @@
 .msg-no-more,
 .msg-loading {
   --bg-color: var(--gray-3);
-  color: var(--fg);
+  color: var(--text1);
 }
 
 .btn-load-more[aria-disabled=false],

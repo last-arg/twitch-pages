@@ -17,7 +17,7 @@
   gap: var(--space-3xs);
   font-size: var(--step--1);
   background-color: var(--violet-9);
-  color: var(--bg);
+  color: var(--text2);
   padding: var(--space-3xs) var(--space-2xs);
 }
 
@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   background-color: var(--violet-9);  
-  color: var(--bg);
+  color: var(--text2);
   padding: var(--space-3xs) var(--space-2xs);
   opacity: .7;
 }

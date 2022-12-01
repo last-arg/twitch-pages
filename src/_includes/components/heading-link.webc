@@ -32,7 +32,7 @@
 .heading-main h2 {
   font-weight: var(--font-weight-3);
   font-size: var(--heading-size);
-  color: var(--fg);
+  color: var(--text1);
   margin-inline: var(--space-xs);
 }
 

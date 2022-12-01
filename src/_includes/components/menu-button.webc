@@ -14,7 +14,7 @@
   text-decoration: none;
   --_bg-item: var(--gray-8);
   background-color: var(--_bg-item);
-  color: var(--bg);
+  color: var(--text2);
   padding-block-start: var(--space-3xs);
   padding-inline: var(--space-2xs);
   --border-color: var(--_bg-item);

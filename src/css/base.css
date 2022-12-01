@@ -134,13 +134,27 @@ legend {
 
   --heading-size: var(--step-2);
   --body-size: var(--step-0);
-  --bg: var(--gray-1);
-  --fg: var(--gray-11);
+
+  /*
+  TODO: use general variables that can be used in setting light/dark mode
+  */
+  --surface1: var(--gray-1);
+  --surface2: var(--gray-12);
+  --surface3: var(--gray-2);
+  --surface4: var(--gray-8);
+  --surface5: var(--violet-8);
+  --surface6: var(--stone-7);
+  --surface7: var(--red-12);
+  
+  --text1: var(--gray-11);
+  --text2: var(--gray-1);
+  --text3: var(--gray-4);
+
 }
 
 body {
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--surface1);
+  color: var(--text1);
   font-family: var(--font-sans);
   font-size: var(--body-size);
   letter-spacing: var(--tracking);
@@ -186,5 +200,5 @@ button {
 }
 
 header {
-  color: var(--bg);
+  color: var(--text2);
 }

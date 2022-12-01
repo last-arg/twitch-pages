@@ -95,7 +95,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 .user-live span {
   background-color: var(--red-10);
   border-radius: var(--radius-1);
-  color: var(--bg);
+  color: var(--text2);
   padding-inline: var(--space-3xs);
 }
 
