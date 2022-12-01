@@ -7,7 +7,7 @@ permalink: "{{'public/partials/top-games.html'}}"
   </div>
   <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 10rem; --l-grid-gap: 2em 0.5em" role="list" x-on:click="$store.global.changePath">
     <template webc:keep webc:type="11ty" id="top-games-template">
-      <li>
+      <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
             <a class="game-img-link" href="#game_url"

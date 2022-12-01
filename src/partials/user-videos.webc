@@ -54,7 +54,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
       "
     >
       <template id="user-video-template">
-        <li class="video" data-video-type=":video_type" data-title=":encoded_video_title">
+        <li class="video simple-fade-in" data-video-type=":video_type" data-title=":encoded_video_title">
           <a class="video-link" href="#video_url" title=":video_title">
             <div class="video-img-wrapper">
               <img src="#img_url" alt="" 

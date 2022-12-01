@@ -5,7 +5,7 @@ export interface UrlResolve {
 
 const settings_base = {
   streams_count: 5,
-  user_videos_count: 10,
+  user_videos_count: 5,
   top_games_count: 5,
 }
 

@@ -29,7 +29,7 @@ permalink: "{{ 'public/partials/category.html' }}"
     <div id="feedback"></div>
     <ul class="output-list l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list" x-on:click="$store.global.changePath">
       <template webc:keep webc:type="11ty" id="category-streams-template">
-        <li data-user-id=":user_id" data-title=":title_encoded">
+        <li class="simple-fade-in" data-user-id=":user_id" data-title=":title_encoded">
           <div class="user">
             <a class="user-link" href="https://twitch.tv/:user_login" title=":title">
               <div class="relative">

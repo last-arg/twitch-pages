@@ -7,8 +7,9 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-* Animations/Transitions
 * service worker
+* Implement dark mode
+  * Consolidate CSS variables. Can just swap variable values in light/dark mode.
 * ??? Category/Game add viewer range filter
 
 ## Resources
