@@ -105,7 +105,7 @@ permalink: "{{ 'public/partials/category.html' }}"
   display: flex;  
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--surface8);
   padding: var(--space-3xs);
   border-radius: var(--radius-2);
 }
@@ -127,16 +127,12 @@ permalink: "{{ 'public/partials/category.html' }}"
 
 .user-info {
   display: flex;
-  --info-bg: #fbfcfd;
+  --info-bg: var(--surface8);
   background-color: var(--info-bg);
   border-bottom-right-radius: var(--radius-2);
   border-bottom-left-radius: var(--radius-2);
   padding: var(--space-2xs) var(--space-3xs);
   background-image: linear-gradient(var(--surface1), var(--info-bg) 5%);
-}
-
-.user-info:is(:hover, :focus-within) {
-  --info-bg: white;
 }
 
 .user-info-link {
@@ -150,18 +146,18 @@ permalink: "{{ 'public/partials/category.html' }}"
   padding-left: var(--space-2xs);
   margin-left: var(--space-2xs);
   margin-right: var(--space-3xs);
-  border-left: 1px solid var(--gray-3);
+  border-left: 1px solid var(--surface13);
 }
 
 .user a:is(:hover, :focus),
 .user-info-img-link:is(:hover, :focus) + div .user-info-link {
-  color: var(--violet-8);
+  color: var(--text4);
   text-decoration: underline;
 }
 
 .user-info-img-link {
   align-self: start;
-  border: 1px solid var(--gray-2);
+  border: 1px solid var(--surface13);
   flex: none;
 }
 
