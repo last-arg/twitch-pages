@@ -153,6 +153,7 @@ legend {
   --surface13: var(--gray-3);
   --surface14: var(--violet-3);
   --surface15: var(--violet-3);
+  --surface16: var(--red-10);
   
   --text1: var(--gray-11);
   --text2: var(--gray-1);
@@ -160,6 +161,7 @@ legend {
   --text4: var(--violet-8);
   --text5: var(--violet-12);
   --text6: var(--gray-6);
+  --text7: var(--gray-7);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -177,12 +179,14 @@ legend {
     --surface13: var(--gray-7);
     --surface14: var(--violet-11);
     --surface15: var(--violet-9);
+    --surface16: var(--red-12);
 
     --text1: var(--gray-1);
     --text2: var(--gray-2);
     --text4: var(--violet-4);
     --text5: var(--violet-1);
     --text6: var(--gray-4);
+    --text7: var(--gray-4);
   }
 }
 

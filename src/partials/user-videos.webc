@@ -93,7 +93,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 }
 
 .user-live span {
-  background-color: var(--red-10);
+  background-color: var(--surface16);
   border-radius: var(--radius-1);
   color: var(--text2);
   padding-inline: var(--space-3xs);
@@ -102,7 +102,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 .user-live a {
   text-decoration: none;
   display: block;
-  color: var(--gray-7);
+  color: var(--text7);
   font-style: italic;
 }
 
