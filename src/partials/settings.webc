@@ -103,7 +103,7 @@ permalink: "{{'public/partials/settings.html'}}"
 <style>
 .settings section {
   padding: var(--space-xs);
-  background: white;
+  background: var(--surface8);
 }
 
 .settings h4 {
@@ -112,6 +112,10 @@ permalink: "{{'public/partials/settings.html'}}"
 
 .settings input[type=number] {
   max-width: 5rem;
+  color: var(--text1);
+  background-color: var(--surface8);
+  border-color: var(--surface13);
+  border-style: solid;
 }
 
 .settings h3 + * {
@@ -119,14 +123,14 @@ permalink: "{{'public/partials/settings.html'}}"
 }
 
 .settings button {
-  background-color: var(--violet-1);
-  color: var(--violet-12);
+  background-color: var(--surface11);
+  color: var(--text5);
   padding: var(--space-2xs);
   border-radius: var(--radius-2);
 }
 
 .settings button:is(:hover, :focus) {
-  background-color: var(--violet-2);
+  background-color: var(--surface15);
 }
 
 </style>
