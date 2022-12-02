@@ -18,7 +18,7 @@
   width: 0;
   min-width: 11rem;
   max-width: 17rem;
-  background-color: var(--surface2);
+  background-color: var(--surface8);
   color: var(--text1);
   
   border: 2px solid var(--surface13);

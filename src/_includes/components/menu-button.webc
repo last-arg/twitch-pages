@@ -12,7 +12,7 @@
   height: 100%;
   font-size: var(--step--1);
   text-decoration: none;
-  --_bg-item: var(--violet-12);
+  --_bg-item: var(--surface4);
   background-color: var(--_bg-item);
   color: var(--text2);
   padding-block-start: var(--space-3xs);
