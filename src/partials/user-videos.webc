@@ -107,7 +107,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 }
 
 .user-live a:is(:hover, :focus) {
-  color: var(--violet-8);
+  color: var(--text4);
   text-decoration: underline;
 }
 
@@ -118,7 +118,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
 }
 
 .video-link:is(:hover, :focus) {
-  color: var(--violet-8);
+  color: var(--text4);
   text-decoration: underline;
 }
 
@@ -179,7 +179,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--surface8);
   padding: var(--space-3xs);
   border-radius: var(--radius-2);
 }

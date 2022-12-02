@@ -9,8 +9,8 @@
 .filter-option {
   display: flex;
   align-items: center;
-  color: var(--violet-12);
-  background-color: var(--violet-1);
+  color: var(--text5);
+  background-color: var(--surface10);
   border-radius: var(--radius-3) var(--radius-6) var(--radius-6) var(--radius-3);
   padding-block: 4px;
   padding-inline: 4px var(--space-xs);
@@ -20,7 +20,7 @@
   appearance: none;
   margin: 0;
   /* For iOS < 15 to remove gradient background */
-  background-color: #fff;
+  background-color: white;
   color: currentColor;
   height: 1.68em;
   width: 1.68em;
@@ -36,7 +36,7 @@
   width: 1.1em;
   transform-origin: center;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  background-color: var(--violet-3);
+  background-color: var(--surface14);
   transform: scale(0);
 }
 
@@ -45,7 +45,7 @@
 }
 
 .filter-option:is(:hover, :focus-within) {
-  background: var(--violet-2);
+  background: var(--surface11);
 }
 </style>
 

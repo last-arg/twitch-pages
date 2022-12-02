@@ -151,6 +151,7 @@ legend {
   --surface11: var(--violet-2);
   --surface12: var(--gray-3);
   --surface13: var(--gray-3);
+  --surface14: var(--violet-3);
   
   --text1: var(--gray-11);
   --text2: var(--gray-1);
@@ -171,6 +172,7 @@ legend {
     --surface11: var(--violet-10);
     --surface12: var(--gray-8);
     --surface13: var(--gray-7);
+    --surface14: var(--violet-11);
 
     --text1: var(--gray-1);
     --text2: var(--gray-2);
