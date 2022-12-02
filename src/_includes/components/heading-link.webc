@@ -25,7 +25,7 @@
 .heading-main {
   display: flex;  
   align-items: center;
-  background:white;
+  background: var(--surface8);
   flex-grow: 1;
 }
 
@@ -51,8 +51,8 @@ heading-link {
 }
 
 .action-box {
-  background: white;
-  color: var(--gray-6);
+  background: var(--surface8);
+  color: var(--text6);
   padding: var(--space-2xs);
 }
 
@@ -65,6 +65,6 @@ heading-link {
 }
 
 .action-box a:is(:hover, :focus) {
-  color: var(--violet-8);
+  color: var(--text4);
 }
 </style>
