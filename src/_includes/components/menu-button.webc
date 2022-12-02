@@ -12,7 +12,7 @@
   height: 100%;
   font-size: var(--step--1);
   text-decoration: none;
-  --_bg-item: var(--gray-8);
+  --_bg-item: var(--violet-12);
   background-color: var(--_bg-item);
   color: var(--text2);
   padding-block-start: var(--space-3xs);
@@ -23,11 +23,11 @@
 
 .menu-item:hover,
 .menu-item:focus {
-  --border-color: var(--stone-7);
+  --border-color: var(--surface6);
 }
 
 .menu-item[aria-expanded=true] {
-  border-bottom-color: var(--violet-8);
+  border-bottom-color: var(--surface5);
 }
 
 .menu-item svg {

@@ -16,8 +16,9 @@
 }
 
 header {
-  position: fixed;
+  color: var(--text2);
   background: var(--surface2);
+  position: fixed;
   top: 0;
   width: 100%;
 }
@@ -54,7 +55,7 @@ header {
 }
 
 .sidebar-content {
-  --sidebar-bg: var(--text1);
+  --sidebar-bg: var(--surface2);
   font-size: var(--step-0);
   display: flex;
   flex-direction: column;
