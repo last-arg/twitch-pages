@@ -57,8 +57,8 @@ permalink: "{{'public/partials/top-games.html'}}"
   height: 100%;
   font-size: var(--step--1);
   text-decoration: none;
-  color: var(--gray-11);
-  background: white;
+  color: var(--text1);
+  background: var(--surface8);
   padding-inline: var(--space-2xs);
   padding-block: var(--space-3xs);
   display: -webkit-box;
@@ -72,7 +72,7 @@ permalink: "{{'public/partials/top-games.html'}}"
 
 .img-wrapper:is(:hover, :focus) + .game-link,
 .game-link:is(:hover, :focus) {
-  color: var(--violet-8);
+  color: var(--text4);
   text-decoration: underline;
 }
 
@@ -83,14 +83,14 @@ permalink: "{{'public/partials/top-games.html'}}"
 
 .game-img-link {
   display: block;
-  border-top: 3px solid white;
-  border-left: 3px solid white;
-  border-right: 3px solid white;
+  border-top: 3px solid var(--surface8);
+  border-left: 3px solid var(--surface8);
+  border-right: 3px solid var(--surface8);
 }
 
 .game-img {
   width: 100%;
-  background: white;
+  background: var(--surface8);
   display: block;
 }
 
@@ -104,7 +104,7 @@ permalink: "{{'public/partials/top-games.html'}}"
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(rgba(255,255,255, 90%), white 80%);
+  background-image: linear-gradient(var(--surface9), var(--surface8) 80%);
 }
 
 .game-action svg {

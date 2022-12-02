@@ -133,7 +133,7 @@ main {
 
 .main-heading {
   font-weight: var(--font-weight-3);
-  background: white;
+  background: var(--surface8);
   display: inline-block;
   padding: var(--space-3xs) var(--space-2xs);
   font-size: var(--heading-size);

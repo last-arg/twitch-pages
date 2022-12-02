@@ -145,11 +145,34 @@ legend {
   --surface5: var(--violet-8);
   --surface6: var(--stone-7);
   --surface7: var(--red-12);
+  --surface8: white;
+  --surface9: rgba(255,255,255, 90%);
+  --surface10: var(--violet-1);
+  --surface11: var(--violet-2);
+  --surface12: var(--gray-3);
   
   --text1: var(--gray-11);
   --text2: var(--gray-1);
   --text3: var(--gray-4);
+  --text4: var(--violet-8);
+  --text5: var(--violet-12);
+}
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface1: black;
+    --surface2: var(--gray-9);
+    --surface8: var(--gray-8);
+    --surface9: rgba(0,0,0, 70%);
+    --surface10: var(--violet-12);
+    --surface11: var(--violet-10);
+    --surface12: var(--gray-8);
+
+    --text1: var(--gray-1);
+    --text2: var(--gray-2);
+    --text4: var(--violet-3);
+    --text5: var(--violet-1);
+  }
 }
 
 body {
