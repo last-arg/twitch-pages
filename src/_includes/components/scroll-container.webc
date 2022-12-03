@@ -21,6 +21,7 @@
   --dir: to top;
   background-image: linear-gradient(var(--dir), var(--gradient-shadow));
   display: none;
+  z-index: 1;
 }
 
 .scroll-container::before {
