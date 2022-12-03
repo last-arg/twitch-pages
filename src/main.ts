@@ -112,6 +112,11 @@ class Twitch {
       this.setTwitchToken(this.twitch_token);
     }
   }
+  // TODO: when token becomes invalid
+  // From twitch docs: 'If a token becomes invalid, your API requests return 
+  //   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
+  //   new access token using the appropriate flow for your app.'
+  // Have to check for 401 in any twitch API request code
   async fetchToken() {
     let token = this.getTwitchToken();
     if (!token) {
@@ -139,9 +144,26 @@ class Twitch {
   setUserToken(token: string) {
     console.log("TODO: setUserToken")
   }
+
+  async fetchUsers(ids: string[]) {
+    const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
+    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+  }
+
+  async fetchSearch(input: string) {
+    const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
+    const r = await fetch(url, { method: "GET", headers: Twitch.headers })
+    const results = await r.json()
+    return results.data ?? []
+  }
+  
+  async fetchStreams(user_ids: string[]) {
+    const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
+    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+  }
 }
 
-const t = new Twitch(TWITCH_CLIENT_ID);
+const twitch = new Twitch(TWITCH_CLIENT_ID);
 
 const getUrlObject = (newPath: string): UrlResolve => {
   if (newPath === "/") return mainContent["top-games"]
@@ -183,8 +205,7 @@ function menuItemToScrollPosition(menuitem: Element | undefined): Element | null
 function alpineInit() {
   const fetchUsers = async (ids: string[]): Promise<any[]> => {
     if (ids.length === 0) return []
-    const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+    return await twitch.fetchUsers(ids);
   }
 
   interface Search {
@@ -268,10 +289,7 @@ function alpineInit() {
         async fetchSearch(value: string): Promise<Search[]> {
           const searchTerm = value.trim()
           if (searchTerm.length === 0) return []
-          const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${searchTerm}`;
-          const r = await fetch(url, { method: "GET", headers: Twitch.headers })
-          const results = await r.json()
-          return results.data ?? []
+          return await twitch.fetchSearch(searchTerm);
         },
         closeSidebar() {
           sidebarButtons[this.state].focus()
@@ -388,8 +406,7 @@ function alpineInit() {
 
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
-      const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-      return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+      return await twitch.fetchStreams(userIds);
     };
 
     interface StoreStreams {
@@ -893,7 +910,7 @@ const init = async () => {
   //   }
   // }
 
-  await t.fetchToken();
+  await twitch.fetchToken();
   alpineInit()
   initHtmx()
   handleSidebarScroll()

@@ -8,7 +8,6 @@ Pages:
 
 ## TODO
 * service worker
-* ??? Category/Game add viewer range filter
 
 ## Resources
 

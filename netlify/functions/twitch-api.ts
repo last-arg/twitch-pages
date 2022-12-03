@@ -4,10 +4,6 @@ import { TWITCH_CLIENT_ID } from "../../src/common"
 
 const { TWITCH_CLIENT_SECRET } = process.env
 
-// TODO: when token becomes invalid
-// From twitch docs: 'If a token becomes invalid, your API requests return 
-//   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
-//   new access token using the appropriate flow for your app.'
 const requestTwitchToken = async (): Promise<string | undefined> => {
   const oauth_url = `https://id.twitch.tv/oauth2/token?client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`
   const oauth_resp = await fetch(oauth_url, {
