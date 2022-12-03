@@ -726,12 +726,11 @@ const initHtmx = async () => {
             const url_name = encodeURIComponent(item.name);
             const game_url = mainContent['category'].url.replace(":category", url_name)
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
-            // TODO: url_name contains "'" or '"' it will fail
-            const game_obj_str = `{name: '${url_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+            let escaped_name = item.name.replace(/(['"])/g, '\\$1');
+            const game_obj_str = `{name: '${escaped_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
             result += tmpl.innerHTML
               .replaceAll("#game_url", game_url)
               .replace(":game_name_text", item.name)
-              .replace(":game_name_attr", url_name)
               .replace(":game_name_url", url_name)
               .replace("#game_img_url", img_url)
               .replace(":game_id", item.id)
@@ -761,9 +760,8 @@ const initHtmx = async () => {
         htmx.trigger(".btn-load-more", "click", {})
         let result = "";
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-        // TODO: need to encode string values. Quotes in strings will cause problems.
-        // Like: 'I'm Only Sleeping'
-        const game_obj_str = `{name: '${item.name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+        let escaped_name = item.name.replace(/(['"])/g, '\\$1');
+        const game_obj_str = `{name: '${escaped_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
         result += tmpl.innerHTML
           .replaceAll(":game_name", item.name)
           .replace(":game_id", item.id)
