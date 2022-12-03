@@ -10,28 +10,33 @@
   position: relative;
 }
 
+.scroll-container::before,
 .scroll-container::after {
-  /* TODO: instead of using shadows use gradient? */
-  --shadow-top: 0 2em 1em -1em var(--sidebar-bg, black) inset;
-  --shadow-bottom: 0 -2em 1em -1em var(--sidebar-bg, black) inset;
-  --box-shadow: none;
-  inset: var(--space-s) 0;
-  pointer-events: none;
-  position: absolute;
   content: '';
-  box-shadow: var(--box-shadow);
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3rem;
+  pointer-events: none;
+  --dir: to top;
+  background-image: linear-gradient(var(--dir), var(--gradient-shadow));
+  display: none;
 }
 
-.scroll-container[data-scroll-shadow=top]::after {
-  --box-shadow: var(--shadow-top);
+.scroll-container::before {
+  top: var(--space-s);
 }
 
-.scroll-container[data-scroll-shadow=bottom]::after {
-  --box-shadow: var(--shadow-bottom);
+.scroll-container::after {
+  bottom: var(--space-s);
+  --dir: to bottom;
 }
 
+.scroll-container[data-scroll-shadow=top]::before,
+.scroll-container[data-scroll-shadow=bottom]::after,
+.scroll-container[data-scroll-shadow=both]::before,
 .scroll-container[data-scroll-shadow=both]::after {
-  --box-shadow: var(--shadow-top), var(--shadow-bottom);
+  display: block;
 }
 
 .scrollbox {
