@@ -1,6 +1,5 @@
 import { defineConfig, escapeSelector } from "unocss";
 
-// TODO: add l-gap for l-grid
 const config = defineConfig({
   cli: {entry: { patterns: ["src/*.webc", "src/**/*.webc", "src/**/**/*.webc"], outFile: "src/css/utilities_generated.css"} },
   preflights: undefined,

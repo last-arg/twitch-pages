@@ -135,9 +135,6 @@ legend {
   --heading-size: var(--step-2);
   --body-size: var(--step-0);
 
-  /*
-  TODO: use general variables that can be used in setting light/dark mode
-  */
   --surface1: var(--gray-1);
   --surface2: var(--gray-12);
   --surface3: var(--gray-2);
