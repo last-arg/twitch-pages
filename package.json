@@ -10,7 +10,7 @@
     "watch:ts": "esbuild src/main.ts --bundle --outdir=public/js/ --watch",
     "watch:sw": "workbox generateSW --watch",
     "watch:config": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
-    "build": "npm-run-all clean-build build:ts build:11ty -p build:css build:sw minify:*",
+    "build": "npm-run-all clean-build build:ts build:11ty -p build:css minify:* -s build:sw",
     "build:ts": "esbuild src/main.ts --bundle --outdir=_site/public/js/",
     "build:sw": "workbox generateSW",
     "build:11ty": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ && eleventy",
