@@ -6,9 +6,6 @@ Pages:
 * User videos
 * Settings (non-twitch api page)
 
-## TODO
-* service worker
-
 ## Resources
 
 ### Accessibility

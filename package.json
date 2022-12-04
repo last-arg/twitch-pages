@@ -8,9 +8,11 @@
     "watch:unocss": "unocss --watch",
     "watch:css": "postcss src/css/main.css -o public/css/main.css --watch",
     "watch:ts": "esbuild src/main.ts --bundle --outdir=public/js/ --watch",
+    "watch:sw": "workbox generateSW --watch",
     "watch:config": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
-    "build": "npm-run-all clean-build build:ts build:11ty -p build:css minify:*",
+    "build": "npm-run-all clean-build build:ts build:11ty -p build:css build:sw minify:*",
     "build:ts": "esbuild src/main.ts --bundle --outdir=_site/public/js/",
+    "build:sw": "workbox generateSW",
     "build:11ty": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ && eleventy",
     "build:css": "unocss && NODE_ENV=production postcss src/css/main.css --no-map -o _site/public/css/main.css",
     "minify:js": "terser _site/public/js/main.js -m --toplevel -o _site/public/js/main.js",
@@ -39,6 +41,7 @@
     "postcss-import": "^15.0.0",
     "postcss-prune-var": "^1.0.4",
     "typescript": "^4.3.2",
-    "unocss": "^0.46.3"
+    "unocss": "^0.46.3",
+    "workbox-cli": "^6.5.4"
   }
 }

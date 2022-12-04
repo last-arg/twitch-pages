@@ -112,11 +112,6 @@ class Twitch {
       this.setTwitchToken(this.twitch_token);
     }
   }
-  // TODO: when token becomes invalid
-  // From twitch docs: 'If a token becomes invalid, your API requests return 
-  //   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
-  //   new access token using the appropriate flow for your app.'
-  // Have to check for 401 in any twitch API request code
   async fetchToken() {
     let token = this.getTwitchToken();
     if (!token) {
@@ -145,9 +140,19 @@ class Twitch {
     console.log("TODO: setUserToken")
   }
 
+  // TODO: when token becomes invalid
+  // From twitch docs: 'If a token becomes invalid, your API requests return 
+  //   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
+  //   new access token using the appropriate flow for your app.'
+  // Have to check for 401 in any twitch API request code
+  
   async fetchUsers(ids: string[]) {
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+    const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
+    if (resp.status === 401) {
+      
+    }
+    return (await resp.json()).data;
   }
 
   async fetchSearch(input: string) {
@@ -914,6 +919,12 @@ const init = async () => {
   alpineInit()
   initHtmx()
   handleSidebarScroll()
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+    });
+  }
 }
 
 init()
