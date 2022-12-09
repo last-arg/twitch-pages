@@ -1,6 +1,5 @@
 ---
 permalink: "{{ 'src/css/components.css' }}"
-
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 ---
@@ -8,7 +7,7 @@ eleventyExcludeFromCollections: true
 // NOTE: This duplicates CSS if pages contain same components
 let result = "";
 for (const c of this.collections.all) {
-  result += this.helpers.getCSS(c.url);
+  result += this.helpers.webcGetCss(c.url);
 }
 result;
 </script>

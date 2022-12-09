@@ -6,11 +6,11 @@
 	<meta name="description" content="">
 	<title @raw="title"></title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/public/css/main.css">
+  <link webc:raw rel="stylesheet" href="/public/css/main.css">
   <link rel="dns-prefetch" href="https://api.twitch.tv/" />
 </head>
 <body>
   <div @raw="content" webc:nokeep></div>
-  <script src="/public/js/main.js"></script>
+  <script webc:raw src="/public/js/main.js"></script>
 </body>
 </html>
