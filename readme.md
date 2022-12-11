@@ -6,6 +6,11 @@ Pages:
 * User videos
 * Settings (non-twitch api page)
 
+## TODO
+- use Cache API to store some stuff
+  - user header
+  - category header
+
 ## Resources
 
 ### Accessibility

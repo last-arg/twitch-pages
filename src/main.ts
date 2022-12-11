@@ -695,7 +695,7 @@ const handleSidebarScroll = () => {
   }
 }
 
-const initHtmx = async () => {
+const initHtmx = async (page_cache?: Cache) => {
   const global = Alpine.store("global") as Global
 
   htmx.defineExtension("twitch-api", {
@@ -823,6 +823,7 @@ const initHtmx = async () => {
         }
         return result;
       } else if (path === "/helix/users") {
+        const content_type: string = xhr.getResponseHeader("content-type");
         const json = JSON.parse(text);
         if (xhr.status !== 200 || json.data.length === 0) {
           const pathArr = location.pathname.split("/")
@@ -836,13 +837,28 @@ const initHtmx = async () => {
         const item = json.data[0];
         document.title = `${item.display_name} | Twitch Pages`;
         document.querySelector("#param-user_id")!.setAttribute("value", item.id);
-        htmx.trigger(".btn-load-more", "click", {})
+        htmx.ajax('GET', '/helix/videos', {source:'.btn-load-more'})
         let result = "";
         result += tmpl.innerHTML
           .replaceAll(":user_login", item.login)
           .replaceAll(":user_display_name", item.display_name)
           .replaceAll("#user_profile_image_url", item.profile_image_url)
           .replaceAll(":user_id", item.id)
+
+        const is_cache = xhr.getResponseHeader("sw-fetched-on");
+        if (!is_cache && page_cache) {
+          const opts = {
+            status: 200,
+            statusText: "OK",
+            headers: {
+              "content-type": content_type,
+              "content-length": xhr.getResponseHeader("content-length"),
+              "sw-fetched-on": new Date().getTime().toString(),
+            }
+          };
+          const resp = new Response(text, opts);
+          page_cache.put(xhr.responseURL, resp)
+        }
         return result;
       } else if (path === "/helix/videos") {
         const VIDEO_ICONS: Record<string, string> = {
@@ -915,9 +931,11 @@ const init = async () => {
   //   }
   // }
 
+  const page_cache = await caches.open('page_cache');
+  // await page_cache.delete("https://api.twitch.tv/helix/users?login=kiwo");
   await twitch.fetchToken();
   alpineInit()
-  initHtmx()
+  initHtmx(page_cache);
   handleSidebarScroll()
 
   if ('serviceWorker' in navigator) {

@@ -7,6 +7,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.ignores.add("src/css/");
   eleventyConfig.addPassthroughCopy("public");
+  eleventyConfig.addPassthroughCopy("src/sw.js");
   eleventyConfig.addPassthroughCopy("favicon.svg");
 	return {
 		// domdiff: false,
