@@ -27,7 +27,7 @@
     
     `
       <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
-      <a x-bind:href="${external_link}">
+      <a x-bind:href="${external_link}" rel="external">
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>

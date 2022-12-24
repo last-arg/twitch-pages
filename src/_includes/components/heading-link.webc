@@ -4,7 +4,7 @@
 </div>
 <div class="heading-actions">
   <div class="action-box">
-    <a :href="href">
+    <a :href="href" rel="external">
       <span class="sr-only">Go to twitch page</span>
       <svg aria-hidden="true" focusable="false">
         <use href="/public/assets/icons.svg#external-link"></use>
