@@ -49,7 +49,7 @@ permalink: "{{ 'public/partials/category.html' }}"
               <a class="user-info-img-link" aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
               >
-                <img class="block w-14" x-bind:src="$store.profile_images.imgUrl(':user_id')" alt="" 
+                <img class="block w-14" src="#user_img" alt="" 
                   :width="global.config.image.user.width" 
                   :height="global.config.image.user.height" />
               </a>

@@ -795,24 +795,31 @@ const initHtmx = async (page_cache?: Cache) => {
         const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
         let result = "";
         let user_ids = [];
+        const storeProfileImages = Alpine.store("profile_images") as ProfileImages;
         for (const item of json.data) {
-            user_ids.push(item.user_id);
+            const user_id = item.user_id;
+            let src_replace = "#user_img";
+            let src_user_img = storeProfileImages.imgUrl(user_id);
+            if (!src_user_img) {
+              user_ids.push(item.user_id);
+              src_user_img = `x-bind:src="$store.profile_images.imgUrl('${user_id}')"`;
+              src_replace = `src="${src_replace}"`;
+            }
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             result += tmpl.innerHTML
               .replaceAll("#video_url", video_url)
-              .replaceAll(":user_id", item.user_id)
+              .replaceAll(":user_id", user_id)
               .replaceAll(":user_login", item.user_login)
               .replaceAll(":user_name", item.user_name)
               .replaceAll(":title", item.title)
               .replace(":viewer_count", item.viewer_count)
               .replace("#video_img_url", img_url)
               .replace(":title_encoded", encodeURIComponent(item.title))
+              .replace(src_replace, src_user_img)
         }
         
-        const storeProfileImages = Alpine.store("profile_images") as ProfileImages
-        const imageIds = Object.keys(storeProfileImages.data)
-        user_ids = user_ids.filter((id: string) => !imageIds.includes(id))
+        // Fetch missing user profile images
         storeProfileImages.fetchProfileImages(user_ids)
         
         const cursor = json.pagination.cursor;
