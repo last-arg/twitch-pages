@@ -292,9 +292,9 @@ function alpineInit() {
             event.preventDefault();
             const elem = event.target as HTMLFormElement;
             const f_data = new FormData(elem);
-            this.settings.category.languages = f_data.getAll("lang");
-            this.settings.category.show_all = f_data.get("all-languages");
-            localStorage.setItem("settings.category", JSON.stringify(this.settings.category));
+            global.settings.category.languages = f_data.getAll("lang");
+            global.settings.category.show_all = f_data.get("all-languages");
+            localStorage.setItem("settings.category", JSON.stringify(global.settings.category));
           }
         },
       }
