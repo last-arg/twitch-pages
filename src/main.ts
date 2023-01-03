@@ -780,21 +780,21 @@ const initHtmx = async (page_cache?: Cache) => {
         evt.detail.headers = Twitch.headers;
 
         if (url.pathname === "/helix/games/top") {
-          evt.detail.parameters["first"] = global.settings["top-games-count"]
+          evt.detail.parameters["first"] = global.settings.general["top-games-count"]
         } else if (url.pathname === "/helix/games") {
           const path = global.clicked_path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
           global.setPath(null)
         } else if (url.pathname === "/helix/streams") {
-          evt.detail.parameters["first"] = global.settings["category-count"]
+          evt.detail.parameters["first"] = global.settings.general["category-count"]
         } else if (url.pathname === "/helix/users") {
           const path = global.clicked_path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
           global.setPath(null)
         } else if (path === "/helix/videos") {
-          evt.detail.parameters["first"] = global.settings["user-videos-count"]
+          evt.detail.parameters["first"] = global.settings.general["user-videos-count"]
         }
       } else if (name === "htmx:beforeRequest") {
         const btn = document.querySelector(".btn-load-more");
