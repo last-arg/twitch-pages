@@ -237,6 +237,12 @@ function alpineInit() {
   document.addEventListener("alpine:init", function() {
     Alpine.data("settings_category", (): any => {
       const global = (Alpine.store("global") as Global);
+      const options = document.querySelectorAll("#lang-list option");
+      const lang_map = new Map();
+      // @ts-ignore
+      for (let opt of options) {
+        lang_map.set(opt.getAttribute("lang-code")!, opt.value)
+      }
       return {
         has_languages: true,
         init() {
@@ -252,12 +258,9 @@ function alpineInit() {
           const ul = document.querySelector(".enabled-languages")!;
           const tmpl = ul.querySelector("template")!;
           const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as Element;
-          new_elem.setAttribute("x-ignore", "");
-          const p = new_elem.querySelector("p")!;
-          p.textContent = lang;
-          p.removeAttribute("x-text");
           const input = new_elem.querySelector("input")!;
-          p.removeAttribute("x-bind:value");
+          new_elem.setAttribute("x-ignore", "");
+          new_elem.querySelector("p")!.textContent = lang_map.get(lang);
           input.setAttribute("value", lang)
           ul.append(new_elem);
           this.hasLanguages();
@@ -268,9 +271,12 @@ function alpineInit() {
           }
           const addLangFromInput = (input: HTMLInputElement) => {
             const lang_value = input.value;
-            if (lang_value && document.querySelector(`option[value=${lang_value}]`) && !document.querySelector(`input[value=${lang_value}]`)) {
-              this.addLang(lang_value);
-              input.value = "";
+            if (lang_value) {
+              const opt = document.querySelector(`option[value=${lang_value}]`)
+              if (opt && !document.querySelector(`input[value=${lang_value}]`)) { 
+                this.addLang(opt.getAttribute("lang-code")!);
+                input.value = "";
+              }
             }
           }
           if (event.type === "keydown") {

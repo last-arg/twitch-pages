@@ -131,8 +131,8 @@ permalink: "{{'public/partials/settings.html'}}"
         <ul class="enabled-languages" role="list">
           <template>
             <li>
-              <p x-text="value">English</p>
-              <input type="hidden" x-bind:value="value" name="lang">
+              <p>English</p>
+              <input type="hidden" name="lang">
               <button type="button" class="remove-lang">Remove</button>
             </li>
           </template>
