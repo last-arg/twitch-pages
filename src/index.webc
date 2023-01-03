@@ -87,6 +87,7 @@ title: "Home | Twitch Pages"
           </li>
           <li>
             <!-- streams button -->
+            <!-- TODO: display number of live users -->
             <menu-button @name="streams" @icon="people"></menu-button>
             <!-- streams sidebar -->
             <div class="sidebar-position">
