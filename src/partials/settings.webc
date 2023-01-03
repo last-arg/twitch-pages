@@ -18,17 +18,17 @@ permalink: "{{'public/partials/settings.html'}}"
             <li>
               <label for="top-games-count">Top Games:</label>
               <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
-                x-bind:value="$store.global.settings['top-games-count']" value="5">
+                x-bind:value="$store.global.settings.general['top-games-count']" value="5">
             </li>
             <li>
               <label for="category-count">Category/Games:</label>
               <input type="number" id="category-count" name="category-count" min="1" max="100"
-                x-bind:value="$store.global.settings['category-count']" value="5">
+                x-bind:value="$store.global.settings.general['category-count']" value="5">
             </li>
             <li>
               <label for="user-videos-count">User videos:</label>
               <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100"
-                x-bind:value="$store.global.settings['user-videos-count']" value="5">
+                x-bind:value="$store.global.settings.general['user-videos-count']" value="5">
             </li>
           </ul>
         </fieldset>
@@ -39,21 +39,21 @@ permalink: "{{'public/partials/settings.html'}}"
             <li>
               <label for="video-archives">
                 <input type="checkbox" id="video-archives" name="video-archives"
-                x-init="$el.checked = $store.global.settings['video-archives'] === 'on'">
+                x-init="$el.checked = $store.global.settings.general['video-archives'] === 'on'">
                 <span>Archives</span>
               </label>
             </li>
             <li>
               <label for="video-uploads">
                 <input type="checkbox" id="video-uploads" name="video-uploads"
-                x-bind:checked="$store.global.settings['video-uploads'] === 'on'">
+                x-bind:checked="$store.global.settings.general['video-uploads'] === 'on'">
                 <span>Uploads</span>
               </label>
             </li>
             <li>
               <label for="video-highlights">
                 <input type="checkbox" id="video-highlights" name="video-highlights"
-                x-init="$el.checked = $store.global.settings['video-highlights'] === 'on'">
+                x-init="$el.checked = $store.global.settings.general['video-highlights'] === 'on'">
                 <span>Highlights</span>
               </label>
             </li>
@@ -98,9 +98,61 @@ permalink: "{{'public/partials/settings.html'}}"
         </li>
       </ul>
     </section>
+    <section>
+      <h3>Category</h3>
+      <form 
+        x-data="settings_category"
+        x-on:keydown.prevent.enter="saveSettings($event)" 
+        x-on:click="saveSettings($event)" 
+        x-on:submit.prevent="saveSettings($event)" 
+        >
+        <label>
+          <input type="checkbox" name="all-languages" checked
+            x-init="$el.checked = $store.global.settings.category.show_all === 'on'">
+          Show all languages
+        </label>
+        <div>
+          <label for="pick-lang">Languages to show</label>
+          <div class="flex">
+            <input type="text" list="lang-list" id="pick-lang">
+            <button type="button" class="add-lang">Add</button>
+          </div>
+        </div>
+        <datalist id="lang-list">
+          <script webc:type="js" webc:is="template">
+          let result = "";
+          const languages = this.language_codes;
+          for(const key in languages) {
+            result += `<option lang-code="${key}" value="${languages[key]}">`;
+          }
+          result;
+          </script>
+        </datalist>
+        <ul class="enabled-languages" role="list">
+          <template>
+            <li>
+              <p x-text="value">English</p>
+              <input type="hidden" x-bind:value="value" name="lang">
+              <button type="button" class="remove-lang">Remove</button>
+            </li>
+          </template>
+        </ul>
+        <p x-bind:class="has_languages && 'hidden'">No languages added. Will show all languages.</p>
+        <button type="submit">Save category settings</button>
+      </form>
+    </section>
   </div>
 </div>
 <style>
+.enabled-languages > li {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.enabled-languages > li button {
+  margin-left: auto;
+}
+
 .settings section {
   padding: var(--space-xs);
   background: var(--surface8);

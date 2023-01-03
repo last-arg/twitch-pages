@@ -83,7 +83,8 @@ interface ProfileImages {
 }
 
 interface Global {
-  settings: Record<string, number | "on" | boolean>,
+  settings: Record<string, Record<string, any>>,
+  addLang: (lang: string) => void,
   clicked_path: string | null,
   changePath: (e: Event) => void,  
   setPath: (name: string | null) => void,
@@ -234,6 +235,70 @@ function alpineInit() {
   }
 
   document.addEventListener("alpine:init", function() {
+    Alpine.data("settings_category", (): any => {
+      const global = (Alpine.store("global") as Global);
+      return {
+        has_languages: true,
+        init() {
+          for (const lang of global.settings.category.languages) {
+            this.addLang(lang);
+          }
+          this.hasLanguages();
+        },
+        hasLanguages() {
+          this.has_languages = document.querySelectorAll(".enabled-languages > li").length !== 0;
+        },
+        addLang(lang: string) {
+          const ul = document.querySelector(".enabled-languages")!;
+          const tmpl = ul.querySelector("template")!;
+          const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as Element;
+          new_elem.setAttribute("x-ignore", "");
+          const p = new_elem.querySelector("p")!;
+          p.textContent = lang;
+          p.removeAttribute("x-text");
+          const input = new_elem.querySelector("input")!;
+          p.removeAttribute("x-bind:value");
+          input.setAttribute("value", lang)
+          ul.append(new_elem);
+          this.hasLanguages();
+        },
+        saveSettings(event: Event) {
+          if (!event.target) {
+            return;
+          }
+          const addLangFromInput = (input: HTMLInputElement) => {
+            const lang_value = input.value;
+            if (lang_value && document.querySelector(`option[value=${lang_value}]`) && !document.querySelector(`input[value=${lang_value}]`)) {
+              this.addLang(lang_value);
+              input.value = "";
+            }
+          }
+          if (event.type === "keydown") {
+            const elem = event.target as HTMLInputElement; 
+            if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
+                addLangFromInput(elem as HTMLInputElement);
+            }
+          } else if (event.type === "click") {
+            const elem = event.target as HTMLButtonElement; 
+            if (elem.nodeName === "BUTTON") {
+              if (elem.classList.contains("add-lang")) {
+                addLangFromInput(elem.previousElementSibling as HTMLInputElement);
+              } else if (elem.classList.contains("remove-lang")) {
+                elem.closest("li")!.remove();
+                this.hasLanguages();
+              }
+            }
+          } else if (event.type === "submit") {
+            event.preventDefault();
+            const elem = event.target as HTMLFormElement;
+            const f_data = new FormData(elem);
+            this.settings.category.languages = f_data.getAll("lang");
+            this.settings.category.show_all = f_data.get("all-languages");
+            localStorage.setItem("settings.category", JSON.stringify(this.settings.category));
+          }
+        },
+      }
+    });
     Alpine.data("sidebar", (): Sidebar => {
       const sidebarButtons: Record<string, HTMLElement> = {
         "games": document.querySelector("[data-menu-item='games']")!,
@@ -602,27 +667,35 @@ function alpineInit() {
 
     const storeGlobal: Global = {
       settings: {
-        "top-games-count": settings.top_games_count,
-        "category-count": settings.streams_count,
-        "user-videos-count": settings.user_videos_count,
-        "video-archives": true,
-        "video-uploads": false,
-        "video-highlights": false,
+        general: {
+          "top-games-count": settings.top_games_count,
+          "category-count": settings.streams_count,
+          "user-videos-count": settings.user_videos_count,
+          "video-archives": 'on',
+          "video-uploads": false,
+          "video-highlights": false,
+        },
+        category: {
+          show_all: 'on',
+          languages: [],
+        }
       },
       mainContent: mainContent,
       clicked_path: null,
       init() {
-        const settings_str = localStorage.getItem("settings")
-        if (settings_str) {
-          const settings = JSON.parse(settings_str)
-          this.settings = { ...this.settings, ...settings }
+        for (const c in this.settings) {
+          const raw = localStorage.getItem(`settings.${c}`);
+          if (raw) {
+            const settings = JSON.parse(raw);
+            this.settings[c] = settings;
+          }
         }
       },
       saveSettingsForm(el: HTMLFormElement) {
         let opts_obj: Record<string, any> = {};
         (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value });
-        this.settings = { ...this.settings, ...opts_obj }
-        localStorage.setItem("settings", JSON.stringify(opts_obj))
+        this.settings.general = opts_obj
+        localStorage.setItem("settings.general", JSON.stringify(opts_obj))
       },
       async getLiveUserGame(user_id: string): Promise<string> {
         let result = (Alpine.store("streams")as StoreStreams).live[user_id] || ""
