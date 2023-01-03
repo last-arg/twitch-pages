@@ -101,6 +101,8 @@ permalink: "{{'public/partials/settings.html'}}"
     <section>
       <h3>Category</h3>
       <form 
+        id="form-category"
+        class="stack stack-s"
         x-data="settings_category"
         x-on:keydown.prevent.enter="saveSettings($event)" 
         x-on:click="saveSettings($event)" 
@@ -114,7 +116,7 @@ permalink: "{{'public/partials/settings.html'}}"
         <div>
           <label for="pick-lang">Languages to show</label>
           <div class="flex">
-            <input type="text" list="lang-list" id="pick-lang">
+            <input type="text" list="lang-list" id="pick-lang" placeholder="Enter language">
             <button type="button" class="add-lang">Add</button>
           </div>
         </div>
@@ -144,15 +146,6 @@ permalink: "{{'public/partials/settings.html'}}"
   </div>
 </div>
 <style>
-.enabled-languages > li {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.enabled-languages > li button {
-  margin-left: auto;
-}
-
 .settings section {
   padding: var(--space-xs);
   background: var(--surface8);
@@ -162,12 +155,17 @@ permalink: "{{'public/partials/settings.html'}}"
   font-weight: var(--font-weight-6);
 }
 
+.settings input[type=text],
 .settings input[type=number] {
-  max-width: 5rem;
   color: var(--text1);
   background-color: var(--surface8);
   border-color: var(--surface13);
   border-style: solid;
+  padding-inline: var(--space-3xs);
+}
+
+.settings input[type=number] {
+  max-width: 5rem;
 }
 
 .settings h3 + * {
@@ -185,4 +183,44 @@ permalink: "{{'public/partials/settings.html'}}"
   background-color: var(--surface15);
 }
 
+/* TODO: style settings category */
+#form-category {
+  width: min-content;
+}
+
+#pick-lang {
+  min-width: none;
+  max-width: none;
+  width: 200px;
+}
+
+
+.enabled-languages > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--space-3xs);
+}
+
+.enabled-languages > li:nth-child(2n - 1) {
+  background: var(--surface-19);
+}
+
+.enabled-languages > li button {
+  margin-left: auto;
+  padding: var(--space-3xs);
+}
+
+.add-lang {
+  margin-left: var(--space-3xs);
+}
+
+.settings .remove-lang {
+  background: var(--surface-17);
+  color: var(--text-8);
+}
+
+.settings .remove-lang:is(:hover, :focus) {
+  background: var(--surface-18);
+}
 </style>

@@ -153,6 +153,9 @@ legend {
   --surface14: var(--violet-3);
   --surface15: var(--violet-3);
   --surface16: var(--red-10);
+  --surface-17: var(--orange-2);
+  --surface-18: var(--orange-3);
+  --surface-19: var(--gray-0);
   
   --text1: var(--gray-11);
   --text2: var(--gray-1);
@@ -161,6 +164,7 @@ legend {
   --text5: var(--violet-12);
   --text6: var(--gray-6);
   --text7: var(--gray-7);
+  --text-8: var(--orange-12);
 
   --gradient-shadow: var(--gradient-gray-12);
 }
@@ -181,6 +185,9 @@ legend {
     --surface14: var(--violet-11);
     --surface15: var(--violet-9);
     --surface16: var(--red-12);
+    --surface-17: var(--red-12);
+    --surface-18: var(--red-11);
+    --surface-19: var(--gray-9);
 
     --text1: var(--gray-1);
     --text2: var(--gray-2);
@@ -188,6 +195,7 @@ legend {
     --text5: var(--violet-1);
     --text6: var(--gray-4);
     --text7: var(--gray-4);
+    --text-8: var(--red-1);
 
     --gradient-shadow: var(--gradient-gray-10);
   }
