@@ -259,7 +259,6 @@ function alpineInit() {
           const tmpl = ul.querySelector("template")!;
           const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as Element;
           const input = new_elem.querySelector("input")!;
-          new_elem.setAttribute("x-ignore", "");
           new_elem.querySelector("p")!.textContent = lang_map.get(lang);
           input.setAttribute("value", lang)
           ul.append(new_elem);
