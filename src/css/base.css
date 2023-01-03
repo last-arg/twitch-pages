@@ -141,6 +141,7 @@ legend {
   --surface3: var(--gray-2);
   --surface4: var(--gray-8);
   --surface5: var(--violet-8);
+  --surface5a: hsl(var(--violet-8-hsl) / 85%);
   --surface6: var(--stone-7);
   --surface7: var(--red-12);
   --surface8: white;

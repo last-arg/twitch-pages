@@ -3,12 +3,19 @@
   :x-bind:aria-expanded="`(state === '${name}').toString()`"
   :x-on:click="`toggleSidebar('${name}')`"
 >
+  <span webc:if="name === 'streams'" class="streams-count" 
+    x-bind:class="live_count ? '' : 'hidden'"
+    x-data="{live_count: 0}" 
+    x-effect="live_count = Object.keys($store.streams.live).length" 
+    x-text="live_count"
+  >0</span>
   <svg aria-hidden="true" focusable="false"><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
   <span class="sr-only" @text="name"></span>
 </button>
 <style>
 .menu-item {
   display: block;
+  position: relative;
   height: 100%;
   font-size: var(--step--1);
   text-decoration: none;
@@ -33,5 +40,16 @@
 .menu-item svg {
   width: 1.2em;
   height: 1.2em;
+}
+
+.streams-count {
+  font-size: 12px;
+  background: var(--surface5a);
+  padding-inline: 6px;
+  padding-block: 2px;
+  position: absolute;
+  border-radius: var(--radius-5);
+  right: calc(var(--space-xs) / 2 * -1);
+  top: 0px;
 }
 </style>
