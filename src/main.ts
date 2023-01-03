@@ -793,7 +793,11 @@ const initHtmx = async (page_cache?: Cache) => {
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
           global.setPath(null)
         } else if (url.pathname === "/helix/streams") {
+          console.log(evt.detail);
           evt.detail.parameters["first"] = global.settings.general["category-count"]
+          if (!global.settings.category.show_all) {
+            evt.detail.parameters["language"] = global.settings.category.languages;
+          }
         } else if (url.pathname === "/helix/users") {
           const path = global.clicked_path || location.pathname;
           const path_arr = path.split("/")
