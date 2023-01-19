@@ -971,7 +971,7 @@ const initHtmx = async (page_cache?: Cache) => {
               .replace(":video_duration_str", twitchDurationToString(item.duration))
               .replace(":date_str", date.toString())
               .replace(":video_date_str", twitchDateToString(date))
-              .replace(":video_type_title", item.type.toUpperCase())
+              .replace(":video_type_title", item.type[0].toUpperCase() + item.type.slice(1))
               .replace("#img_url", img_url)
               .replace(":video_icon", VIDEO_ICONS[item.type])
               .replace(":encoded_video_title", encodeURIComponent(item.title));
