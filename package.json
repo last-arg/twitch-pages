@@ -22,7 +22,7 @@
   "dependencies": {
     "alpinejs": "^3.10.5",
     "htmx.org": "^1.8.3",
-    "open-props": "^1.5.0"
+    "open-props": "^1.5.3"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.0-canary.23",
