@@ -3,6 +3,7 @@ import {settings} from './global';
 document.querySelector("#main")!.addEventListener("htmx:load", (e) => {
     const path = document.location.pathname;
     if (path === "/settings") {
+        document.title = "Settings | Twitch Pages";
         initSettings(e.target as Element);
     }
 })

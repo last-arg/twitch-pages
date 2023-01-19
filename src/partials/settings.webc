@@ -1,7 +1,7 @@
 ---
 permalink: "{{'public/partials/settings.html'}}"
 ---
-<div x-ignore x-init="document.title = 'Settings | Twitch Pages'">
+<div x-ignore">
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
@@ -100,14 +100,7 @@ permalink: "{{'public/partials/settings.html'}}"
     </section>
     <section>
       <h3>Category</h3>
-      <form 
-        id="form-category"
-        class="stack stack-s"
-        x-data="settings_category"
-        x-on:keydown.prevent.enter="saveSettings($event)" 
-        x-on:click="saveSettings($event)" 
-        x-on:submit.prevent="saveSettings($event)" 
-        >
+      <form id="form-category" class="stack stack-s">
         <label>
           <input type="checkbox" name="all-languages" checked
             x-init="$el.checked = $store.global.settings.category.show_all === 'on'">
