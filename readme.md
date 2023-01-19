@@ -10,6 +10,8 @@ Pages:
 - use Cache API to store some stuff
   - user header
   - category header
+- Waiting for page specific bundles to filesystem in webc
+  - https://github.com/11ty/eleventy-plugin-webc/issues/4
 
 ## Resources
 
