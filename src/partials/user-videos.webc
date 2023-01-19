@@ -13,7 +13,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
       <placeholder-title name="user"></placeholder-title>
       <template webc:keep webc:type="11ty" id="user-header-template">
         <heading-link 
-          @href="https://www.twitch.tv/:user_login/videos"
+          @href="https://www.twitch.tv/:user_login/"
           @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
           @fn_has_id="$store.streams.hasId(':user_id')"
           @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"

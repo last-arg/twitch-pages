@@ -18,7 +18,7 @@
       const user_id_arg = `${arg}.user_id`;
       click_fn = `$store.streams.remove(${user_id_arg})`;
       fn_has_id = `followed = $store.streams.hasId(${user_id_arg})`;
-      external_link = `\`https://www.twitch.tv/\${${arg}.user_login}/videos\``;
+      external_link = `\`https://www.twitch.tv/\${${arg}.user_login}/\``;
     } else if (arg === "search") {
       click_fn = `$store.games.toggle(${arg})`;
       external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
