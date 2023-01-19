@@ -792,7 +792,6 @@ const initHtmx = async (page_cache?: Cache) => {
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
           global.setPath(null)
         } else if (url.pathname === "/helix/streams") {
-          console.log(evt.detail);
           evt.detail.parameters["first"] = global.settings.general["category-count"]
           if (!global.settings.category.show_all) {
             evt.detail.parameters["language"] = global.settings.category.languages;
@@ -831,7 +830,7 @@ const initHtmx = async (page_cache?: Cache) => {
             const game_url = mainContent['category'].url.replace(":category", url_name)
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
             let escaped_name = item.name.replace(/(['"])/g, '\\$1');
-            const game_obj_str = `{name: '${escaped_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+            const game_obj_str = encodeURIComponent(`{"name": "${escaped_name}", "id": "${item.id}", "box_art_url": "${item.box_art_url}"}`);
             result += tmpl.innerHTML
               .replaceAll("#game_url", game_url)
               .replace(":game_name_text", item.name)
@@ -840,6 +839,8 @@ const initHtmx = async (page_cache?: Cache) => {
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
         }
+        // TODO: using 'act', gather new game ids and see if any games are followed
+        // Or could replace 'data-is-followed="false"' 
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);

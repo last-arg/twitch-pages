@@ -1,17 +1,9 @@
-<button webc:root webc:keep type="button" 
-  class="button-follow"
-  x-data="{followed: false}"
-  data-is-followed="false"
-  x-bind:data-is-followed="followed"
-  :x-init="init ?? undefined"
-  :x-effect="'followed = ' + fn_has_id"
-  :x-on:click="on_click"
->
+<button webc:root webc:keep type="button" class="button-follow" data-is-followed="false" data-game=":json_game">
   <svg aria-hidden="true" focusable="false">
     <use href="/public/assets/icons.svg#star-empty"></use>
     <use href="/public/assets/icons.svg#star-full"></use>
   </svg>
-  <span class="sr-only" x-text="followed ? 'UnFollow' : 'Follow'">Follow/Unfollow</span>
+  <span class="sr-only">Follow/Unfollow</span>
 </button>
 <style>
 .button-follow {

@@ -12,6 +12,6 @@
 <body>
   <div @raw="content" webc:nokeep></div>
   <script webc:keep src="/public/js/main.js"></script>
-  <script webc:keep src="/public/js/b.js"></script>
+  <script webc:keep src="/public/js/games.js"></script>
 </body>
 </html>

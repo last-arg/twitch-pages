@@ -26,11 +26,8 @@ permalink: "{{'public/partials/top-games.html'}}"
                 </svg>
               </a>
             </div>
-            <div class="game-action" data-pos="right">
-              <button-follow
-                @fn_has_id="$store.games.hasId(':game_id')"
-                @on_click="$store.games.toggle(:json_game)"
-              ></button-follow>
+            <div x-ignore class="game-action" data-pos="right">
+              <button-follow></button-follow>
             </div>
           </div>
           <a class="game-link" href="#game_url"

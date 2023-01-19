@@ -22,7 +22,7 @@
       }
     };
     const config = configs[name];
-    `
+    let old = `
       <a class="link-box"
         data-card="${name}"
         href="#" hx-push-url="#"
@@ -42,6 +42,24 @@
         </div>
       </a>
     `;
+
+    if (this.name === "category") {
+     old = `
+      <a class="link-box"
+        data-card="${name}"
+        href="#" hx-push-url="#"
+        hx-target="#main"
+        hx-get="/public/partials/${name}.html"
+      >
+        <img src="" alt="" width="${config.width}" height="${config.height}" />
+        <div class="link-title">
+          <slot></slot>
+        </div>
+      </a>
+    `;
+    }
+
+    old;
   </script>
 </div>
 <style webc:nokeep>
