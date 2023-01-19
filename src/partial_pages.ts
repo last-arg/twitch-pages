@@ -53,9 +53,9 @@ function initCategorySettings(root: Element) {
     }
 
     function handleFormKeydown(event: Event) {
-        event.preventDefault();
         const elem = event.target as HTMLInputElement; 
         if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
+            event.preventDefault();
             addLangFromInput(elem as HTMLInputElement);
         }
     }
@@ -91,6 +91,6 @@ function initCategorySettings(root: Element) {
         let curr = settings.category();
         curr.languages = f_data.getAll("lang") as string[];
         curr.show_all = f_data.get("all-languages") as any;
-        settings.category(curr);
+        settings.category({...curr});
     }
 }
