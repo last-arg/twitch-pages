@@ -4,7 +4,7 @@ const plugins = [
 
 if (process.env.NODE_ENV === "production") {
   plugins.push(require("cssnano")());
-  plugins.push(require("postcss-prune-var")());
+  plugins.push(require("postcss-dropunusedvars")());
 }
 
 module.exports = {

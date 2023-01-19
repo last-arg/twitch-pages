@@ -61,7 +61,9 @@ permalink: "{{'public/partials/user-videos.html'}}"
                 :width="global.config.image.video.width" 
                 :height="global.config.image.video.height"
               >
-              <!-- TODO: fix video types bg colors -->
+              <!--
+                TODO: :video_type_title to lowercase
+              -->
               <span class="video-info video-type" title=":video_type_title">
                 <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#:video_icon"></use>
