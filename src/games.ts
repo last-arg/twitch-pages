@@ -89,10 +89,8 @@ document.querySelector("#main")!.addEventListener("click", (e) => {
             const game: Game = JSON.parse(decodeURIComponent(game_raw));
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (following) {
-                console.log("unfollow")
                 removeGame(game.id);
             } else {
-                console.log("follow")
                 addGame(game);
             }
             btn.setAttribute("data-is-followed", (!following).toString())

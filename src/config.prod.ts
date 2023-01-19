@@ -15,8 +15,7 @@ if (process.env.NODE_ENV === "production") {
   settings_base.top_games_count = 15;
 }
 
-export const settings = settings_base;
-
+export const settings_default = settings_base;
 
 export const mainContent: Record<string, UrlResolve> = {
   "top-games": {

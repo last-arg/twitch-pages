@@ -11,7 +11,8 @@
 </head>
 <body>
   <div @raw="content" webc:nokeep></div>
-  <script webc:keep src="/public/js/main.js"></script>
+  <script webc:keep src="/public/js/partial_pages.js"></script>
   <script webc:keep src="/public/js/games.js"></script>
+  <script webc:keep src="/public/js/main.js"></script>
 </body>
 </html>

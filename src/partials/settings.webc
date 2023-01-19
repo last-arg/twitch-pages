@@ -1,7 +1,7 @@
 ---
 permalink: "{{'public/partials/settings.html'}}"
 ---
-<div x-init="document.title = 'Settings | Twitch Pages'">
+<div x-ignore x-init="document.title = 'Settings | Twitch Pages'">
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
@@ -139,7 +139,7 @@ permalink: "{{'public/partials/settings.html'}}"
             </li>
           </template>
         </ul>
-        <p x-bind:class="has_languages && 'hidden'">No languages added. Will show all languages.</p>
+        <p class="js-languages-msg hidden">No languages added. Will show all languages.</p>
         <button type="submit">Save category settings</button>
       </form>
     </section>
