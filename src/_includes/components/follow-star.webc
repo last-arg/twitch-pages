@@ -25,7 +25,7 @@
       fn_has_id = `followed = $store.games.hasId(${arg}.id)`;
     }
     
-    `
+    let old = `
       <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
       <a x-bind:href="${external_link}" rel="external">
         <svg aria-hidden="true" focusable="false">
@@ -33,6 +33,17 @@
         </svg>
       </a>
     `
+    if (arg === "game") {
+     old = `
+      <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
+      <a href="#external_link" rel="external">
+        <svg aria-hidden="true" focusable="false">
+          <use href="/public/assets/icons.svg#external-link"></use>
+        </svg>
+      </a>
+      `;
+    }
+    old;
   </script>
 </div>
 <style>
