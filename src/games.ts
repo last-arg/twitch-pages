@@ -10,12 +10,6 @@ type Game = {
 
 const data: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const games = act(data);
-const test_data = {
-    "id": "1469308723",
-    "name": "Software and Game Development",
-    "box_art_url": "https://static-cdn.jtvnw.net/ttv-boxart/1469308723-{width}x{height}.jpg"
-  }
-
 const games_list = document.querySelector(".js-games-list")!;
 const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
@@ -43,9 +37,7 @@ const unsub = games.subscribe((value) => {
         frag.append(new_item);
     }
     games_list.replaceChildren(frag);
-    // TODO: Add element to DOM 
-    // TODO: Remove element from DOM 
-  // localStorage.setItem("games", JSON.stringify(value))
+    localStorage.setItem("games", JSON.stringify(value))
 })
 
 const addGame = (game: Game) => {
@@ -61,9 +53,6 @@ const removeGame = (id: string) => {
     games([...games()]);
 };
 
-
-// removeGame(test_data.id);
-// addGame(test_data)
 
 // TODO?: move addEventListeners?
 games_list.addEventListener("click", (e) => {
