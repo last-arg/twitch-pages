@@ -1,34 +1,29 @@
 ---
 permalink: "{{'public/partials/settings.html'}}"
 ---
-<div x-ignore">
+<div>
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
   <div class="settings fluid-mt-s flex flex-wrap fluid-gap-s">
     <section>
       <h3>General</h3>
-      <form id="settings-general" class="form-general stack stack-s"
-        x-on:submit.prevent = "$store.global.saveSettingsForm($el)"
-      >
+      <form id="settings-general" class="form-general stack stack-s">
         <fieldset>
           <legend class="sr-only">Number of items to load with one request</legend>
           <h4 aria-hidden="true">Number of items to load with one request</h4>
           <ul role="list" class="stack stack-xs">
             <li>
               <label for="top-games-count">Top Games:</label>
-              <input type="number" id="top-games-count" name="top-games-count" min="1" max="100"
-                x-bind:value="$store.global.settings.general['top-games-count']" value="5">
+              <input type="number" id="top-games-count" name="top-games-count" min="1" max="100" value="5">
             </li>
             <li>
               <label for="category-count">Category/Games:</label>
-              <input type="number" id="category-count" name="category-count" min="1" max="100"
-                x-bind:value="$store.global.settings.general['category-count']" value="5">
+              <input type="number" id="category-count" name="category-count" min="1" max="100" value="5">
             </li>
             <li>
               <label for="user-videos-count">User videos:</label>
-              <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100"
-                x-bind:value="$store.global.settings.general['user-videos-count']" value="5">
+              <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100" value="5">
             </li>
           </ul>
         </fieldset>
@@ -38,22 +33,19 @@ permalink: "{{'public/partials/settings.html'}}"
           <ul role="list" role="list">
             <li>
               <label for="video-archives">
-                <input type="checkbox" id="video-archives" name="video-archives"
-                x-init="$el.checked = $store.global.settings.general['video-archives'] === 'on'">
+                <input type="checkbox" id="video-archives" name="video-archives">
                 <span>Archives</span>
               </label>
             </li>
             <li>
               <label for="video-uploads">
-                <input type="checkbox" id="video-uploads" name="video-uploads"
-                x-bind:checked="$store.global.settings.general['video-uploads'] === 'on'">
+                <input type="checkbox" id="video-uploads" name="video-uploads">
                 <span>Uploads</span>
               </label>
             </li>
             <li>
               <label for="video-highlights">
-                <input type="checkbox" id="video-highlights" name="video-highlights"
-                x-init="$el.checked = $store.global.settings.general['video-highlights'] === 'on'">
+                <input type="checkbox" id="video-highlights" name="video-highlights">
                 <span>Highlights</span>
               </label>
             </li>
@@ -80,21 +72,16 @@ permalink: "{{'public/partials/settings.html'}}"
       <h3>Cache</h3>
       <ul class="stack stack-xs" role="list">
         <li>
-          <button @click="$store.games.clear()" type="button"
-          >Clear games cache</button>
+          <button type="button">Clear games cache</button>
         </li>
         <li>
-          <button @click="$store.streams.clear()" type="button"
-          >Clear streams cache</button>
+          <button type="button">Clear streams cache</button>
         </li>
         <li>
-          <button @click="$store.profile_images.clear()" type="button"
-          >Clear profile images cache</button>
+          <button type="button">Clear profile images cache</button>
         </li>
         <li>
-          <button type="button"
-            @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
-          >Clear all caches</button>
+          <button type="button">Clear all caches</button>
         </li>
       </ul>
     </section>
@@ -102,8 +89,7 @@ permalink: "{{'public/partials/settings.html'}}"
       <h3>Category</h3>
       <form id="form-category" class="stack stack-s">
         <label>
-          <input type="checkbox" name="all-languages" checked
-            x-init="$el.checked = $store.global.settings.category.show_all === 'on'">
+          <input type="checkbox" name="all-languages" checked>
           Show all languages
         </label>
         <div>

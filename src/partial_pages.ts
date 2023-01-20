@@ -11,7 +11,15 @@ document.querySelector("#main")!.addEventListener("htmx:load", (e) => {
 function initSettings(root: Element) {
     initCategorySettings(root);
     initGeneralSettings(root);
-    // TODO: Cache
+    initCacheSettings(root);
+}
+
+function initCacheSettings(root: Element) {
+    // TODO: <button @click="$store.games.clear()"
+    // TODO: <button @click="$store.streams.clear()"
+    // TODO: <button @click="$store.profile_images.clear()"
+    // TODO: @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
+
 }
 
 function initGeneralSettings(root: Element) {
@@ -20,7 +28,6 @@ function initGeneralSettings(root: Element) {
         // @ts-ignore
         const value = general[key as any];
         const input = root.querySelector(`#${key}`) as HTMLInputElement | undefined;
-        console.log(input)
         if (input) {
             if (input.type === "number") {
                 input.value = value;
@@ -72,7 +79,6 @@ function initCategorySettings(root: Element) {
 
     function hasLanguages() {
         const msg_elem = root.querySelector(".js-languages-msg")!;
-        console.log(root.querySelectorAll(".enabled-languages > li").length )
         if (root.querySelectorAll(".enabled-languages > li").length > 0) {
             msg_elem.classList.add("hidden")
         } else {
