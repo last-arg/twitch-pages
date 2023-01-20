@@ -9,7 +9,7 @@ type Game = {
 }
 
 const data: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
-const games = act(data);
+export const games = act(data);
 const games_list = document.querySelector(".js-games-list")!;
 const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
@@ -18,6 +18,7 @@ const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content
 // 2) games' sidebar is closed but was clicked on
 // TODO: improve updating DOM 
 const unsub = games.subscribe((value) => {
+    console.log("games", games())
     const frag = document.createDocumentFragment();
     for (const game of value) {
         const new_item = tmpl_li.cloneNode(true) as Element;
@@ -34,6 +35,8 @@ const unsub = games.subscribe((value) => {
         btn.setAttribute("data-is-followed", "true")
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
+        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
+        external_link.href = "https://www.twitch.tv/directory/game/" + game.name;
         frag.append(new_item);
     }
     games_list.replaceChildren(frag);
@@ -41,16 +44,28 @@ const unsub = games.subscribe((value) => {
 })
 
 const addGame = (game: Game) => {
-    games([...games(), game].sort());
+    const arr = [...games(), game];
+    arr.sort((a, b) => {
+        const a_name = a.name.toLowerCase();
+        const b_name = b.name.toLowerCase();
+        if (a_name < b_name) {
+            return -1;
+        } else if (a_name > b_name) {
+            return 1;
+        }
+        return 0;
+    });
+    games(arr);
 };
 
 const removeGame = (id: string) => {
-    const index = games().findIndex((game) => game.id === id);
+    const arr = games();
+    const index = arr.findIndex((game) => game.id === id);
     if (index === -1) {
         return;
     }
-    games().splice(index, 1)
-    games([...games()]);
+    arr.splice(index, 1)
+    games([...arr]);
 };
 
 
@@ -76,10 +91,13 @@ document.querySelector("#main")!.addEventListener("click", (e) => {
         const game_raw = btn.getAttribute("data-game");
         if (game_raw) {
             const game: Game = JSON.parse(decodeURIComponent(game_raw));
+            console.log(btn.getAttribute("data-is-followed"))
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (following) {
+                console.log("remove", game.id)
                 removeGame(game.id);
             } else {
+                console.log("add", game)
                 addGame(game);
             }
             btn.setAttribute("data-is-followed", (!following).toString())
