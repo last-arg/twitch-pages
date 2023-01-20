@@ -71,9 +71,9 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
                 <!-- games list -->
                 <scroll-container>
-                  <ul x-ignore class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
+                  <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
                   </ul>
-                  <template id="game-item" webc:root webc:keep x-for1="game in $store.games.data" x-bind:key="game.id">
+                  <template id="game-item" webc:root webc:keep>
                     <li class="flex">
                       <link-box @name="category" @arg_name="game.name">
                         <p></p>
