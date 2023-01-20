@@ -10,8 +10,27 @@ document.querySelector("#main")!.addEventListener("htmx:load", (e) => {
 
 function initSettings(root: Element) {
     initCategorySettings(root);
+    initGeneralSettings(root);
     // TODO: Cache
-    // TODO: General
+}
+
+function initGeneralSettings(root: Element) {
+    const general = settings.general();
+    for (const key in general) {
+        // @ts-ignore
+        const value = general[key as any];
+        const input = root.querySelector(`#${key}`) as HTMLInputElement | undefined;
+        console.log(input)
+        if (input) {
+            if (input.type === "number") {
+                input.value = value;
+            } else if (input.type === "checkbox") {
+                input.checked = value === "on";
+            }
+        }
+    }
+    
+    // TODO: save form
 }
 
 function initCategorySettings(root: Element) {
