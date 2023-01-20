@@ -1,6 +1,8 @@
 import Alpine from 'alpinejs'
 import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
-import { mainContent, UrlResolve, config, settings_default as settings } from 'config';
+import { mainContent, UrlResolve, config } from 'config';
+import { settings } from './global';
+import { games } from './games';
 import 'htmx.org';
 
 // TODO: Search: Show old values when searching for new ones?
@@ -635,7 +637,6 @@ function alpineInit() {
       setPath(name: string | null) { this.clicked_path = name },
     };
     Alpine.store("global", storeGlobal)
-    Alpine.store('games', storeGames)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
 
@@ -689,7 +690,6 @@ const initHtmx = async (page_cache?: Cache) => {
 
   htmx.defineExtension("twitch-api", {
     onEvent: (name: string, evt: any) => {
-      console.log(name, evt)
       if (name === "htmx:configRequest") {
         const path = evt.detail.path;
         const url = new URL(path, API_URL)
@@ -697,16 +697,16 @@ const initHtmx = async (page_cache?: Cache) => {
         evt.detail.headers = Twitch.headers;
 
         if (url.pathname === "/helix/games/top") {
-          evt.detail.parameters["first"] = global.settings.general["top-games-count"]
+          evt.detail.parameters["first"] = settings.general()["top-games-count"]
         } else if (url.pathname === "/helix/games") {
           const path = global.clicked_path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
           global.setPath(null)
         } else if (url.pathname === "/helix/streams") {
-          evt.detail.parameters["first"] = global.settings.general["category-count"]
-          if (!global.settings.category.show_all) {
-            evt.detail.parameters["language"] = global.settings.category.languages;
+          evt.detail.parameters["first"] = settings.general()["category-count"]
+          if (!settings.category().show_all) {
+            evt.detail.parameters["language"] = settings.category().languages;
           }
         } else if (url.pathname === "/helix/users") {
           const path = global.clicked_path || location.pathname;
@@ -714,7 +714,7 @@ const initHtmx = async (page_cache?: Cache) => {
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
           global.setPath(null)
         } else if (path === "/helix/videos") {
-          evt.detail.parameters["first"] = global.settings.general["user-videos-count"]
+          evt.detail.parameters["first"] = settings.general()["user-videos-count"]
         }
       } else if (name === "htmx:beforeRequest") {
         const btn = document.querySelector(".btn-load-more");
@@ -743,16 +743,18 @@ const initHtmx = async (page_cache?: Cache) => {
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
             let escaped_name = item.name.replace(/(['"])/g, '\\$1');
             const game_obj_str = encodeURIComponent(`{"name": "${escaped_name}", "id": "${item.id}", "box_art_url": "${item.box_art_url}"}`);
-            result += tmpl.innerHTML
+            let html = tmpl.innerHTML
               .replaceAll("#game_url", game_url)
               .replace(":game_name_text", item.name)
               .replace(":game_name_url", url_name)
               .replace("#game_img_url", img_url)
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
+            if (games().some((game) => game.id === item.id)) {
+               html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
+            }
+            result += html;
         }
-        // TODO: using 'act', gather new game ids and see if any games are followed
-        // Or could replace 'data-is-followed="false"' 
         const cursor = json.pagination.cursor;
         if (cursor) {
           document.querySelector("#param-after")!.setAttribute("value", cursor);
