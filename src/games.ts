@@ -22,7 +22,6 @@ const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content
 renderGames(games);
 
 const unsub = games_computed.subscribe(([ids, adds]) => {
-    console.log("sub", ids, adds)
     for (const add of adds as Game[]) {
         if (!games.some(game => game.id === add.id)) {
             games.push(add);
@@ -125,13 +124,10 @@ document.querySelector("#main")!.addEventListener("click", (e) => {
         const game_raw = btn.getAttribute("data-game");
         if (game_raw) {
             const game: Game = JSON.parse(decodeURIComponent(game_raw));
-            console.log(btn.getAttribute("data-is-followed"))
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (following) {
-                console.log("remove", game.id)
                 removeGame(game.id);
             } else {
-                console.log("add", game)
                 addGame(game);
             }
             btn.setAttribute("data-is-followed", (!following).toString())
