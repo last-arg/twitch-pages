@@ -35,9 +35,9 @@ function initGeneralSettings(root: Element) {
     function handleFormSubmit(e: Event) {
         e.preventDefault();
         const elem = e.target as HTMLFormElement;
-        let new_settings: Record<string, any> = {};
-        (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
+        let new_settings: ReturnType<typeof settings.general> = {} as any;
         // @ts-ignore
+        (new FormData(elem)).forEach(function(value, key){ new_settings[key as any] = value });
         settings.general(new_settings)
     }
 }

@@ -24,7 +24,7 @@ for (const c in settings) {
         // @ts-ignore
         const s = settings[c as any];
         s(new_settings);
-        s.subscribe((v) => {
+        s.subscribe((v: ReturnType<typeof settings.general>) => {
             localStorage.setItem(storage_key, JSON.stringify(v));
         })
     }
