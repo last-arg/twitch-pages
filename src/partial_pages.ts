@@ -29,8 +29,17 @@ function initGeneralSettings(root: Element) {
             }
         }
     }
+
+    root.querySelector("#settings-general")?.addEventListener("submit", handleFormSubmit);
     
-    // TODO: save form
+    function handleFormSubmit(e: Event) {
+        e.preventDefault();
+        const elem = e.target as HTMLFormElement;
+        let new_settings: Record<string, any> = {};
+        (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
+        // @ts-ignore
+        settings.general(new_settings)
+    }
 }
 
 function initCategorySettings(root: Element) {

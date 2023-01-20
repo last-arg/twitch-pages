@@ -613,12 +613,6 @@ function alpineInit() {
           }
         }
       },
-      saveSettingsForm(el: HTMLFormElement) {
-        let opts_obj: Record<string, any> = {};
-        (new FormData(el)).forEach(function(value, key){ opts_obj[key] = value });
-        this.settings.general = opts_obj
-        localStorage.setItem("settings.general", JSON.stringify(opts_obj))
-      },
       async getLiveUserGame(user_id: string): Promise<string> {
         let result = (Alpine.store("streams")as StoreStreams).live[user_id] || ""
         if (!result) {
