@@ -8,19 +8,85 @@ type Game = {
     box_art_url: string,
 }
 
-const data: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
-export const games = act(data);
+export const games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
+const remove_ids = act<string[]>([]);
+const add_games = act<Game[]>([]);
+
+const games_computed = act(() => {
+    return [remove_ids(), add_games()];
+}, (_, next) => next[0].length > 0 && next[1].length > 0);
+
 const games_list = document.querySelector(".js-games-list")!;
 const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+
+renderGames(games);
+
+const unsub = games_computed.subscribe(([ids, adds]) => {
+    console.log("sub", ids, adds)
+    for (const add of adds as Game[]) {
+        if (!games.some(game => game.id === add.id)) {
+            games.push(add);
+        }
+    }
+
+    for (const id of ids) {
+        const index = games.findIndex((game) => game.id === id);
+        if (index === -1) {
+            continue;
+        }
+        games.splice(index, 1)
+    }
+
+    games.sort();
+    localStorage.setItem("games", JSON.stringify(games))
+
+    const sel_start = "#main .button-follow[data-game-id=\"";
+    if (adds.length > 0) {
+        renderGames(games);
+        const selector = `${sel_start}${adds.map((game) => (game as Game).id).join("\"]," + sel_start)}"]`;
+        const nodes = document.querySelectorAll(selector)
+        nodes.forEach((node) => {
+            node.setAttribute("data-is-followed", "true");
+        });
+    }
+
+    if (ids.length > 0) {
+        // remove sidbar list item(s)
+        const sel_sidebar = ".js-games-list .button-follow[data-game-id=\"";
+        const query_selector = `${sel_sidebar}${ids.join("\"]," + sel_sidebar)}"]`;
+        const list_items = document.querySelectorAll(query_selector)
+        list_items.forEach((node) => {
+            node.closest("li")?.remove();
+        });
+        
+        // Update main content follows
+        const selector = `${sel_start}${ids.join("\"]," + sel_start)}"]`;
+        const nodes = document.querySelectorAll(selector)
+        nodes.forEach((node) => {
+            node.setAttribute("data-is-followed", "false");
+        });
+    }
+    
+    add_games().length = 0;
+    remove_ids().length = 0;
+})
+
+const addGame = (game: Game) => {
+    add_games([...add_games(), game]);
+};
+
+const removeGame = (id: string) => {
+    remove_ids([...remove_ids(), id]);
+};
 
 // TODO: dom manipulation should happen when:
 // 1) games' sidebar is open
 // 2) games' sidebar is closed but was clicked on
 // TODO: improve updating DOM 
-const unsub = games.subscribe((value) => {
-    console.log("games", games())
+// Update main content follows
+function renderGames(data: Game[]) {
     const frag = document.createDocumentFragment();
-    for (const game of value) {
+    for (const game of data) {
         const new_item = tmpl_li.cloneNode(true) as Element;
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(game.name);
@@ -40,34 +106,7 @@ const unsub = games.subscribe((value) => {
         frag.append(new_item);
     }
     games_list.replaceChildren(frag);
-    localStorage.setItem("games", JSON.stringify(value))
-})
-
-const addGame = (game: Game) => {
-    const arr = [...games(), game];
-    arr.sort((a, b) => {
-        const a_name = a.name.toLowerCase();
-        const b_name = b.name.toLowerCase();
-        if (a_name < b_name) {
-            return -1;
-        } else if (a_name > b_name) {
-            return 1;
-        }
-        return 0;
-    });
-    games(arr);
-};
-
-const removeGame = (id: string) => {
-    const arr = games();
-    const index = arr.findIndex((game) => game.id === id);
-    if (index === -1) {
-        return;
-    }
-    arr.splice(index, 1)
-    games([...arr]);
-};
-
+}
 
 // TODO?: move addEventListeners?
 games_list.addEventListener("click", (e) => {
@@ -83,11 +122,6 @@ games_list.addEventListener("click", (e) => {
 document.querySelector("#main")!.addEventListener("click", (e) => {
     const btn = (e.target as Element).closest(".button-follow");
     if (btn) {
-        const id = btn.getAttribute("data-game-id")
-        if (id ) {
-            removeGame(id);
-            return;
-        }
         const game_raw = btn.getAttribute("data-game");
         if (game_raw) {
             const game: Game = JSON.parse(decodeURIComponent(game_raw));
@@ -101,7 +135,12 @@ document.querySelector("#main")!.addEventListener("click", (e) => {
                 addGame(game);
             }
             btn.setAttribute("data-is-followed", (!following).toString())
+            return;
+        }
+
+        const id = btn.getAttribute("data-game-id")
+        if (id ) {
+            removeGame(id);
         }
     }
 })
-

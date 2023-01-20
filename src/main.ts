@@ -750,7 +750,7 @@ const initHtmx = async (page_cache?: Cache) => {
               .replace("#game_img_url", img_url)
               .replace(":game_id", item.id)
               .replace(":json_game", game_obj_str)
-            if (games().some((game) => game.id === item.id)) {
+            if (games.some((game) => game.id === item.id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
