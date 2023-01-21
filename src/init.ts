@@ -1,7 +1,4 @@
-import { settings } from './global';
-import {act} from '@artalar/act';
-
-export const current_path = act<string | null>(document.location.pathname);
+import { settings, current_path } from './global';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     const path = document.location.pathname;

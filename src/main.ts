@@ -1,8 +1,8 @@
 import Alpine from 'alpinejs'
+import "./init";
 import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
 import { mainContent, UrlResolve, config } from 'config';
-import { settings } from './global';
-import { current_path } from './partial_pages';
+import { settings, current_path } from './global';
 import { games } from './games';
 import 'htmx.org';
 

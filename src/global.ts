@@ -1,6 +1,8 @@
 import { settings_default } from 'config';
 import {act} from '@artalar/act';
 
+export const current_path = act<string | null>(document.location.pathname);
+
 export const settings = {
     general: act({
       "top-games-count": settings_default.top_games_count,

@@ -7,7 +7,7 @@
     "netlify": "netlify dev",
     "watch:unocss": "unocss --watch",
     "watch:css": "postcss src/css/main.css -o public/css/main.css --watch",
-    "watch:ts": "esbuild src/*.ts --bundle --outdir=public/js/ --watch",
+    "watch:ts": "esbuild src/*.ts --bundle --tree-shaking --outdir=public/js/ --watch",
     "watch:config": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
     "build": "NODE_ENV=production npm-run-all clean-build build:ts build:11ty -p build:css minify:* -s build:sw",
     "build:ts": "esbuild src/main.ts --bundle --outdir=_site/public/js/",
