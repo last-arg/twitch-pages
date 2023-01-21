@@ -9,6 +9,7 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
 })
 
 initPages(document.location.pathname, document.body);
+initSidebarGames(document.body)
 
 function initPages(path: string, target: Element) {
     if (path === "/settings") {
@@ -19,19 +20,18 @@ function initPages(path: string, target: Element) {
     }
 }
 
-function initRoot(root: Element) {
-    root.querySelector("#main")?.addEventListener("mousedown", handlePath);
+function initSidebarGames(root: Element) {
+    root.querySelector(".js-games-list")?.addEventListener("mousedown", handlePathChange)
+}
 
-    function handlePath(e: Event) {
-        e.preventDefault();
-      const target = e.target as Element;
-      if (target.nodeName === "A" && target.hasAttribute("hx-push-url")) {
-        current_path(target.getAttribute("hx-push-url"));
-      } else {
-        const hx_link = target.closest("a[hx-push-url]");
-        current_path(hx_link?.getAttribute("hx-push-url") || null);
-      }
-    }
+function initRoot(root: Element) {
+    root.querySelector("#main")?.addEventListener("mousedown", handlePathChange);
+}
+
+function handlePathChange(e: Event) {
+    const target = e.target as Element;
+    const hx_link = target.closest("a[hx-push-url]");
+    current_path(hx_link?.getAttribute("hx-push-url") || null);
 }
 
 function initSettings(root:  Element) {

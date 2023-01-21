@@ -556,19 +556,6 @@ function alpineInit() {
       clear() { this.data = {} }
     }
 
-    const storeGlobal: Global = {
-      async getLiveUserGame(user_id: string): Promise<string> {
-        let result = (Alpine.store("streams")as StoreStreams).live[user_id] || ""
-        if (!result) {
-          const stream = (await fetchStreamsByUserIds([user_id]))[0]
-          if (stream && stream.type === "live") {
-            result = stream.game_name
-          }
-        }
-        return result
-      },
-    };
-    Alpine.store("global", storeGlobal)
     Alpine.store('streams', storeStreams)
     Alpine.store('profile_images', storeProfileImages)
 
@@ -596,8 +583,6 @@ const sidebarShadows = (scrollbox: HTMLElement) => {
     }
 };
 
-
-
 const handleSidebarScroll = () => {
   const scrollContainers = document.querySelectorAll('.scroll-container') as any;
   for (const scrollContainer of scrollContainers) {
@@ -618,8 +603,6 @@ const handleSidebarScroll = () => {
 }
 
 const initHtmx = async (page_cache?: Cache) => {
-  const global = Alpine.store("global") as Global
-
   htmx.defineExtension("twitch-api", {
     onEvent: (name: string, evt: any) => {
       // console.log(name, evt)
