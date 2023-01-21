@@ -23,6 +23,8 @@
 }
 
 .search-feedback {
+  width: fit-content;
+  margin: auto;
   position: absolute;
   top: 40px;
   left: 0;
