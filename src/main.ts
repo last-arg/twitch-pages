@@ -2,6 +2,7 @@ import Alpine from 'alpinejs'
 import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
 import { mainContent, UrlResolve, config } from 'config';
 import { settings } from './global';
+import { current_path } from './partial_pages';
 import { games } from './games';
 import 'htmx.org';
 
@@ -364,54 +365,6 @@ function alpineInit() {
       }
     })
 
-    const storeGames = {
-      data: JSON.parse(localStorage.getItem("games") ?? "[]"),
-      ids: [] as string[],
-      init() {
-        Alpine.effect(() => {
-          const menu_item = document.querySelector(".menu-item[aria-expanded=true]")!;
-          if (menu_item) {
-            const scroll_position = menuItemToScrollPosition(menu_item);
-            if (scroll_position) {
-              const scrollbox = scroll_position.querySelector(".scrollbox")!;
-              window.requestAnimationFrame(function() {
-                sidebarShadows(scrollbox as HTMLElement);
-              });
-            }
-          }
-          this.ids = this.data.map(({id}:{id:string}) => id)
-          localStorage.setItem("games", JSON.stringify(this.data))
-        })
-      },
-      hasId(id: string): boolean {
-        return this.ids.includes(id)
-      },
-      toggle(game: Game): boolean {
-        if (this.hasId(game.id)) {
-          this.remove(game.id)
-          return false
-        } else {
-          this.add(game)
-          return true
-        }
-      },
-      add(game: Game) {
-        let index = 0;
-        for (const {name: dataName} of this.data) {
-          if (game.name < dataName) break
-          index += 1
-        }
-        this.data.splice(index, 0, game)
-      },
-      remove(id: string) {
-        const index = this.ids.indexOf(id)
-        if (index !== -1) {
-          this.data.splice(index, 1)
-        }
-      },
-      clear() { this.data = [] }
-    }
-
     const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
       if (userIds.length === 0) return []
       return await twitch.fetchStreams(userIds);
@@ -604,17 +557,6 @@ function alpineInit() {
     }
 
     const storeGlobal: Global = {
-      mainContent: mainContent,
-      clicked_path: null,
-      init() {
-        for (const c in this.settings) {
-          const raw = localStorage.getItem(`settings.${c}`);
-          if (raw) {
-            const settings = JSON.parse(raw);
-            this.settings[c] = settings;
-          }
-        }
-      },
       async getLiveUserGame(user_id: string): Promise<string> {
         let result = (Alpine.store("streams")as StoreStreams).live[user_id] || ""
         if (!result) {
@@ -625,16 +567,6 @@ function alpineInit() {
         }
         return result
       },
-      changePath(e: Event) {
-        const target = e.target as Element;
-        if (target.nodeName === "A" && target.hasAttribute("hx-push-url")) {
-          storeGlobal.clicked_path = target.getAttribute("hx-push-url");
-        } else {
-          const hx_link = target.closest("a[hx-push-url]");
-          storeGlobal.clicked_path = hx_link?.getAttribute("hx-push-url") || null;
-        }
-      },
-      setPath(name: string | null) { this.clicked_path = name },
     };
     Alpine.store("global", storeGlobal)
     Alpine.store('streams', storeStreams)
@@ -690,6 +622,7 @@ const initHtmx = async (page_cache?: Cache) => {
 
   htmx.defineExtension("twitch-api", {
     onEvent: (name: string, evt: any) => {
+      // console.log(name, evt)
       if (name === "htmx:configRequest") {
         const path = evt.detail.path;
         const url = new URL(path, API_URL)
@@ -699,20 +632,20 @@ const initHtmx = async (page_cache?: Cache) => {
         if (url.pathname === "/helix/games/top") {
           evt.detail.parameters["first"] = settings.general()["top-games-count"]
         } else if (url.pathname === "/helix/games") {
-          const path = global.clicked_path || location.pathname;
+          const path = current_path() || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
-          global.setPath(null)
+          current_path(null)
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = settings.general()["category-count"]
           if (!settings.category().show_all) {
             evt.detail.parameters["language"] = settings.category().languages;
           }
         } else if (url.pathname === "/helix/users") {
-          const path = global.clicked_path || location.pathname;
+          const path = current_path() || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
-          global.setPath(null)
+          current_path(null)
         } else if (path === "/helix/videos") {
           evt.detail.parameters["first"] = settings.general()["user-videos-count"]
         }

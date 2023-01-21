@@ -1,20 +1,46 @@
-import {settings} from './global';
+import { settings } from './global';
+import {act} from '@artalar/act';
 
-document.querySelector("#main")!.addEventListener("htmx:load", (e) => {
+export const current_path = act<string | null>(document.location.pathname);
+
+window.addEventListener("htmx:pushedIntoHistory", (e) => {
     const path = document.location.pathname;
-    if (path === "/settings") {
-        document.title = "Settings | Twitch Pages";
-        initSettings(e.target as Element);
-    }
+    initPages(path, e.target as Element);
 })
 
-function initSettings(root: Element) {
+initPages(document.location.pathname, document.body);
+
+function initPages(path: string, target: Element) {
+    if (path === "/settings") {
+        document.title = "Settings | Twitch Pages";
+        initSettings(target);
+    } else if (path === "/") {
+        initRoot(target);
+    }
+}
+
+function initRoot(root: Element) {
+    root.querySelector("#main")?.addEventListener("mousedown", handlePath);
+
+    function handlePath(e: Event) {
+        e.preventDefault();
+      const target = e.target as Element;
+      if (target.nodeName === "A" && target.hasAttribute("hx-push-url")) {
+        current_path(target.getAttribute("hx-push-url"));
+      } else {
+        const hx_link = target.closest("a[hx-push-url]");
+        current_path(hx_link?.getAttribute("hx-push-url") || null);
+      }
+    }
+}
+
+function initSettings(root:  Element) {
     initCategorySettings(root);
     initGeneralSettings(root);
     initCacheSettings(root);
 }
 
-function initCacheSettings(root: Element) {
+function initCacheSettings(root:  Element) {
     // TODO: <button @click="$store.games.clear()"
     // TODO: <button @click="$store.streams.clear()"
     // TODO: <button @click="$store.profile_images.clear()"
@@ -22,7 +48,7 @@ function initCacheSettings(root: Element) {
 
 }
 
-function initGeneralSettings(root: Element) {
+function initGeneralSettings(root:  Element) {
     const general = settings.general();
     for (const key in general) {
         // @ts-ignore
@@ -49,7 +75,7 @@ function initGeneralSettings(root: Element) {
     }
 }
 
-function initCategorySettings(root: Element) {
+function initCategorySettings(root:  Element) {
     const options = root.querySelectorAll("#lang-list option");
     const lang_map = new Map();
     // @ts-ignore
@@ -70,7 +96,7 @@ function initCategorySettings(root: Element) {
     function addLang(lang: string) {
       const ul = document.querySelector(".enabled-languages")!;
       const tmpl = ul.querySelector("template")!;
-      const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as Element;
+      const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as  Element;
       const input = new_elem.querySelector("input")!;
       new_elem.querySelector("p")!.textContent = lang_map.get(lang);
       input.setAttribute("value", lang)
