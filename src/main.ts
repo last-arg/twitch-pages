@@ -1,9 +1,10 @@
 import Alpine from 'alpinejs'
 import "./init";
-import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, SEARCH_COUNT, VideoType, twitchCatImageSrc, Game } from './common'
+import { API_URL, TWITCH_MAX_QUERY_COUNT, TWITCH_CLIENT_ID, VideoType, twitchCatImageSrc } from './common'
 import { mainContent, UrlResolve, config } from 'config';
 import { settings, current_path } from './global';
 import { games } from './games';
+import { Twitch } from './twitch';
 import 'htmx.org';
 
 // TODO: Search: Show old values when searching for new ones?
@@ -98,80 +99,6 @@ const setAriaMsg = (function() {
   return (msg: string) => container.textContent = msg
 })()
 
-class Twitch {
-  static headers = {
-    "Authorization": "",
-    "Client-id": TWITCH_CLIENT_ID,
-    "Accept": "application/vnd.twitchtv.v5+json",
-  }
-
-  client_id: string
-  twitch_token: string | null = null
-  is_fetching_token: boolean = false
-
-  constructor(client_id: string) {
-    this.client_id = client_id;
-    this.twitch_token = localStorage.getItem("twitch_token");
-    if (this.twitch_token) {
-      this.setTwitchToken(this.twitch_token);
-    }
-  }
-  async fetchToken() {
-    let token = this.getTwitchToken();
-    if (!token) {
-      this.is_fetching_token = true;
-      const r = await fetch("/api/twitch-api/?new-token");
-      if (r.status !== 200) {
-        console.warn("Failed to get new twitch token");
-        // TODO: handle failed request
-      } else {
-        const token = await r.text();
-        this.setTwitchToken(token);
-      }
-      this.is_fetching_token = false;
-    }
-  }
-
-  setTwitchToken(token: string) {
-    this.twitch_token = token
-    localStorage.setItem("twitch_token", token)
-    Twitch.headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  getTwitchToken(): string | null { return this.twitch_token; }
-  
-  setUserToken(token: string) {
-    console.log("TODO: setUserToken")
-  }
-
-  // TODO: when token becomes invalid
-  // From twitch docs: 'If a token becomes invalid, your API requests return 
-  //   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
-  //   new access token using the appropriate flow for your app.'
-  // Have to check for 401 in any twitch API request code
-  
-  async fetchUsers(ids: string[]) {
-    const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
-    if (resp.status === 401) {
-      
-    }
-    return (await resp.json()).data;
-  }
-
-  async fetchSearch(input: string) {
-    const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
-    const r = await fetch(url, { method: "GET", headers: Twitch.headers })
-    const results = await r.json()
-    return results.data ?? []
-  }
-  
-  async fetchStreams(user_ids: string[]) {
-    const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
-  }
-}
-
 const twitch = new Twitch(TWITCH_CLIENT_ID);
 
 const getUrlObject = (newPath: string): UrlResolve => {
@@ -217,20 +144,13 @@ function alpineInit() {
     return await twitch.fetchUsers(ids);
   }
 
-  interface Search {
-    name: string,
-    id: string,
-  }
-
   type SidebarState = "closed" | "games" | "streams" | "search"
   interface Sidebar {
     state: SidebarState,
     loading: boolean,
     searchValue: string,
-    searchResults: Search[],
     init: () => void,
     closeSidebar: () => void,
-    fetchSearch: (value: string) => Promise<Search[]>,
     clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
     toggleSidebar: (current: SidebarState) => void,
     getImageSrc: (url_template: string) => string,
@@ -263,42 +183,6 @@ function alpineInit() {
               }
             }
           })
-          Alpine.effect(() => {
-            clearTimeout(searchTimeout)
-            const searchTerm = this.searchValue.trim()
-            if (searchTerm.length > 0) {
-              this.loading = true;
-              searchTimeout = setTimeout(async () => {
-                let aria_msg = "Searching games"
-                this.searchResults = await this.fetchSearch(searchTerm)
-                this.loading = false;
-                if (this.searchResults.length === 1) {
-                  aria_msg = "Found one game"
-                } else if (this.searchResults.length > 1) {
-                  aria_msg = `Found ${this.searchResults.length} games`
-                } else {
-                  aria_msg = "Found no games"
-                }
-                if (this.state !== "closed") {
-                  const scroll_position = menuItemToScrollPosition(sidebarButtons[this.state]);
-                  if (scroll_position) {
-                    window.requestAnimationFrame(function() {
-                      const scrollbox = scroll_position.querySelector(".scrollbox")!;
-                      sidebarShadows(scrollbox as HTMLElement);
-                    });
-                  }
-                }
-                setAriaMsg(aria_msg)
-              }, 400)
-            } else {
-              this.searchResults = [];
-            }
-          })
-        },
-        async fetchSearch(value: string): Promise<Search[]> {
-          const searchTerm = value.trim()
-          if (searchTerm.length === 0) return []
-          return await twitch.fetchSearch(searchTerm);
         },
         closeSidebar() {
           sidebarButtons[this.state].focus()

@@ -1,4 +1,5 @@
 import { settings, current_path } from './global';
+import './search';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     const path = document.location.pathname;

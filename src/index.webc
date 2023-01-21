@@ -75,7 +75,7 @@ title: "Home | Twitch Pages"
                   </ul>
                   <template id="game-item" webc:root webc:keep>
                     <li class="flex">
-                      <link-box @name="category" @arg_name="game.name">
+                      <link-box @name="category">
                         <p></p>
                       </link-box>
                       <follow-star data-colormode="dark" @arg="game"></follow-star>
