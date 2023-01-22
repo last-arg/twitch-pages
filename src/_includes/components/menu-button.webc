@@ -1,8 +1,4 @@
-<button webc:root webc:keep class="menu-item" :data-menu-item="name"
-  aria-expanded="false"
-  :x-bind:aria-expanded="`(state === '${name}').toString()`"
-  :x-on:click="`toggleSidebar('${name}')`"
->
+<button webc:root webc:keep class="menu-item" :data-menu-item="name" aria-expanded="false">
   <span webc:if="name === 'streams'" class="streams-count" 
     x-bind:class="live_count ? '' : 'hidden'"
     x-data="{live_count: 0}" 

@@ -2,6 +2,8 @@ import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { Game, renderGames } from './common';
+import './sidebar';
+import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     const path = document.location.pathname;
@@ -21,6 +23,21 @@ function initPages(path: string, target: Element) {
 }
 
 function initHeader(root: Element) {
+    sidebar_nav.addEventListener("click", (e: Event) => {
+        const curr = sidebar_state();
+        const btn = (e.target as HTMLElement).closest(".menu-item");
+        const new_state = btn?.getAttribute("data-menu-item");
+        if (new_state) {
+            if (curr === new_state) {
+                sidebar_state("closed");
+            } else {
+                if (new_state) {
+                    sidebar_state(new_state as SidebarState);
+                }
+            } 
+        }
+    });
+
     // Games
     initHeaderGames(root);
 

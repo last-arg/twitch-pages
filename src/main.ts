@@ -147,13 +147,9 @@ function alpineInit() {
   type SidebarState = "closed" | "games" | "streams" | "search"
   interface Sidebar {
     state: SidebarState,
-    loading: boolean,
-    searchValue: string,
-    init: () => void,
     closeSidebar: () => void,
     clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
     toggleSidebar: (current: SidebarState) => void,
-    getImageSrc: (url_template: string) => string,
     [key: string]: any,
   }
 
@@ -166,24 +162,6 @@ function alpineInit() {
       }
       return {
         state: "closed",
-        loading: false,
-        searchValue: "",
-        searchResults: [],
-        init() {
-          // Alpine.mutateDom(())
-          // @ts-ignore
-          let searchTimeout: NodeJS.Timeout = 0;
-          let activeSidebar = (document.activeElement! as HTMLElement);
-          Alpine.effect(() => {
-            if (document.activeElement?.tagName === "BUTTON") {
-              if (this.state === 'closed') {
-                activeSidebar.focus();
-              } else {
-                activeSidebar = (document.activeElement! as HTMLElement);
-              }
-            }
-          })
-        },
         closeSidebar() {
           sidebarButtons[this.state].focus()
           this.state = "closed";
@@ -206,9 +184,6 @@ function alpineInit() {
             const scrollbox = scroll_position.querySelector(".scrollbox")!;
             sidebarShadows(scrollbox as HTMLElement);
           }
-        },
-        getImageSrc(url_template: string): string {
-          return twitchCatImageSrc(url_template, config.image.category.width, config.image.category.height)
         },
       }
     })
