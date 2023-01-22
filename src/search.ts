@@ -11,8 +11,8 @@ export const search_term = act("");
 
 let search_timeout = 0;
 const feedback_elem = document.querySelector(".search-feedback")!;
-const target = document.querySelector(".js-search-list")!;
-const base_elem = (target.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const search_list = document.querySelector(".js-search-list")!;
+const search_item_tmpl = (search_list.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
 export const search_results = act(() => {
     clearTimeout(search_timeout);
@@ -24,15 +24,15 @@ export const search_results = act(() => {
             const results = await fetchSearch(search_term());
             if (results.length === 0) {
                 feedback_elem.textContent = "Found no games";
-                target.innerHTML = "";
+                search_list.innerHTML = "";
                 return;
             }
             feedback_elem.textContent = "";
-            renderGames(base_elem, target, results as Game[]);
+            renderGames(search_item_tmpl, search_list, results as Game[]);
         }, 400);
     } else {
         feedback_elem.textContent = "Enter game name to search";
-        target.innerHTML = "";
+        search_list.innerHTML = "";
     }
 });
 

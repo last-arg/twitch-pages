@@ -38,6 +38,9 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const btn = new_item.querySelector(".button-follow")!;
         btn.setAttribute("data-game-id", game.id)
         btn.setAttribute("data-is-followed", isFollowed(game.id).toString())
+        let escaped_name = game.name.replace(/(['"])/g, '\\$1');
+        const encoded_game = encodeURIComponent(`{"name": "${escaped_name}", "id": "${game.id}", "box_art_url": "${game.box_art_url}"}`);
+        btn.setAttribute("data-game", encoded_game);
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;

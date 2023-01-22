@@ -1,6 +1,6 @@
 import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
-import { search_term, search_results } from './search';
+import { search_term, search_results, search_list } from './search';
 import { Game, renderGames } from './common';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
@@ -29,14 +29,15 @@ function initHeader(root: Element) {
         search_term((e.target as HTMLInputElement).value);
         search_results();
     })
+    search_list.addEventListener("mousedown", handlePathChange);
+    search_list.addEventListener("click", handleGameFollow);
 
     // TODO: Users/Streams
 }
 
-function initHeaderGames(root: Element) {
+function initHeaderGames(_root: Element) {
     renderGames(game_tmpl, games_list, games);
-    root.querySelector(".js-games-list")?.addEventListener("mousedown", handlePathChange)
-    // TODO?: move addEventListeners?
+    games_list.addEventListener("mousedown", handlePathChange)
     games_list.addEventListener("click", (e) => {
         const btn = (e.target as Element).closest(".button-follow");
         if (btn) {
@@ -46,34 +47,35 @@ function initHeaderGames(root: Element) {
             }
         }
     })
-
-    document.querySelector("#main")!.addEventListener("click", (e) => {
-        const btn = (e.target as Element).closest(".button-follow");
-        if (btn) {
-            const game_raw = btn.getAttribute("data-game");
-            if (game_raw) {
-                const game: Game = JSON.parse(decodeURIComponent(game_raw));
-                const following = (btn.getAttribute("data-is-followed") || "false") === "true";
-                if (following) {
-                    removeGame(game.id);
-                } else {
-                    addGame(game);
-                }
-                btn.setAttribute("data-is-followed", (!following).toString())
-                return;
-            }
-
-            const id = btn.getAttribute("data-game-id")
-            if (id ) {
-                removeGame(id);
-            }
-        }
-    })
 }
 
+function handleGameFollow(e: Event) {  
+    const btn = (e.target as Element).closest(".button-follow");
+    if (btn) {
+        const game_raw = btn.getAttribute("data-game");
+        if (game_raw) {
+            const game: Game = JSON.parse(decodeURIComponent(game_raw));
+            const following = (btn.getAttribute("data-is-followed") || "false") === "true";
+            if (following) {
+                removeGame(game.id);
+            } else {
+                addGame(game);
+            }
+            btn.setAttribute("data-is-followed", (!following).toString())
+            return;
+        }
+
+        const id = btn.getAttribute("data-game-id")
+        if (id ) {
+            removeGame(id);
+        }
+    }
+}
 
 function initRoot(root: Element) {
-    root.querySelector("#main")?.addEventListener("mousedown", handlePathChange);
+    const main = root.querySelector("#main")!;
+    main.addEventListener("mousedown", handlePathChange);
+    main.addEventListener("click", handleGameFollow);
 }
 
 function handlePathChange(e: Event) {

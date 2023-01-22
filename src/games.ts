@@ -30,7 +30,7 @@ games_computed.subscribe(([ids, adds]) => {
     games.sort();
     localStorage.setItem("games", JSON.stringify(games))
 
-    const sel_start = "#main .button-follow[data-game-id=\"";
+    const sel_start = ".button-follow[data-game-id=\"";
     if (adds.length > 0) {
         renderGames(game_tmpl, games_list, games);
         const selector = `${sel_start}${adds.map((game) => (game as Game).id).join("\"]," + sel_start)}"]`;
