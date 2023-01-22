@@ -36,24 +36,14 @@ title: "Home | Twitch Pages"
       <nav class="sidebar-nav flex-grow" x-data="sidebar" aria-label="Sidebar">
         <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" x-on:submit.prevent="">
+            <form role="search">
               <label class="sr-only" for="game_name">Search for games</label>
-              <input
-                x-on:focus="state = 'search'"
-                x-on:blur="if ($el.value.length === 0) state = 'closed'"
-                x-on:input="state = 'search'"
-                x-on:keyup.enter="state = 'search'"
-                x-on:keyup.esc="state = 'closed'"
-                x-ref="searchInput"
-                id="game_name"
-                name="game_name"
-                type="search"
+              <input type="search" id="game_name" name="game_name"
                 placeholder="Search for games"
-                x-bind:aria-expanded="(state === 'search').toString()"
                 aria-expanded="false"
               />
               <!-- TODO: see if I can make this <button> into <menu-button> -->
-              <button class="menu-item" type="submit" x-on:click="$refs.searchInput.focus()">
+              <button class="menu-item" data-menu-item="search" type="submit">
                 <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#looking-class"></use></svg>
                 <span class="sr-only">Search for games</span>
               </button>

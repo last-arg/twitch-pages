@@ -27,6 +27,10 @@ function initHeader(root: Element) {
         const curr = sidebar_state();
         const btn = (e.target as HTMLElement).closest(".menu-item");
         const new_state = btn?.getAttribute("data-menu-item");
+        if (new_state === "search") {
+            (sidebar_nav.querySelector("#game_name") as HTMLInputElement).focus();
+            return;
+        }
         if (new_state) {
             if (curr === new_state) {
                 sidebar_state("closed");
@@ -42,10 +46,34 @@ function initHeader(root: Element) {
     initHeaderGames(root);
 
     // Search
-    document.querySelector("#game_name")?.addEventListener("input", (e: Event) => {
+    sidebar_nav.querySelector("form")!.addEventListener("submit", (e: Event) => {
+        e.preventDefault()
+        sidebar_state("search");
+    });
+    const game_name = sidebar_nav.querySelector("#game_name")!;
+    game_name.addEventListener("input", (e: Event) => {
         search_term((e.target as HTMLInputElement).value);
         search_results();
     })
+    game_name.addEventListener("focus", (_: Event) => {
+        sidebar_state("search");
+    })
+
+    game_name.addEventListener("focus", (_: Event) => sidebar_state("search"));
+    game_name.addEventListener("blur", (e: Event) => {
+        const input = e.target as HTMLInputElement;
+        if (input.value.length === 0) {
+            sidebar_state("closed")
+        }
+    });
+
+    game_name.addEventListener("keyup", (e: Event) => {
+        const evt = e as KeyboardEvent;
+        if (evt.key === "Escape") {
+            sidebar_state("closed");
+        }
+    });
+    
     search_list.addEventListener("mousedown", handlePathChange);
     search_list.addEventListener("click", handleGameFollow);
 
