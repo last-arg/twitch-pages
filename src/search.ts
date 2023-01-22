@@ -1,6 +1,7 @@
 import {act} from '@artalar/act';
 import { Twitch } from './twitch';
 import { renderGames, SEARCH_COUNT, Game } from './common'
+import 'htmx.org';
 
 type Search = {
     name: string,
@@ -29,6 +30,7 @@ export const search_results = act(() => {
             }
             feedback_elem.textContent = "";
             renderGames(search_item_tmpl, search_list, results as Game[]);
+            htmx.process(search_list as HTMLElement);
         }, 400);
     } else {
         feedback_elem.textContent = "Enter game name to search";

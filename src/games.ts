@@ -1,5 +1,6 @@
 import {act} from '@artalar/act';
 import { renderGames, Game } from './common';
+import 'htmx.org';
 
 export const games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
@@ -38,6 +39,8 @@ games_computed.subscribe(([ids, adds]) => {
         nodes.forEach((node) => {
             node.setAttribute("data-is-followed", "true");
         });
+        htmx.process(games_list as HTMLElement);
+
     }
 
     if (ids.length > 0) {
