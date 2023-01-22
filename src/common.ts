@@ -30,7 +30,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(game.name);
         const link = new_item.querySelector(".link-box")!;
-        const href = "/directory/games/" + game.name; 
+        const href = "/directory/game/" + game.name; 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
         const img = link.querySelector("img")!;
