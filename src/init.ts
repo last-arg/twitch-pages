@@ -25,20 +25,24 @@ function initPages(path: string, target: Element) {
 function initHeader(root: Element) {
     sidebar_nav.addEventListener("click", (e: Event) => {
         const curr = sidebar_state();
-        const btn = (e.target as HTMLElement).closest(".menu-item");
-        const new_state = btn?.getAttribute("data-menu-item");
-        if (new_state === "search") {
-            (sidebar_nav.querySelector("#game_name") as HTMLInputElement).focus();
-            return;
-        }
-        if (new_state) {
-            if (curr === new_state) {
-                sidebar_state("closed");
-            } else {
-                if (new_state) {
-                    sidebar_state(new_state as SidebarState);
-                }
-            } 
+        const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+        if (btn?.classList.contains("menu-item")) {
+            const new_state = btn.getAttribute("data-menu-item");
+            if (new_state === "search") {
+                (sidebar_nav.querySelector("#game_name") as HTMLInputElement).focus();
+                return;
+            }
+            if (new_state) {
+                if (curr === new_state) {
+                    sidebar_state("closed");
+                } else {
+                    if (new_state) {
+                        sidebar_state(new_state as SidebarState);
+                    }
+                } 
+            }
+        } else if (btn?.classList.contains("btn-close")) {
+            sidebar_state("close" as SidebarState);
         }
     });
 

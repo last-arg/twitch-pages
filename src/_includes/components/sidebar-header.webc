@@ -5,7 +5,7 @@
     </svg>
     <span webc:nokeep @text="sb_title"></span>
   </h2>
-  <button type="button" class="btn-close" x-on:click="closeSidebar()">
+  <button type="button" class="btn-close">
     <span class="sr-only">Close sidebar</span>
     <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#close"></use></svg>
   </button>

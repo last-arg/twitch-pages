@@ -2,7 +2,7 @@ import { act } from "@artalar/act";
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
 
-export const sidebar_state = act<SidebarState>("closed")
+export const sidebar_state = act<SidebarState>("closed");
 
 export const sidebar_nav = document.querySelector(".sidebar-nav")!;
 
