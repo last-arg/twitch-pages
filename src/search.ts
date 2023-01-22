@@ -7,14 +7,14 @@ type Search = {
     id: string,
 }
 
-const search_term = act("");
+export const search_term = act("");
 
 let search_timeout = 0;
 const feedback_elem = document.querySelector(".search-feedback")!;
 const target = document.querySelector(".js-search-list")!;
 const base_elem = (target.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-const search_results = act(() => {
+export const search_results = act(() => {
     clearTimeout(search_timeout);
     const term = search_term().trim();
     if (term.length > 0) {
@@ -35,11 +35,6 @@ const search_results = act(() => {
         target.innerHTML = "";
     }
 });
-
-document.querySelector("#game_name")?.addEventListener("input", (e: Event) => {
-    search_term((e.target as HTMLInputElement).value);
-    search_results();
-})
 
   // Alpine.effect(() => {
   //   clearTimeout(searchTimeout)

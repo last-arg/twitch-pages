@@ -1,5 +1,7 @@
+import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
-import './search';
+import { search_term, search_results } from './search';
+import { Game, renderGames } from './common';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     const path = document.location.pathname;
@@ -7,7 +9,7 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
 })
 
 initPages(document.location.pathname, document.body);
-initSidebarGames(document.body)
+initHeader(document.body)
 
 function initPages(path: string, target: Element) {
     if (path === "/settings") {
@@ -18,9 +20,57 @@ function initPages(path: string, target: Element) {
     }
 }
 
-function initSidebarGames(root: Element) {
-    root.querySelector(".js-games-list")?.addEventListener("mousedown", handlePathChange)
+function initHeader(root: Element) {
+    // Games
+    initHeaderGames(root);
+
+    // Search
+    document.querySelector("#game_name")?.addEventListener("input", (e: Event) => {
+        search_term((e.target as HTMLInputElement).value);
+        search_results();
+    })
+
+    // TODO: Users/Streams
 }
+
+function initHeaderGames(root: Element) {
+    renderGames(game_tmpl, games_list, games);
+    root.querySelector(".js-games-list")?.addEventListener("mousedown", handlePathChange)
+    // TODO?: move addEventListeners?
+    games_list.addEventListener("click", (e) => {
+        const btn = (e.target as Element).closest(".button-follow");
+        if (btn) {
+            const id = btn.getAttribute("data-game-id")
+            if (id ) {
+                removeGame(id);
+            }
+        }
+    })
+
+    document.querySelector("#main")!.addEventListener("click", (e) => {
+        const btn = (e.target as Element).closest(".button-follow");
+        if (btn) {
+            const game_raw = btn.getAttribute("data-game");
+            if (game_raw) {
+                const game: Game = JSON.parse(decodeURIComponent(game_raw));
+                const following = (btn.getAttribute("data-is-followed") || "false") === "true";
+                if (following) {
+                    removeGame(game.id);
+                } else {
+                    addGame(game);
+                }
+                btn.setAttribute("data-is-followed", (!following).toString())
+                return;
+            }
+
+            const id = btn.getAttribute("data-game-id")
+            if (id ) {
+                removeGame(id);
+            }
+        }
+    })
+}
+
 
 function initRoot(root: Element) {
     root.querySelector("#main")?.addEventListener("mousedown", handlePathChange);

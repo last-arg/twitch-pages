@@ -9,12 +9,10 @@ const games_computed = act(() => {
     return [remove_ids(), add_games()];
 }, (_, next) => next[0].length > 0 && next[1].length > 0);
 
-const games_list = document.querySelector(".js-games-list")!;
-const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const games_list = document.querySelector(".js-games-list")!;
+export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-renderGames(tmpl_li, games_list, games);
-
-const unsub = games_computed.subscribe(([ids, adds]) => {
+games_computed.subscribe(([ids, adds]) => {
     for (const add of adds as Game[]) {
         if (!games.some(game => game.id === add.id)) {
             games.push(add);
@@ -34,7 +32,7 @@ const unsub = games_computed.subscribe(([ids, adds]) => {
 
     const sel_start = "#main .button-follow[data-game-id=\"";
     if (adds.length > 0) {
-        renderGames(tmpl_li, games_list, games);
+        renderGames(game_tmpl, games_list, games);
         const selector = `${sel_start}${adds.map((game) => (game as Game).id).join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => {
@@ -67,44 +65,10 @@ export function isFollowed(input_id: string): boolean {
     return games.some(({id}) => input_id === id);
 }
 
-const addGame = (game: Game) => {
+export function addGame(game: Game) {
     add_games([...add_games(), game]);
 };
 
-const removeGame = (id: string) => {
+export function removeGame(id: string) {
     remove_ids([...remove_ids(), id]);
 };
-
-// TODO?: move addEventListeners?
-games_list.addEventListener("click", (e) => {
-    const btn = (e.target as Element).closest(".button-follow");
-    if (btn) {
-        const id = btn.getAttribute("data-game-id")
-        if (id ) {
-            removeGame(id);
-        }
-    }
-})
-
-document.querySelector("#main")!.addEventListener("click", (e) => {
-    const btn = (e.target as Element).closest(".button-follow");
-    if (btn) {
-        const game_raw = btn.getAttribute("data-game");
-        if (game_raw) {
-            const game: Game = JSON.parse(decodeURIComponent(game_raw));
-            const following = (btn.getAttribute("data-is-followed") || "false") === "true";
-            if (following) {
-                removeGame(game.id);
-            } else {
-                addGame(game);
-            }
-            btn.setAttribute("data-is-followed", (!following).toString())
-            return;
-        }
-
-        const id = btn.getAttribute("data-game-id")
-        if (id ) {
-            removeGame(id);
-        }
-    }
-})
