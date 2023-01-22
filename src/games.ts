@@ -1,12 +1,5 @@
 import {act} from '@artalar/act';
-import { config } from 'config';
-import { twitchCatImageSrc } from './common';
-
-type Game = {
-    name: string,
-    id: string,
-    box_art_url: string,
-}
+import { renderGames, Game } from './common';
 
 export const games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
@@ -19,7 +12,7 @@ const games_computed = act(() => {
 const games_list = document.querySelector(".js-games-list")!;
 const tmpl_li = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-renderGames(games);
+renderGames(tmpl_li, games_list, games);
 
 const unsub = games_computed.subscribe(([ids, adds]) => {
     for (const add of adds as Game[]) {
@@ -41,7 +34,7 @@ const unsub = games_computed.subscribe(([ids, adds]) => {
 
     const sel_start = "#main .button-follow[data-game-id=\"";
     if (adds.length > 0) {
-        renderGames(games);
+        renderGames(tmpl_li, games_list, games);
         const selector = `${sel_start}${adds.map((game) => (game as Game).id).join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => {
@@ -70,6 +63,10 @@ const unsub = games_computed.subscribe(([ids, adds]) => {
     remove_ids().length = 0;
 })
 
+export function isFollowed(input_id: string): boolean {
+    return games.some(({id}) => input_id === id);
+}
+
 const addGame = (game: Game) => {
     add_games([...add_games(), game]);
 };
@@ -77,35 +74,6 @@ const addGame = (game: Game) => {
 const removeGame = (id: string) => {
     remove_ids([...remove_ids(), id]);
 };
-
-// TODO: dom manipulation should happen when:
-// 1) games' sidebar is open
-// 2) games' sidebar is closed but was clicked on
-// TODO: improve updating DOM 
-// Update main content follows
-function renderGames(data: Game[]) {
-    const frag = document.createDocumentFragment();
-    for (const game of data) {
-        const new_item = tmpl_li.cloneNode(true) as Element;
-        const p = new_item.querySelector("p")!;
-        p.textContent = decodeURIComponent(game.name);
-        const link = new_item.querySelector(".link-box")!;
-        const href = "/directory/games/" + game.name; 
-        link.setAttribute("href", href)
-        link.setAttribute("hx-push-url", href)
-        const img = link.querySelector("img")!;
-        img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
-        const btn = new_item.querySelector(".button-follow")!;
-        btn.setAttribute("data-game-id", game.id)
-        btn.setAttribute("data-is-followed", "true")
-        const span = btn.querySelector("span")!;
-        span.textContent = "Unfollow";
-        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
-        external_link.href = "https://www.twitch.tv/directory/game/" + game.name;
-        frag.append(new_item);
-    }
-    games_list.replaceChildren(frag);
-}
 
 // TODO?: move addEventListeners?
 games_list.addEventListener("click", (e) => {

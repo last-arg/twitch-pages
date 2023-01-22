@@ -33,7 +33,7 @@
         </svg>
       </a>
     `
-    if (arg === "game") {
+    if (arg === "game" || arg === "search") {
      old = `
       <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
       <a href="#external_link" rel="external">

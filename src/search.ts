@@ -1,6 +1,6 @@
 import {act} from '@artalar/act';
 import { Twitch } from './twitch';
-import { SEARCH_COUNT } from './common'
+import { renderGames, SEARCH_COUNT, Game } from './common'
 
 type Search = {
     name: string,
@@ -11,13 +11,14 @@ const search_term = act("");
 
 let search_timeout = 0;
 const feedback_elem = document.querySelector(".search-feedback")!;
+const target = document.querySelector(".js-search-list")!;
+const base_elem = (target.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+
 const search_results = act(() => {
     clearTimeout(search_timeout);
     const term = search_term().trim();
-    console.log("compt serach", term);
     if (term.length > 0) {
         feedback_elem.textContent = "Searching...";
-        console.log("searchin...", term);
         search_timeout = window.setTimeout(async () => {
             console.log("make search request");
             const results = await fetchSearch(search_term());
@@ -26,8 +27,7 @@ const search_results = act(() => {
                 return;
             }
             feedback_elem.textContent = "";
-            console.log(results)
-            // TODO: render games
+            renderGames(base_elem, target, results as Game[]);
         }, 400);
     } else {
         feedback_elem.textContent = "Enter game name to search";
