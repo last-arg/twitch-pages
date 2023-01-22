@@ -63,7 +63,11 @@ function initHeader(root: Element) {
         sidebar_state("search");
     })
 
-    game_name.addEventListener("focus", (_: Event) => sidebar_state("search"));
+    game_name.addEventListener("focus", (e: Event) => {
+        search_term((e.target as HTMLInputElement).value);
+        sidebar_state("search")
+        search_results();
+    });
     game_name.addEventListener("blur", (e: Event) => {
         const input = e.target as HTMLInputElement;
         if (input.value.length === 0) {

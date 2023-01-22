@@ -4,8 +4,7 @@
     <p class="search-feedback"></p>
     <!-- search results -->
     <scroll-container>
-      <ul class="js-search-list stack stack-s" x-show="state === 'search'" role="list">
-      </ul>
+      <ul class="js-search-list stack stack-s" role="list"></ul>
       <template webc:root webc:keep>
         <li class="flex">
           <link-box @name="category">
@@ -18,6 +17,7 @@
   </div>
 </div>
 <style>
+.js-search-list:empty,
 .search-feedback:empty {
   display: none;
 }
