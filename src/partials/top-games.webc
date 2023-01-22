@@ -1,13 +1,13 @@
 ---
 permalink: "{{'public/partials/top-games.html'}}"
 ---
-<div x-ignore x-init="document.title = 'Home | Twitch Pages'">
+<div>
   <div>
     <h2 class="main-heading">Top games</h2>
   </div>
-  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 10rem; --l-grid-gap: 2em 0.5em" role="list" x-on:click="$store.global.changePath">
+  <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 10rem; --l-grid-gap: 2em 0.5em" role="list">
     <template webc:keep webc:type="11ty" id="top-games-template">
-      <li x-ignore class="simple-fade-in">
+      <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
             <a class="game-img-link" href="#game_url"
@@ -26,7 +26,7 @@ permalink: "{{'public/partials/top-games.html'}}"
                 </svg>
               </a>
             </div>
-            <div x-ignore class="game-action" data-pos="right">
+            <div class="game-action" data-pos="right">
               <button-follow></button-follow>
             </div>
           </div>

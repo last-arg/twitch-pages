@@ -73,6 +73,7 @@ function handleGameFollow(e: Event) {
 }
 
 function initRoot(root: Element) {
+    document.title = "Home | Twitch Pages";
     const main = root.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameFollow);
