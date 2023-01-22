@@ -86,14 +86,6 @@ interface ProfileImages {
   clear: () => void
 }
 
-interface Global {
-  settings: Record<string, Record<string, any>>,
-  addLang: (lang: string) => void,
-  clicked_path: string | null,
-  changePath: (e: Event) => void,  
-  setPath: (name: string | null) => void,
-}
-
 const setAriaMsg = (function() {
   const container = document.querySelector("#aria-feedback")!
   return (msg: string) => container.textContent = msg
@@ -144,50 +136,7 @@ function alpineInit() {
     return await twitch.fetchUsers(ids);
   }
 
-  type SidebarState = "closed" | "games" | "streams" | "search"
-  interface Sidebar {
-    state: SidebarState,
-    closeSidebar: () => void,
-    clickSidebar: (sidebar: "category" | "user-videos", name: string) => void,
-    toggleSidebar: (current: SidebarState) => void,
-    [key: string]: any,
-  }
-
   document.addEventListener("alpine:init", function() {
-    Alpine.data("sidebar", (): Sidebar => {
-      const sidebarButtons: Record<string, HTMLElement> = {
-        "games": document.querySelector("[data-menu-item='games']")!,
-        "streams": document.querySelector("[data-menu-item='streams']")!,
-        "search": document.querySelector("#game_name")!,
-      }
-      return {
-        state: "closed",
-        closeSidebar() {
-          sidebarButtons[this.state].focus()
-          this.state = "closed";
-        },
-        clickSidebar(sidebar: "category" | "user-videos", name: string) {
-          this.closeSidebar();
-          if (sidebar === "category" || sidebar === "user-videos") {
-            (Alpine.store("global") as Global).setPath(name);
-          }
-        },
-        toggleSidebar(current: SidebarState) {
-          if (this.state === current) {
-            this.state = "closed"
-            return
-          }
-          this.state = current
-
-          const scroll_position = menuItemToScrollPosition(sidebarButtons[current]);
-          if (scroll_position) {
-            const scrollbox = scroll_position.querySelector(".scrollbox")!;
-            sidebarShadows(scrollbox as HTMLElement);
-          }
-        },
-      }
-    })
-
     Alpine.data("userVideosFilter", (): any => {
       const outputList = document.querySelector(".output-list")!
       return {
@@ -201,25 +150,6 @@ function alpineInit() {
             // Hide videos
             outputList.classList.add(outputClass)
           }
-        }
-      }
-    })
-
-    Alpine.data("search", (): any => {
-      return {
-        stylesheet: null,
-        init() {
-          this.stylesheet = this.$el.insertAdjacentElement('afterend', document.createElement('style')).sheet
-        },
-        searchTitle() {
-          this.formReset();
-          const value = this.$el.value
-          if (value.length === 0) return
-          this.stylesheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0)
-        },
-        // used in 'partials/category.html'
-        formReset() {
-          if (this.stylesheet.cssRules.length) this.stylesheet.deleteRule(0)
         }
       }
     })

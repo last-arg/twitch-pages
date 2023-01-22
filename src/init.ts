@@ -50,6 +50,12 @@ function initHeader(root: Element) {
     initHeaderGames(root);
 
     // Search
+    initHeaderSearch()
+
+    // TODO: Users/Streams
+}
+
+function initHeaderSearch() {
     sidebar_nav.querySelector("form")!.addEventListener("submit", (e: Event) => {
         e.preventDefault()
         sidebar_state("search");
@@ -81,11 +87,9 @@ function initHeader(root: Element) {
             sidebar_state("closed");
         }
     });
-    
+
     search_list.addEventListener("mousedown", handlePathChange);
     search_list.addEventListener("click", handleGameFollow);
-
-    // TODO: Users/Streams
 }
 
 function initHeaderGames(_root: Element) {

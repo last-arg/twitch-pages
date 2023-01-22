@@ -33,7 +33,7 @@ title: "Home | Twitch Pages"
           </li>
         </ul>
       </nav>
-      <nav class="sidebar-nav flex-grow" x-data="sidebar" aria-label="Sidebar">
+      <nav class="sidebar-nav flex-grow" aria-label="Sidebar">
         <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
             <form role="search">
