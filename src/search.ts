@@ -24,6 +24,7 @@ const search_results = act(() => {
             const results = await fetchSearch(search_term());
             if (results.length === 0) {
                 feedback_elem.textContent = "Found no games";
+                target.innerHTML = "";
                 return;
             }
             feedback_elem.textContent = "";
@@ -31,6 +32,7 @@ const search_results = act(() => {
         }, 400);
     } else {
         feedback_elem.textContent = "Enter game name to search";
+        target.innerHTML = "";
     }
 });
 
