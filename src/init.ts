@@ -17,6 +17,9 @@ main.addEventListener("htmx:load", (e) => {
 })
 
 initHeader(document.body)
+main.addEventListener("mousedown", handlePathChange);
+main.addEventListener("click", handleGameFollow);
+
 
 function initPages(path: string, target: Element) {
     if (path === "/settings") {
@@ -128,7 +131,8 @@ function initHeaderGames(_root: Element) {
 }
 
 function handleGameFollow(e: Event) {  
-    const btn = (e.target as Element).closest(".button-follow");
+    const t = (e.target as Element);
+    const btn = t.classList.contains("button-follow") ? t : t.closest(".button-follow");
     if (btn) {
         const game_raw = btn.getAttribute("data-game");
         if (game_raw) {
@@ -151,8 +155,6 @@ function handleGameFollow(e: Event) {
 }
 
 function initRoot(root: Element) {
-    main.addEventListener("mousedown", handlePathChange);
-    main.addEventListener("click", handleGameFollow);
 }
 
 function handlePathChange(e: Event) {
