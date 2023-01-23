@@ -446,8 +446,7 @@ const initHtmx = async (page_cache?: Cache) => {
             const url_name = encodeURIComponent(item.name);
             const game_url = mainContent['category'].url.replace(":category", url_name)
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
-            let escaped_name = item.name.replace(/(['"])/g, '\\$1');
-            const game_obj_str = encodeURIComponent(`{"name": "${escaped_name}", "id": "${item.id}", "box_art_url": "${item.box_art_url}"}`);
+            const game_obj_str = encodeURIComponent(JSON.stringify(item));
             let html = tmpl.innerHTML
               .replaceAll("#game_url", game_url)
               .replace(":game_name_text", item.name)
@@ -484,8 +483,7 @@ const initHtmx = async (page_cache?: Cache) => {
         htmx.trigger(".btn-load-more", "click", {})
         let result = "";
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-        let escaped_name = item.name.replace(/(['"])/g, '\\$1');
-        const game_obj_str = `{name: '${escaped_name}', id: '${item.id}', box_art_url: '${item.box_art_url}'}`;
+        const game_obj_str = encodeURIComponent(JSON.stringify(item));
         result += tmpl.innerHTML
           .replaceAll(":game_name", item.name)
           .replace(":game_id", item.id)
