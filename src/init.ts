@@ -30,6 +30,8 @@ function initPages(path: string, target: Element) {
         initRoot(target);
     } else if (path.startsWith("/directory/game/")) {
         initCategory(target);
+    } else if (path.endsWith("/videos")) {
+        console.log("TODO: videos")
     }
 }
 

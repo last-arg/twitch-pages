@@ -507,15 +507,16 @@ const initHtmx = async (page_cache?: Cache) => {
             }
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+            const title = item.title.replaceAll('"', "&quot;");
             result += tmpl.innerHTML
               .replaceAll("#video_url", video_url)
               .replaceAll(":user_id", user_id)
               .replaceAll(":user_login", item.user_login)
               .replaceAll(":user_name", item.user_name)
-              .replaceAll(":title", item.title)
+              .replace(":title_encoded", encodeURIComponent(item.title))
+              .replaceAll(":title", title)
               .replace(":viewer_count", item.viewer_count)
               .replace("#video_img_url", img_url)
-              .replace(":title_encoded", encodeURIComponent(item.title))
               .replace(src_replace, src_user_img)
         }
         
