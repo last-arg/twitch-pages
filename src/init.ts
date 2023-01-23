@@ -4,13 +4,19 @@ import { search_term, search_results, search_list } from './search';
 import { Game, renderGames } from './common';
 import './sidebar';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
+import { filter_stylesheet, filter_value } from './search_filter';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
-    const path = document.location.pathname;
-    initPages(path, e.target as Element);
+    initPages(document.location.pathname, e.target as Element);
 })
 
-initPages(document.location.pathname, document.body);
+const main = document.querySelector("#main")!;
+main.addEventListener("htmx:load", (e) => {
+    if ((e.target as HTMLElement) === main.firstElementChild) {
+        initPages(document.location.pathname, e.target as Element);
+    }
+})
+
 initHeader(document.body)
 
 function initPages(path: string, target: Element) {
@@ -18,11 +24,27 @@ function initPages(path: string, target: Element) {
         document.title = "Settings | Twitch Pages";
         initSettings(target);
     } else if (path === "/") {
+        document.title = "Home | Twitch Pages";
         initRoot(target);
+    } else if (path.startsWith("/directory/game/")) {
+        initCategory(target);
     }
 }
 
+function initCategory(root: Element) {
+    // filter search
+    const search_form = root.querySelector(".search-form")!;
+    const stylesheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
+    filter_stylesheet(stylesheet);
+    search_form.addEventListener("submit", (e: Event) => e.preventDefault());
+    search_form.addEventListener("reset", (_: Event) => filter_value(""));
+    search_form.querySelector("input")?.addEventListener("input", (e: Event) => {
+        filter_value((e.target as HTMLInputElement).value);
+    });
+}
+
 function initHeader(root: Element) {
+    // menu items
     sidebar_nav.addEventListener("click", (e: Event) => {
         const curr = sidebar_state();
         const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
@@ -130,8 +152,6 @@ function handleGameFollow(e: Event) {
 }
 
 function initRoot(root: Element) {
-    document.title = "Home | Twitch Pages";
-    const main = root.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameFollow);
 }

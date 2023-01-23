@@ -1,6 +1,6 @@
-<form webc:root webc:keep class="search-form" x-data="search" x-on:reset="formReset()" x-on:submit.prevent="">
+<form webc:root webc:keep class="search-form">
   <label class="sr-only" for="search">Search title</label>
-  <input type="search" id="search" placeholder="Filter title" x-on:input.debounce.100ms="searchTitle()" value="">
+  <input type="search" id="search" placeholder="Filter title" value="">
   <button type="reset">Reset</button>
 </form>
 <style>
