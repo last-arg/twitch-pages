@@ -103,6 +103,8 @@ export function initHtmx(page_cache?: Cache) {
           .replace(":item_id", item.id)
           .replace("#game_img_url", img_url)
           .replace(":item_json", game_obj_str)
+          .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
+
         if (games.some((game) => game.id === item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
@@ -177,6 +179,7 @@ export function initHtmx(page_cache?: Cache) {
           .replaceAll(":user_display_name", item.display_name)
           .replaceAll("#user_profile_image_url", item.profile_image_url)
           .replaceAll(":user_id", item.id)
+          .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
 
         const is_cache = xhr.getResponseHeader("sw-fetched-on");
         if (!is_cache && page_cache) {

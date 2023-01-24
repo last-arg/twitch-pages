@@ -4,7 +4,7 @@
 </div>
 <div class="heading-actions">
   <div class="action-box">
-    <a :href="href" rel="external">
+    <a href="#twitch_link" rel="external">
       <span class="sr-only">Go to twitch page</span>
       <svg aria-hidden="true" focusable="false">
         <use href="/public/assets/icons.svg#external-link"></use>
@@ -16,7 +16,7 @@
     Not sure how passing params should work in webc.
     -->
     <script webc:type="js" webc:is="template">
-    `<button-follow @fn_has_id="${this.fn_has_id}" @on_click="${this.on_click}" @init="${this.init}"></button-follow>`
+    `<button-follow></button-follow>`
     </script>
   </div>
 </div>
