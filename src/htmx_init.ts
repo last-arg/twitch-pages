@@ -142,7 +142,8 @@ export function initHtmx(page_cache?: Cache) {
               .replaceAll(":title", title)
               .replace(":viewer_count", item.viewer_count)
               .replace("#video_img_url", img_url)
-              .replace(":item_json", item_json);
+              .replace(":item_json", item_json)
+              .replace(":item_id", item.user_id);
               // .replace(src_replace, src_user_img)
         }
         
@@ -172,12 +173,20 @@ export function initHtmx(page_cache?: Cache) {
         document.title = `${item.display_name} | Twitch Pages`;
         document.querySelector("#param-user_id")!.setAttribute("value", item.id);
         htmx.ajax('GET', '/helix/videos', {source:'.btn-load-more'})
+        const item_json = encodeURIComponent(JSON.stringify({
+           user_id: item.id,
+           user_login: item.login,
+           user_name: item.display_name,
+        }));
         let result = "";
         result += tmpl.innerHTML
           .replaceAll(":user_login", item.login)
           .replaceAll(":user_display_name", item.display_name)
           .replaceAll("#user_profile_image_url", item.profile_image_url)
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
+          .replace(":item_json", item_json)
+          .replace(":item_id", item.id);
+
 
         const is_cache = xhr.getResponseHeader("sw-fetched-on");
         if (!is_cache && page_cache) {

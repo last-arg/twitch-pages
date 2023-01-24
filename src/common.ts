@@ -51,7 +51,6 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
 }
 
 export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
-    console.log(tmpl, target,data)
     const frag = document.createDocumentFragment();
     for (const stream of data) {
         const new_item = tmpl.cloneNode(true) as Element;
@@ -73,6 +72,7 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         btn.setAttribute("data-is-followed", "true")
         const encoded_game = encodeURIComponent(JSON.stringify(stream));
         btn.setAttribute("data-item", encoded_game);
+        btn.setAttribute("data-item-id", stream.user_id);
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;

@@ -55,7 +55,7 @@ permalink: "{{ 'public/partials/category.html' }}"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
                   <span class="user-info-follow">
-                    <button-follow @name="game"></button-follow>
+                    <button-follow @name="stream"></button-follow>
                   </span>
                 </div>
                 <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">

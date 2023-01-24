@@ -37,12 +37,30 @@ export const streams_update = act(() => {
     streams.sort(strCompareField("user_login"));
     localStorage.setItem(key_streams, JSON.stringify(streams))
 
+    const sel_start = "[data-for=\"stream\"][data-item-id=\"";
     if (adds.length > 0) {
         renderStreams(stream_tmpl, streams_list, streams);
         htmx.process(streams_list as HTMLElement);
+
+        const middle = (adds as StreamLocal[]).map(game => game.user_id).join("\"]," + sel_start);
+        const selector = `${sel_start}${middle}"]`;
+        const nodes = document.querySelectorAll(selector)
+        nodes.forEach((node) => node.setAttribute("data-is-followed", "true"));
     }
 
     // TODO: remove stream follows
+    if (removes.length > 0) {
+        // remove sidebar list item(s)
+        const sel_sidebar = ".js-streams-list .button-follow[data-item-id=\"";
+        const query_selector = `${sel_sidebar}${removes.join("\"]," + sel_sidebar)}"]`;
+        const list_items = document.querySelectorAll(query_selector)
+        list_items.forEach((node) => node.closest("li")?.remove());
+        
+        // Update main content follows
+        const selector = `${sel_start}${removes.join("\"]," + sel_start)}"]`;
+        const nodes = document.querySelectorAll(selector)
+        nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
+    }
 
     add_streams([]);
     remove_streams([]);
