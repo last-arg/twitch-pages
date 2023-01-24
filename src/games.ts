@@ -61,7 +61,7 @@ games_computed.subscribe(([ids, adds]) => {
     remove_ids().length = 0;
 })
 
-export function isFollowed(input_id: string): boolean {
+export function isGameFollowed(input_id: string): boolean {
     return games.some(({id}) => input_id === id);
 }
 

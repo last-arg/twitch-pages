@@ -1,6 +1,6 @@
 import { config } from "config";
-import { isFollowed } from "./games";
-import { Stream } from "./streams";
+import { isGameFollowed } from "./games";
+import { isStreamFollowed, Stream } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -38,7 +38,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
         const btn = new_item.querySelector(".button-follow")!;
         btn.setAttribute("data-game-id", game.id)
-        btn.setAttribute("data-is-followed", isFollowed(game.id).toString())
+        btn.setAttribute("data-is-followed", isGameFollowed(game.id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(game));
         btn.setAttribute("data-game", encoded_game);
         const span = btn.querySelector("span")!;
@@ -69,9 +69,8 @@ export function renderStreams(tmpl: Element, target:Element, data: Stream[]) {
         p.textContent = stream.user_name;
 
         const btn = new_item.querySelector(".button-follow")!;
-        btn.setAttribute("data-stream-id", stream.user_id)
-        // TODO: stream isFollowed 
-        // btn.setAttribute("data-is-followed", isFollowed(game.id).toString())
+        // Always true because streams is render only in one place
+        btn.setAttribute("data-is-followed", "true")
         const encoded_game = encodeURIComponent(JSON.stringify(stream));
         btn.setAttribute("data-stream", encoded_game);
         const span = btn.querySelector("span")!;
