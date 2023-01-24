@@ -81,6 +81,8 @@ function initHeader(root: Element) {
 
 function initHeaderStreams(root: Element) {
     renderStreams(stream_tmpl, streams_list, streams);
+    streams_list.addEventListener("mousedown", handlePathChange)
+    streams_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
 function initHeaderSearch() {
@@ -123,15 +125,7 @@ function initHeaderSearch() {
 function initHeaderGames(_root: Element) {
     renderGames(game_tmpl, games_list, games);
     games_list.addEventListener("mousedown", handlePathChange)
-    games_list.addEventListener("click", (e) => {
-        const btn = (e.target as Element).closest(".button-follow");
-        if (btn) {
-            const id = btn.getAttribute("data-item-id")
-            if (id ) {
-                removeGame(id);
-            }
-        }
-    })
+    games_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
 function handleGameAndStreamFollow(e: Event) {  

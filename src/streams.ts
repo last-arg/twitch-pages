@@ -35,7 +35,7 @@ export const streams_update = act(() => {
     }
 
     streams.sort(strCompareField("user_login"));
-    // localStorage.setItem(key_streams, JSON.stringify(streams))
+    localStorage.setItem(key_streams, JSON.stringify(streams))
 
     if (adds.length > 0) {
         renderStreams(stream_tmpl, streams_list, streams);
