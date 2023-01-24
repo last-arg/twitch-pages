@@ -49,3 +49,16 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
     target.replaceChildren(frag);
 }
 
+export function strCompareField(name: string): (a: any, b: any) => number {
+    return (a, b) => {
+        const nameA = a[name].toUpperCase(); // ignore upper and lowercase
+        const nameB = b[name].toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+            return -1;
+        } else if (nameA > nameB) {
+            return 1;
+        }
+
+        return 0;
+    }
+}

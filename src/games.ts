@@ -1,5 +1,5 @@
 import {act} from '@artalar/act';
-import { renderGames, Game } from './common';
+import { renderGames, Game, strCompareField } from './common';
 import 'htmx.org';
 
 export const games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
@@ -28,7 +28,7 @@ games_computed.subscribe(([ids, adds]) => {
         games.splice(index, 1)
     }
 
-    games.sort();
+    games.sort(strCompareField("name"));
     localStorage.setItem("games", JSON.stringify(games))
 
     if (adds.length > 0) {
