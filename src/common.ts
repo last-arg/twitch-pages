@@ -1,5 +1,6 @@
 import { config } from "config";
 import { isFollowed } from "./games";
+import { Stream } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -45,6 +46,43 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
         external_link.href = "https://www.twitch.tv/directory/game/" + game.name;
         frag.append(new_item);
+    }
+    target.replaceChildren(frag);
+}
+
+export function renderStreams(tmpl: Element, target:Element, data: Stream[]) {
+    console.log(tmpl, target,data)
+    const frag = document.createDocumentFragment();
+    for (const stream of data) {
+        const new_item = tmpl.cloneNode(true) as Element;
+
+        const link = new_item.querySelector(".link-box")!;
+        const href = `/${stream.user_login}/videos`; 
+        link.setAttribute("href", href)
+        link.setAttribute("hx-push-url", href)
+
+        // TODO: img src. profile_images
+        // const img = link.querySelector("img")!;
+        // img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
+        
+        const p = new_item.querySelector(".card-title")!;
+        p.textContent = stream.user_name;
+
+        const btn = new_item.querySelector(".button-follow")!;
+        btn.setAttribute("data-stream-id", stream.user_id)
+        // TODO: stream isFollowed 
+        // btn.setAttribute("data-is-followed", isFollowed(game.id).toString())
+        const encoded_game = encodeURIComponent(JSON.stringify(stream));
+        btn.setAttribute("data-stream", encoded_game);
+        const span = btn.querySelector("span")!;
+        span.textContent = "Unfollow";
+        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
+        external_link.href = "https://www.twitch.tv/" + stream.user_login + "/";
+
+        // TODO?: live check?
+        
+        frag.append(new_item);
+        
     }
     target.replaceChildren(frag);
 }

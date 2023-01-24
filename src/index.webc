@@ -83,20 +83,20 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
                 <scroll-container>
-                  <ul class="stack stack-s" role="list">
-                    <template webc:root webc:keep x-for="stream in $store.streams.data" x-bind:key="stream.user_id">
-                      <li class="flex" data-card="stream">
-                        <link-box @name="user-videos" @arg_name="stream.user_login">
-                            <p class="card-title" x-text="stream.user_name"></p>
-                            <div class="card-live" x-show="$store.streams.isLive(stream.user_id)">
-                              <span>LIVE</span>
-                              <p x-text="$store.streams.live[stream.user_id]"></p>
-                            </div>
-                        </link-box>
-                        <follow-star data-colormode="dark" @arg="stream"></follow-star>
-                      </li>
-                    </template>
-                  </ul>
+                  <ul class="js-streams-list stack stack-s" role="list"></ul>
+                  <template id="stream-item" webc:root webc:keep>
+                    <li class="flex" data-card="stream">
+                      <link-box @name="user-videos">
+                          <p class="card-title"></p>
+                          <div class="card-live hidden">
+                            <span>LIVE</span>
+                            <p>[Game name]</p>
+                          </div>
+                      </link-box>
+                      <follow-star data-colormode="dark" @arg="stream"></follow-star>
+                    </li>
+                  </template>
+
                 </scroll-container>
               </div>
             </div>

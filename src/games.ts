@@ -14,6 +14,9 @@ export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
 games_computed.subscribe(([ids, adds]) => {
+    if (adds.length === 0 || ids.length === 0) {
+        return;
+    }
     for (const add of adds as Game[]) {
         if (!games.some(game => game.id === add.id)) {
             games.push(add);

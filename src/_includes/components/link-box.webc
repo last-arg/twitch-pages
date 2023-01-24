@@ -5,10 +5,6 @@
       throw new Error(`Invalid 'name' attribute '${this.name}'. Valid values: ${valid_names.join(", ")}`)
     }
     const name = this.name;
-    const arg_name = this.arg_name;
-    const path = this.global.paths[name];
-    const href_url = `'${path.url}'.replace(':${name}', ${arg_name})`;
-    const click_fn = `clickSidebar('${name}', $el.getAttribute('href'))`;
     const configs = {
       "category": {
         width: this.global.config.image.category.width,
@@ -17,33 +13,10 @@
       "user-videos": {
         width: this.global.config.image.user.width,
         height: this.global.config.image.user.height,
-        bind_src: "$store.profile_images.imgUrl(stream.user_id)",
       }
     };
     const config = configs[name];
-    let old = `
-      <a class="link-box"
-        data-card="${name}"
-        href="#" hx-push-url="#"
-        x-init="
-          href_url = ${href_url};
-          $el.setAttribute('href', href_url);
-          $el.setAttribute('hx-push-url', href_url);
-          htmx.process($el);
-        "
-        x-on:click="${click_fn}"
-        hx-target="#main"
-        hx-get="/public/partials/${name}.html"
-      >
-        <img x-bind:src="${config.bind_src}" alt="" width="${config.width}" height="${config.height}" />
-        <div class="link-title">
-          <slot></slot>
-        </div>
-      </a>
-    `;
-
-    if (this.name === "category") {
-     old = `
+    old = `
       <a class="link-box"
         data-card="${name}"
         href="#" hx-push-url="#"
@@ -56,9 +29,6 @@
         </div>
       </a>
     `;
-    }
-
-    old;
   </script>
 </div>
 <style webc:nokeep>
@@ -110,5 +80,6 @@
 
 .link-box[data-card=user-videos] img {
   width: 4rem;
+  height: 4rem;
 }
 </style>

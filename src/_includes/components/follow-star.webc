@@ -4,46 +4,15 @@
     if (!arg_names.includes(this.arg)) {
       throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
     }
-    const arg = this.arg;
-
-    let click_fn = "";
-    let fn_has_id = "";
-    let external_link = "";
-    if (arg === "game") {
-      const game_id_arg = `${arg}.id`;
-      click_fn = `$store.games.remove(${game_id_arg})`;
-      fn_has_id = `followed = $store.games.hasId(${game_id_arg})`
-      external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-    } else if (arg === "stream") {
-      const user_id_arg = `${arg}.user_id`;
-      click_fn = `$store.streams.remove(${user_id_arg})`;
-      fn_has_id = `followed = $store.streams.hasId(${user_id_arg})`;
-      external_link = `\`https://www.twitch.tv/\${${arg}.user_login}/\``;
-    } else if (arg === "search") {
-      click_fn = `$store.games.toggle(${arg})`;
-      external_link = `\`https://www.twitch.tv/directory/game/\${${arg}.name}\``;
-      fn_has_id = `followed = $store.games.hasId(${arg}.id)`;
-    }
-    
-    let old = `
-      <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
-      <a x-bind:href="${external_link}" rel="external">
-        <svg aria-hidden="true" focusable="false">
-          <use href="/public/assets/icons.svg#external-link"></use>
-        </svg>
-      </a>
+   
     `
-    if (arg === "game" || arg === "search") {
-     old = `
-      <button-follow @on_click="${click_fn}" @fn_has_id="${fn_has_id}"></button-follow>
+      <button-follow></button-follow>
       <a href="#external_link" rel="external">
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>
       </a>
-      `;
-    }
-    old;
+    `;
   </script>
 </div>
 <style>

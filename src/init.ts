@@ -1,9 +1,10 @@
 import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { Game, renderGames } from './common';
+import { Game, renderGames, renderStreams } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
+import { streams, streams_list, stream_tmpl } from './streams';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     initPages(document.location.pathname, e.target as Element);
@@ -27,7 +28,6 @@ function initPages(path: string, target: Element) {
         initSettings(target);
     } else if (path === "/") {
         document.title = "Home | Twitch Pages";
-        initRoot(target);
     } else if (path.startsWith("/directory/game/")) {
         initCategory(target);
     } else if (path.endsWith("/videos")) {
@@ -79,6 +79,12 @@ function initHeader(root: Element) {
     initHeaderSearch()
 
     // TODO: Users/Streams
+    initHeaderStreams(root);
+}
+
+function initHeaderStreams(root: Element) {
+    renderStreams(stream_tmpl, streams_list, streams);
+    console.log("init streams")    
 }
 
 function initHeaderSearch() {
@@ -154,9 +160,6 @@ function handleGameFollow(e: Event) {
             removeGame(id);
         }
     }
-}
-
-function initRoot(root: Element) {
 }
 
 function handlePathChange(e: Event) {
