@@ -55,10 +55,7 @@ permalink: "{{ 'public/partials/category.html' }}"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
                   <span class="user-info-follow">
-                    <button-follow
-                      @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_name')"
-                      @fn_has_id="$store.streams.hasId(':user_id')"
-                    ></button-follow>
+                    <button-follow></button-follow>
                   </span>
                 </div>
                 <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">

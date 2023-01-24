@@ -1,5 +1,11 @@
 import { SEARCH_COUNT, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common'
 
+type StreamTwitch = {
+  user_id: string,
+  game_name: string,
+  type: string,
+}
+
 export class Twitch {
   static headers = {
     "Authorization": "",
@@ -53,6 +59,7 @@ export class Twitch {
   // Have to check for 401 in any twitch API request code
   
   async fetchUsers(ids: string[]) {
+    if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
     const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
     if (resp.status === 401) {
@@ -68,7 +75,8 @@ export class Twitch {
     return results.data ?? []
   }
   
-  async fetchStreams(user_ids: string[]) {
+  async fetchStreams(user_ids: string[]): Promise<StreamTwitch[]> {
+    if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
     return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
   }

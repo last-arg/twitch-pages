@@ -1,10 +1,5 @@
 <button webc:root webc:keep class="menu-item" :data-menu-item="name" aria-expanded="false">
-  <span webc:if="name === 'streams'" class="streams-count" 
-    x-bind:class="live_count ? '' : 'hidden'"
-    x-data="{live_count: 0}" 
-    x-effect="live_count = Object.keys($store.streams.live).length" 
-    x-text="live_count"
-  >0</span>
+  <span webc:if="name === 'streams'" class="streams-count hidden">0</span>
   <svg aria-hidden="true" focusable="false"><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
   <span class="sr-only" @text="name"></span>
 </button>

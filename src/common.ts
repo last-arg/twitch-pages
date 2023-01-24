@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { isStreamFollowed, Stream } from "./streams";
+import { StreamLocal } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -50,7 +50,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
     target.replaceChildren(frag);
 }
 
-export function renderStreams(tmpl: Element, target:Element, data: Stream[]) {
+export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
     console.log(tmpl, target,data)
     const frag = document.createDocumentFragment();
     for (const stream of data) {

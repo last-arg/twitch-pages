@@ -15,8 +15,6 @@ permalink: "{{'public/partials/user-videos.html'}}"
         <heading-link 
           @href="https://www.twitch.tv/:user_login/"
           @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
-          @fn_has_id="$store.streams.hasId(':user_id')"
-          @on_click="$store.streams.toggle(':user_id', ':user_login', ':user_display_name')"
         >
           <img slot="heading-img" class="w-14" src="#user_profile_image_url" alt=""
             :width="global.config.image.user.width" :height="global.config.image.user.height">

@@ -1,19 +1,28 @@
 import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { Game, renderGames, renderStreams } from './common';
+import { Game, renderGames, renderStreams, TWITCH_CLIENT_ID } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
 import { streams, streams_list, stream_tmpl } from './streams';
+import { Twitch } from './twitch';
+import { initHtmx } from './htmx_init';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
 })
 
-initHeader(document.body)
-const main = document.querySelector("#main")!;
-main.addEventListener("mousedown", handlePathChange);
-main.addEventListener("click", handleGameFollow);
+const twitch = new Twitch(TWITCH_CLIENT_ID);
+
+(async function startup() {
+    await twitch.fetchToken();
+    const page_cache = await caches.open('page_cache');
+    initHtmx(page_cache);
+    initHeader(document.body)
+    const main = document.querySelector("#main")!;
+    main.addEventListener("mousedown", handlePathChange);
+    main.addEventListener("click", handleGameFollow);
+})();
 
 function changePage(path: string, target: Element) {
     if (path === "/settings") {
@@ -71,9 +80,7 @@ function initHeader(root: Element) {
 }
 
 function initHeaderStreams(root: Element) {
-    // TODO: Users/Streams
     renderStreams(stream_tmpl, streams_list, streams);
-    console.log("init streams")    
 }
 
 function initHeaderSearch() {
