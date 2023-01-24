@@ -7,22 +7,15 @@ import { filter_stylesheet, filter_value } from './search_filter';
 import { streams, streams_list, stream_tmpl } from './streams';
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
-    initPages(document.location.pathname, e.target as Element);
-})
-
-const main = document.querySelector("#main")!;
-main.addEventListener("htmx:load", (e) => {
-    if ((e.target as HTMLElement) === main.firstElementChild) {
-        initPages(document.location.pathname, e.target as Element);
-    }
+    changePage(document.location.pathname, e.target as Element);
 })
 
 initHeader(document.body)
+const main = document.querySelector("#main")!;
 main.addEventListener("mousedown", handlePathChange);
 main.addEventListener("click", handleGameFollow);
 
-
-function initPages(path: string, target: Element) {
+function changePage(path: string, target: Element) {
     if (path === "/settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(target);
@@ -72,17 +65,13 @@ function initHeader(root: Element) {
         }
     });
 
-    // Games
     initHeaderGames(root);
-
-    // Search
     initHeaderSearch()
-
-    // TODO: Users/Streams
     initHeaderStreams(root);
 }
 
 function initHeaderStreams(root: Element) {
+    // TODO: Users/Streams
     renderStreams(stream_tmpl, streams_list, streams);
     console.log("init streams")    
 }
