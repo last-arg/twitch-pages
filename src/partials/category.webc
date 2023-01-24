@@ -11,7 +11,7 @@ permalink: "{{ 'public/partials/category.html' }}"
       ></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
-        <heading-link @name="games">
+        <heading-link @name="game">
           <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
             :height="global.config.image.category.height">

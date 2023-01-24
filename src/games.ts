@@ -34,9 +34,15 @@ games_computed.subscribe(([ids, adds]) => {
     games.sort(strCompareField("name"));
     localStorage.setItem("games", JSON.stringify(games))
 
+    const sel_start = "[data-for=\"game\"][data-item-id=\"";
     if (adds.length > 0) {
         renderGames(game_tmpl, games_list, games);
         htmx.process(games_list as HTMLElement);
+
+        const middle = (adds as Game[]).map(game => game.id).join("\"]," + sel_start);
+        const selector = `${sel_start}${middle}"]`;
+        const nodes = document.querySelectorAll(selector)
+        nodes.forEach((node) => node.setAttribute("data-is-followed", "true"));
     }
 
     if (ids.length > 0) {
@@ -44,17 +50,12 @@ games_computed.subscribe(([ids, adds]) => {
         const sel_sidebar = ".js-games-list .button-follow[data-item-id=\"";
         const query_selector = `${sel_sidebar}${ids.join("\"]," + sel_sidebar)}"]`;
         const list_items = document.querySelectorAll(query_selector)
-        list_items.forEach((node) => {
-            node.closest("li")?.remove();
-        });
+        list_items.forEach((node) => node.closest("li")?.remove());
         
         // Update main content follows
-        const sel_start = "[data-for=game][data-item-id=\"";
         const selector = `${sel_start}${ids.join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
-        nodes.forEach((node) => {
-            node.setAttribute("data-is-followed", "false");
-        });
+        nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
     }
     
     add_games().length = 0;

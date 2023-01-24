@@ -4,9 +4,11 @@
     if (!arg_names.includes(this.arg)) {
       throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
     }
+
+    const follow_name = this.arg === "search" ? "game" : this.arg;
    
     `
-      <button-follow></button-follow>
+      <button-follow @name="${follow_name}"></button-follow>
       <a href="#external_link" rel="external">
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
