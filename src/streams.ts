@@ -20,7 +20,7 @@ const streams_update = act(() => {
     console.log("update streams")
     const adds = add_streams();
     const removes = remove_streams();
-    if (adds.length === 0 || removes.length === 0) {
+    if (adds.length === 0 && removes.length === 0) {
         return;
     }
     for (const add of adds as Stream[]) {

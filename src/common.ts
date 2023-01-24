@@ -37,10 +37,10 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const img = link.querySelector("img")!;
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
         const btn = new_item.querySelector(".button-follow")!;
-        btn.setAttribute("data-game-id", game.id)
+        btn.setAttribute("data-item-id", game.id)
         btn.setAttribute("data-is-followed", isGameFollowed(game.id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(game));
-        btn.setAttribute("data-game", encoded_game);
+        btn.setAttribute("data-item", encoded_game);
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;

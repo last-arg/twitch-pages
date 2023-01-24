@@ -11,11 +11,7 @@ permalink: "{{ 'public/partials/category.html' }}"
       ></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
-        <heading-link
-          @href="https://www.twitch.tv/directory/game/:game_name"
-          @fn_has_id="$store.games.hasId(':game_id')"
-          @on_click="$store.games.toggle(:json_game)"
-        >
+        <heading-link @href="https://www.twitch.tv/directory/game/:game_name">
           <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
             :height="global.config.image.category.height">

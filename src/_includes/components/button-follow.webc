@@ -1,5 +1,4 @@
-<!-- TODO: rename game to item? -->
-<button webc:root webc:keep type="button" class="button-follow" data-is-followed="false" data-game-id=":game_id" data-game=":json_game">
+<button webc:root webc:keep type="button" class="button-follow" data-is-followed="false" data-item-id=":item_id" data-item=":item_json">
   <svg aria-hidden="true" focusable="false">
     <use href="/public/assets/icons.svg#star-empty"></use>
     <use href="/public/assets/icons.svg#star-full"></use>

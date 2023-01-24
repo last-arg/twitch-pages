@@ -452,8 +452,8 @@ const initHtmx = async (page_cache?: Cache) => {
               .replace(":game_name_text", item.name)
               .replace(":game_name_url", url_name)
               .replace("#game_img_url", img_url)
-              .replace(":game_id", item.id)
-              .replace(":json_game", game_obj_str)
+              .replace(":item_id", item.id)
+              .replace(":item_json", game_obj_str)
             if (games.some((game) => game.id === item.id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
@@ -481,14 +481,17 @@ const initHtmx = async (page_cache?: Cache) => {
         document.title = `${item.name} | Twitch Pages`;
         document.querySelector("#param-game_id")!.setAttribute("value", item.id);
         htmx.trigger(".btn-load-more", "click", {})
-        let result = "";
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
         const game_obj_str = encodeURIComponent(JSON.stringify(item));
-        result += tmpl.innerHTML
+        let result = tmpl.innerHTML
           .replaceAll(":game_name", item.name)
-          .replace(":game_id", item.id)
+          .replace(":item_id", item.id)
           .replace("#game_img_url", img_url)
-          .replace(":json_game", game_obj_str)
+          .replace(":item_json", game_obj_str)
+        if (games.some((game) => game.id === item.id)) {
+           result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
+        }
+
         return result;
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);

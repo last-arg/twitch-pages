@@ -130,7 +130,7 @@ function initHeaderGames(_root: Element) {
     games_list.addEventListener("click", (e) => {
         const btn = (e.target as Element).closest(".button-follow");
         if (btn) {
-            const id = btn.getAttribute("data-game-id")
+            const id = btn.getAttribute("data-item-id")
             if (id ) {
                 removeGame(id);
             }
@@ -142,7 +142,7 @@ function handleGameFollow(e: Event) {
     const t = (e.target as Element);
     const btn = t.classList.contains("button-follow") ? t : t.closest(".button-follow");
     if (btn) {
-        const game_raw = btn.getAttribute("data-game");
+        const game_raw = btn.getAttribute("data-item");
         if (game_raw) {
             const game: Game = JSON.parse(decodeURIComponent(game_raw));
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
@@ -155,7 +155,7 @@ function handleGameFollow(e: Event) {
             return;
         }
 
-        const id = btn.getAttribute("data-game-id")
+        const id = btn.getAttribute("data-item-id")
         if (id ) {
             removeGame(id);
         }

@@ -14,7 +14,7 @@ export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
 games_computed.subscribe(([ids, adds]) => {
-    if (adds.length === 0 || ids.length === 0) {
+    if (adds.length === 0 && ids.length === 0) {
         return;
     }
     for (const add of adds as Game[]) {
@@ -40,9 +40,9 @@ games_computed.subscribe(([ids, adds]) => {
     }
 
     if (ids.length > 0) {
-        const sel_start = ".button-follow[data-game-id=\"";
+        const sel_start = ".button-follow[data-item-id=\"";
         // remove sidbar list item(s)
-        const sel_sidebar = ".js-games-list .button-follow[data-game-id=\"";
+        const sel_sidebar = ".js-games-list .button-follow[data-item-id=\"";
         const query_selector = `${sel_sidebar}${ids.join("\"]," + sel_sidebar)}"]`;
         const list_items = document.querySelectorAll(query_selector)
         list_items.forEach((node) => {
