@@ -127,6 +127,11 @@ export function initHtmx(page_cache?: Cache) {
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             const title = item.title.replaceAll('"', "&quot;");
+            const item_json = encodeURIComponent(JSON.stringify({
+               user_id: item.user_id,
+               user_login: item.user_login,
+               user_name: item.user_name,
+            }));
             result += tmpl.innerHTML
               .replaceAll("#video_url", video_url)
               .replaceAll(":user_id", user_id)
@@ -136,6 +141,7 @@ export function initHtmx(page_cache?: Cache) {
               .replaceAll(":title", title)
               .replace(":viewer_count", item.viewer_count)
               .replace("#video_img_url", img_url)
+              .replace(":item_json", item_json);
               // .replace(src_replace, src_user_img)
         }
         

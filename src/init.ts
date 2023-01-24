@@ -4,7 +4,7 @@ import { search_term, search_results, search_list } from './search';
 import { Game, renderGames, renderStreams, TWITCH_CLIENT_ID } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { streams, streams_list, stream_tmpl } from './streams';
+import { addStream, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
 
@@ -21,7 +21,7 @@ const twitch = new Twitch(TWITCH_CLIENT_ID);
     initHeader(document.body)
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
-    main.addEventListener("click", handleGameFollow);
+    main.addEventListener("click", handleGameAndStreamFollow);
 })();
 
 function changePage(path: string, target: Element) {
@@ -117,7 +117,7 @@ function initHeaderSearch() {
     });
 
     search_list.addEventListener("mousedown", handlePathChange);
-    search_list.addEventListener("click", handleGameFollow);
+    search_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
 function initHeaderGames(_root: Element) {
@@ -134,26 +134,31 @@ function initHeaderGames(_root: Element) {
     })
 }
 
-function handleGameFollow(e: Event) {  
+function handleGameAndStreamFollow(e: Event) {  
     const t = (e.target as Element);
     const btn = t.classList.contains("button-follow") ? t : t.closest(".button-follow");
     if (btn) {
-        const game_raw = btn.getAttribute("data-item");
-        if (game_raw) {
-            const game: Game = JSON.parse(decodeURIComponent(game_raw));
+        const item_raw = btn.getAttribute("data-item");
+        if (item_raw) {
+            const item_untyped = JSON.parse(decodeURIComponent(item_raw));
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
-            if (following) {
-                removeGame(game.id);
+            if (item_untyped.user_id) {
+                const item = item_untyped as StreamLocal;
+                if (following) {
+                    removeStream(item.user_id);
+                } else {
+                    addStream(item);
+                }
+                streams_update()
             } else {
-                addGame(game);
+                const item = item_untyped as Game;
+                if (following) {
+                    removeGame(item.id);
+                } else {
+                    addGame(item);
+                }
             }
             btn.setAttribute("data-is-followed", (!following).toString())
-            return;
-        }
-
-        const id = btn.getAttribute("data-item-id")
-        if (id ) {
-            removeGame(id);
         }
     }
 }

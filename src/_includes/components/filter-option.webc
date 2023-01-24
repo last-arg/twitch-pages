@@ -1,8 +1,5 @@
 <label webc:root webc:keep class="filter-option" :for="'check-' + name">
-  <input type="checkbox" :id="'check-' + name"
-    :x-init="`$el.checked = $store.global.settings.general['video-${name}s']`"
-    x-on:change="changeEvent" :value="name"
-  >
+  <input type="checkbox" :id="'check-' + name" :value="name">
   <span webc:nokeep @text="name[0].toUpperCase() + name.slice(1) + 's'"></span> (<span :id="name + 's-count'">0</span>)
 </label>
 <style>

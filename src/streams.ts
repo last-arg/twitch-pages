@@ -1,29 +1,26 @@
 import { act } from "@artalar/act";
-import { renderStreams, strCompareField } from "./common";
+import { renderStreams, strCompareField, TWITCH_MAX_QUERY_COUNT } from "./common";
 
 
-export type Stream = {user_id: string, user_login: string, user_name: string};
+export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
 const key_streams = "streams"
-const key_streams_live = `${key_streams}.live`
-const key_live_check = `${key_streams_live}.last_check`
-const live_check_ms = 600000 // 10 minutes
 
 export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-export const streams: Stream[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
-const add_streams = act<Stream[]>([]);
+export const streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
+const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
 
-const streams_update = act(() => {
+export const streams_update = act(() => {
     console.log("update streams")
     const adds = add_streams();
     const removes = remove_streams();
     if (adds.length === 0 && removes.length === 0) {
         return;
     }
-    for (const add of adds as Stream[]) {
+    for (const add of adds as StreamLocal[]) {
         if (!streams.some(stream => stream.user_id === add.user_id)) {
             streams.push(add);
         }
@@ -51,6 +48,54 @@ const streams_update = act(() => {
     remove_streams([]);
 })
 
-streams_update();
-streams_update();
-streams_update();
+export function addStream(item: StreamLocal) {
+    add_streams([...add_streams(), item]);
+};
+
+export function removeStream(id: string) {
+    remove_streams([...remove_streams(), id]);
+};
+
+const key_streams_live = `${key_streams}.live`
+const key_live_check = `${key_streams_live}.last_check`
+const live_check_ms = 600000 // 10 minutes
+
+let live_streams: Record<string, string> = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
+let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? Date.now().toString()), 10);
+
+const curr = Date.now();
+if (curr > live_check + live_check_ms) {
+    // TODO: check if users are live
+}
+// setTimeout(() => {
+    // TODO: check if stream is live
+// }, live_check_ms);
+
+async function updateUsersLiveStatus(user_ids: string[]): Promise<void> {
+    if (user_ids.length === 0) return
+    const now = Date.now()
+    const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
+    let new_data: Record<string, string> = {}
+    for (let i = 0; i < batch_count; i+=1) {
+        const start = i * TWITCH_MAX_QUERY_COUNT
+        const end = start + TWITCH_MAX_QUERY_COUNT
+        const streams = await twitch.fetchStreams(user_ids.slice(start, end))
+        for (const {user_id, game_name} of streams) {
+          new_data[user_id] = game_name
+        }
+    }
+    live_streams = new_data
+    live_check = now
+}
+
+async function addLiveUser(user_id: string) {
+    if (live_streams[user_id] === undefined) {
+        const stream = (await twitch.fetchStreams([user_id]))[0]
+        if (stream) {
+            live_streams[stream.user_id] = stream.game_name
+        }
+    }
+}
+
+
+

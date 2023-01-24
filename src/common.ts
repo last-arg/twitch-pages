@@ -72,7 +72,7 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         // Always true because streams is render only in one place
         btn.setAttribute("data-is-followed", "true")
         const encoded_game = encodeURIComponent(JSON.stringify(stream));
-        btn.setAttribute("data-stream", encoded_game);
+        btn.setAttribute("data-item", encoded_game);
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;

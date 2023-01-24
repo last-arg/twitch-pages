@@ -12,19 +12,14 @@ permalink: "{{'public/partials/user-videos.html'}}"
       ></div>
       <placeholder-title name="user"></placeholder-title>
       <template webc:keep webc:type="11ty" id="user-header-template">
-        <heading-link 
-          @href="https://www.twitch.tv/:user_login/"
-          @init="$store.profile_images.setImage(':user_id', '#user_profile_image_url')"
-        >
+        <heading-link>
           <img slot="heading-img" class="w-14" src="#user_profile_image_url" alt=""
             :width="global.config.image.user.width" :height="global.config.image.user.height">
           :user_display_name
         </heading-link>
-        <div class="user-live" x-bind:class="{hidden: game === ''}"
-          x-data="{game: ''}" x-effect="game = await $store.global.getLiveUserGame(':user_id')"
-        >
+        <div class="user-live hidden">
           <span>LIVE</span>
-          <a x-bind:href="'https://www.twitch.tv/directory/game/' + game" x-text="game"></a>
+          <a href="#twitch_game_url"></a>
         </div>
       </template>
     </div>
@@ -33,7 +28,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
     <h3>Videos</h3>
     <div class="fluid-mt-2xs">
       <div class="flex flex-wrap fluid-gap-s">
-        <div x-data="userVideosFilter()">
+        <div>
           <fieldset class="filter-video-type">
             <legend class="sr-only">Fitler based on video type</legend>
             <filter-option @name="archive"></filter-option>
@@ -44,13 +39,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
         <form-filter></form-filter>
       </div>
     </div>
-    <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list"
-      x-init="
-        if (!$store.global.settings.general['video-archives']) $el.classList.add('no-archives')
-        if (!$store.global.settings.general['video-uploads']) $el.classList.add('no-uploads')
-        if (!$store.global.settings.general['video-highlights']) $el.classList.add('no-highlights')
-      "
-    >
+    <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list">
       <template id="user-video-template">
         <li class="video simple-fade-in" data-video-type=":video_type" data-title=":encoded_video_title">
           <a class="video-link" href="#video_url" title=":video_title" rel="external">
