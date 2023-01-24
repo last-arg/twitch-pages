@@ -136,7 +136,6 @@ export function initHtmx(page_cache?: Cache) {
             }));
             result += tmpl.innerHTML
               .replaceAll("#video_url", video_url)
-              .replaceAll(":user_id", user_id)
               .replaceAll(":user_login", item.user_login)
               .replaceAll(":user_name", item.user_name)
               .replace(":title_encoded", encodeURIComponent(item.title))
@@ -178,7 +177,6 @@ export function initHtmx(page_cache?: Cache) {
           .replaceAll(":user_login", item.login)
           .replaceAll(":user_display_name", item.display_name)
           .replaceAll("#user_profile_image_url", item.profile_image_url)
-          .replaceAll(":user_id", item.id)
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
 
         const is_cache = xhr.getResponseHeader("sw-fetched-on");

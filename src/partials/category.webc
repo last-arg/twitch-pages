@@ -11,7 +11,7 @@ permalink: "{{ 'public/partials/category.html' }}"
       ></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
-        <heading-link>
+        <heading-link @href="https://www.twitch.tv/directory/game/:game_name">
           <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
             :height="global.config.image.category.height">
@@ -25,7 +25,7 @@ permalink: "{{ 'public/partials/category.html' }}"
     <div id="feedback"></div>
     <ul class="output-list l-grid" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list">
       <template webc:keep webc:type="11ty" id="category-streams-template">
-        <li class="simple-fade-in" data-user-id=":user_id" data-title=":title_encoded">
+        <li class="simple-fade-in" data-title=":title_encoded">
           <div class="user">
             <a class="user-link" href="https://twitch.tv/:user_login" title=":title" rel="external">
               <div class="relative">
