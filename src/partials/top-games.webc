@@ -27,7 +27,7 @@ permalink: "{{'public/partials/top-games.html'}}"
               </a>
             </div>
             <div class="game-action" data-pos="right">
-              <button-follow></button-follow>
+              <button-follow @name="game"></button-follow>
             </div>
           </div>
           <a class="game-link" href="#game_url"

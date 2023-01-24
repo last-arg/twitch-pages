@@ -11,7 +11,7 @@ permalink: "{{ 'public/partials/category.html' }}"
       ></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
-        <heading-link @href="https://www.twitch.tv/directory/game/:game_name">
+        <heading-link @name="games">
           <img slot="heading-img" class="w-10" src="#game_img_url" alt=""
             :width="global.config.image.category.width" 
             :height="global.config.image.category.height">
@@ -55,7 +55,7 @@ permalink: "{{ 'public/partials/category.html' }}"
                     hx-push-url="#video_url" :hx-get="global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
                   <span class="user-info-follow">
-                    <button-follow></button-follow>
+                    <button-follow @name="game"></button-follow>
                   </span>
                 </div>
                 <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">

@@ -16,7 +16,7 @@
     Not sure how passing params should work in webc.
     -->
     <script webc:type="js" webc:is="template">
-    `<button-follow></button-follow>`
+    `<button-follow @name=${this.name}></button-follow>`
     </script>
   </div>
 </div>

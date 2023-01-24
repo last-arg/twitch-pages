@@ -40,7 +40,6 @@ games_computed.subscribe(([ids, adds]) => {
     }
 
     if (ids.length > 0) {
-        const sel_start = ".button-follow[data-item-id=\"";
         // remove sidbar list item(s)
         const sel_sidebar = ".js-games-list .button-follow[data-item-id=\"";
         const query_selector = `${sel_sidebar}${ids.join("\"]," + sel_sidebar)}"]`;
@@ -50,6 +49,7 @@ games_computed.subscribe(([ids, adds]) => {
         });
         
         // Update main content follows
+        const sel_start = "[data-for=game][data-item-id=\"";
         const selector = `${sel_start}${ids.join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => {
