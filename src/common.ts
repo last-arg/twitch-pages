@@ -77,6 +77,8 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
         external_link.href = "https://www.twitch.tv/" + stream.user_login + "/";
+        const stream_live = link.querySelector(".card-live")!;
+        stream_live.setAttribute("data-stream-id", stream.user_id);
 
         // TODO?: live check?
         

@@ -1,7 +1,7 @@
 ---
 permalink: "{{'public/partials/user-videos.html'}}"
 ---
-<div>
+<div id="page-user">
   <div>
     <div id="user-header" class="user-heading-box">
       <div class="hidden"
@@ -17,7 +17,7 @@ permalink: "{{'public/partials/user-videos.html'}}"
             :width="global.config.image.user.width" :height="global.config.image.user.height">
           :user_display_name
         </heading-link>
-        <div class="user-live hidden">
+        <div class="js-card-live user-live hidden" data-stream-id=":item_id">
           <span>LIVE</span>
           <a href="#twitch_game_url"></a>
         </div>

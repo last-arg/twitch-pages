@@ -88,7 +88,7 @@ title: "Home | Twitch Pages"
                     <li class="flex" data-card="stream">
                       <link-box @name="user-videos">
                           <p class="card-title"></p>
-                          <div class="card-live hidden">
+                          <div class="js-card-live card-live hidden">
                             <span>LIVE</span>
                             <p>[Game name]</p>
                           </div>

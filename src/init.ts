@@ -1,12 +1,28 @@
 import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { Game, renderGames, renderStreams, TWITCH_CLIENT_ID } from './common';
+import { Game, renderGames, renderStreams, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addStream, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
+import { addStream, live_changes, live_streams, removeStream, setLiveStreams, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
+
+window.addEventListener("htmx:load", (e: Event) => {
+    const elem = e.target as Element;
+    if (elem.classList.contains("user-live")) {
+        const stream_id = elem?.getAttribute("data-stream-id");
+        if (stream_id) {
+            const game = live_streams[stream_id];
+            if (game) {
+                const link = elem!.querySelector("a")!;
+                link.textContent = game;
+                link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+                elem!.classList.remove("hidden");
+            }
+        }
+    } 
+});
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
@@ -22,7 +38,50 @@ const twitch = new Twitch(TWITCH_CLIENT_ID);
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameAndStreamFollow);
+    const live_check_ms = 600000 // 10 minutes
+    // if (live_check() + live_check_ms > Date.now()) {
+        updateLiveUsers();
+    // }
+    // setTimeout(updateLiveUsers, 2000);
 })();
+
+async function updateLiveUsers() {
+    const curr_ids = streams.map(({user_id}) => user_id);
+    const new_live_streams = await fetchLiveUsers(twitch, curr_ids);
+    const updates = [];
+    const adds = [];
+    const removes = [];
+    for (const id in new_live_streams) {
+        const new_live = new_live_streams[id];
+        const curr_live = live_streams[id];
+        console.log("new:", id, new_live);
+        if (!curr_live) {
+            adds.push(id)
+        } else if (curr_live && new_live !== curr_live) {
+            updates.push(id);
+        } else if (!curr_ids.includes(id)) {
+            removes.push(id);
+        }
+    }
+    setLiveStreams(new_live_streams);
+    live_changes([adds, updates, removes]);
+}
+
+async function fetchLiveUsers(twitch: Twitch, user_ids: string[]): Promise<Record<string, string>> {
+    if (user_ids.length === 0) return {};
+    const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
+    let result: Record<string, string> = {}
+    // TODO: use Promise.all() instead?
+    for (let i = 0; i < batch_count; i+=1) {
+        const start = i * TWITCH_MAX_QUERY_COUNT
+        const end = start + TWITCH_MAX_QUERY_COUNT
+        const streams = await twitch.fetchStreams(user_ids.slice(start, end))
+        for (const {user_id, game_name} of streams) {
+          result[user_id] = game_name
+        }
+    }
+    return result;
+}
 
 function changePage(path: string, target: Element) {
     if (path === "/settings") {

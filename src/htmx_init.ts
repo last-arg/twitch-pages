@@ -190,7 +190,7 @@ export function initHtmx(page_cache?: Cache) {
           .replaceAll("#user_profile_image_url", item.profile_image_url)
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
           .replace(":item_json", item_json)
-          .replace(":item_id", item.id);
+          .replaceAll(":item_id", item.id);
 
 
         const is_cache = xhr.getResponseHeader("sw-fetched-on");
