@@ -5,6 +5,7 @@ import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
 
 import { Twitch } from './twitch';
+import { streams } from './streams';
 
 export function initHtmx(page_cache?: Cache) {
   htmx.defineExtension("twitch-api", {
@@ -134,7 +135,7 @@ export function initHtmx(page_cache?: Cache) {
                user_login: item.user_login,
                user_name: item.user_name,
             }));
-            result += tmpl.innerHTML
+            let html = tmpl.innerHTML
               .replaceAll("#video_url", video_url)
               .replaceAll(":user_login", item.user_login)
               .replaceAll(":user_name", item.user_name)
@@ -145,6 +146,10 @@ export function initHtmx(page_cache?: Cache) {
               .replace(":item_json", item_json)
               .replace(":item_id", item.user_id);
               // .replace(src_replace, src_user_img)
+            if (streams.some((stream) => stream.user_id === item.user_id)) {
+               html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
+            }
+            result += html;
         }
         
         // Fetch missing user profile images
