@@ -41,11 +41,6 @@ export const streams_update = act(() => {
     if (adds.length > 0) {
         renderStreams(stream_tmpl, streams_list, streams);
         htmx.process(streams_list as HTMLElement);
-
-        const middle = (adds as StreamLocal[]).map(game => game.user_id).join("\"]," + sel_start);
-        const selector = `${sel_start}${middle}"]`;
-        const nodes = document.querySelectorAll(selector)
-        nodes.forEach((node) => node.setAttribute("data-is-followed", "true"));
     }
 
     // TODO: remove stream follows
