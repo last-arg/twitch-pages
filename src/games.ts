@@ -39,6 +39,7 @@ games_computed.subscribe(([ids, adds]) => {
         renderGames(game_tmpl, games_list, games);
         htmx.process(games_list as HTMLElement);
 
+        // This is needed because can follow/unfollow games from search sidebar
         const middle = (adds as Game[]).map(game => game.id).join("\"]," + sel_start);
         const selector = `${sel_start}${middle}"]`;
         const nodes = document.querySelectorAll(selector)
