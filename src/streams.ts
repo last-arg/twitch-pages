@@ -1,5 +1,5 @@
 import { act } from "@artalar/act";
-import { renderStreams, strCompareField } from "./common";
+import { renderStreams, strCompareField, StreamTwitch } from "./common";
 import { Twitch } from "./twitch";
 
 
@@ -75,23 +75,42 @@ const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
 export let live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
 
-export function setLiveStreams(value: any) { live_streams = value; }
-
 export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? Date.now().toString()), 10);
-export const live_changes = act<[string[], string[], string[]]>([[], [], []]);
+export const live_changes = act<StreamTwitch[]>([]);
 
-live_changes.subscribe((changes) => {
-    const [adds, updates, removes] = changes;
-    if (adds.length === 0 && updates.length === 0 && removes.length === 0) {
-        return;
+live_changes.subscribe((streams) => {
+    const adds = [];
+    const updates = [];
+    const removes = [];
+    const new_ids = streams.map(({user_id}) => user_id);
+    for (const user_id of Object.keys(live_streams)) {
+       if (!new_ids.includes(user_id)) {
+            removes.push(user_id);
+            delete live_streams[user_id];
+       }
     }
+    for (const stream of streams) {
+        const user_id = stream.user_id;
+        const game = stream.game_name;
+        const curr_game = live_streams[user_id];
+        if (!curr_game) {
+            adds.push(user_id);
+            live_streams[user_id] = game;
+        } else if (curr_game && curr_game !== game) {
+            updates.push(user_id);
+            live_streams[user_id] = game;
+        }
+    }
+
+    localStorage.setItem(key_streams_live, JSON.stringify(live_streams));
+    live_check = Date.now();
+    localStorage.setItem(key_live_check, live_check.toString());
 
     document.querySelectorAll(createSelector(removes)).forEach(node => node.classList.add("hidden"));
 
     for (const id of adds) {
         const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"]`);
         cards.forEach(node => {
-            console.log(node)
             const p_or_a = node.querySelector("p, a")!;
             const game = live_streams[id];
             p_or_a.textContent = game;
@@ -106,8 +125,6 @@ live_changes.subscribe((changes) => {
         const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
         cards.forEach(node => node.textContent = live_streams[id])
     }
-
-    live_check = Date.now();
 });
 
 function createSelector(ids: string[]): string {
@@ -117,6 +134,7 @@ function createSelector(ids: string[]): string {
 }
 
 
+// TODO: when adding new user/stream update if live or not
 async function addLiveUser(twitch: Twitch, user_id: string) {
     if (live_streams[user_id] === undefined) {
         const stream = (await twitch.fetchStreams([user_id]))[0]

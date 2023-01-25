@@ -1,10 +1,4 @@
-import { SEARCH_COUNT, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common'
-
-type StreamTwitch = {
-  user_id: string,
-  game_name: string,
-  type: string,
-}
+import { SEARCH_COUNT, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT, StreamTwitch } from './common'
 
 export class Twitch {
   static headers = {

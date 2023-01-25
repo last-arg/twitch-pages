@@ -9,6 +9,12 @@ export const API_URL = "https://api.twitch.tv"
 
 export type VideoType = "archive" | "upload" | "highlight"
 
+export type StreamTwitch = {
+  user_id: string,
+  game_name: string,
+  type: string,
+}
+
 export type Game = {
     name: string,
     id: string,
