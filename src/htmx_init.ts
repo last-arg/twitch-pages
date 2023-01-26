@@ -191,7 +191,9 @@ export function initHtmx(page_cache?: Cache) {
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
           .replace(":item_json", item_json)
           .replaceAll(":item_id", item.id);
-
+        if (streams.some((stream) => stream.user_id === item.id)) {
+           result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
+        }
 
         const is_cache = xhr.getResponseHeader("sw-fetched-on");
         if (!is_cache && page_cache) {
