@@ -4,7 +4,7 @@ import { search_term, search_results, search_list } from './search';
 import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addStream, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
+import { addLiveUser, addStream, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
 
@@ -183,6 +183,7 @@ function handleGameAndStreamFollow(e: Event) {
                     removeStream(item.user_id);
                 } else {
                     addStream(item);
+                    addLiveUser(twitch, item.user_id);
                 }
                 streams_update()
             } else {

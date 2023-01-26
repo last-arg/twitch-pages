@@ -109,16 +109,7 @@ live_changes.subscribe((streams) => {
     document.querySelectorAll(createSelector(removes)).forEach(node => node.classList.add("hidden"));
 
     for (const id of adds) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"]`);
-        cards.forEach(node => {
-            const p_or_a = node.querySelector("p, a")!;
-            const game = live_streams[id];
-            p_or_a.textContent = game;
-            if (p_or_a.nodeName === "A") {
-                (p_or_a as HTMLLinkElement).href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
-            }
-            node.classList.remove("hidden")
-        })
+        renderLiveStream(id)
     }
 
     for (const id of updates) {
@@ -127,19 +118,31 @@ live_changes.subscribe((streams) => {
     }
 });
 
+function renderLiveStream(id: string) {
+    const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"]`);
+    cards.forEach(node => {
+        const p_or_a = node.querySelector("p, a")!;
+        const game = live_streams[id];
+        p_or_a.textContent = game;
+        if (p_or_a.nodeName === "A") {
+            (p_or_a as HTMLLinkElement).href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+        }
+        node.classList.remove("hidden")
+    });
+}
+
 function createSelector(ids: string[]): string {
     const sel_start = `.js-card-live[data-stream-id="`;
     const middle = ids.join(`"],${sel_start}`);
     return `${sel_start}${middle}"]`;
 }
 
-
-// TODO: when adding new user/stream update if live or not
-async function addLiveUser(twitch: Twitch, user_id: string) {
+export async function addLiveUser(twitch: Twitch, user_id: string) {
     if (live_streams[user_id] === undefined) {
         const stream = (await twitch.fetchStreams([user_id]))[0]
         if (stream) {
             live_streams[stream.user_id] = stream.game_name
+            renderLiveStream(stream.user_id);
         }
     }
 }
