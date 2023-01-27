@@ -79,6 +79,9 @@ export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check)
 export const live_changes = act<StreamTwitch[]>([]);
 
 live_changes.subscribe((streams) => {
+    if (streams.length === 0) {
+        return;
+    }
     const adds = [];
     const updates = [];
     const removes = [];

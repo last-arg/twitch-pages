@@ -1,10 +1,10 @@
 import { addGame, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
 import { addLiveUser, addStream, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
+import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
 
@@ -39,7 +39,7 @@ const live_check_ms = 600000; // 10 minutes
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameAndStreamFollow);
-    if (live_check + live_check_ms > Date.now()) {
+    if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
     }
 })();
