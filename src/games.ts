@@ -2,7 +2,7 @@ import {act} from '@artalar/act';
 import { renderGames, Game, strCompareField } from './common';
 import 'htmx.org';
 
-export const games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
+export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
 const add_games = act<Game[]>([]);
 
@@ -74,3 +74,8 @@ export function addGame(game: Game) {
 export function removeGame(id: string) {
     remove_ids([...remove_ids(), id]);
 };
+
+export function clearGames() {
+    games = [];
+    localStorage.setItem("games", JSON.stringify(games));
+}

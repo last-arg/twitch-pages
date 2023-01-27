@@ -1,9 +1,9 @@
-import { addGame, games, games_list, game_tmpl, removeGame } from './games';
+import { addGame, clearGames, games, games_list, game_tmpl, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addLiveUser, addStream, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
 import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
@@ -51,6 +51,7 @@ async function updateLiveUsers() {
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
+// TODO: move to Twitch?
 async function fetchLiveUsers(twitch: Twitch, user_ids: string[]): Promise<StreamTwitch[]> {
     let result: StreamTwitch[] = [];
     if (user_ids.length === 0) return result;
@@ -212,11 +213,20 @@ function initSettings(root:  Element) {
 }
 
 function initCacheSettings(root:  Element) {
-    // TODO: <button @click="$store.games.clear()"
-    // TODO: <button @click="$store.streams.clear()"
-    // TODO: <button @click="$store.profile_images.clear()"
-    // TODO: @click="$store.games.clear(); $store.streams.clear(); $store.profile_images.clear()"
-
+    root.querySelector(".js-cache-list")?.addEventListener("click", (e: Event) => {
+        const t = e.target as Element;
+        if (t.classList.contains("js-clear-games")) {
+            clearGames();
+        } else if (t.classList.contains("js-clear-streams")) {
+            clearStreams();
+        } else if (t.classList.contains("js-clear-profiles")) {
+            clearProfiles();
+        } else if (t.classList.contains("js-clear-all")) {
+            clearGames();
+            clearStreams();
+            clearProfiles();
+        }
+    })
 }
 
 function initGeneralSettings(root:  Element) {

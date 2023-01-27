@@ -70,18 +70,18 @@ permalink: "{{'public/partials/settings.html'}}"
     -->
     <section>
       <h3>Cache</h3>
-      <ul class="stack stack-xs" role="list">
+      <ul class="js-cache-list stack stack-xs" role="list">
         <li>
-          <button type="button">Clear games cache</button>
+          <button type="js-clear-game button">Clear games cache</button>
         </li>
         <li>
-          <button type="button">Clear streams cache</button>
+          <button type="js-clear-streams button">Clear streams cache</button>
         </li>
         <li>
-          <button type="button">Clear profile images cache</button>
+          <button type="js-clear-profiles button">Clear profile images cache</button>
         </li>
         <li>
-          <button type="button">Clear all caches</button>
+          <button type="js-clear-all button">Clear all caches</button>
         </li>
       </ul>
     </section>
@@ -162,7 +162,6 @@ permalink: "{{'public/partials/settings.html'}}"
   background-color: var(--surface15);
 }
 
-/* TODO: style settings category */
 #form-category {
   width: min-content;
 }

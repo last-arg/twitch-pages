@@ -11,7 +11,7 @@ const key_streams = "streams"
 export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-export const streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
+export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
 const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
 
@@ -45,7 +45,6 @@ export const streams_update = act(() => {
         htmx.process(streams_list as HTMLElement);
     }
 
-    // TODO: remove stream follows
     if (removes.length > 0) {
         // remove sidebar list item(s)
         const sel_sidebar = ".js-streams-list .button-follow[data-item-id=\"";
@@ -71,6 +70,10 @@ export function removeStream(id: string) {
     remove_streams([...remove_streams(), id]);
 };
 
+export function clearStreams() {
+    streams = [];
+    localStorage.setItem(key_streams, JSON.stringify(streams));
+}
 
 const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
@@ -195,6 +198,11 @@ add_profiles.subscribe(async (user_ids) => {
     
     localStorage.setItem(key_profile, JSON.stringify(profiles));
 });
+
+export function clearProfiles() {
+    profiles = {};
+    localStorage.setItem(key_profile, JSON.stringify(profiles));
+}
 
 // TODO: move to Twitch class?
 export async function fetchNewProfiles(twitch: Twitch, user_ids: string[]): Promise<UserTwitch[]> {

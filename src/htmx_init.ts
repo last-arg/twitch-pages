@@ -116,7 +116,6 @@ export function initHtmx(page_cache?: Cache) {
         const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
         let result = "";
         let user_ids = [];
-        // TODO: const storeProfileImages = Alpine.store("profile_images") as ProfileImages;
         for (const item of json.data) {
             const user_id = item.user_id;
             let profile_img_url = profiles[user_id]?.url;
