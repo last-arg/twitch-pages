@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { add_profiles, profiles, StreamLocal } from "./streams";
+import { add_profiles, live_streams, profiles, StreamLocal } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -91,7 +91,11 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         const stream_live = link.querySelector(".card-live")!;
         stream_live.setAttribute("data-stream-id", stream.user_id);
 
-        // TODO?: live check?
+        const game = live_streams[stream.user_id]
+        if (game) {
+            stream_live.classList.remove("hidden");
+            stream_live.querySelector("p")!.textContent = game;
+        }
         
         frag.append(new_item);
         
