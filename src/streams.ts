@@ -180,11 +180,16 @@ add_profiles.subscribe(async (user_ids) => {
     }
     for (const p of new_profiles) {
         profiles[p.id] = { url: p.profile_image_url, last_access: now };
-        const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
+    }
+
+    for (const id of user_ids) {
+        const p = profiles[id];
+        const img = document.querySelector(`img[src="#${id}"]`) as HTMLImageElement;
         if (img) {
-            img.src = p.profile_image_url;
+            img.src = p.url;
         }
     }
+    
     localStorage.setItem(key_profile, JSON.stringify(profiles));
 });
 

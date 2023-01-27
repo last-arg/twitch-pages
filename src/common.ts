@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { StreamLocal } from "./streams";
+import { add_profiles, profiles, StreamLocal } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -58,6 +58,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
 
 export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
     const frag = document.createDocumentFragment();
+    let img_urls = [];
     for (const stream of data) {
         const new_item = tmpl.cloneNode(true) as Element;
 
@@ -66,9 +67,13 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
 
-        // TODO: img src. profile_images
-        // const img = link.querySelector("img")!;
-        // img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
+        const img = link.querySelector("img")!;
+        let img_src = profiles[stream.user_id]?.url;
+        if (!img_src) {
+            img_src = `#${stream.user_id}`;
+            img_urls.push(stream.user_id);
+        }
+        img.src = img_src;
         
         const p = new_item.querySelector(".card-title")!;
         p.textContent = stream.user_name;
@@ -92,6 +97,7 @@ export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]
         
     }
     target.replaceChildren(frag);
+    add_profiles(img_urls);
 }
 
 export function strCompareField(name: string): (a: any, b: any) => number {
