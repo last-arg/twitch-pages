@@ -28,7 +28,7 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
 })
 
-const twitch = new Twitch(TWITCH_CLIENT_ID);
+export const twitch = new Twitch(TWITCH_CLIENT_ID);
 const live_check_ms = 600000; // 10 minutes
 
 (async function startup() {

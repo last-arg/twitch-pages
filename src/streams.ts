@@ -1,6 +1,7 @@
 import { act } from "@artalar/act";
-import { renderStreams, strCompareField, StreamTwitch } from "./common";
+import { renderStreams, strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
 import { Twitch } from "./twitch";
+import { twitch } from "./init";
 
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
@@ -74,7 +75,6 @@ export function removeStream(id: string) {
 const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
 export let live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
-
 export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? Date.now().toString()), 10);
 export const live_changes = act<StreamTwitch[]>([]);
 
@@ -145,5 +145,59 @@ export async function addLiveUser(twitch: Twitch, user_id: string) {
             renderLiveStream(stream.user_id);
         }
     }
+}
+
+type ProfileImage = {url: string, last_access: number};
+type ProfileImages = Record<string, ProfileImage>
+const key_profile = `profile`;
+const key_profile_check = `${key_profile}.last_check`;
+export let profiles: ProfileImages = JSON.parse(localStorage.getItem(key_profile) || "{}");
+export let profile_check = parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10);
+
+type UserTwitch = {id: string, profile_image_url: string};
+export const add_profiles = act<string[]>([]);
+
+add_profiles.subscribe(async (user_ids) => {
+    if (user_ids.length === 0) {
+        return;
+    }
+
+    // Filter and updated current profile/user ids
+    const curr_ids = Object.keys(profiles);
+    const filtered_ids = [];
+    const now = Date.now();
+    for (const id of user_ids) {
+        if (curr_ids.includes(id)) {
+            profiles[id].last_access = now;
+        } else {
+            filtered_ids.push(id);
+        }
+    }
+
+    const new_profiles = await fetchNewProfiles(twitch, filtered_ids);
+    if (new_profiles.length === 0) {
+        return;
+    }
+    for (const p of new_profiles) {
+        profiles[p.id] = { url: p.profile_image_url, last_access: now };
+        const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
+        if (img) {
+            img.src = p.profile_image_url;
+        }
+    }
+    localStorage.setItem(key_profile, JSON.stringify(profiles));
+});
+
+// TODO: move to Twitch class?
+export async function fetchNewProfiles(twitch: Twitch, user_ids: string[]): Promise<UserTwitch[]> {
+    const results = [];
+    const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT);
+    for (let i = 0; i < batch_count; i+=1) {
+      const start = i * TWITCH_MAX_QUERY_COUNT;
+      const end = start + TWITCH_MAX_QUERY_COUNT;
+      const profiles = await twitch.fetchUsers(user_ids.slice(start, end))
+      results.push(...profiles)
+    }
+    return results;
 }
 

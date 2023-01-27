@@ -5,7 +5,7 @@ import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
 
 import { Twitch } from './twitch';
-import { streams } from './streams';
+import { add_profiles, profiles, streams } from './streams';
 
 export function initHtmx(page_cache?: Cache) {
   htmx.defineExtension("twitch-api", {
@@ -119,19 +119,16 @@ export function initHtmx(page_cache?: Cache) {
         // TODO: const storeProfileImages = Alpine.store("profile_images") as ProfileImages;
         for (const item of json.data) {
             const user_id = item.user_id;
-            let src_replace = "#user_img";
-            // TOOD: let src_user_img = storeProfileImages.imgUrl(user_id);
-            let src_user_img = undefined;
-            if (!src_user_img) {
-              user_ids.push(item.user_id);
-              src_user_img = `x-bind:src="$store.profile_images.imgUrl('${user_id}')"`;
-              src_replace = `src="${src_replace}"`;
+            let profile_img_url = profiles[user_id]?.url;
+            if (!profile_img_url) {
+              user_ids.push(user_id);
+              profile_img_url = `#${user_id}`;
             }
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             const title = item.title.replaceAll('"', "&quot;");
             const item_json = encodeURIComponent(JSON.stringify({
-               user_id: item.user_id,
+               user_id: user_id,
                user_login: item.user_login,
                user_name: item.user_name,
             }));
@@ -144,16 +141,17 @@ export function initHtmx(page_cache?: Cache) {
               .replace(":viewer_count", item.viewer_count)
               .replace("#video_img_url", img_url)
               .replace(":item_json", item_json)
-              .replace(":item_id", item.user_id);
-              // .replace(src_replace, src_user_img)
-            if (streams.some((stream) => stream.user_id === item.user_id)) {
+              .replace(":item_id", user_id)
+              .replace("#user_img", profile_img_url);
+            if (streams.some((stream) => stream.user_id === user_id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
         }
-        
-        // Fetch missing user profile images
-        // TODO: storeProfileImages.fetchProfileImages(user_ids)
+
+        if (user_ids.length > 0) {
+          add_profiles(user_ids);
+        }
         
         const cursor = json.pagination.cursor;
         if (cursor) {
