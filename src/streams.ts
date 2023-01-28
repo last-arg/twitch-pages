@@ -158,7 +158,11 @@ type ProfileImages = Record<string, ProfileImage>
 const key_profile = `profile`;
 const key_profile_check = `${key_profile}.last_check`;
 export let profiles: ProfileImages = JSON.parse(localStorage.getItem(key_profile) || "{}");
-export let profile_check = parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10);
+export const profile_check = act(parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10));
+
+profile_check.subscribe((value) => {
+    localStorage.setItem(key_profile_check, value.toString());
+});
 
 type UserTwitch = {id: string, profile_image_url: string};
 export const add_profiles = act<string[]>([]);
@@ -195,9 +199,13 @@ add_profiles.subscribe(async (user_ids) => {
             img.src = p.url;
         }
     }
-    
-    localStorage.setItem(key_profile, JSON.stringify(profiles));
+
+    saveProfileImages();    
 });
+
+export function saveProfileImages() {
+    localStorage.setItem(key_profile, JSON.stringify(profiles));
+}
 
 export function clearProfiles() {
     profiles = {};

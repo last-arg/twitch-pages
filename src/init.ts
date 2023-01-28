@@ -3,7 +3,7 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, removeStream, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
 import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { Twitch } from './twitch';
 import { initHtmx } from './htmx_init';
@@ -42,7 +42,21 @@ const live_check_ms = 600000; // 10 minutes
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
     }
+    removeOldProfileImages();
 })();
+
+function removeOldProfileImages() {
+    const a_day = 24 * 60 * 60 * 1000;
+    const check_time = profile_check() + a_day;
+
+    for (const id in profiles) {
+        if (profiles[id].last_access > check_time) {
+            delete profiles[id];
+        }
+    }
+
+    saveProfileImages();
+}
 
 async function updateLiveUsers() {
     const curr_ids = streams.map(({user_id}) => user_id);

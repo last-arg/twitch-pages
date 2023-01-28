@@ -42,9 +42,9 @@ export class Twitch {
 
   getTwitchToken(): string | null { return this.twitch_token; }
   
-  setUserToken(token: string) {
-    console.log("TODO: setUserToken")
-  }
+  // setUserToken(token: string) {
+  //   console.log("TODO: setUserToken")
+  // }
 
   // TODO: when token becomes invalid
   // From twitch docs: 'If a token becomes invalid, your API requests return 
