@@ -1,4 +1,4 @@
-import { SEARCH_COUNT, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT, StreamTwitch } from './common'
+import { SEARCH_COUNT, TWITCH_MAX_QUERY_COUNT, StreamTwitch, TWITCH_CLIENT_ID } from './common'
 
 export class Twitch {
   static headers = {
@@ -7,12 +7,10 @@ export class Twitch {
     "Accept": "application/vnd.twitchtv.v5+json",
   }
 
-  client_id: string
   twitch_token: string | null = null
   is_fetching_token: boolean = false
 
-  constructor(client_id: string) {
-    this.client_id = client_id;
+  constructor() {
     this.twitch_token = localStorage.getItem("twitch_token");
     if (this.twitch_token) {
       this.setTwitchToken(this.twitch_token);
@@ -72,6 +70,6 @@ export class Twitch {
   async fetchStreams(user_ids: string[]): Promise<StreamTwitch[]> {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data;
+    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data || [];
   }
 }
