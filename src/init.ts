@@ -1,11 +1,11 @@
-import { addGame, clearGames, games, games_list, game_tmpl, removeGame } from './games';
+import { Twitch } from './twitch';
+import { addGame, clearGames, games_list, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, streams_update, stream_tmpl } from './streams';
-import { Game, renderGames, renderStreams, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
-import { Twitch } from './twitch';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, streams_update } from './streams';
+import { Game, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
 import { initHtmx } from './htmx_init';
 
 window.addEventListener("htmx:load", (e: Event) => {
@@ -28,7 +28,7 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
 })
 
-export const twitch = new Twitch(TWITCH_CLIENT_ID);
+export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 
 (async function startup() {
@@ -106,7 +106,6 @@ function initCategory(root: Element) {
 }
 
 function initHeader(root: Element) {
-    // menu items
     sidebar_nav.addEventListener("click", (e: Event) => {
         const curr = sidebar_state();
         const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
@@ -120,9 +119,7 @@ function initHeader(root: Element) {
                 if (curr === new_state) {
                     sidebar_state("closed");
                 } else {
-                    if (new_state) {
-                        sidebar_state(new_state as SidebarState);
-                    }
+                    sidebar_state(new_state as SidebarState);
                 } 
             }
         } else if (btn?.classList.contains("btn-close")) {
@@ -136,7 +133,6 @@ function initHeader(root: Element) {
 }
 
 function initHeaderStreams(root: Element) {
-    renderStreams(stream_tmpl, streams_list, streams);
     streams_list.addEventListener("mousedown", handlePathChange)
     streams_list.addEventListener("click", handleGameAndStreamFollow);
 }
@@ -151,10 +147,6 @@ function initHeaderSearch() {
         search_term((e.target as HTMLInputElement).value);
         search_results();
     })
-    game_name.addEventListener("focus", (_: Event) => {
-        sidebar_state("search");
-    })
-
     game_name.addEventListener("focus", (e: Event) => {
         search_term((e.target as HTMLInputElement).value);
         sidebar_state("search")
@@ -179,7 +171,6 @@ function initHeaderSearch() {
 }
 
 function initHeaderGames(_root: Element) {
-    renderGames(game_tmpl, games_list, games);
     games_list.addEventListener("mousedown", handlePathChange)
     games_list.addEventListener("click", handleGameAndStreamFollow);
 }

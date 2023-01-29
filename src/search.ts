@@ -11,9 +11,10 @@ type Search = {
 export const search_term = act("");
 
 let search_timeout = 0;
-const feedback_elem = document.querySelector(".search-feedback")!;
+export const feedback_elem = document.querySelector(".search-feedback")!;
 export const search_list = document.querySelector(".js-search-list")!;
-const search_item_tmpl = (search_list.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const search_item_tmpl = (search_list.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export let search_items: Game[] = [];
 
 export const search_results = act(() => {
     clearTimeout(search_timeout);
@@ -29,8 +30,7 @@ export const search_results = act(() => {
                 return;
             }
             feedback_elem.textContent = "";
-            renderGames(search_item_tmpl, search_list, results as Game[]);
-            htmx.process(search_list as HTMLElement);
+            search_items = results as Game[];
         }, 400);
     } else {
         feedback_elem.textContent = "Enter game name to search";

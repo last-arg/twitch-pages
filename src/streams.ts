@@ -1,7 +1,8 @@
 import { act } from "@artalar/act";
-import { renderStreams, strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
+import { strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
 import { Twitch } from "./twitch";
 import { twitch } from "./init";
+import { renderSidebarItems, sidebar_state } from "./sidebar";
 
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
@@ -41,8 +42,7 @@ export const streams_update = act(() => {
 
     const sel_start = "[data-for=\"stream\"][data-item-id=\"";
     if (adds.length > 0) {
-        renderStreams(stream_tmpl, streams_list, streams);
-        htmx.process(streams_list as HTMLElement);
+        renderSidebarItems(sidebar_state());
     }
 
     if (removes.length > 0) {

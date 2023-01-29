@@ -1,6 +1,7 @@
 import {act} from '@artalar/act';
-import { renderGames, Game, strCompareField } from './common';
+import { Game, strCompareField } from './common';
 import 'htmx.org';
+import { renderSidebarItems, sidebar_state } from './sidebar';
 
 export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
@@ -13,6 +14,7 @@ const games_computed = act(() => {
 export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
+// TODO: split up removes and adds?
 games_computed.subscribe(([ids, adds]) => {
     if (adds.length === 0 && ids.length === 0) {
         return;
@@ -36,8 +38,7 @@ games_computed.subscribe(([ids, adds]) => {
 
     const sel_start = "[data-for=\"game\"][data-item-id=\"";
     if (adds.length > 0) {
-        renderGames(game_tmpl, games_list, games);
-        htmx.process(games_list as HTMLElement);
+        renderSidebarItems(sidebar_state());
 
         // This is needed because can follow/unfollow games from search sidebar
         const middle = (adds as Game[]).map(game => game.id).join("\"]," + sel_start);
@@ -47,7 +48,7 @@ games_computed.subscribe(([ids, adds]) => {
     }
 
     if (ids.length > 0) {
-        // remove sidbar list item(s)
+        // remove sidebar list item(s)
         const sel_sidebar = ".js-games-list .button-follow[data-item-id=\"";
         const query_selector = `${sel_sidebar}${ids.join("\"]," + sel_sidebar)}"]`;
         const list_items = document.querySelectorAll(query_selector)
