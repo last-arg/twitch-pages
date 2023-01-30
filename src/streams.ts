@@ -17,7 +17,6 @@ const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
 
 add_streams.subscribe((adds) => {
-    console.log("adds stre")
     if (adds.length === 0) {
         return;
     }
@@ -87,9 +86,32 @@ const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
 export let live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
 export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? Date.now().toString()), 10);
-export const live_changes = act<StreamTwitch[]>([]);
+const add_changes = act<string[]>([]);
+const remove_changes = act<string[]>([]);
+const update_changes = act<string[]>([]);
 
-live_changes.subscribe((streams) => {
+function renderLiveAdd(ids: string[]) {
+    if (ids.length > 0) {
+        return;
+    }
+    for (const id of ids) {
+        renderLiveStream(id)
+    }
+}
+
+function renderLiveUpdate(ids: string[]) {
+    document.querySelectorAll(createSelector(ids)).forEach(node => node.classList.add("hidden"));
+    renderLiveCount(Object.keys(live_streams).length);
+};
+
+function renderLiveRemove(ids: string[]) {
+    for (const id of ids) {
+        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
+        cards.forEach(node => node.textContent = live_streams[id])
+    }
+};
+
+export function updateLiveStreams(streams: StreamTwitch[]) {
     const adds = [];
     const updates = [];
     const removes = [];
@@ -122,19 +144,12 @@ live_changes.subscribe((streams) => {
     live_check = Date.now();
     localStorage.setItem(key_live_check, live_check.toString());
 
-    document.querySelectorAll(createSelector(removes)).forEach(node => node.classList.add("hidden"));
-
-    for (const id of adds) {
-        renderLiveStream(id)
-    }
-
-    for (const id of updates) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
-        cards.forEach(node => node.textContent = live_streams[id])
-    }
+    renderLiveAdd(adds);
+    renderLiveUpdate(updates);
+    renderLiveRemove(removes);
 
     renderLiveCount(Object.keys(live_streams).length);
-});
+}
 
 function renderLiveCount(count: number) {
     const stream_count = document.querySelector(".streams-count")!;
