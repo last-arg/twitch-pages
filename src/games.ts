@@ -7,36 +7,24 @@ export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
 const add_games = act<Game[]>([]);
 
-const games_computed = act(() => {
-    return [remove_ids(), add_games()];
-}, (_, next) => next[0].length > 0 && next[1].length > 0);
-
 export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
-// TODO: split up removes and adds?
-games_computed.subscribe(([ids, adds]) => {
-    if (adds.length === 0 && ids.length === 0) {
+const sel_start = "[data-for=\"game\"][data-item-id=\"";
+add_games.subscribe((adds) => {
+    if (games.length === 0) {
         return;
     }
+    console.log("add games")
     for (const add of adds as Game[]) {
         if (!games.some(game => game.id === add.id)) {
             games.push(add);
         }
     }
-
-    for (const id of ids) {
-        const index = games.findIndex((game) => game.id === id);
-        if (index === -1) {
-            continue;
-        }
-        games.splice(index, 1)
-    }
-
+    
     games.sort(strCompareField("name"));
     localStorage.setItem("games", JSON.stringify(games))
 
-    const sel_start = "[data-for=\"game\"][data-item-id=\"";
     if (adds.length > 0) {
         renderSidebarItems(sidebar_state());
 
@@ -46,6 +34,24 @@ games_computed.subscribe(([ids, adds]) => {
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => node.setAttribute("data-is-followed", "true"));
     }
+
+    add_games().length = 0;
+}); 
+
+remove_ids.subscribe((ids) => {
+    if (ids.length === 0) {
+        return;
+    }
+    console.log("remove games")
+    for (const id of ids) {
+        const index = games.findIndex((game) => game.id === id);
+        if (index === -1) {
+            continue;
+        }
+        games.splice(index, 1)
+    }
+    
+    localStorage.setItem("games", JSON.stringify(games))
 
     if (ids.length > 0) {
         // remove sidebar list item(s)
@@ -60,9 +66,8 @@ games_computed.subscribe(([ids, adds]) => {
         nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
     }
     
-    add_games().length = 0;
     remove_ids().length = 0;
-})
+});
 
 export function isGameFollowed(input_id: string): boolean {
     return games.some(({id}) => input_id === id);

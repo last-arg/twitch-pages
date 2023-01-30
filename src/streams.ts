@@ -85,7 +85,6 @@ live_changes.subscribe((streams) => {
     const updates = [];
     const removes = [];
 
-    // TODO: easier to make new live_streams object?
     if (streams.length >= 0) {
         const new_ids = streams.map(({user_id}) => user_id);
         for (const user_id of Object.keys(live_streams)) {
