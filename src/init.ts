@@ -41,6 +41,8 @@ const live_check_ms = 600000; // 10 minutes
     main.addEventListener("click", handleGameAndStreamFollow);
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
+    } else {
+        setTimeout(updateLiveUsers, live_check_ms);
     }
     removeOldProfileImages();
 })();
