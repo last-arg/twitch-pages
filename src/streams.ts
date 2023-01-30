@@ -82,30 +82,32 @@ export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check)
 export const live_changes = act<StreamTwitch[]>([]);
 
 live_changes.subscribe((streams) => {
-    if (streams.length === 0) {
-        return;
-    }
     const adds = [];
     const updates = [];
     const removes = [];
-    const new_ids = streams.map(({user_id}) => user_id);
-    for (const user_id of Object.keys(live_streams)) {
-       if (!new_ids.includes(user_id)) {
-            removes.push(user_id);
-            delete live_streams[user_id];
-       }
-    }
-    for (const stream of streams) {
-        const user_id = stream.user_id;
-        const game = stream.game_name;
-        const curr_game = live_streams[user_id];
-        if (!curr_game) {
-            adds.push(user_id);
-            live_streams[user_id] = game;
-        } else if (curr_game && curr_game !== game) {
-            updates.push(user_id);
-            live_streams[user_id] = game;
+
+    if (streams.length >= 0) {
+        const new_ids = streams.map(({user_id}) => user_id);
+        for (const user_id of Object.keys(live_streams)) {
+           if (!new_ids.includes(user_id)) {
+                removes.push(user_id);
+                delete live_streams[user_id];
+           }
         }
+        for (const stream of streams) {
+            const user_id = stream.user_id;
+            const game = stream.game_name;
+            const curr_game = live_streams[user_id];
+            if (!curr_game) {
+                adds.push(user_id);
+                live_streams[user_id] = game;
+            } else if (curr_game && curr_game !== game) {
+                updates.push(user_id);
+                live_streams[user_id] = game;
+            }
+        }
+    } else {
+        live_streams = {};
     }
 
     localStorage.setItem(key_streams_live, JSON.stringify(live_streams));
