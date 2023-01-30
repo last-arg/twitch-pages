@@ -5,7 +5,6 @@ import { search_items, search_item_tmpl, search_list } from "./search";
 import { streams, streams_list, stream_tmpl } from "./streams";
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
-
 export const sidebar_state = act<SidebarState>("closed");
 
 export function renderSidebarItems(state: SidebarState) {
@@ -29,7 +28,9 @@ sidebar_state.subscribe((state) => {
     if (state !== "closed") {
         const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
         sidebar_nav.querySelector(sel)?.setAttribute("aria-expanded", "true");
-        renderSidebarItems(state);
+        if (state !== "search") {
+            renderSidebarItems(state);
+        }
     }
 
     // let active = (document.activeElement! as HTMLElement);
