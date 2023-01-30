@@ -16,18 +16,34 @@ export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams)
 const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
 
-export const streams_update = act(() => {
-    const adds = add_streams();
-    const removes = remove_streams();
-    if (adds.length === 0 && removes.length === 0) {
+add_streams.subscribe((adds) => {
+    console.log("adds stre")
+    if (adds.length === 0) {
         return;
     }
+    
     for (const add of adds as StreamLocal[]) {
         if (!streams.some(stream => stream.user_id === add.user_id)) {
             streams.push(add);
         }
     }
 
+    streams.sort(strCompareField("user_login"));
+    localStorage.setItem(key_streams, JSON.stringify(streams))
+
+    if (adds.length > 0) {
+        renderSidebarItems(sidebar_state());
+    }
+
+    add_streams().length = 0;
+});
+
+remove_streams.subscribe((removes) => {
+    const sel_start = "[data-for=\"stream\"][data-item-id=\"";
+    if (removes.length === 0) {
+        return;
+    }
+    
     for (const id of removes) {
         const index = streams.findIndex((stream) => stream.user_id === id);
         if (index === -1) {
@@ -36,13 +52,7 @@ export const streams_update = act(() => {
         streams.splice(index, 1)
     }
 
-    streams.sort(strCompareField("user_login"));
     localStorage.setItem(key_streams, JSON.stringify(streams))
-
-    const sel_start = "[data-for=\"stream\"][data-item-id=\"";
-    if (adds.length > 0) {
-        renderSidebarItems(sidebar_state());
-    }
 
     if (removes.length > 0) {
         // remove sidebar list item(s)
@@ -57,8 +67,7 @@ export const streams_update = act(() => {
         nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
     }
 
-    add_streams([]);
-    remove_streams([]);
+    remove_streams().length = 0;
 })
 
 export function addStream(item: StreamLocal) {
