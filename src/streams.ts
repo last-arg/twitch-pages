@@ -17,7 +17,6 @@ const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
 
 export const streams_update = act(() => {
-    console.log("update streams")
     const adds = add_streams();
     const removes = remove_streams();
     if (adds.length === 0 && removes.length === 0) {
@@ -86,6 +85,7 @@ live_changes.subscribe((streams) => {
     const updates = [];
     const removes = [];
 
+    // TODO: easier to make new live_streams object?
     if (streams.length >= 0) {
         const new_ids = streams.map(({user_id}) => user_id);
         for (const user_id of Object.keys(live_streams)) {
@@ -124,7 +124,19 @@ live_changes.subscribe((streams) => {
         const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
         cards.forEach(node => node.textContent = live_streams[id])
     }
+
+    renderLiveCount(Object.keys(live_streams).length);
 });
+
+function renderLiveCount(count: number) {
+    const stream_count = document.querySelector(".streams-count")!;
+    if (count === 0) {
+        stream_count.classList.add("hidden")
+    } else {
+        stream_count.textContent = count.toString();
+        stream_count.classList.remove("hidden")
+    }
+}
 
 function renderLiveStream(id: string) {
     const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"]`);
@@ -151,8 +163,14 @@ export async function addLiveUser(twitch: Twitch, user_id: string) {
         if (stream) {
             live_streams[stream.user_id] = stream.game_name
             renderLiveStream(stream.user_id);
+            renderLiveCount(Object.keys(live_streams).length);
         }
     }
+}
+
+export async function removeLiveUser(user_id: string) {
+    delete live_streams[user_id]
+    renderLiveCount(Object.keys(live_streams).length);
 }
 
 type ProfileImage = {url: string, last_access: number};

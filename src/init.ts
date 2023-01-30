@@ -4,8 +4,8 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, streams_update } from './streams';
-import { Game, StreamTwitch, TWITCH_CLIENT_ID, TWITCH_MAX_QUERY_COUNT } from './common';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_changes, live_check, live_streams, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, streams_update } from './streams';
+import { Game, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from './common';
 import { initHtmx } from './htmx_init';
 
 window.addEventListener("htmx:load", (e: Event) => {
@@ -187,6 +187,7 @@ function handleGameAndStreamFollow(e: Event) {
                 const item = item_untyped as StreamLocal;
                 if (following) {
                     removeStream(item.user_id);
+                    removeLiveUser(item.user_id);
                 } else {
                     addStream(item);
                     addLiveUser(twitch, item.user_id);
