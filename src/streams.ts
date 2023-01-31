@@ -146,6 +146,7 @@ function renderLiveUpdate(ids: string[]) {
 };
 
 export function updateLiveStreams(streams: StreamTwitch[]) {
+    const live_streams = live_streams_local();
     if (streams.length >= 0) {
         const new_ids = streams.map(({user_id}) => user_id);
         for (const user_id of Object.keys(live_streams)) {
@@ -167,7 +168,7 @@ export function updateLiveStreams(streams: StreamTwitch[]) {
             }
         }
     } else {
-        live_streams = {};
+        live_streams_local({});
     }
 
     live_check = Date.now();
@@ -196,6 +197,7 @@ function createSelector(ids: string[]): string {
 }
 
 export async function addLiveUser(twitch: Twitch, user_id: string) {
+    const live_streams = live_streams_local();
     if (live_streams[user_id] === undefined) {
         const stream = (await twitch.fetchStreams([user_id]))[0]
         if (stream) {
