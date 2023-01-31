@@ -83,7 +83,7 @@ export function clearStreams() {
 
 const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
-export let live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
+const live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
 export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? Date.now().toString()), 10);
 const live_check_adds: string[] = Object.keys(live_streams);
 const live_check_removes: string[] = [];

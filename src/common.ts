@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { add_profiles, live_streams, profiles, StreamLocal } from "./streams";
+import { add_profiles, live_streams_local, profiles, StreamLocal } from "./streams";
 
 export const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
@@ -57,6 +57,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
 }
 
 export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
+    const live_streams = live_streams_local();
     const frag = document.createDocumentFragment();
     let img_urls = [];
     for (const stream of data) {
