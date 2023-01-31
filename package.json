@@ -26,7 +26,7 @@
     "open-props": "^1.5.3"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.0-beta.1",
+    "@11ty/eleventy": "^2.0.0-beta.3",
     "@11ty/eleventy-plugin-webc": "^0.8.0",
     "@leanadmin/alpine-typescript": "^0.1.25",
     "@netlify/functions": "^1.3.0",
