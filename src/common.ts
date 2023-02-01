@@ -34,7 +34,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(game.name);
         const link = new_item.querySelector(".link-box")!;
-        const href = "/directory/game/" + game.name; 
+        const href = "/directory/game/" + encodeURIComponent(game.name); 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
         const img = link.querySelector("img")!;
@@ -47,7 +47,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
-        external_link.href = "https://www.twitch.tv/directory/game/" + game.name;
+        external_link.href = "https://www.twitch.tv" + href;
         frag.append(new_item);
     }
     target.replaceChildren(frag);
