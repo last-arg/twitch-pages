@@ -222,8 +222,9 @@ export function initHtmx(page_cache?: Cache) {
             counts[item.type] += 1;
             const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             const date = new Date(item.published_at)
+            const title = item.title.replaceAll('"', "&quot;");
             result += tmpl.innerHTML
-              .replaceAll(":video_title", item.title)
+              .replaceAll(":video_title", title)
               .replace(":video_type", item.type)
               .replace("#video_url", item.url)
               .replace(":video_duration_str", twitchDurationToString(item.duration))
