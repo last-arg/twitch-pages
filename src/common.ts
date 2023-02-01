@@ -25,9 +25,6 @@ export function twitchCatImageSrc(url_template: string, width: number, height: n
   return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
 }
 
-// TODO: dom manipulation should happen when:
-// 1) games' sidebar is open
-// 2) games' sidebar is closed but was clicked on
 // TODO: improve updating DOM 
 // Update main content follows
 export function renderGames(base_elem: Element, target:Element, data: Game[]) {

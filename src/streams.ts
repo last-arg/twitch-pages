@@ -1,16 +1,16 @@
 import { act } from "@artalar/act";
 import { strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
 import { Twitch } from "./twitch";
-import { renderSidebarItems, sidebar_state } from "./sidebar";
-import { twitch } from "./init";
+import { renderSidebarItems, sidebarShadows, sidebar_state } from "./sidebar";
+import { twitch } from "./main";
 
 // TODO: some profile images are wrong
-// TODO: sidebar scroll
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
 export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const streams_scrollbox = streams_list.parentElement!;
 
 const key_streams = "streams"
 export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
@@ -65,6 +65,7 @@ remove_streams.subscribe((removes) => {
         const selector = `${sel_start}${removes.join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
+        sidebarShadows(streams_scrollbox);
     }
 
     remove_streams().length = 0;
@@ -99,9 +100,7 @@ live_streams_local.subscribe((lives) => {
     localStorage.setItem(key_streams_live, JSON.stringify(lives));
 })
 
-const live_count = act(() => {
-    return Object.keys(live_streams_local()).length;
-});
+const live_count = act(() => Object.keys(live_streams_local()).length);
 
 live_count.subscribe((val) => {
     renderLiveCount(val);

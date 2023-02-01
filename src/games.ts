@@ -1,7 +1,7 @@
 import {act} from '@artalar/act';
 import { Game, strCompareField } from './common';
 import 'htmx.org';
-import { renderSidebarItems, sidebar_state } from './sidebar';
+import { renderSidebarItems, sidebarShadows, sidebar_state } from './sidebar';
 
 export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
 const remove_ids = act<string[]>([]);
@@ -9,13 +9,13 @@ const add_games = act<Game[]>([]);
 
 export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const games_scrollbox = games_list.parentElement!;
 
 const sel_start = "[data-for=\"game\"][data-item-id=\"";
 add_games.subscribe((adds) => {
     if (games.length === 0) {
         return;
     }
-    console.log("add games")
     for (const add of adds as Game[]) {
         if (!games.some(game => game.id === add.id)) {
             games.push(add);
@@ -42,7 +42,6 @@ remove_ids.subscribe((ids) => {
     if (ids.length === 0) {
         return;
     }
-    console.log("remove games")
     for (const id of ids) {
         const index = games.findIndex((game) => game.id === id);
         if (index === -1) {
@@ -64,6 +63,7 @@ remove_ids.subscribe((ids) => {
         const selector = `${sel_start}${ids.join("\"]," + sel_start)}"]`;
         const nodes = document.querySelectorAll(selector)
         nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
+        sidebarShadows(games_scrollbox);
     }
     
     remove_ids().length = 0;

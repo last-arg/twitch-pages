@@ -14,6 +14,7 @@ export const search_term = act("");
 let search_timeout = 0;
 export const feedback_elem = document.querySelector(".search-feedback")!;
 export const search_list = document.querySelector(".js-search-list")!;
+export const search_scrollbox = search_list.parentElement!;
 export const search_item_tmpl = (search_list.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 export let search_items: Game[] = [];
 
@@ -39,40 +40,6 @@ export const search_results = act(() => {
         search_list.innerHTML = "";
     }
 });
-
-  // Alpine.effect(() => {
-  //   clearTimeout(searchTimeout)
-  //   const searchTerm = this.searchValue.trim()
-  //   if (searchTerm.length > 0) {
-  //     this.loading = true;
-  //     searchTimeout = setTimeout(async () => {
-  //       let aria_msg = "Searching games"
-  //       this.searchResults = await this.fetchSearch(searchTerm)
-  //       this.loading = false;
-  //       if (this.searchResults.length === 1) {
-  //         aria_msg = "Found one game"
-  //       } else if (this.searchResults.length > 1) {
-  //         aria_msg = `Found ${this.searchResults.length} games`
-  //       } else {
-  //         aria_msg = "Found no games"
-  //       }
-  //       if (this.state !== "closed") {
-  //         const scroll_position = menuItemToScrollPosition(sidebarButtons[this.state]);
-  //         if (scroll_position) {
-  //           window.requestAnimationFrame(function() {
-  //             const scrollbox = scroll_position.querySelector(".scrollbox")!;
-  //             sidebarShadows(scrollbox as HTMLElement);
-  //           });
-  //         }
-  //       }
-  //       setAriaMsg(aria_msg)
-  //     }, 400)
-  //   } else {
-  //     this.searchResults = [];
-  //   }
-  // })
-
-
 
 async function fetchSearch(input: string): Promise<Search[]> {
     const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
