@@ -1,10 +1,8 @@
 import { act } from "@artalar/act";
-import { strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
+import { strCompareField, StreamTwitch } from "./common";
 import { Twitch } from "./twitch";
 import { renderSidebarItems, sidebarShadows, sidebar_state } from "./sidebar";
 import { twitch } from "./main";
-
-// TODO: some profile images are wrong
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
@@ -240,7 +238,6 @@ profile_check.subscribe((value) => {
     localStorage.setItem(key_profile_check, value.toString());
 });
 
-type UserTwitch = {id: string, profile_image_url: string};
 export const add_profiles = act<string[]>([]);
 
 add_profiles.subscribe(async (user_ids) => {
@@ -260,7 +257,7 @@ add_profiles.subscribe(async (user_ids) => {
         }
     }
 
-    const new_profiles = await fetchNewProfiles(twitch, filtered_ids);
+    const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
     if (new_profiles.length === 0) {
         return;
     }
@@ -287,17 +284,3 @@ export function clearProfiles() {
     profiles = {};
     localStorage.setItem(key_profile, JSON.stringify(profiles));
 }
-
-// TODO: move to Twitch class?
-export async function fetchNewProfiles(twitch: Twitch, user_ids: string[]): Promise<UserTwitch[]> {
-    const results = [];
-    const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT);
-    for (let i = 0; i < batch_count; i+=1) {
-      const start = i * TWITCH_MAX_QUERY_COUNT;
-      const end = start + TWITCH_MAX_QUERY_COUNT;
-      const profiles = await twitch.fetchUsers(user_ids.slice(start, end))
-      results.push(...profiles)
-    }
-    return results;
-}
-

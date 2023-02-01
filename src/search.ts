@@ -1,13 +1,8 @@
 import {act} from '@artalar/act';
-import { Twitch } from './twitch';
-import { SEARCH_COUNT, Game } from './common'
+import { twitch} from './main';
+import { Game } from './common'
 import 'htmx.org';
 import { renderSidebarItems } from './sidebar';
-
-type Search = {
-    name: string,
-    id: string,
-}
 
 export const search_term = act("");
 
@@ -24,8 +19,7 @@ export const search_results = act(() => {
     if (term.length > 0) {
         feedback_elem.textContent = "Searching...";
         search_timeout = window.setTimeout(async () => {
-            console.log("make search request");
-            const results = await fetchSearch(search_term());
+            const results = await twitch.fetchSearch(search_term());
             if (results.length === 0) {
                 feedback_elem.textContent = "Found no games";
                 search_list.innerHTML = "";
@@ -40,11 +34,3 @@ export const search_results = act(() => {
         search_list.innerHTML = "";
     }
 });
-
-async function fetchSearch(input: string): Promise<Search[]> {
-    const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
-    const r = await fetch(url, { method: "GET", headers: Twitch.headers })
-    const results = await r.json()
-    return results.data ?? []
-}
-

@@ -2,9 +2,6 @@ import { config } from "config";
 import { isGameFollowed } from "./games";
 import { add_profiles, live_streams_local, profiles, StreamLocal } from "./streams";
 
-export const TWITCH_MAX_QUERY_COUNT = 100
-export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
-export const SEARCH_COUNT = 10
 export const API_URL = "https://api.twitch.tv"
 
 export type VideoType = "archive" | "upload" | "highlight"

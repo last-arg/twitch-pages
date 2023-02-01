@@ -4,7 +4,7 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { filter_stylesheet, filter_value } from './search_filter';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, live_streams_local, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
-import { Game, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from './common';
+import { Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { initHtmx } from './htmx_init';
 
@@ -63,24 +63,9 @@ function removeOldProfileImages() {
 
 async function updateLiveUsers() {
     const curr_ids = streams.map(({user_id}) => user_id);
-    const new_live_streams = (await fetchLiveUsers(twitch, curr_ids));
+    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
     updateLiveStreams(new_live_streams);
     setTimeout(updateLiveUsers, live_check_ms);
-}
-
-// TODO: move to Twitch?
-async function fetchLiveUsers(twitch: Twitch, user_ids: string[]): Promise<StreamTwitch[]> {
-    let result: StreamTwitch[] = [];
-    if (user_ids.length === 0) return result;
-    const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
-    // TODO: use Promise.all() instead?
-    for (let i = 0; i < batch_count; i+=1) {
-        const start = i * TWITCH_MAX_QUERY_COUNT
-        const end = start + TWITCH_MAX_QUERY_COUNT
-        const streams = await twitch.fetchStreams(user_ids.slice(start, end))
-        result.push(...streams);
-    }
-    return result;
 }
 
 function changePage(path: string, target: Element) {
