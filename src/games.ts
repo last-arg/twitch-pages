@@ -13,7 +13,7 @@ export const games_scrollbox = games_list.parentElement!;
 
 const sel_start = "[data-for=\"game\"][data-item-id=\"";
 add_games.subscribe((adds) => {
-    if (games.length === 0) {
+    if (adds.length === 0) {
         return;
     }
     for (const add of adds as Game[]) {
