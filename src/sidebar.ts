@@ -57,9 +57,10 @@ export function initSidebarScroll() {
 
 export function sidebarShadows(scrollbox: HTMLElement) {
     const scroll_container = scrollbox.closest('.scroll-container')!;
-    const ul = scroll_container.querySelector("ul")!;
     const has_top_shadow = scrollbox.scrollTop > 0;  
-    const has_bottom_shadow = scrollbox.scrollTop + scrollbox.offsetHeight < ul.offsetHeight
+    // NOTE: '- 2' is if rounding is a bit off
+    const max_scroll = scrollbox.scrollHeight - scrollbox.offsetHeight - 2;
+    const has_bottom_shadow = scrollbox.scrollTop < max_scroll;
     let shadow_type = undefined;
     if (has_top_shadow && has_bottom_shadow) {
       shadow_type = "both";
