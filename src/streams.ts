@@ -1,16 +1,18 @@
 import { act } from "@artalar/act";
 import { strCompareField, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from "./common";
 import { Twitch } from "./twitch";
-import { twitch } from "./init";
 import { renderSidebarItems, sidebar_state } from "./sidebar";
+import { twitch } from "./init";
+
+// TODO: some profile images are wrong
+// TODO: sidebar scroll
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
-
-const key_streams = "streams"
 
 export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 
+const key_streams = "streams"
 export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
 const add_streams = act<StreamLocal[]>([]);
 const remove_streams = act<string[]>([]);
@@ -119,8 +121,15 @@ function renderLiveAdd(ids: string[]) {
     if (ids.length === 0) {
         return;
     }
-    for (const id of ids) {
-        renderLiveStream(id)
+    if (sidebar_state && sidebar_state() === "streams") {
+        for (const id of ids) {
+            renderLiveStreamSidebar(id)
+        }
+    }
+    if (document.location.pathname.endsWith("/videos")) {
+        for (const id of ids) {
+            renderLiveStreamPageUser(id);
+        }
     }
     live_check_adds.length = 0;
 }
@@ -176,18 +185,26 @@ export function updateLiveStreams(streams: StreamTwitch[]) {
     live_streams_local(Object.assign({}, live_streams_local()));
 }
 
-function renderLiveStream(id: string) {
-    const live_streams = live_streams_local();
-    const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"]`);
-    cards.forEach(node => {
-        const p_or_a = node.querySelector("p, a")!;
+function renderLiveStreamSidebar(id: string) {
+    const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
+    if (card) {
+        const live_streams = live_streams_local();
+        const p = card.querySelector("p")!;
+        p.textContent = live_streams[id];
+        card.classList.remove("hidden")
+    }
+}
+
+function renderLiveStreamPageUser(id: string) {
+    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
+    if (card) {
+        const live_streams = live_streams_local();
+        const a = card.querySelector("a")!;
         const game = live_streams[id];
-        p_or_a.textContent = game;
-        if (p_or_a.nodeName === "A") {
-            (p_or_a as HTMLLinkElement).href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
-        }
-        node.classList.remove("hidden")
-    });
+        a.textContent = game;
+        a.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+        card.classList.remove("hidden")
+    }
 }
 
 function createSelector(ids: string[]): string {

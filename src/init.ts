@@ -2,10 +2,10 @@ import { Twitch } from './twitch';
 import { addGame, clearGames, games_list, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { filter_stylesheet, filter_value } from './search_filter';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, live_streams_local, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
 import { Game, StreamTwitch, TWITCH_MAX_QUERY_COUNT } from './common';
+import { SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { initHtmx } from './htmx_init';
 
 window.addEventListener("htmx:load", (e: Event) => {
