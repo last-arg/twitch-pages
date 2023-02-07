@@ -4,8 +4,6 @@ import { TWITCH_CLIENT_ID } from "../../src/twitch"
 
 const { TWITCH_CLIENT_SECRET } = process.env
 
-  console.log("start twitch-api")
-
 const requestTwitchToken = async (): Promise<string | undefined> => {
   const oauth_url = `https://id.twitch.tv/oauth2/token?client_id=${TWITCH_CLIENT_ID}&client_secret=${TWITCH_CLIENT_SECRET}&grant_type=client_credentials`
   const oauth_resp = await fetch(oauth_url, {
@@ -22,8 +20,7 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
 }
 
 const handler: Handler = async (event) => {
-  console.log("EVENT:", event)
-  console.log("TWITCH_CLIENT_SECRET:", TWITCH_CLIENT_SECRET)
+  // console.log("EVENT:", event)
   if (TWITCH_CLIENT_SECRET === undefined) {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
   }
