@@ -3,7 +3,7 @@
   force = true
   from = "/api/*"
   to = "/.netlify/functions/:splat"
-  status = 200
+  status = 301
 
 [[redirects]]
   from = "/directory/game/*"
@@ -22,7 +22,7 @@
 
 [build]
   command = "npm run build"
-  functions = "netlify/functions"
+  functions = "/netlify/functions"
   publish = "_site"
 
 [dev]
