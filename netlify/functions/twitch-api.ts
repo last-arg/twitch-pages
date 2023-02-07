@@ -20,7 +20,8 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
 }
 
 const handler: Handler = async (event) => {
-  // console.log("EVENT:", event)
+  console.log("EVENT:", event)
+  console.log("TWITCH_CLIENT_SECRET:", TWITCH_CLIENT_SECRET)
   if (TWITCH_CLIENT_SECRET === undefined) {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
   }
