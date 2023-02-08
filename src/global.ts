@@ -20,16 +20,15 @@ export const settings = {
 
 for (const c in settings) {
     const storage_key = `settings.${c}`;
+    // @ts-ignore
+    const s = settings[c as any];
     const raw = localStorage.getItem(storage_key);
     if (raw) {
-        const new_settings = JSON.parse(raw);
-        // @ts-ignore
-        const s = settings[c as any];
-        s(new_settings);
-        s.subscribe((v: ReturnType<typeof settings.general>) => {
-            localStorage.setItem(storage_key, JSON.stringify(v));
-        })
+        s(JSON.parse(raw));
     }
+    s.subscribe((v: ReturnType<typeof settings.general>) => {
+        localStorage.setItem(storage_key, JSON.stringify(v));
+    })
 }
 
 

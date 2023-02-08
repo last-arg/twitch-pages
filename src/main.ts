@@ -21,7 +21,10 @@ window.addEventListener("htmx:load", (e: Event) => {
                 elem!.classList.remove("hidden");
             }
         }
-    } 
+    } else if (elem.id === "partial-settings") {
+        document.title = "Settings | Twitch Pages";
+        initSettings(elem);
+    }
 });
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
@@ -70,8 +73,6 @@ async function updateLiveUsers() {
 
 function changePage(path: string, target: Element) {
     if (path === "/settings") {
-        document.title = "Settings | Twitch Pages";
-        initSettings(target);
     } else if (path === "/") {
         document.title = "Home | Twitch Pages";
     } else if (path.startsWith("/directory/game/")) {
@@ -199,7 +200,7 @@ function handlePathChange(e: Event) {
     current_path(hx_link?.getAttribute("hx-push-url") || null);
 }
 
-function initSettings(root:  Element) {
+function initSettings(root: Element) {
     initCategorySettings(root);
     initGeneralSettings(root);
     initCacheSettings(root);
@@ -289,7 +290,6 @@ function initCategorySettings(root:  Element) {
     function handleFormKeydown(event: Event) {
         const elem = event.target as HTMLInputElement; 
         if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
-            event.preventDefault();
             addLangFromInput(elem as HTMLInputElement);
         }
     }
