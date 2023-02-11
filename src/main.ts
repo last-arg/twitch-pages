@@ -24,8 +24,37 @@ window.addEventListener("htmx:load", (e: Event) => {
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
+    } else if (elem.id === "page-user") {
+        initUserVideoTypeFilter(elem);
     }
 });
+
+function initUserVideoTypeFilter(elem: Element) {
+    const fieldset = elem.querySelector(".filter-video-type");
+    const output_list = elem.querySelector(".output-list");
+    const general = settings.general();
+    for (const which of ["archive", "upload", "highlight"]) {
+        const key = `video-${which}s`;
+        // @ts-ignore
+        const check_value = !!general[key];
+        const input = fieldset?.querySelector(`#check-${which}`) as HTMLInputElement;
+        input.checked = check_value;
+        if (check_value === false) {
+            output_list?.classList.add(`no-${which}s`);
+        }
+    }
+
+    fieldset?.addEventListener("click", (e: Event) => {
+        const elem = e.target as HTMLInputElement;
+        if (elem.nodeName === "INPUT") {
+            if (elem.checked) {
+                output_list?.classList.remove(`no-${elem.value}s`);
+            } else {
+                output_list?.classList.add(`no-${elem.value}s`);
+            }
+        }
+    })
+}
 
 window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
