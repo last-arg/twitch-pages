@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@artalar/act": "^3.0.3",
-    "htmx.org": "^1.8.3",
+    "htmx.org": "^1.8.6",
     "open-props": "^1.5.3"
   },
   "devDependencies": {
