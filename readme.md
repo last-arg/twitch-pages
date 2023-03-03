@@ -25,3 +25,10 @@ Pages:
 * [Htmx routing](https://htmx.org/attributes/hx-push-url/)
 * hx-push-url should probably be used with [hx-history-elt](https://htmx.org/attributes/hx-history-elt/)
 * Swapping multiple elements in htmx with hx-swap-oob (response text contains the attribute)
+
+## NOTE: Nixos 
+Have to set interpreter for lightningcss executable
+```
+cd node_modules/lightningcss-cli/
+patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./lightningcss
+```
