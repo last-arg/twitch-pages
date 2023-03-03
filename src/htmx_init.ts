@@ -2,7 +2,7 @@ import { settings, current_path } from './global';
 import { games } from './games';
 import { API_URL, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
-import 'htmx.org';
+import htmx from 'htmx.org';
 
 import { Twitch } from './twitch';
 import { add_profiles, profiles, streams } from './streams';

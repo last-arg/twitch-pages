@@ -3,6 +3,7 @@ import { renderGames, renderStreams } from "./common";
 import { games, games_list, games_scrollbox, game_tmpl } from "./games";
 import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
 import { streams, streams_list, streams_scrollbox, stream_tmpl } from "./streams";
+import htmx from "htmx.org";
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
 export const sidebar_state = act<SidebarState>("closed");

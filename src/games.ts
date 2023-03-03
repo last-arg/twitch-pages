@@ -1,6 +1,5 @@
 import {act} from '@artalar/act';
 import { Game, strCompareField } from './common';
-import 'htmx.org';
 import { renderSidebarItems, sidebarShadows, sidebar_state } from './sidebar';
 
 export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");

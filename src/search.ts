@@ -1,7 +1,6 @@
 import {act} from '@artalar/act';
 import { twitch} from './main';
 import { Game } from './common'
-import 'htmx.org';
 import { renderSidebarItems } from './sidebar';
 
 export const search_term = act("");
