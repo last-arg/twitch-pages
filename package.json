@@ -20,29 +20,28 @@
     "clean-build": "rm -rf _site/"
   },
   "dependencies": {
-    "@artalar/act": "^3.0.3",
+    "@artalar/act": "^3.2.1",
     "htmx.org": "^1.8.6",
-    "open-props": "^1.5.3"
+    "open-props": "^1.5.5"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.0",
     "@11ty/eleventy-plugin-webc": "^0.9.3",
     "@netlify/functions": "^1.4.0",
-    "@types/node": "^16.11.6",
-    "@unocss/cli": "^0.47.5",
-    "cssnano": "^5.1.14",
-    "esbuild": "^0.17.3",
+    "@types/node": "^18.14.5",
+    "cssnano": "^5.1.15",
+    "esbuild": "^0.17.10",
     "html-minifier": "^4.0.0",
-    "netlify-cli": "^12.10.0",
-    "node-fetch": "^2.6.6",
+    "netlify-cli": "^13.0.0",
+    "node-fetch": "^3.3.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.19",
-    "postcss-cli": "^10.0.0",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^10.1.0",
     "postcss-dropunusedvars": "^1.2.1",
-    "postcss-import": "^15.0.0",
+    "postcss-import": "^15.1.0",
     "svgo": "^3.0.2",
-    "typescript": "^4.3.2",
-    "unocss": "^0.47.5",
+    "typescript": "^4.9.5",
+    "unocss": "^0.50.3",
     "workbox-cli": "^6.5.4"
   }
 }
