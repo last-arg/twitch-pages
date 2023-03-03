@@ -1,5 +1,5 @@
-@import "open-props";
-@import "open-props/colors-hsl.min";
+@import "../../node_modules/open-props/open-props.min.css";
+@import "../../node_modules/open-props/colors-hsl.min.css";
 @import "base.css";
 @import "components.css";
 @import "blocks.css";
