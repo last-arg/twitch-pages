@@ -1,4 +1,4 @@
-<div webc:root webc:keep class="sidebar-position">
+<div webc:root="override" class="sidebar-position">
   <div class="sidebar-content">
     <sidebar-header @sb_title="Search results" @icon="looking-class"></sidebar-header>
     <p class="search-feedback"></p>
