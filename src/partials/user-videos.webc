@@ -1,5 +1,5 @@
 ---
-permalink: "{{'public/partials/user-videos.html'}}"
+permalink: "public/partials/user-videos.html"
 ---
 <div id="page-user">
   <div>
