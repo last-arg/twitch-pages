@@ -1,7 +1,7 @@
 import { defineConfig, escapeSelector } from "unocss";
 
 const config = defineConfig({
-  cli: {entry: { patterns: ["src/*.webc", "src/**/*.webc", "src/**/**/*.webc"], outFile: "src/css/utilities_generated.css"} },
+  cli: {entry: {  patterns: [ "src/**/*.webc" ], outFile: "src/css/utilities_generated.css"} },
   preflights: undefined,
   rules: [
     [/^stack\-?(\d*)(.*)$/, ruleStack, {layer: "component"}],
