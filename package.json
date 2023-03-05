@@ -16,7 +16,6 @@
     "build:css": "unocss && lightningcss --bundle --minify src/css/main.css -o _site/public/css/main.css && purgecss --css _site/public/css/main.css --content src/*.webc src/{_includes,partials}/*.webc src/_includes/components/*.webc -o _site/public/css/main.css --variables --keyframes --safelist :where",
     "minify:js": "terser _site/public/js/main.js -m --toplevel -o _site/public/js/main.js",
     "minify:svg": "svgo _site/public/assets/icons.svg",
-    "minify:html": "html-minifier --input-dir _site --output-dir _site --file-ext html --remove-comments --collapse-whitespace",
     "clean-build": "rm -rf _site/"
   },
   "dependencies": {
