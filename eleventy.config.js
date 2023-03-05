@@ -13,7 +13,7 @@ module.exports = function(eleventyConfig) {
 
 	  eleventyConfig.addTransform("component-css", async function(content) {
 		if (this.page.outputPath === "src/css/components.css") {
-			const index = content.indexOf("---");
+			const index = content.indexOf("/*CSS-END*/");
 			return content.slice(0, index);
 		}
 

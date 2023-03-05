@@ -5,6 +5,7 @@ eleventyExcludeFromCollections: true
 ---
 <script webc:type="js">
   let result = getBundle('css');
+  result += "/*CSS-END*/"
   const s = "template";
   for (const c of this.collections.all) {
     result += `<${s} webc:nokeep webc:import="${c.template.fileSlug.inputPath}"></${s}>`;
