@@ -24,8 +24,8 @@
     "open-props": "^1.5.5"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.0",
-    "@11ty/eleventy-plugin-webc": "^0.9.3",
+    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-plugin-webc": "^0.11.0",
     "@netlify/functions": "^1.4.0",
     "@types/node": "^18.14.5",
     "esbuild": "^0.17.10",
@@ -38,7 +38,7 @@
     "purgecss": "^5.0.0",
     "svgo": "^3.0.2",
     "typescript": "^4.9.5",
-    "unocss": "^0.50.3",
+    "unocss": "^0.50.6",
     "workbox-cli": "^6.5.4"
   },
   "browserslist": [
