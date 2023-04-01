@@ -4,17 +4,18 @@
     if (!valid_names.includes(this.name)) {
       throw new Error(`Invalid 'name' attribute '${this.name}'. Valid values: ${valid_names.join(", ")}`)
     }
-    const name = this.name;
+    const image = this.$data.global.config.image;
     const configs = {
       "category": {
-        width: this.global.config.image.category.width,
-        height: this.global.config.image.category.height,
+        width: image.category.width,
+        height: image.category.height,
       },
       "user-videos": {
-        width: this.global.config.image.user.width,
-        height: this.global.config.image.user.height,
+        width: image.user.width,
+        height: image.user.height,
       }
     };
+    const name = this.name;
     const config = configs[name];
     old = `
       <a class="link-box"
