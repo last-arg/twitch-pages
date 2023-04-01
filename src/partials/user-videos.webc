@@ -14,7 +14,7 @@ permalink: "public/partials/user-videos.html"
       <template webc:keep webc:type="11ty" id="user-header-template">
         <heading-link @name="stream">
           <img slot="heading-img" class="w-14" src="#user_profile_image_url" alt=""
-            :width="global.config.image.user.width" :height="global.config.image.user.height">
+            :width="$data.global.config.image.user.width" :height="$data.global.config.image.user.height">
           :user_display_name
         </heading-link>
         <div class="js-card-live user-live hidden" data-stream-id=":item_id">
@@ -45,8 +45,8 @@ permalink: "public/partials/user-videos.html"
           <a class="video-link" href="#video_url" title=":video_title" rel="external">
             <div class="video-img-wrapper">
               <img src="#img_url" alt="" 
-                :width="global.config.image.video.width" 
-                :height="global.config.image.video.height"
+                :width="$data.global.config.image.video.width" 
+                :height="$data.global.config.image.video.height"
               >
               <span class="video-info video-type" title=":video_type_title">
                 <svg aria-hidden="true" focusable="false">

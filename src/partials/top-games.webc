@@ -12,11 +12,11 @@ permalink: "public/partials/top-games.html"
           <div class="img-wrapper">
             <a class="game-img-link" href="#game_url"
               hx-push-url="#game_url"
-              :hx-get="global.paths.category.html" hx-target="#main"
+              :hx-get="$data.global.paths.category.html" hx-target="#main"
             >
               <img class="game-img" src="#game_img_url" alt=""
-                :width="global.config.image.category.width * 2" 
-                :height="global.config.image.category.height * 2">
+                :width="$data.global.config.image.category.width * 2" 
+                :height="$data.global.config.image.category.height * 2">
             </a>
             <div class="game-action" data-pos="left">
               <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url" rel="external">
@@ -32,7 +32,7 @@ permalink: "public/partials/top-games.html"
           </div>
           <a class="game-link" href="#game_url"
             hx-push-url="#game_url"
-            :hx-get="global.paths.category.html" hx-target="#main"
+            :hx-get="$data.global.paths.category.html" hx-target="#main"
           >
             <p>:game_name_text</p>
           </a>
