@@ -44,10 +44,6 @@
   width: 100%;
 }
 
-.link-box img {
-  width: 3.3rem;
-}
-
 .link-title {
   padding: var(--space-3xs) var(--space-2xs);
   font-size: var(--step--1);
@@ -77,6 +73,11 @@
 
 .link-box[data-card=user-videos] .link-title p {
   -webkit-line-clamp: 1;
+}
+
+.link-box[data-card=category] img {
+  height: 4rem;
+  width: auto;
 }
 
 .link-box[data-card=user-videos] img {
