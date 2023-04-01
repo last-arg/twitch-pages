@@ -100,14 +100,7 @@ permalink: "public/partials/settings.html"
           </div>
         </div>
         <datalist id="lang-list">
-          <script webc:type="js" webc:is="template">
-          let result = "";
-          const languages = this.language_codes;
-          for(const key in languages) {
-            result += `<option lang-code="${key}" value="${languages[key]}">`;
-          }
-          result;
-          </script>
+          <option webc:for="(code, lang) in $data.language_codes" :lang-code="code" :value="lang">
         </datalist>
         <ul class="enabled-languages" role="list">
           <template>
