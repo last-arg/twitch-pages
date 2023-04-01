@@ -1,36 +1,20 @@
 <div webc:root webc:keep class="flex-grow">
-  <script webc:type="js" webc:is="template">
-    const valid_names = ["category", "user-videos"]
-    if (!valid_names.includes(this.name)) {
-      throw new Error(`Invalid 'name' attribute '${this.name}'. Valid values: ${valid_names.join(", ")}`)
-    }
-    const image = this.$data.global.config.image;
-    const configs = {
-      "category": {
-        width: image.category.width,
-        height: image.category.height,
-      },
-      "user-videos": {
-        width: image.user.width,
-        height: image.user.height,
-      }
-    };
-    const name = this.name;
-    const config = configs[name];
-    old = `
-      <a class="link-box"
-        data-card="${name}"
-        href="#" hx-push-url="#"
-        hx-target="#main"
-        hx-get="/public/partials/${name}.html"
-      >
-        <img src="" alt="" width="${config.width}" height="${config.height}" />
-        <div class="link-title">
-          <slot></slot>
-        </div>
-      </a>
-    `;
-  </script>
+  <a class="link-box"
+    :data-card="name"
+    href="#" hx-push-url="#"
+    hx-target="#main"
+    :hx-get="`/public/partials/${name}.html`"
+  >
+    <img webc:if="name === 'user-videos'" src="" alt="" 
+      :width="$data.global.config.image.user.width" 
+      :height="$data.global.config.image.user.height" />
+    <img webc:else src="" alt="" 
+      :width="$data.global.config.image[name].width" 
+      :height="$data.global.config.image[name].height" />
+    <div class="link-title">
+      <slot></slot>
+    </div>
+  </a>
 </div>
 <style webc:nokeep>
 .link-box {
