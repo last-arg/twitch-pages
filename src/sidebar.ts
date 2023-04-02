@@ -19,7 +19,7 @@ export function renderSidebarItems(state: SidebarState) {
         sidebarShadows(streams_scrollbox);
     } else if (state === "search") {
         renderGames(search_item_tmpl, search_list, search_items);
-        htmx.process(games_list as HTMLElement);
+        htmx.process(search_list as HTMLElement);
         sidebarShadows(search_scrollbox);
     }
 }
