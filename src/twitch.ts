@@ -10,6 +10,16 @@ const TWITCH_MAX_QUERY_COUNT = 100
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
 const SEARCH_COUNT = 10
 
+type TokenLocal = {
+  access_token: string,
+  expires_date: number,
+}
+
+type TokenResponse = {
+  access_token: string,
+  expires_in: number,
+}
+
 export class Twitch {
   static headers = {
     "Authorization": "",
@@ -17,38 +27,42 @@ export class Twitch {
     "Accept": "application/vnd.twitchtv.v5+json",
   }
 
-  twitch_token: string | null = null
+  twitch_token: TokenLocal | null = null
   is_fetching_token: boolean = false
 
   constructor() {
-    this.twitch_token = localStorage.getItem("twitch_token");
-    if (this.twitch_token) {
-      this.setTwitchToken(this.twitch_token);
+    const local_token = localStorage.getItem("twitch_token");
+    if (!local_token) {
+      return;
     }
+    const token = JSON.parse(local_token);
+    this.setTwitchToken(token);
   }
   async fetchToken() {
-    let token = this.getTwitchToken();
-    if (!token) {
+    let token = this.twitch_token
+    const now_seconds = Date.now() / 1000;
+    if (!token || token.expires_date > now_seconds) {
       this.is_fetching_token = true;
       const r = await fetch("/api/twitch-api/?new-token");
       if (r.status !== 200) {
-        console.warn("Failed to get new twitch token");
+        console.warn("fetchToken(): Failed to get new twitch token");
         // TODO: handle failed request
       } else {
-        const token = await r.text();
+        const token = await r.json();
         this.setTwitchToken(token);
       }
       this.is_fetching_token = false;
     }
   }
 
-  setTwitchToken(token: string) {
-    this.twitch_token = token
-    localStorage.setItem("twitch_token", token)
-    Twitch.headers["Authorization"] = `Bearer ${token}`;
+  setTwitchToken(token: TokenResponse) {
+    const expires_date = (Date.now() / 1000) + token.expires_in;
+    this.twitch_token = { access_token: token.access_token, expires_date: expires_date };
+    localStorage.setItem("twitch_token", JSON.stringify(this.twitch_token))
+    Twitch.headers["Authorization"] = `Bearer ${this.twitch_token.access_token}`;
   }
 
-  getTwitchToken(): string | null { return this.twitch_token; }
+  getTwitchToken(): string | null { return this.twitch_token?.access_token || null; }
   
   // setUserToken(token: string) {
   //   console.log("TODO: setUserToken")
@@ -64,8 +78,8 @@ export class Twitch {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
     const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
-    if (resp.status === 401) {
-      
+    if (resp.status !== 200) {
+      console.warn("fetchUsers() status:", resp.status);
     }
     return (await resp.json()).data;
   }
@@ -73,6 +87,9 @@ export class Twitch {
   async fetchSearch(input: string): Promise<Search[]> {
     const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
     const r = await fetch(url, { method: "GET", headers: Twitch.headers })
+    if (r.status !== 200) {
+      console.warn("fetchSearch() status:", r.status);
+    }
     const results = await r.json()
     return results.data ?? []
   }
@@ -80,7 +97,11 @@ export class Twitch {
   async fetchStreams(user_ids: string[]): Promise<StreamTwitch[]> {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    return (await (await fetch(url, {method: "GET", headers: Twitch.headers})).json()).data || [];
+    const r = await fetch(url, {method: "GET", headers: Twitch.headers});
+    if (r.status !== 200) {
+      console.warn("fetchStreams() status:", r.status);
+    }
+    return (await r.json()).data || [];
   }
 
   async fetchLiveUsers(user_ids: string[]): Promise<StreamTwitch[]> {

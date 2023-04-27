@@ -15,8 +15,8 @@ const requestTwitchToken = async (): Promise<string | undefined> => {
   if (oauth_resp.status !== 200) {
     return undefined
   }
-  const data = (await oauth_resp.json()) as Record<string, string>
-  return data.access_token;
+  const data = await oauth_resp.text(); 
+  return data;
 }
 
 const handler: Handler = async (event) => {
