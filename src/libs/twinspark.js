@@ -1439,6 +1439,7 @@
             }
             res.swap = swapResponse(res.url, [document.body], res.content, res);
           } else {
+            sendEvent(document, 'ts-req-ok', res);
             res.swap = swapResponse(url, origins, res.content, res);
           }
           return res;
