@@ -39,7 +39,7 @@ permalink: "public/partials/top-games.html"
         </div>
       </li>
     </template>
-    <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
+    <div ts-req="/helix/games/top" ts-trigger="load" ts-swap="replace" ts-req-selector="children ul"></div>
   </ul>
   <btn-load-more class="block fluid-my-xl" @hx_get="/helix/games/top"></btn-load-more>
 </div>

@@ -4,9 +4,46 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { filter_stylesheet, filter_value } from './search_filter';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, live_streams_local, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
-import { Game } from './common';
+import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
+import { mainContent, UrlResolve } from 'config';
 import { initHtmx } from './htmx_init';
+import { topGamesRender } from './render';
+import './libs/twinspark.js';
+declare var twinspark: any;
+
+export const twitch = new Twitch();
+const live_check_ms = 600000; // 10 minutes
+
+document.addEventListener("ts-req-before", (e) => {
+    const url_str = e.detail?.req?.url;
+    if (url_str && url_str.startsWith("/helix/games/top")) {
+        const url = new URL(url_str, API_URL)
+        const req_url = url.toString();
+        e.detail.req.opts.data.set("first", settings.general()["top-games-count"]);
+        e.detail.req.url = req_url;
+        e.detail.req.opts.headers = Twitch.headers;
+    }
+});
+
+document.addEventListener("ts-req-ok", (e) => {
+    const url_str = e.detail?.url;
+    if (!url_str) {
+        return;
+    }
+    const url = new URL(url_str);
+    if (url.host !== "api.twitch.tv") {
+        return;
+    }
+    console.log("ok url:", e, url);
+
+    if (url.pathname.startsWith("/helix/games/top")) {
+        e.detail.content = topGamesRender(e.detail.content);
+    } else if (url.pathname.startsWith("/helix/games/top")) {
+        //
+    }
+});
+
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
@@ -60,13 +97,47 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
     changePage(document.location.pathname, e.target as Element);
 })
 
-export const twitch = new Twitch();
-const live_check_ms = 600000; // 10 minutes
+function initRoute() {
+    // htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
+    const r = getUrlObject(location.pathname);
+    console.log("RUL;", r)
+    const main = document.querySelector("#main");
+    // console.log(twinspark)
+    const req = twinspark.makeReq(main, new Event("load"), true, {url: r.html});
+    console.log("request", req);
+    twinspark.executeReqs(req);
+}
+
+function getUrlObject(newPath: string): UrlResolve {
+  if (newPath === "/") return mainContent["top-games"]
+  let contentKey = "not-found"
+  const newDirs = newPath.split("/").filter((path) => path.length > 0)
+  for (const key in mainContent) {
+    const obj = mainContent[key]
+    const dirs = obj.url.split("/").filter((path) => path.length > 0)
+    if (dirs.length !== newDirs.length || dirs.length === 0) continue
+    let isMatch = true
+    for (let i = 0; i < dirs.length; i+=1) {
+      const dir = dirs[i]
+      if (dir[0] === ":") continue
+      if (dir !== newDirs[i]) {
+        isMatch = false
+        break
+      }
+    }
+    if (isMatch) {
+      contentKey = key
+      break
+    }
+  }
+  return mainContent[contentKey]
+}
 
 (async function startup() {
     await twitch.fetchToken();
-    const page_cache = await caches.open('page_cache');
-    initHtmx(page_cache);
+    // const page_cache = await caches.open('page_cache');
+    // initHtmx(page_cache);
+    initRoute();
     initHeader(document.body)
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);

@@ -1,11 +1,12 @@
 <slot></slot>
 <input type="hidden" class="req-param" id="param-after" name="after" value="">
 <button type="button" class="btn-frame btn-load-more"
-  hx-ext="twitch-api" 
-  :hx-get="hx_get" 
-  :hx-target="hx_target ? hx_target : '#output-list'" 
-  hx-swap="beforeend"
-  hx-include=".req-param"
+  ts-data=""
+  :ts-req="hx_get"
+  :ts-target="hx_target ? hx_target : '#output-list'" 
+  ts-swap="append"
+  ts-req-selector="children ul"
+  ts-action="target .btn-load-more, attr aria-disabled true"
   aria-disabled="true"
 >
   <span>Load more games</span>
