@@ -1320,9 +1320,13 @@
     // then take request URL as new URL
     var pushurl = res.headers['ts-history'] || hasattr(origins[0], 'ts-req-history') && url;
     if (pushurl) {
-      if (getattr(origins[0], 'ts-req-history') == 'replace') {
+      const history = getattr(origins[0], 'ts-req-history');
+      if (history == 'replace') {
         replaceState(pushurl);
       } else {
+        if (history && history.length > 0) {
+          pushurl = history;
+        }
         pushState(pushurl, title);
       }
     }
