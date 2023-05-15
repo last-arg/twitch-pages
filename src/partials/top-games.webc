@@ -10,9 +10,8 @@ permalink: "public/partials/top-games.html"
       <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
-            <a class="game-img-link" href="#game_url"
-              hx-push-url="#game_url"
-              :hx-get="$data.global.paths.category.html" hx-target="#main"
+            <a class="game-img-link" href="#game_url" ts-req-history="#game_url"
+              :ts-req="$data.global.paths.category.html" ts-target="#main"
             >
               <img class="game-img" src="#game_img_url" alt=""
                 :width="$data.global.config.image.category.width * 2" 
@@ -30,12 +29,13 @@ permalink: "public/partials/top-games.html"
               <button-follow @name="game"></button-follow>
             </div>
           </div>
-          <a class="game-link" href="#game_url"
-            hx-push-url="#game_url"
-            :hx-get="$data.global.paths.category.html" hx-target="#main"
+          <button class="game-link" href="#game_url" ts-req-history="#game_url"
+            :ts-req="$data.global.paths.category.html" ts-target="#main"
+            ts-action="log hello"
+            ts-trigger="click"
           >
             <p>:game_name_text</p>
-          </a>
+          </button>
         </div>
       </li>
     </template>
