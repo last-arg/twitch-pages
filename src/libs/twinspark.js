@@ -1,6 +1,7 @@
 // jshint -W030, -W084, esversion: 6
 
 (function(window, document, tsname) {
+  var events = new Set();
   var location = window.location;
   var script = document.currentScript;
 
@@ -725,7 +726,7 @@
         return;
       }
 
-      activate(document.body);
+      // activate(document.body);
     }
   }
 
@@ -900,7 +901,7 @@
       // callback before anything so that there is a hook to change something
       ctx.cb('node-insert', el);
       if (el instanceof HTMLElement) {
-        activate(el);
+        // activate(el);
         elementInserted(el);
       }
     }
@@ -1146,6 +1147,12 @@
       });
     }
 
+    // if (reply instanceof DocumentFragment) {
+    //   for (const child of reply.children) {
+    //     activate(child);
+    //   }
+      // console.log("exec swap", reply.querySelectorAll("[ts-trigger]"))
+    // }
     switch (strategy) {
     case 'morph-all':   reply = morph(target, reply, {ignoreActive: false});       break;
     case 'morph':       reply = morph(target, reply, {ignoreActive: true});        break;
@@ -1283,8 +1290,12 @@
     swapped = swapped.concat(viapush).concat(viaheader).filter(x => x);
     swapped = distinct(swapped);
     swapped.forEach(function(el) {
+      console.log(el)
       processScripts(el);
-      activate(el);
+      // activate(el);
+      for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
+        doReqBatch([makeReq(elem, "load", false)]);
+      }
       autofocus(el);
     });
     setTimeout(function() {
@@ -2035,6 +2046,97 @@
     });
   });
 
+  const querySelectorAll = (query) => {
+    return document.querySelectorAll(query);
+  };
+  
+  const broadcast = (infix, ev, type = ev.type) => {
+    querySelectorAll('[on' + infix + '\\:' + type + ']').forEach((target) =>
+      dispatch(target, infix, ev, type)
+    );
+  };
+
+  const dispatch = async (element, onPrefix, ev, eventName = ev.type) => {
+    // TODO
+    // if (element.hasAttribute('preventdefault:' + eventName)) {
+    //   ev.preventDefault();
+    // }
+
+    const attrValue = element.getAttribute("ts-trigger");
+    console.log("attrValue", attrValue)
+    if (attrValue && attrValue.includes(eventName)) {
+      console.log("run request", element, ev)
+      doReqBatch([makeReq(element, ev, false)]);
+      // TODO: ts-action
+      // Something else also?
+    }
+  };
+
+  const emitEvent = (eventName, detail) => {
+    document.dispatchEvent(createEvent(eventName, detail));
+  };
+
+  const camelToKebab = (str) => str.replace(/([A-Z])/g, (a) => '-' + a.toLowerCase());
+
+  /**
+   * Event handler responsible for processing browser events.
+   *
+   * If browser emits an event, the `eventProcessor` walks the DOM tree
+   * looking for corresponding `(${event.type})`. If found the event's URL
+   * is parsed and `import()`ed.
+   *
+   * @param ev - Browser event.
+   */
+  const processDocumentEvent = async (ev) => {
+    // eslint-disable-next-line prefer-const
+    let type = camelToKebab(ev.type);
+    let element = ev.target;
+    broadcast('-document', ev, type);
+
+    // TODO: Can use closest fn instead?
+    // use CSS attribute selector?
+    while (element && element.getAttribute) {
+      await dispatch(element, '', ev, type);
+      element = ev.bubbles && ev.cancelBubble !== true ? element.parentElement : null;
+    }
+  };
+
+  const processWindowEvent = (ev) => {
+    broadcast('-window', ev, camelToKebab(ev.type));
+  };
+
+  /** @type {function(Array<string>): undefined} */
+  function push(eventNames) {
+      for (const eventName of eventNames) {
+          if (!events.has(eventName)) {
+              document.addEventListener(eventName, processDocumentEvent, true);
+              window.addEventListener(eventName, processWindowEvent);
+              events.add(eventName);
+          }
+      }
+  };
+
+  /** @type {function(string): string} */
+  function getEvents(html) {
+    function isValidChar(char) {
+        return ("a" <= char && char <= "z") || ("A" <= char && char <= "Z") || ("0" <= char && char <= "9");
+    }
+    let result = [];
+    const prefix = "ts-trigger=\"";
+    let index = html.indexOf(prefix);
+    while (index > -1) {
+        const start = index + prefix.length;
+        let end = Math.min( html.indexOf(" ", start), html.indexOf("\"", start));
+        if (end === -1) break;
+        if (isValidChar(html[end - 1])) {
+            // TODO: split 'ts-trigger' and add/push
+            result.push(html.slice(start, end));
+        }
+        index = html.indexOf(prefix, end + 1);
+    }
+    console.log("events", result)
+    return result;
+  }
 
   /// Start up
 
@@ -2043,7 +2145,15 @@
     window.addEventListener('popstate', onpopstate);
     // Store HTML before going to other page
     window.addEventListener('beforeunload', storeCurrentState);
-    activate(document.body);
+
+    // TODO: also submit event? See if there is form element first?
+    push(["click"])
+    if (window.follow_events) {
+      push(window.follow_events);
+    }
+    push(getEvents(document.body.outerHTML));
+
+    // activate(document.body);
     READY = true;
     console.debug('init done', _e);
   }
