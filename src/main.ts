@@ -8,7 +8,7 @@ import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { mainContent, UrlResolve } from 'config';
 import { initHtmx } from './htmx_init';
-import { topGamesRender } from './render';
+import { topGamesRender, gamesRender } from './render';
 import './libs/twinspark.js';
 declare var twinspark: any;
 
@@ -23,7 +23,18 @@ document.addEventListener("ts-req-before", (e) => {
         e.detail.req.opts.data.set("first", settings.general()["top-games-count"]);
         e.detail.req.url = req_url;
         e.detail.req.opts.headers = Twitch.headers;
+    } else if (url_str && url_str.startsWith("/helix/games")) {
+        const url = new URL(url_str, API_URL)
+        const req_url = url.toString();
+        e.detail.req.url = req_url;
+        e.detail.req.opts.headers = Twitch.headers;
+
+        const path = current_path() || location.pathname;
+        const path_arr = path.split("/")
+        e.detail.req.opts.data.set("name", decodeURIComponent(path_arr[path_arr.length - 1]));
+        current_path(null)
     }
+
 });
 
 document.addEventListener("ts-req-ok", (e) => {
@@ -32,18 +43,30 @@ document.addEventListener("ts-req-ok", (e) => {
         return;
     }
     const url = new URL(url_str);
+    console.log("ok url:", e, url);
     if (url.host !== "api.twitch.tv") {
         return;
     }
-    console.log("ok url:", e, url);
 
     if (url.pathname.startsWith("/helix/games/top")) {
-        e.detail.content = topGamesRender(e.detail.content);
-    } else if (url.pathname.startsWith("/helix/games/top")) {
-        //
+        const json = JSON.parse(e.detail.content);
+        e.detail.content = topGamesRender(json);
+        const cursor = json.pagination.cursor;
+        const btn = document.querySelector(".btn-load-more");
+        if (cursor) {
+            btn?.setAttribute("aria-disabled", "false");
+            btn?.setAttribute("ts-data", "after=" + cursor);
+        } else {
+            btn?.setAttribute("aria-disabled", "true");
+            btn?.setAttribute("ts-data", "");
+        }
+    } else if (url.pathname.startsWith("/helix/games")) {
+        console.log("GAMES", e.detail)
+        const json = JSON.parse(e.detail.content);
+        e.detail.content = gamesRender(json);
+        e.detail.headers["ts-title"] = `${json.data[0].name} | Twitch Pages`;
     }
 });
-
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
@@ -98,13 +121,9 @@ window.addEventListener("htmx:pushedIntoHistory", (e) => {
 })
 
 function initRoute() {
-    // htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
     const r = getUrlObject(location.pathname);
-    console.log("RUL;", r)
     const main = document.querySelector("#main");
-    // console.log(twinspark)
-    const req = twinspark.makeReq(main, new Event("load"), true, {url: r.html});
-    console.log("request", req);
+    const req = twinspark.makeReq(main, new Event("load"), false, {url: r.html});
     twinspark.executeReqs(req);
 }
 

@@ -4,11 +4,8 @@ permalink: "public/partials/category.html"
 <div>
   <div class="flex flex-wrap content-start gap-4">
     <div id="category-header" class="flex place-items-start">
-      <div hx-ext="twitch-api"
-        hx-get="/helix/games"
-        hx-trigger="load"
-        hx-target="#category-header"
-      ></div>
+      <div ts-req="/helix/games" ts-trigger="load" ts-target="#category-header" 
+        ts-swap="inner" ts-req-selector="div"></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
         <heading-link @name="game">
@@ -51,8 +48,8 @@ permalink: "public/partials/category.html"
               </a>
               <div class="fluid-ml-2xs flex flex-col justify-between">
                 <div class="flex items-center">
-                  <a class="user-info-link" href="#video_url"
-                    hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
+                  <a class="user-info-link" href="#video_url" ts-req-history="#video_url" 
+                    :ts-req="$data.global.paths['user-videos'].html" ts-target="#main"
                   >:user_name</a>
                   <span class="user-info-follow">
                     <button-follow @name="stream"></button-follow>
