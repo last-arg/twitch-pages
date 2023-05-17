@@ -11,7 +11,7 @@ permalink: "public/partials/top-games.html"
         <div class="game">
           <div class="img-wrapper">
             <a class="game-img-link" href="#game_url" ts-req-history="#game_url"
-              :ts-req="$data.global.paths.category.html" ts-target="#main"
+              :ts-req="$data.global.paths.category.html" ts-target="#main" ts-swap="inner"
             >
               <img class="game-img" src="#game_img_url" alt=""
                 :width="$data.global.config.image.category.width * 2" 

@@ -2072,8 +2072,12 @@
     } else if (element.tagName === "A" && eventName === "click") {
       ev.preventDefault();
       doReqBatch([makeReq(element, ev, false)]);
+    } else if (element.tagName === "BUTTON" && eventName === "click") {
+      // TODO: need preventDefault?
+      // What if button is inside FORM?
+      ev.preventDefault();
+      doReqBatch([makeReq(element, ev, false)]);
     }
-    // TODO: BUTTON?
   };
 
   const emitEvent = (eventName, detail) => {
