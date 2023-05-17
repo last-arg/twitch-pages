@@ -1,6 +1,7 @@
 import { mainContent, config } from 'config';
 import { twitchCatImageSrc } from './common';
 import { games } from './games';
+import { add_profiles, profiles, streams } from './streams';
 
 export function gamesRender(json: any): string {
     let result = "";
@@ -29,7 +30,7 @@ export function gamesRender(json: any): string {
 
 export function topGamesRender(json: any): string {
     const tmpl = document.querySelector("#top-games-template") as HTMLTemplateElement;
-    let result = "<ul id='output-list'>";
+    let result = "<ul>";
     for (const item of json.data) {
         const url_name = encodeURIComponent(item.name);
         const game_url = mainContent['category'].url.replace(":category", url_name)
@@ -49,5 +50,50 @@ export function topGamesRender(json: any): string {
         result += html;
     }
     result += "</ul>";
+    return result;
+}
+
+export function streamsRender(json: any): string {
+    const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
+    let result = "<ul>";
+    let user_ids = [];
+    for (const item of json.data) {
+        const user_id = item.user_id;
+        let profile_img_url = profiles[user_id]?.url;
+        if (!profile_img_url) {
+          user_ids.push(user_id);
+          profile_img_url = `#${user_id}`;
+        }
+        const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
+        const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+        const title = item.title.replaceAll('"', "&quot;");
+        const item_json = encodeURIComponent(JSON.stringify({
+           user_id: user_id,
+           user_login: item.user_login,
+           user_name: item.user_name,
+        }));
+        let html = tmpl.innerHTML
+          .replaceAll("#video_url", video_url)
+          .replaceAll(":user_login", item.user_login)
+          .replaceAll(":user_name", item.user_name)
+          .replace(":title_encoded", encodeURIComponent(item.title))
+          .replaceAll(":title", title)
+          .replace(":viewer_count", item.viewer_count)
+          .replace("#video_img_url", img_url)
+          .replace(":item_json", item_json)
+          .replace(":item_id", user_id)
+          .replace("#user_img", profile_img_url);
+        if (streams.some((stream) => stream.user_id === user_id)) {
+           html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
+        }
+        result += html;
+    }
+    result += "</ul>";
+
+    if (user_ids.length > 0) {
+      add_profiles(user_ids);
+    }
+
+    console.log(result)
     return result;
 }

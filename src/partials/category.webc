@@ -39,7 +39,7 @@ permalink: "public/partials/category.html"
               </div>
             </a>
             <div class="user-info">
-              <a class="user-info-img-link" aria-hidden="true" href="#video_url"
+              <a class="user-info-img-link" aria-hidden="true" href="#video_url" ts-swap="inner"
                 hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
               >
                 <img class="block w-14" src="#user_img" alt="" 
@@ -49,7 +49,7 @@ permalink: "public/partials/category.html"
               <div class="fluid-ml-2xs flex flex-col justify-between">
                 <div class="flex items-center">
                   <a class="user-info-link" href="#video_url" ts-req-history="#video_url" 
-                    :ts-req="$data.global.paths['user-videos'].html" ts-target="#main"
+                    :ts-req="$data.global.paths['user-videos'].html" ts-target="#main" ts-swap="inner"
                   >:user_name</a>
                   <span class="user-info-follow">
                     <button-follow @name="stream"></button-follow>
@@ -68,7 +68,6 @@ permalink: "public/partials/category.html"
       </template>
     </ul>
     <btn-load-more class="block fluid-my-xl" @hx_get="/helix/streams" @hx_target=".output-list">
-      <input class="req-param" id="param-game_id" type="hidden" name="game_id" value="">
     </btn-load-more>
   </div>
 </div>

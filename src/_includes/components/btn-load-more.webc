@@ -1,5 +1,4 @@
 <slot></slot>
-<input type="hidden" class="req-param" id="param-after" name="after" value="">
 <button type="button" class="btn-frame btn-load-more"
   ts-data=""
   :ts-req="hx_get"

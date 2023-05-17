@@ -8,7 +8,7 @@ import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { mainContent, UrlResolve } from 'config';
 import { initHtmx } from './htmx_init';
-import { topGamesRender, gamesRender } from './render';
+import { topGamesRender, gamesRender, streamsRender } from './render';
 import './libs/twinspark.js';
 declare var twinspark: any;
 
@@ -33,8 +33,12 @@ document.addEventListener("ts-req-before", (e) => {
         const path_arr = path.split("/")
         e.detail.req.opts.data.set("name", decodeURIComponent(path_arr[path_arr.length - 1]));
         current_path(null)
+    } else if (url_str && url_str.startsWith("/helix/streams")) {
+        const url = new URL(url_str, API_URL)
+        const req_url = url.toString();
+        e.detail.req.url = req_url;
+        e.detail.req.opts.headers = Twitch.headers;
     }
-
 });
 
 document.addEventListener("ts-req-ok", (e) => {
@@ -61,10 +65,26 @@ document.addEventListener("ts-req-ok", (e) => {
             btn?.setAttribute("ts-data", "");
         }
     } else if (url.pathname.startsWith("/helix/games")) {
-        console.log("GAMES", e.detail)
         const json = JSON.parse(e.detail.content);
         e.detail.content = gamesRender(json);
         e.detail.headers["ts-title"] = `${json.data[0].name} | Twitch Pages`;
+        const game_id = json.data[0].id;
+        const btn = document.querySelector(".btn-load-more")!;
+        btn.parentElement!.setAttribute("ts-data", "game_id=" + game_id);
+        btn.dispatchEvent(new CustomEvent("click"));
+    } else if (url.pathname.startsWith("/helix/streams")) {
+        const json = JSON.parse(e.detail.content);
+        e.detail.content = streamsRender(json);
+        const btn = document.querySelector(".btn-load-more")!;
+
+        const cursor = json.pagination.cursor;
+        if (cursor) {
+            btn.setAttribute("aria-disabled", "false");
+            btn.setAttribute("ts-data", "after=" + cursor);
+        } else {
+            btn.setAttribute("aria-disabled", "true");
+            btn.setAttribute("ts-data", "");
+        }
     }
 });
 
