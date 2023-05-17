@@ -2065,11 +2065,15 @@
     const attrValue = element.getAttribute("ts-trigger");
     console.log("attrValue", attrValue)
     if (attrValue && attrValue.includes(eventName)) {
-      console.log("run request", element, ev)
+      console.log("dipatch attrValue", element, ev)
       doReqBatch([makeReq(element, ev, false)]);
-      // TODO: ts-action
-      // Something else also?
+    } else if (element.tagName === "FORM" && eventName === "submit") {
+      console.log("TODO: dispatch FORM submit", element, ev)
+    } else if (element.tagName === "A" && eventName === "click") {
+      ev.preventDefault();
+      doReqBatch([makeReq(element, ev, false)]);
     }
+    // TODO: BUTTON?
   };
 
   const emitEvent = (eventName, detail) => {
