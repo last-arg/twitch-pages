@@ -119,3 +119,91 @@ export function usersRender(json: any): string {
     
     return result;
 }
+
+function getVideoImageSrc(url: string, width: number, height: number): string {
+  return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
+}
+
+function twitchDurationToString(duration: string): string {
+    const time = duration.slice(0,-1).split(/[hm]/).reverse()
+    const hours = (time.length >= 3) ? `${time[2]}:` : ""
+    const minutes = (time.length >= 2) ? `${time[1].padStart(2, "0")}:` : ""
+    const seconds = (time.length >= 1) ? time[0].padStart(2, "0") : ""
+    return `${hours}${minutes}${seconds}`
+}
+
+function twitchDateToString(d: Date): string {
+    const round = (nr: number): number => {
+    const nr_floor = Math.floor(nr)
+        return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
+    }
+    const seconds_f = (Date.now() - d.getTime()) / 1000
+    const minutes_f = seconds_f / 60
+    const hours_f = minutes_f / 60
+    const days_f = hours_f / 24
+    const minutes = round(minutes_f)
+    const hours = round(hours_f)
+    const days = round(days_f)
+    const weeks = round(days_f / 7)
+    const months = round(days_f / 30)
+    const years = round(days_f / 365)
+
+    let result_str = "1 minute ago"
+    if (years > 0 && months > 11) {
+        result_str = (years === 1) ? "1 year ago" : `${years} years ago`
+    } else if (months > 0 && weeks > 4) {
+        result_str = (months === 1) ? "1 month ago" : `${months} months ago`
+    } else if (weeks > 0 && days > 6) {
+        result_str = (weeks === 1) ? "1 week ago" : `${weeks} weeks ago`
+    } else if (days > 0 && hours > 23) {
+        result_str = (days === 1) ? "Yesterday" : `${days} days ago`
+    } else if (hours > 0 && minutes > 59) {
+        result_str = (hours === 1) ? "1 hour ago" : `${hours} hours ago`
+    } else if (minutes > 1) {
+        result_str = `${minutes} minutes ago`
+    }
+
+    return result_str
+}
+
+export function videosRender(json: any): string {
+    const VIDEO_ICONS: Record<string, string> = {
+      archive: "video-camera",
+      upload: "video-upload",
+      highlight: "video-reel",
+    }
+
+    const tmpl = document.querySelector("#user-video-template") as HTMLTemplateElement;
+    let result = "<ul>";
+    const counts: any = { archive: 0, upload: 0, highlight: 0 };
+    for (const item of json.data) {
+        counts[item.type] += 1;
+        const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+        const date = new Date(item.published_at)
+        const title = item.title.replaceAll('"', "&quot;");
+        result += tmpl.innerHTML
+          .replaceAll(":video_title", title)
+          .replace(":video_type", item.type)
+          .replace("#video_url", item.url)
+          .replace(":video_duration_str", twitchDurationToString(item.duration))
+          .replace(":date_str", date.toString())
+          .replace(":video_date_str", twitchDateToString(date))
+          .replace(":video_type_title", item.type[0].toUpperCase() + item.type.slice(1))
+          .replace("#img_url", img_url)
+          .replace(":video_icon", VIDEO_ICONS[item.type])
+          .replace(":encoded_video_title", encodeURIComponent(item.title));
+    }
+    result += "</ul>";
+
+    // User page: Update filter counts
+    const elHighlights = document.querySelector("#highlights-count")!;
+    const elUploads = document.querySelector("#uploads-count")!;
+    const elArchives = document.querySelector("#archives-count")!;
+
+    elHighlights.textContent = (+elHighlights.textContent!) + counts.highlight;
+    elUploads.textContent = (+elUploads.textContent!) + counts.upload;
+    elArchives.textContent = (+elArchives.textContent!) + counts.archive;
+
+    return result;
+}
+
