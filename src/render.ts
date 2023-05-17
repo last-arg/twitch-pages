@@ -8,8 +8,6 @@ export function gamesRender(json: any): string {
     const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
     const item = json.data[0];
     result += `<title>${json.data[0].name} | Twitch Pages</title>`;
-    // document.querySelector("#param-game_id")!.setAttribute("value", item.id);
-    // htmx.trigger(".btn-load-more", "click", {})
     const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
     const game_obj_str = encodeURIComponent(JSON.stringify(item));
     result += "<div>";
@@ -95,5 +93,29 @@ export function streamsRender(json: any): string {
     }
 
     console.log(result)
+    return result;
+}
+
+export function usersRender(json: any): string {
+    const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
+    const item = json.data[0];
+    const item_json = encodeURIComponent(JSON.stringify({
+       user_id: item.id,
+       user_login: item.login,
+       user_name: item.display_name,
+    }));
+    let result = "";
+    result += tmpl.innerHTML
+      .replaceAll(":user_login", item.login)
+      .replaceAll(":user_display_name", item.display_name)
+      .replaceAll("#user_profile_image_url", item.profile_image_url)
+      .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
+      .replace(":item_json", item_json)
+      .replaceAll(":item_id", item.id);
+
+    if (streams.some((stream) => stream.user_id === item.id)) {
+       result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
+    }
+    
     return result;
 }

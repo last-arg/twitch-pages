@@ -8,7 +8,7 @@ import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { mainContent, UrlResolve } from 'config';
 import { initHtmx } from './htmx_init';
-import { topGamesRender, gamesRender, streamsRender } from './render';
+import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
 declare var twinspark: any;
 
@@ -34,6 +34,21 @@ document.addEventListener("ts-req-before", (e) => {
         e.detail.req.opts.data.set("name", decodeURIComponent(path_arr[path_arr.length - 1]));
         current_path(null)
     } else if (url_str && url_str.startsWith("/helix/streams")) {
+        const url = new URL(url_str, API_URL)
+        const req_url = url.toString();
+        e.detail.req.url = req_url;
+        e.detail.req.opts.headers = Twitch.headers;
+    } else if (url_str && url_str.startsWith("/helix/users")) {
+        const url = new URL(url_str, API_URL)
+        const req_url = url.toString();
+        e.detail.req.url = req_url;
+        e.detail.req.opts.headers = Twitch.headers;
+
+        const path = current_path() || location.pathname;
+        const path_arr = path.split("/")
+        e.detail.req.opts.data.set("login", decodeURIComponent(path_arr[1]));
+        current_path(null)
+    } else if (url_str && url_str.startsWith("/helix/videos")) {
         const url = new URL(url_str, API_URL)
         const req_url = url.toString();
         e.detail.req.url = req_url;
@@ -66,6 +81,7 @@ document.addEventListener("ts-req-ok", (e) => {
         }
     } else if (url.pathname.startsWith("/helix/games")) {
         const json = JSON.parse(e.detail.content);
+        // TODO: Failed response
         e.detail.content = gamesRender(json);
         e.detail.headers["ts-title"] = `${json.data[0].name} | Twitch Pages`;
         const game_id = json.data[0].id;
@@ -75,8 +91,38 @@ document.addEventListener("ts-req-ok", (e) => {
     } else if (url.pathname.startsWith("/helix/streams")) {
         const json = JSON.parse(e.detail.content);
         e.detail.content = streamsRender(json);
-        const btn = document.querySelector(".btn-load-more")!;
 
+        const btn = document.querySelector(".btn-load-more")!;
+        const cursor = json.pagination.cursor;
+        if (cursor) {
+            btn.setAttribute("aria-disabled", "false");
+            btn.setAttribute("ts-data", "after=" + cursor);
+        } else {
+            btn.setAttribute("aria-disabled", "true");
+            btn.setAttribute("ts-data", "");
+        }
+    } else if (url.pathname.startsWith("/helix/users")) {
+        const json = JSON.parse(e.detail.content);
+        if (e.detail.status !== 200 || json.data.length === 0) {
+            const pathArr = location.pathname.split("/")
+            return `
+              <h2>${decodeURIComponent(pathArr[1])}</h2>
+              <div id="feedback" hx-swap-oob="true">User not found</div>
+            `;
+            return;
+        }
+
+        e.detail.content = usersRender(json);
+        e.detail.headers["ts-title"] = `${json.data[0].display_name} | Twitch Pages`;
+        const user_id = json.data[0].id;
+        const btn = document.querySelector(".btn-load-more")!;
+        btn.parentElement!.setAttribute("ts-data", "user_id=" + user_id);
+        btn.dispatchEvent(new CustomEvent("click"));
+    } else if (url.pathname.startsWith("/helix/videos")) {
+        const json = JSON.parse(e.detail.content);
+        e.detail.content = videosRender(json);
+
+        const btn = document.querySelector(".btn-load-more")!;
         const cursor = json.pagination.cursor;
         if (cursor) {
             btn.setAttribute("aria-disabled", "false");
