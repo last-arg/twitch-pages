@@ -27,7 +27,7 @@ permalink: "public/partials/user-videos.html"
       <div class="flex flex-wrap fluid-gap-s">
         <div>
           <fieldset class="filter-video-type">
-            <legend class="sr-only">Fitler based on video type</legend>
+            <legend class="sr-only">Filter based on video type</legend>
             <filter-option @name="archive"></filter-option>
             <filter-option @name="upload"></filter-option>
             <filter-option @name="highlight"></filter-option>
