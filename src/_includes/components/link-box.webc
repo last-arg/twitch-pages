@@ -1,9 +1,8 @@
 <div webc:root webc:keep class="flex-grow">
-  <a class="link-box"
+  <a class="link-box" href="#" 
+    ts-target="#main" ts-swap="inner"
+    :ts-req="`/public/partials/${name}.html`"
     :data-card="name"
-    href="#" hx-push-url="#"
-    hx-target="#main"
-    :hx-get="`/public/partials/${name}.html`"
   >
     <img webc:if="name === 'user-videos'" src="" alt="" 
       :width="$data.global.config.image.user.width" 
