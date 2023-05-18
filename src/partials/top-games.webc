@@ -29,13 +29,11 @@ permalink: "public/partials/top-games.html"
               <button-follow @name="game"></button-follow>
             </div>
           </div>
-          <button class="game-link" href="#game_url" ts-req-history="#game_url"
-            :ts-req="$data.global.paths.category.html" ts-target="#main"
-            ts-action="log hello"
-            ts-trigger="click"
+          <a class="game-link" href="#game_url" ts-req-history="#game_url"
+            :ts-req="$data.global.paths.category.html" ts-target="#main" ts-swap="inner"
           >
             <p>:game_name_text</p>
-          </button>
+          </a>
         </div>
       </li>
     </template>

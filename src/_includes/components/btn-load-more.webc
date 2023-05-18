@@ -6,6 +6,7 @@
   ts-swap="append"
   ts-req-selector="children ul"
   ts-action="target .btn-load-more, attr aria-disabled true"
+  ts-trigger="click"
   aria-disabled="true"
 >
   <span>Load more games</span>
