@@ -1290,9 +1290,9 @@
     swapped = swapped.concat(viapush).concat(viaheader).filter(x => x);
     swapped = distinct(swapped);
     swapped.forEach(function(el) {
-      console.log(el)
       processScripts(el);
       // activate(el);
+      sendEvent(el, 'ts-ready');
       for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
         doReqBatch([makeReq(elem, "load", false)]);
       }
@@ -2072,11 +2072,11 @@
     } else if (element.tagName === "A" && eventName === "click") {
       ev.preventDefault();
       doReqBatch([makeReq(element, ev, false)]);
-    } else if (element.tagName === "BUTTON" && eventName === "click") {
+    // } else if (element.tagName === "BUTTON" && eventName === "click") {
       // TODO: need preventDefault?
       // What if button is inside FORM?
-      ev.preventDefault();
-      doReqBatch([makeReq(element, ev, false)]);
+      // ev.preventDefault();
+      // doReqBatch([makeReq(element, ev, false)]);
     }
   };
 
@@ -2142,7 +2142,6 @@
         }
         index = html.indexOf(prefix, end + 1);
     }
-    console.log("events", result)
     return result;
   }
 

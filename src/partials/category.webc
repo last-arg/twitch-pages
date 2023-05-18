@@ -1,7 +1,7 @@
 ---
 permalink: "public/partials/category.html"
 ---
-<div>
+<div id="page-category">
   <div class="flex flex-wrap content-start gap-4">
     <div id="category-header" class="flex place-items-start">
       <div ts-req="/helix/games" ts-trigger="load" ts-target="#category-header" 

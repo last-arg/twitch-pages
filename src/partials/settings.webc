@@ -1,7 +1,7 @@
 ---
 permalink: "public/partials/settings.html"
 ---
-<div id="partial-settings">
+<div id="page-settings">
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>

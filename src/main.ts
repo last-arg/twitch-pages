@@ -62,7 +62,6 @@ document.addEventListener("ts-req-ok", (e) => {
         return;
     }
     const url = new URL(url_str);
-    console.log("ok url:", e, url);
     if (url.host !== "api.twitch.tv") {
         return;
     }
@@ -107,7 +106,7 @@ document.addEventListener("ts-req-ok", (e) => {
             const pathArr = location.pathname.split("/")
             return `
               <h2>${decodeURIComponent(pathArr[1])}</h2>
-              <div id="feedback" hx-swap-oob="true">User not found</div>
+              <div id="feedback" ts-swap-push="#feedback">User not found</div>
             `;
             return;
         }
@@ -134,6 +133,22 @@ document.addEventListener("ts-req-ok", (e) => {
     }
 });
 
+document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
+    const elem = e.target as Element;
+    if (elem.id === "page-category") {
+        initCategory(elem);
+    } else if (elem.id === "page-user") {
+        initUserVideoTypeFilter(elem)
+        // TODO: init search filter
+    } else if (elem.id === "page-settings") {
+        document.title = "Settings | Twitch Pages";
+        initSettings(elem);
+    } else if (elem.id === "page-home") {
+        document.title = "Home | Twitch Pages";
+    }
+});
+
+
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-live")) {
@@ -147,7 +162,7 @@ window.addEventListener("htmx:load", (e: Event) => {
                 elem!.classList.remove("hidden");
             }
         }
-    } else if (elem.id === "partial-settings") {
+    } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
     } else if (elem.id === "page-user") {
