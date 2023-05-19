@@ -6,6 +6,7 @@ import { add_profiles, profiles, streams } from './streams';
 export function gamesRender(json: any): string {
     let result = "";
     const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
+    console.log("tmpl", tmpl)
     const item = json.data[0];
     result += `<title>${json.data[0].name} | Twitch Pages</title>`;
     const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
@@ -19,6 +20,7 @@ export function gamesRender(json: any): string {
       .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
     result += "</div>";
 
+    // TODO: is game followed
     // if (games.some((game) => game.id === item.id)) {
     //    result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
     // }
@@ -92,7 +94,6 @@ export function streamsRender(json: any): string {
       add_profiles(user_ids);
     }
 
-    console.log(result)
     return result;
 }
 

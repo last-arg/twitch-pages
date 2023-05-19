@@ -108,7 +108,6 @@ document.addEventListener("ts-req-ok", (e) => {
               <h2>${decodeURIComponent(pathArr[1])}</h2>
               <div id="feedback" ts-swap-push="#feedback">User not found</div>
             `;
-            return;
         }
 
         e.detail.content = usersRender(json);
