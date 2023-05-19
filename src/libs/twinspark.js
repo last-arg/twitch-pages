@@ -424,8 +424,11 @@
 
   /** @type {function(!Element): void} */
   function activate(el) {
-    var selector = DIRECTIVES.map(d => d.selector).join(',');
-    qse(el, selector).forEach(activateEl);
+    // var selector = DIRECTIVES.map(d => d.selector).join(',');
+    // qse(el, selector).forEach(activateEl);
+    for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
+      doReqBatch([makeReq(elem, "load", false)])
+    }
     sendEvent(el, 'ts-ready');
   }
 
@@ -1134,7 +1137,7 @@
    * @param {!Element}  target   In-DOM element to be replaced
    * @param {!(Element|DocumentFragment)} reply Element to be put in place
    * @param {!SwapData} ctx      Context-carrying object
-   * @return !(Element|DocumentFragment)
+   * @return !(Array<Element>)
    */
   function executeSwap(strategy, target, reply, ctx) {
     strategy || (strategy = 'replace');
@@ -1147,12 +1150,7 @@
       });
     }
 
-    // if (reply instanceof DocumentFragment) {
-    //   for (const child of reply.children) {
-    //     activate(child);
-    //   }
-      // console.log("exec swap", reply.querySelectorAll("[ts-trigger]"))
-    // }
+    const result = reply instanceof DocumentFragment ? Array.from(reply.children) : [reply];
     switch (strategy) {
     case 'morph-all':   reply = morph(target, reply, {ignoreActive: false});       break;
     case 'morph':       reply = morph(target, reply, {ignoreActive: true});        break;
@@ -1165,10 +1163,10 @@
     case 'skip':        break;
     default:            throw Error('Unknown swap strategy ' + strategy);
     }
-    return reply;
+    return result;
   }
 
-  /** @type {function(!Element, !Element, !SwapData): (Element|DocumentFragment)} */
+  /** @type {function(!Element, !Element, !SwapData): (Array<Element>)} */
   function elementSwap(origin, replyParent, ctx) {
     var target = findTarget(origin);
     if (!target) {
@@ -1194,7 +1192,7 @@
     return executeSwap(strategy, target, reply, ctx);
   }
 
-  /** @type {function(!Element, !SwapData): (Element|DocumentFragment)} */
+  /** @type {function(!Element, !SwapData): (Array<Element>)} */
   function pushedSwap(reply, ctx) {
     var sel = getattr(reply, 'ts-swap-push');
     if (!sel && reply.id) {
@@ -1208,7 +1206,7 @@
     return executeSwap(strategy, target, reply, ctx);
   }
 
-  /** @type {function(!string, !Element, !SwapData): (Element|DocumentFragment)} */
+  /** @type {function(!string, !Element, !SwapData): (Array<Element>)} */
   function headerSwap(header, replyParent, ctx) {
     // `replace: selector to <= selector from`
     var m = header.match(/(\w+):(.+)<=(.+)/);
@@ -1259,12 +1257,14 @@
 
     if (res.headers['ts-swap'] != 'skip') {
       if (origins.length == 1) {
-        swapped = [elementSwap(/** @type {!Element} */ (origins[0]), replyParent, ctx)];
+        swapped = elementSwap(/** @type {!Element} */ (origins[0]), replyParent, ctx);
       } else {
         // batching, we need to collect references to parents before using them
-        swapped = zip(origins, replyParent.children).map(([origin, thisParent]) => {
-          return elementSwap(origin, thisParent, ctx);
-        });
+        for (const [origin, thisParent] of zip(origins, replyParent.children)) {
+          for (const item of elementSwap(origin, thisParent, ctx)) {
+            swapped.push(item);
+          }
+        }
       }
     }
 
@@ -1289,15 +1289,11 @@
 
     swapped = swapped.concat(viapush).concat(viaheader).filter(x => x);
     swapped = distinct(swapped);
-    swapped.forEach(function(el) {
+    for (const el of swapped) {
       processScripts(el);
-      // activate(el);
-      sendEvent(el, 'ts-ready');
-      for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
-        doReqBatch([makeReq(elem, "load", false)]);
-      }
+      activate(el);
       autofocus(el);
-    });
+    }
     setTimeout(function() {
       ctx.tasks.forEach(function(func) { func(); });
     }, 16);
@@ -2063,20 +2059,13 @@
     // }
 
     const attrValue = element.getAttribute("ts-trigger");
-    console.log("attrValue", attrValue)
     if (attrValue && attrValue.includes(eventName)) {
-      console.log("dipatch attrValue", element, ev)
       doReqBatch([makeReq(element, ev, false)]);
     } else if (element.tagName === "FORM" && eventName === "submit") {
       console.log("TODO: dispatch FORM submit", element, ev)
     } else if (element.tagName === "A" && eventName === "click") {
       ev.preventDefault();
       doReqBatch([makeReq(element, ev, false)]);
-    // } else if (element.tagName === "BUTTON" && eventName === "click") {
-      // TODO: need preventDefault?
-      // What if button is inside FORM?
-      // ev.preventDefault();
-      // doReqBatch([makeReq(element, ev, false)]);
     }
   };
 
