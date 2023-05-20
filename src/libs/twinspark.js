@@ -424,8 +424,6 @@
 
   /** @type {function(!Element): void} */
   function activate(el) {
-    // var selector = DIRECTIVES.map(d => d.selector).join(',');
-    // qse(el, selector).forEach(activateEl);
     for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
       doReqBatch([makeReq(elem, "load", false)])
     }

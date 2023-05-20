@@ -1,11 +1,10 @@
 <slot></slot>
 <button type="button" class="btn-frame btn-load-more"
-  ts-data=""
   :ts-req="hx_get"
   :ts-target="hx_target ? hx_target : '#output-list'" 
+  ts-data=""
   ts-swap="append"
   ts-req-selector="children ul"
-  ts-action="target .btn-load-more, attr aria-disabled true"
   ts-trigger="click"
   aria-disabled="true"
 >

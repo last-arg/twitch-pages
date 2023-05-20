@@ -6,7 +6,6 @@ import { add_profiles, profiles, streams } from './streams';
 export function gamesRender(json: any): string {
     let result = "";
     const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
-    console.log("tmpl", tmpl)
     const item = json.data[0];
     result += `<title>${json.data[0].name} | Twitch Pages</title>`;
     const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);

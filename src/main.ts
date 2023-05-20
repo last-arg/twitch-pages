@@ -43,7 +43,6 @@ document.addEventListener("ts-req-before", (e) => {
         const req_url = url.toString();
         e.detail.req.url = req_url;
         e.detail.req.opts.headers = Twitch.headers;
-
         const path = current_path() || location.pathname;
         const path_arr = path.split("/")
         e.detail.req.opts.data.set("login", decodeURIComponent(path_arr[1]));
@@ -79,6 +78,7 @@ document.addEventListener("ts-req-ok", (e) => {
             btn?.setAttribute("ts-data", "");
         }
     } else if (url.pathname.startsWith("/helix/games")) {
+        console.log("/helix/games")
         const json = JSON.parse(e.detail.content);
         // TODO: Failed response
         e.detail.content = gamesRender(json);
@@ -87,7 +87,9 @@ document.addEventListener("ts-req-ok", (e) => {
         const btn = document.querySelector(".btn-load-more")!;
         btn.parentElement!.setAttribute("ts-data", "game_id=" + game_id);
         btn.dispatchEvent(new CustomEvent("click"));
+        console.log("/helix/games end")
     } else if (url.pathname.startsWith("/helix/streams")) {
+        console.log("/helix/streams")
         const json = JSON.parse(e.detail.content);
         e.detail.content = streamsRender(json);
 
@@ -234,6 +236,7 @@ function getUrlObject(newPath: string): UrlResolve {
 
 (async function startup() {
     await twitch.fetchToken();
+    console.log(twitch)
     // const page_cache = await caches.open('page_cache');
     // initHtmx(page_cache);
     initRoute();
