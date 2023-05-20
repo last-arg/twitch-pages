@@ -67,7 +67,7 @@ permalink: "public/partials/category.html"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @hx_get="/helix/streams" @hx_target=".output-list">
+    <btn-load-more class="block fluid-my-xl" @req_url="/helix/streams" @req_target=".output-list">
     </btn-load-more>
   </div>
 </div>

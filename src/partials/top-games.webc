@@ -39,7 +39,7 @@ permalink: "public/partials/top-games.html"
     </template>
     <div ts-req="/helix/games/top" ts-trigger="load" ts-swap="replace" ts-req-selector="children ul"></div>
   </ul>
-  <btn-load-more class="block fluid-my-xl" @hx_get="/helix/games/top"></btn-load-more>
+  <btn-load-more class="block fluid-my-xl" @req_url="/helix/games/top"></btn-load-more>
 </div>
 <style>
 .game {

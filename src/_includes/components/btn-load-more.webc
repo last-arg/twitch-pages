@@ -1,7 +1,7 @@
 <slot></slot>
 <button type="button" class="btn-frame btn-load-more"
-  :ts-req="hx_get"
-  :ts-target="hx_target ? hx_target : '#output-list'" 
+  :ts-req="req_url"
+  :ts-target="req_target ? req_target : '#output-list'" 
   ts-data=""
   ts-swap="append"
   ts-req-selector="children ul"
