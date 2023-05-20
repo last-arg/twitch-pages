@@ -83,7 +83,6 @@ document.addEventListener("ts-req-ok", (e) => {
             btn?.setAttribute("ts-data", "");
         }
     } else if (url.pathname.startsWith("/helix/games")) {
-        console.log("/helix/games")
         const json = JSON.parse(e.detail.content);
         // TODO: Failed response
         e.detail.content = gamesRender(json);
@@ -92,7 +91,6 @@ document.addEventListener("ts-req-ok", (e) => {
         const btn = document.querySelector(".btn-load-more")!;
         btn.parentElement!.setAttribute("ts-data", "game_id=" + game_id);
         btn.dispatchEvent(new CustomEvent("click"));
-        console.log("/helix/games end")
     } else if (url.pathname.startsWith("/helix/streams")) {
         console.log("/helix/streams")
         const json = JSON.parse(e.detail.content);
