@@ -37,6 +37,10 @@ document.addEventListener("ts-req-before", (e) => {
         const url = new URL(url_str, API_URL)
         const req_url = url.toString();
         e.detail.req.url = req_url;
+        e.detail.req.opts.data.set("first", settings.general()["category-count"]);
+        if (!settings.category().show_all) {
+          e.detail.req.opts.data.set("language", settings.category().languages);
+        }
         e.detail.req.opts.headers = Twitch.headers;
     } else if (url_str && url_str.startsWith("/helix/users")) {
         const url = new URL(url_str, API_URL)
@@ -51,6 +55,7 @@ document.addEventListener("ts-req-before", (e) => {
         const url = new URL(url_str, API_URL)
         const req_url = url.toString();
         e.detail.req.url = req_url;
+        e.detail.req.opts.data.set("first", settings.general()["user-videos-count"]);
         e.detail.req.opts.headers = Twitch.headers;
     }
 });
@@ -137,10 +142,10 @@ document.addEventListener("ts-req-ok", (e) => {
 document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     const elem = e.target as Element;
     if (elem.id === "page-category") {
-        initCategory(elem);
+        initFilter(elem);
     } else if (elem.id === "page-user") {
         initUserVideoTypeFilter(elem)
-        // TODO: init search filter
+        initFilter(elem);
     } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
@@ -278,13 +283,13 @@ function changePage(path: string, target: Element) {
     } else if (path === "/") {
         document.title = "Home | Twitch Pages";
     } else if (path.startsWith("/directory/game/")) {
-        initCategory(target);
+        initFilter(target);
     } else if (path.endsWith("/videos")) {
         console.log("TODO: videos")
     }
 }
 
-function initCategory(root: Element) {
+function initFilter(root: Element) {
     // filter search
     const search_form = root.querySelector(".search-form")!;
     const stylesheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;

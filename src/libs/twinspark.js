@@ -417,13 +417,8 @@
   }
 
   /** @type {function(!Element): void} */
-  function activateEl(el) {
-    deactivate(el);
-    DIRECTIVES.forEach(d => el.matches(d.selector) && d.handler(el));
-  }
-
-  /** @type {function(!Element): void} */
   function activate(el) {
+    // TODO?: handle <img> load event differently?
     for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
       doReqBatch([makeReq(elem, "load", false)])
     }
