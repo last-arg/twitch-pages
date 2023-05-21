@@ -19,10 +19,9 @@ export function gamesRender(json: any): string {
       .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
     result += "</div>";
 
-    // TODO: is game followed
-    // if (games.some((game) => game.id === item.id)) {
-    //    result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
-    // }
+    if (games.some((game) => game.id === item.id)) {
+       result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
+    }
 
     return result;
 }
