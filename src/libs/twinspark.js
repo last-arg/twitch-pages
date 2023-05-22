@@ -7,7 +7,7 @@
 
   /// Config
 
-  function cget(name, def) { return script && script.dataset[name] || def; }
+  function cget(name, def) { return script && script.getAttribute(name) || def; }
   function iget(name, def) { return parseInt(cget(name, def), 10); }
 
   var xhrTimeout    = iget('timeout', 3000);
@@ -16,6 +16,7 @@
   var insertClass   = cget('insert-class', 'ts-insert');
   var removeClass   = cget('remove-class', 'ts-remove');
   var activeClass   = cget('active-class', 'ts-active');
+  var historySelector = cget('history-selector', 'body');
 
   /// Internal variables
 
