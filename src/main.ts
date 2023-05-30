@@ -14,6 +14,8 @@ declare var twinspark: any;
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 
+// TODO: navigating to latest history page doesn't work correctly
+
 document.addEventListener("ts-req-before", (e) => {
     const req = e.detail?.req;
     const url_str = req.url;
@@ -139,6 +141,7 @@ document.addEventListener("ts-req-ok", (e) => {
     return;
 });
 
+var history_timeout_id: number = 0;
 document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     const elem = e.target as Element;
     if (elem.id === "page-category") {
@@ -149,8 +152,15 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
+        twinspark.replaceState(window.location.toString());
     } else if (elem.id === "page-home") {
         document.title = "Home | Twitch Pages";
+        twinspark.replaceState(window.location.toString());
+    } else if (elem.tagName === "LI") {
+        window.clearTimeout(history_timeout_id);
+        history_timeout_id = window.setTimeout(function() {
+            twinspark.replaceState(window.location.toString());
+        }, 200);
     }
 });
 
@@ -239,7 +249,7 @@ function getUrlObject(newPath: string): UrlResolve {
   return mainContent[contentKey]
 }
 
-(async function startup() {
+async function startup() {
     await twitch.fetchToken();
     // const page_cache = await caches.open('page_cache');
     initRoute();
@@ -254,7 +264,8 @@ function getUrlObject(newPath: string): UrlResolve {
         setTimeout(updateLiveUsers, live_check_ms);
     }
     removeOldProfileImages();
-})();
+};
+startup()
 
 function removeOldProfileImages() {
     const a_day = 24 * 60 * 60 * 1000;
