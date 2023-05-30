@@ -164,28 +164,6 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     }
 });
 
-
-window.addEventListener("htmx:load", (e: Event) => {
-    const elem = e.target as Element;
-    if (elem.classList.contains("user-live")) {
-        const stream_id = elem?.getAttribute("data-stream-id");
-        if (stream_id) {
-            const game = live_streams_local()[stream_id];
-            if (game) {
-                const link = elem!.querySelector("a")!;
-                link.textContent = game;
-                link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
-                elem!.classList.remove("hidden");
-            }
-        }
-    } else if (elem.id === "page-settings") {
-        document.title = "Settings | Twitch Pages";
-        initSettings(elem);
-    } else if (elem.id === "page-user") {
-        initUserVideoTypeFilter(elem);
-    }
-});
-
 function initUserVideoTypeFilter(elem: Element) {
     const fieldset = elem.querySelector(".filter-video-type");
     const output_list = elem.querySelector(".output-list");
@@ -212,10 +190,6 @@ function initUserVideoTypeFilter(elem: Element) {
         }
     })
 }
-
-window.addEventListener("htmx:pushedIntoHistory", (e) => {
-    changePage(document.location.pathname, e.target as Element);
-})
 
 function initRoute() {
     const r = getUrlObject(location.pathname);
