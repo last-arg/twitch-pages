@@ -670,8 +670,9 @@
   }
 
   async function storeCurrentState() {
+    const elem = document.querySelector(historySelector);
     var data = {url:  location.pathname + location.search,
-                html: document.body.innerHTML,
+                html: elem.innerHTML,
                 time: +new Date()};
     var db = await idb();
     var store = idbStore(db, {write: true});
@@ -709,10 +710,9 @@
     let db = await idb();
     let store = idbStore(db);
     let data = await reqpromise(store.get(url));
-    console.debug('onpopstate restore', data.url, data.html.length, data.time);
 
     if (data && data.html) {
-      document.body.innerHTML = data.html;
+      document.querySelector(historySelector).innerHTML = data.html;
 
       // If user came back from a real page change, we indicate this with an
       // `initial` property. There is a race between IndexedDB loading HTML
@@ -2180,6 +2180,7 @@
     makeReq:     makeReq,
     executeReqs: doReqBatch,
     morph:       morph,
+    replaceState: replaceState,
     setERR:      (errhandler) => ERR = errhandler,
     _internal:   {DIRECTIVES: DIRECTIVES,
                   FUNCS: FUNCS,
