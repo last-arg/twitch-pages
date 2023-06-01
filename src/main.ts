@@ -255,17 +255,6 @@ async function updateLiveUsers() {
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
-function changePage(path: string, target: Element) {
-    if (path === "/settings") {
-    } else if (path === "/") {
-        document.title = "Home | Twitch Pages";
-    } else if (path.startsWith("/directory/game/")) {
-        initFilter(target);
-    } else if (path.endsWith("/videos")) {
-        console.log("TODO: videos")
-    }
-}
-
 function initFilter(root: Element) {
     // filter search
     const search_form = root.querySelector(".search-form")!;
