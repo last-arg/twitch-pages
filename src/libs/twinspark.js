@@ -4,6 +4,7 @@
   var events = new Set();
   var location = window.location;
   var script = document.currentScript;
+  let history_path = location.pathname + location.search;
 
   /// Config
 
@@ -671,7 +672,7 @@
 
   async function storeCurrentState() {
     const elem = document.querySelector(historySelector);
-    var data = {url:  location.pathname + location.search,
+    var data = {url:  history_path || location.pathname + location.search,
                 html: elem.innerHTML,
                 time: +new Date()};
     var db = await idb();
@@ -687,13 +688,15 @@
 
     // we need to put some state in our *current* history item, so that
     // `onpopstate` knows it wasn't called because of `hashchange`
-    history.replaceState('history', '', '');
-    history.pushState(null, title, url);
+    // history.replaceState('history', '', '');
+    history.pushState('history', title, url);
+    history_path = url;
     sendEvent(window, 'ts-pushstate', {url: url});
   }
 
   function replaceState(url) {
     history.replaceState('history', '', url);
+    history_path = url;
     sendEvent(window, 'ts-replacestate', {url: url});
   }
 
@@ -706,7 +709,10 @@
     if (!e.state)
       return;
 
+    storeCurrentState();
+
     let url = location.pathname + location.search;
+    history_path = url;
     let db = await idb();
     let store = idbStore(db);
     let data = await reqpromise(store.get(url));
@@ -722,8 +728,6 @@
       if (e.state == "INITIAL" && !READY) {
         return;
       }
-
-      // activate(document.body);
     }
   }
 

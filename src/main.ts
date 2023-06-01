@@ -141,7 +141,6 @@ document.addEventListener("ts-req-ok", (e) => {
     return;
 });
 
-var history_timeout_id: number = 0;
 document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     const elem = e.target as Element;
     if (elem.id === "page-category") {
@@ -156,11 +155,6 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     } else if (elem.id === "page-home") {
         document.title = "Home | Twitch Pages";
         twinspark.replaceState(window.location.toString());
-    } else if (elem.tagName === "LI") {
-        window.clearTimeout(history_timeout_id);
-        history_timeout_id = window.setTimeout(function() {
-            twinspark.replaceState(window.location.toString());
-        }, 200);
     }
 });
 
