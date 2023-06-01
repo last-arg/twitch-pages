@@ -696,7 +696,7 @@
 
   function replaceState(url) {
     history.replaceState('history', '', url);
-    history_path = url;
+    history_path = new URL(url).pathname;
     sendEvent(window, 'ts-replacestate', {url: url});
   }
 
