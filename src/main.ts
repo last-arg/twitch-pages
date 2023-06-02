@@ -3,7 +3,7 @@ import { addGame, clearGames, games_list, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { filter_stylesheet, filter_value } from './search_filter';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, live_streams_local, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
 import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
 import { mainContent, UrlResolve } from 'config';
@@ -13,8 +13,6 @@ declare var twinspark: any;
 
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
-
-// TODO: navigating to latest history page doesn't work correctly
 
 document.addEventListener("ts-req-before", (e) => {
     const req = e.detail?.req;

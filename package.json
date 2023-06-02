@@ -20,9 +20,7 @@
   },
   "dependencies": {
     "@artalar/act": "^3.2.1",
-    "htmx.org": "^1.8.6",
-    "open-props": "^1.5.5",
-    "twinspark": "github:piranha/twinspark-js"
+    "open-props": "^1.5.5"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
