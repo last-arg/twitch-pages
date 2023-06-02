@@ -2115,19 +2115,19 @@
 
   /** @type {function(string): string} */
   function getEvents(html) {
-    function isValidChar(char) {
-        return ("a" <= char && char <= "z") || ("A" <= char && char <= "Z") || ("0" <= char && char <= "9");
-    }
     let result = [];
     const prefix = "ts-trigger=\"";
     let index = html.indexOf(prefix);
     while (index > -1) {
         const start = index + prefix.length;
-        let end = Math.min( html.indexOf(" ", start), html.indexOf("\"", start));
+        let end = html.indexOf("\"", start);
         if (end === -1) break;
-        if (isValidChar(html[end - 1])) {
-            // TODO: split 'ts-trigger' and add/push
-            result.push(html.slice(start, end));
+        const events = html.slice(start, end).split(",");
+        for (const evt of events) {
+          const evt_end = evt.trimStart().indexOf(" ");
+          if (evt_end === -1) continue;
+          const name = evt.slice(0, end);
+          result.push(name);
         }
         index = html.indexOf(prefix, end + 1);
     }
