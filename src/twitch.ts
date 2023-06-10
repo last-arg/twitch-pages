@@ -80,6 +80,7 @@ export class Twitch {
     const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
     if (resp.status !== 200) {
       console.warn("fetchUsers() status:", resp.status);
+      return [];
     }
     return (await resp.json()).data;
   }
@@ -89,6 +90,7 @@ export class Twitch {
     const r = await fetch(url, { method: "GET", headers: Twitch.headers })
     if (r.status !== 200) {
       console.warn("fetchSearch() status:", r.status);
+      return [];
     }
     const results = await r.json()
     return results.data ?? []
@@ -100,6 +102,7 @@ export class Twitch {
     const r = await fetch(url, {method: "GET", headers: Twitch.headers});
     if (r.status !== 200) {
       console.warn("fetchStreams() status:", r.status);
+      return [];
     }
     return (await r.json()).data || [];
   }
