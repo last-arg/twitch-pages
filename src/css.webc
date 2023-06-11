@@ -2,14 +2,15 @@
 permalink: "src/css/components.css"
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
+layout: "css.webc"
 ---
 <script webc:type="js">
-  let result = getBundle('css');
-  result += "/*CSS-END*/"
+  let result = "";
   const s = "template";
   for (const c of this.collections.all) {
+    const path = c.template.fileSlug.inputPath
+    console.log(path)
     result += `<${s} webc:nokeep webc:import="${c.template.fileSlug.inputPath}"></${s}>`;
   }
-  result += "</div>";
   result;
 </script>
