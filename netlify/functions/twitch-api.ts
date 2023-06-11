@@ -1,5 +1,4 @@
 import { Handler } from "@netlify/functions";
-import fetch from "node-fetch";
 import { TWITCH_CLIENT_ID } from "../../src/twitch"
 
 const { TWITCH_CLIENT_SECRET } = process.env
