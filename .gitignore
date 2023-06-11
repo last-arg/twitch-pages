@@ -10,3 +10,4 @@ src/js/
 .netlify
 src/css/utilities_generated.css
 src/css/components.css
+src/css/bundle.css
