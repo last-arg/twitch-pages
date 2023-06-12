@@ -13,7 +13,7 @@
     "build:ts": "esbuild src/main.ts --bundle --outdir=_site/public/js/",
     "build:sw": "workbox generateSW",
     "build:11ty": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ && eleventy",
-    "build:css": "unocss && mkdir -p _site/public/css && lightningcss --bundle --minify src/css/main.css -o _site/public/css/main.css && purgecss --css _site/public/css/main.css --content src/*.webc src/{_includes,partials}/*.webc src/_includes/components/*.webc -o _site/public/css/main.css --variables --keyframes --safelist :where",
+    "build:css": "unocss && mkdir -p _site/public/css && ./node_modules/.bin/lightningcss --bundle --minify src/css/main.css -o _site/public/css/main.css && purgecss --css _site/public/css/main.css --content src/*.webc src/{_includes,partials}/*.webc src/_includes/components/*.webc -o _site/public/css/bundle.css --variables --keyframes --safelist :where",
     "minify:js": "terser _site/public/js/main.js -m --toplevel -o _site/public/js/main.js",
     "minify:svg": "svgo _site/public/assets/icons.svg",
     "clean-build": "rm -rf _site/"
