@@ -81,7 +81,7 @@ document.addEventListener("ts-req-ok", (e) => {
             btn?.setAttribute("ts-data", "after=" + cursor);
         } else {
             btn?.setAttribute("aria-disabled", "true");
-            btn?.setAttribute("ts-data", "");
+            btn?.removeAttribute("ts-data");
         }
     } else if (url.pathname.startsWith("/helix/games")) {
         const json = JSON.parse(detail.content);
@@ -104,7 +104,7 @@ document.addEventListener("ts-req-ok", (e) => {
             btn.setAttribute("ts-data", "after=" + cursor);
         } else {
             btn.setAttribute("aria-disabled", "true");
-            btn.setAttribute("ts-data", "");
+            btn?.removeAttribute("ts-data");
         }
     } else if (url.pathname.startsWith("/helix/users")) {
         const json = JSON.parse(detail.content);
@@ -133,7 +133,7 @@ document.addEventListener("ts-req-ok", (e) => {
             btn.setAttribute("ts-data", "after=" + cursor);
         } else {
             btn.setAttribute("aria-disabled", "true");
-            btn.setAttribute("ts-data", "");
+            btn?.removeAttribute("ts-data");
         }
     }
     return;

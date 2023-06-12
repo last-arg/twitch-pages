@@ -48,7 +48,8 @@
 }
 
 .btn-load-more[aria-disabled=false],
-.btn-load-more[aria-disabled=true] + .msg-loading {
+.btn-load-more[aria-disabled=true][ts-data] ~ .msg-loading,
+.btn-load-more[aria-disabled=true]:not([ts-data]) ~ .msg-no-more {
   display: block;
 }
 
@@ -59,13 +60,5 @@
 
 .btn-load-more:active {
   border-color: transparent;
-}
-
-.req-param[name="after"]:not([value]) ~ * {
-  display: none;
-}
-
-.req-param[name="after"]:not([value]) ~ .msg-no-more {
-  display: block;
 }
 </style>

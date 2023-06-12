@@ -6,7 +6,7 @@
     "dev": "npm-run-all -p watch:* netlify",
     "netlify": "netlify dev",
     "watch:unocss": "unocss --watch",
-    "watch:css": "watchexec -w src/css/ -e css -r 'lightningcss --bundle src/css/main.css -o public/css/main.css'",
+    "watch:css": "watchexec --no-vcs-ignore -w src/css/ -e css './node_modules/.bin/lightningcss --bundle src/css/main.css -o _site/public/css/bundle.css'",
     "watch:ts": "esbuild src/*.ts --bundle --tree-shaking --outdir=public/js/ --watch",
     "watch:config": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ --watch",
     "build": "NODE_ENV=production npm-run-all clean-build build:ts build:11ty -p build:css minify:*",

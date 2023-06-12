@@ -6,6 +6,8 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
 	});
+
+	// eleventyConfig.addPlugin(lightningCSS)
 	// eleventyConfig.addPlugin(lightningCSS, {
 	// 	visitors: [
 	// 		(d) => {

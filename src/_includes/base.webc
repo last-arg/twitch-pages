@@ -10,7 +10,7 @@
   <link webc:keep rel="stylesheet" :href="getBundleFileUrl('css')">
   <style webc:keep @raw="getBundle('css')"></style>
   -->
-  <link webc:keep rel="stylesheet" href="/public/css/main.css">
+  <link webc:keep rel="stylesheet" href="/public/css/bundle.css">
   <script defer webc:keep src="/public/js/main.js" history-selector="#main"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/" />
 </head>
