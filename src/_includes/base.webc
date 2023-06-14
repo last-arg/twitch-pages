@@ -6,11 +6,7 @@
 	<meta name="description" content="">
 	<title @raw="title"></title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <!--
-  <link webc:keep rel="stylesheet" :href="getBundleFileUrl('css')">
-  <style webc:keep @raw="getBundle('css')"></style>
-  -->
-  <link webc:keep rel="stylesheet" href="/public/css/bundle.css">
+  <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
   <script defer webc:keep src="/public/js/main.js" history-selector="#main"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/" />
 </head>

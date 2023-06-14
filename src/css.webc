@@ -1,5 +1,5 @@
 ---
-permalink: "src/css/components.css"
+permalink: "src/css/_components.css"
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
 layout: "css.webc"
@@ -8,6 +8,9 @@ layout: "css.webc"
   let result = "";
   const s = "template";
   for (const c of this.collections.all) {
+    if (c.template.fileSlug.parsed.ext === ".css") {
+      continue;
+    }
     const path = c.template.fileSlug.inputPath
     result += `<${s} webc:nokeep webc:import="${c.template.fileSlug.inputPath}"></${s}>`;
   }
