@@ -4,9 +4,9 @@ const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
 const purgeCssPlugin = require("eleventy-plugin-purgecss");
 
 module.exports = function(eleventyConfig) {
-	const is_prod = process.env.ELEVENTY_ENV === "prod";
+	const is_prod = process.env.NODE_ENV === "production";
 
-	if (process.env.ELEVENTY_ENV === "prod") {
+	if (is_prod) {
 		eleventyConfig.addPlugin(purgeCssPlugin)
 	}
 	eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
@@ -23,7 +23,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("favicon.svg");
 
     eleventyConfig.addTransform ('html-minifier', content => {
-      if (process.env.NODE_ENV === 'production') {
+      if (is_prod && this.page?.fileSlug === "html") {
         return htmlMinifier.minify (content, {
           useShortDoctype: true,
           removeComments: true,
