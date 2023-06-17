@@ -4,7 +4,8 @@ tmp/
 public/
 _site
 src/js/
-src/css/_{utilities_generated,components}.css
+src/css/_components.css
+src/css/_utilities_generated.css
 
 # Local Netlify folder
 .netlify
