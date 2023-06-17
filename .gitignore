@@ -1,13 +1,10 @@
 node_modules/
 .env
 tmp/
-public/js
-public/css
+public/
 _site
 src/js/
+src/css/_{utilities_generated,components}.css
 
 # Local Netlify folder
 .netlify
-src/css/utilities_generated.css
-src/css/components.css
-src/css/bundle.css
