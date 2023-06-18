@@ -221,6 +221,26 @@ async function startup() {
     // const page_cache = await caches.open('page_cache');
     initRoute();
     initHeader(document.body)
+    Object.assign(sprae.globals, { 
+        games_search: (e: Event) => {
+            search_term((e.target as HTMLInputElement).value);
+            search_results();
+        },
+        sidebar_state: sidebar_state,
+        handle_sidebar: handleSidebar,
+        handle_blur(e: Event) {
+            const input = e.target as HTMLInputElement;
+            if (input.value.length === 0) {
+                sidebar_state("closed")
+            }
+        },
+        handle_focus(e: Event) {
+            search_term((e.target as HTMLInputElement).value);
+            sidebar_state("search")
+            search_results();
+        }
+        
+    })
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameAndStreamFollow);
@@ -276,28 +296,24 @@ function initFilter(root: Element) {
     sprae(root, {pageFilter: pageFilter, resetFilter: resetFilter});
 }
 
-function initHeader(root: Element) {
-    sidebar_nav.addEventListener("click", (e: Event) => {
-        const curr = sidebar_state();
-        const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
-        if (btn?.classList.contains("menu-item")) {
-            const new_state = btn.getAttribute("data-menu-item");
-            if (new_state === "search") {
-                (sidebar_nav.querySelector("#game_name") as HTMLInputElement).focus();
-                return;
-            }
-            if (new_state) {
-                if (curr === new_state) {
-                    sidebar_state("closed");
-                } else {
-                    sidebar_state(new_state as SidebarState);
-                } 
-            }
-        } else if (btn?.classList.contains("btn-close")) {
-            sidebar_state("close" as SidebarState);
+function handleSidebar(e: Event) {
+    const curr = sidebar_state();
+    const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+    if (btn?.classList.contains("menu-item")) {
+        const new_state = btn.getAttribute("data-menu-item");
+        if (new_state) {
+            if (curr === new_state) {
+                sidebar_state("closed");
+            } else {
+                sidebar_state(new_state as SidebarState);
+            } 
         }
-    });
+    } else if (btn?.classList.contains("btn-close")) {
+        sidebar_state("close" as SidebarState);
+    }
+}
 
+function initHeader(root: Element) {
     initHeaderGames(root);
     initHeaderSearch()
     initHeaderStreams(root);
@@ -309,34 +325,6 @@ function initHeaderStreams(root: Element) {
 }
 
 function initHeaderSearch() {
-    sidebar_nav.querySelector("form")!.addEventListener("submit", (e: Event) => {
-        e.preventDefault()
-        sidebar_state("search");
-    });
-    const game_name = sidebar_nav.querySelector("#game_name")!;
-    game_name.addEventListener("input", (e: Event) => {
-        search_term((e.target as HTMLInputElement).value);
-        search_results();
-    })
-    game_name.addEventListener("focus", (e: Event) => {
-        search_term((e.target as HTMLInputElement).value);
-        sidebar_state("search")
-        search_results();
-    });
-    game_name.addEventListener("blur", (e: Event) => {
-        const input = e.target as HTMLInputElement;
-        if (input.value.length === 0) {
-            sidebar_state("closed")
-        }
-    });
-
-    game_name.addEventListener("keyup", (e: Event) => {
-        const evt = e as KeyboardEvent;
-        if (evt.key === "Escape") {
-            sidebar_state("closed");
-        }
-    });
-
     search_list.addEventListener("mousedown", handlePathChange);
     search_list.addEventListener("click", handleGameAndStreamFollow);
 }
