@@ -3,7 +3,10 @@
     ts-target="#main" ts-swap="inner"
     :ts-req="`/public/partials/${name}.html`"
     :data-card="name"
-    @attributes="({':href': '`/directory/game/${window.encodeURIComponent(item.name)}`'})"
+    @attributes="({
+      ':with': '{src: `/directory/game/${window.encodeURIComponent(item.name)}`}',
+      ':href': 'src', 
+      ':ts-req-history': 'src'})"
   >
     <img webc:if="name === 'user-videos'" src="" alt="" 
       :width="$data.global.config.image.user.width" 
