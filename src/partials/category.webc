@@ -16,7 +16,7 @@ permalink: "public/partials/category.html"
         </heading-link>
       </template>
     </div>
-    <form-filter></form-filter>
+    <form-filter webc:nokeep></form-filter>
   </div>
   <div class="fluid-mt-l">
     <div id="feedback"></div>

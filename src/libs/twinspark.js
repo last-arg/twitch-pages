@@ -421,6 +421,8 @@
   /** @type {function(!Element): void} */
   function activate(el) {
     // TODO?: handle <img> load event differently?
+    // TODO?: how to handle other custom twinspark events?
+    // look at 'function addListener'
     for (const elem of el.querySelectorAll("[ts-trigger='load']")) {
       doReqBatch([makeReq(elem, "load", false)])
     }

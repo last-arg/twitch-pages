@@ -9,10 +9,12 @@ import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './s
 import { mainContent, UrlResolve } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
+import sprae from 'sprae';
 declare var twinspark: any;
 
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
+let g_sheet: CSSStyleSheet | null = null;
 
 document.addEventListener("ts-req-before", (e) => {
     const req = e.detail?.req;
@@ -253,16 +255,26 @@ async function updateLiveUsers() {
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
+function pageFilter(value: string) {
+    if (g_sheet === null) return;
+    if (g_sheet.cssRules.length > 0) {
+        g_sheet.deleteRule(0)
+    }
+    value = value.trim();
+    if (value.length > 0) {
+        g_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
+    }
+}
+
+function resetFilter() {
+    if (g_sheet === null) return;
+    g_sheet.deleteRule(0)
+}
+
 function initFilter(root: Element) {
-    // filter search
     const search_form = root.querySelector(".search-form")!;
-    const stylesheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
-    filter_stylesheet(stylesheet);
-    search_form.addEventListener("submit", (e: Event) => e.preventDefault());
-    search_form.addEventListener("reset", (_: Event) => filter_value(""));
-    search_form.querySelector("input")?.addEventListener("input", (e: Event) => {
-        filter_value((e.target as HTMLInputElement).value);
-    });
+    g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
+    sprae(root, {pageFilter: pageFilter, resetFilter: resetFilter});
 }
 
 function initHeader(root: Element) {
