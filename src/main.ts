@@ -2,7 +2,6 @@ import { Twitch } from './twitch';
 import { addGame, clearGames, games_list, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { filter_stylesheet, filter_value } from './search_filter';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
 import { API_URL, Game } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';

@@ -1,6 +1,5 @@
 <script webc:setup>
 const search_attrs = {
-  ":fx": "console.log('hellfxx')",
   "@input": "pageFilter(event.target.value)", 
   "@submit.prevent": "", 
   "@reset": "resetFilter()"
