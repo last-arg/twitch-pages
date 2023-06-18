@@ -3,12 +3,14 @@ import { addGame, clearGames, games_list, removeGame } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
-import { API_URL, Game } from './common';
+import { API_URL, Game, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
-import { mainContent, UrlResolve } from 'config';
+import { mainContent, UrlResolve, config } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
-import sprae from 'sprae';
+// @ts-ignore
+import sprae from '../node_modules/sprae/src/core.js';
+// import sprae from 'sprae';
 declare var twinspark: any;
 
 export const twitch = new Twitch();
@@ -216,18 +218,32 @@ function getUrlObject(newPath: string): UrlResolve {
   return mainContent[contentKey]
 }
 
+const key_streams = "streams"
 async function startup() {
     await twitch.fetchToken();
     // const page_cache = await caches.open('page_cache');
     initRoute();
     initHeader(document.body)
-    Object.assign(sprae.globals, { 
-        games_search: (e: Event) => {
-            search_term((e.target as HTMLInputElement).value);
-            search_results();
+    const options = Object.assign(sprae.globals, { 
+        s_results: ['hello', 'two'],
+        text: 'top val',
+        s: {
+            v: 'hello',
         },
+
+        // twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height)
+        cat_img_src(src: string) {
+            const c_img = config.image.category;
+            return twitchCatImageSrc(src, c_img.width, c_img.height);
+        },
+        sidebar_games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
+        sidebar_streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
         sidebar_state: sidebar_state,
         handle_sidebar: handleSidebar,
+        games_search: (e: Event) => {
+            search_term((e.target as HTMLInputElement).value);
+            // search_results();
+        },
         handle_blur(e: Event) {
             const input = e.target as HTMLInputElement;
             if (input.value.length === 0) {
@@ -238,9 +254,9 @@ async function startup() {
             search_term((e.target as HTMLInputElement).value);
             sidebar_state("search")
             search_results();
-        }
-        
+        },
     })
+    sprae(document.documentElement, options);
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
     main.addEventListener("click", handleGameAndStreamFollow);
