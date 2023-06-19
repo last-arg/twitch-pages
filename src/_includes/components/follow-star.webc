@@ -9,7 +9,7 @@
     const attrs = JSON.stringify({ ":href": url });
     `
       <button-follow @name="${follow_name}"></button-follow>
-      <a href="#external_link" rel="external" @attributes='(${attrs})'>
+      <a href="#external_link" rel="external" ts-ignore @attributes='(${attrs})'>
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>
