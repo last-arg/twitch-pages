@@ -8,7 +8,7 @@
     const url = "`https://www.twitch.tv/directory/game/${window.encodeURIComponent(item.name)}`";
     const attrs = JSON.stringify({ ":href": url });
     `
-      <button-follow @name="${follow_name}"></button-follow>
+      <button-follow @name="${follow_name}" @obj="${this.obj}"></button-follow>
       <a href="#external_link" rel="external" ts-ignore @attributes='(${attrs})'>
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>

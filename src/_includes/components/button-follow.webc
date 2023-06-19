@@ -1,4 +1,13 @@
-<button webc:keep type="button" class="button-follow" :data-for="name" data-is-followed="false" data-item-id=":item_id" data-item=":item_json">
+<script webc:type="js">
+this.webc.attributes.attrs = {
+    ':data-item-id': `${this.obj}.id`,
+    ':data-is-followed': `is_game_followed(${this.obj}.id)`,
+    ':data-item': `encode_json(${this.obj})`, 
+}
+''
+</script>
+<button webc:keep type="button" class="button-follow" :data-for="name" data-is-followed="false" 
+  @attributes="attrs">
   <svg aria-hidden="true" focusable="false">
     <use href="/public/assets/icons.svg#star-empty"></use>
     <use href="/public/assets/icons.svg#star-full"></use>

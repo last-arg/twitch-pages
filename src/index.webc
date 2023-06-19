@@ -65,10 +65,10 @@ title: "Home | Twitch Pages"
                       <link-box @name="category">
                         <p @attributes="({':text': 'item.name'})"></p>
                       </link-box>
-                      <follow-star data-colormode="dark" @arg="game"></follow-star>
+                      <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
                     </li>
                   </template>
-                  <ul @attributes="({':render': 'game_item'})" class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list"></ul>
+                  <ul @attributes="({':render': 'game_item', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})" class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list"></ul>
                 </scroll-container>
               </div>
             </div>
@@ -92,7 +92,7 @@ title: "Home | Twitch Pages"
                             <p>[Game name]</p>
                           </div>
                       </link-box>
-                      <follow-star data-colormode="dark" @arg="stream"></follow-star>
+                      <follow-star data-colormode="dark" @arg="stream" @obj="stream"></follow-star>
                     </li>
                   </template>
                 </scroll-container>

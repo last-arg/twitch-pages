@@ -1,5 +1,5 @@
 import { Twitch } from './twitch';
-import { addGame, clearGames, games_list, removeGame } from './games';
+import { addGame, clearGames, games_list, removeGame, isGameFollowed } from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
@@ -254,6 +254,14 @@ async function startup() {
             sidebar_state("search")
             search_results();
         },
+        encode_json(obj: any) {
+            return encodeURIComponent(JSON.stringify(obj));
+        },
+        is_game_followed(id: string): string {
+            return isGameFollowed(id).toString();
+        },
+        handle_path_change: handlePathChange,
+        handle_follow: handleGameAndStreamFollow,
     })
     sprae(document.documentElement, options);
     const main = document.querySelector("#main")!;
@@ -329,7 +337,6 @@ function handleSidebar(e: Event) {
 }
 
 function initHeader(root: Element) {
-    initHeaderGames(root);
     initHeaderSearch()
     initHeaderStreams(root);
 }
@@ -342,11 +349,6 @@ function initHeaderStreams(root: Element) {
 function initHeaderSearch() {
     search_list.addEventListener("mousedown", handlePathChange);
     search_list.addEventListener("click", handleGameAndStreamFollow);
-}
-
-function initHeaderGames(_root: Element) {
-    games_list.addEventListener("mousedown", handlePathChange)
-    games_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
 function handleGameAndStreamFollow(e: Event) {  

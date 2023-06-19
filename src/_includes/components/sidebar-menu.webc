@@ -9,6 +9,7 @@
         </li>
       </template>
       <ul class="js-search-list stack stack-s" role="list" @attributes="({':render': 'search_item'})"></ul>
+      <!-- TODO: remove -->
       <template>
       hello
       </template>
