@@ -61,7 +61,7 @@ title: "Home | Twitch Pages"
                 <!-- games list -->
                 <scroll-container>
                   <template @attributes="({':ref': 'game_item'})">
-                    <li class="flex" @attributes="({':each': 'item in sidebar_games'})">
+                    <li class="flex" @attributes="({':each': 'item in sidebar_games', ':key': 'item.id'})">
                       <link-box @name="category">
                         <p @attributes="({':text': 'item.name'})"></p>
                       </link-box>
@@ -95,7 +95,6 @@ title: "Home | Twitch Pages"
                       <follow-star data-colormode="dark" @arg="stream"></follow-star>
                     </li>
                   </template>
-
                 </scroll-container>
               </div>
             </div>

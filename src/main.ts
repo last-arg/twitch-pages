@@ -231,7 +231,6 @@ async function startup() {
             v: 'hello',
         },
 
-        // twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height)
         cat_img_src(src: string) {
             const c_img = config.image.category;
             return twitchCatImageSrc(src, c_img.width, c_img.height);
@@ -268,7 +267,7 @@ async function startup() {
     }
     removeOldProfileImages();
 };
-startup()
+window.addEventListener("DOMContentLoaded", startup);
 
 function removeOldProfileImages() {
     const a_day = 24 * 60 * 60 * 1000;

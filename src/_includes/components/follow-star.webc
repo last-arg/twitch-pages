@@ -2,14 +2,14 @@
   <script webc:type="js" webc:is="template">
     const arg_names = ["game", "stream", "search"]
     if (!arg_names.includes(this.arg)) {
-      throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
+        throw new Error(`'arg' attribute must be one of these values: ${arg_names.join(", ")}`)
     }
-
     const follow_name = this.arg === "search" ? "game" : this.arg;
-   
+    const url = "`https://www.twitch.tv/directory/game/${window.encodeURIComponent(item.name)}`";
+    const attrs = JSON.stringify({ ":href": url });
     `
       <button-follow @name="${follow_name}"></button-follow>
-      <a href="#external_link" rel="external">
+      <a href="#external_link" rel="external" @attributes='(${attrs})'>
         <svg aria-hidden="true" focusable="false">
           <use href="/public/assets/icons.svg#external-link"></use>
         </svg>
