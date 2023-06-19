@@ -6,7 +6,7 @@ permalink: "public/partials/top-games.html"
     <h2 class="main-heading">Top games</h2>
   </div>
   <ul id="output-list" class="fluid-mt-s l-grid" style="--l-grid-min: 10rem; --l-grid-gap: 2em 0.5em" role="list">
-    <template webc:keep webc:type="11ty" id="top-games-template">
+    <template id="top-games-template">
       <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
@@ -26,7 +26,7 @@ permalink: "public/partials/top-games.html"
               </a>
             </div>
             <div class="game-action" data-pos="right">
-              <button-follow @name="game" @obj="game"></button-follow>
+              <button-follow @name="game"></button-follow>
             </div>
           </div>
           <a class="game-link" href="#game_url" ts-req-history="#game_url"
