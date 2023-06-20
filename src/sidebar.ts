@@ -22,7 +22,7 @@ export function renderSidebarItems(state: SidebarState) {
 
 export const sidebar_nav = document.querySelector(".sidebar-nav")!;
 
-sidebar_state.subscribe((state) => {
+export function sidebar_state_change(state: SidebarState) {
     sidebar_nav.querySelector("#game_name[aria-expanded=true] , .menu-item[aria-expanded=true]")?.setAttribute("aria-expanded", "false");
     if (state !== "closed") {
         const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
@@ -31,7 +31,9 @@ sidebar_state.subscribe((state) => {
             renderSidebarItems(state);
         }
     }
-})
+}
+
+sidebar_state.subscribe(sidebar_state_change)
 
 export function initSidebarScroll() {
   const scrollContainers = document.querySelectorAll('.scroll-container') as any;

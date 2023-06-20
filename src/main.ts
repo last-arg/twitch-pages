@@ -4,7 +4,7 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
 import { API_URL, Game, twitchCatImageSrc } from './common';
-import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state } from './sidebar';
+import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
@@ -235,10 +235,30 @@ async function startup() {
             const c_img = config.image.category;
             return twitchCatImageSrc(src, c_img.width, c_img.height);
         },
-        sidebar_games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
+        sidebar: {
+            state: "closed" as SidebarState,
+            games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
+            streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
+            handle(e: Event) {
+                const curr = this.state;
+                const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+                if (btn?.classList.contains("menu-item")) {
+                    const new_state = btn.getAttribute("data-menu-item");
+                    if (new_state) {
+                        if (curr === new_state) {
+                            this.state = "closed"
+                        } else {
+                            this.state = new_state as SidebarState;
+                        } 
+                    }
+                    sidebar_state_change(this.state);
+                } else if (btn?.classList.contains("btn-close")) {
+                    this.state = "closed"
+                    sidebar_state_change(this.state);
+                }
+            },
+        },
         sidebar_streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
-        sidebar_state: sidebar_state,
-        handle_sidebar: handleSidebar,
         games_search: (e: Event) => {
             search_term((e.target as HTMLInputElement).value);
             // search_results();
@@ -317,23 +337,6 @@ function initFilter(root: Element) {
     const search_form = root.querySelector(".search-form")!;
     g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
     sprae(root, {pageFilter: pageFilter, resetFilter: resetFilter});
-}
-
-function handleSidebar(e: Event) {
-    const curr = sidebar_state();
-    const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
-    if (btn?.classList.contains("menu-item")) {
-        const new_state = btn.getAttribute("data-menu-item");
-        if (new_state) {
-            if (curr === new_state) {
-                sidebar_state("closed");
-            } else {
-                sidebar_state(new_state as SidebarState);
-            } 
-        }
-    } else if (btn?.classList.contains("btn-close")) {
-        sidebar_state("close" as SidebarState);
-    }
 }
 
 function initHeader(root: Element) {
