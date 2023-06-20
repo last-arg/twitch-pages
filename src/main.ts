@@ -1,10 +1,10 @@
 import { Twitch } from './twitch';
-import { addGame, clearGames, games_list, removeGame, isGameFollowed } from './games';
+import { clearGames} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
 import { API_URL, Game, twitchCatImageSrc } from './common';
-import { initSidebarScroll, SidebarState, sidebar_nav, sidebar_state, sidebar_state_change } from './sidebar';
+import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
@@ -44,7 +44,7 @@ const extra_globals = {
                 sidebar_state_change(this.state);
             }
         },
-        has_game: function(id: string) {
+        has_game(id: string) {
             return this.games.some((game) => game.id === id).toString();
         },
     },
@@ -286,8 +286,6 @@ async function startup() {
     initRoute();
     initHeader(document.body)
     sprae(document.documentElement, options);
-    const main = document.querySelector("#main")!;
-    main.addEventListener("mousedown", handlePathChange);
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
@@ -396,8 +394,8 @@ function gameAndStreamFollow(t: Element) {
 
 function handlePathChange(e: Event) {
     const target = e.target as Element;
-    const hx_link = target.closest("a[hx-push-url]");
-    current_path(hx_link?.getAttribute("hx-push-url") || null);
+    const hx_link = target.closest("a[ts-req-history]");
+    current_path(hx_link?.getAttribute("ts-req-history") || null);
 }
 
 function initSettings(root: Element) {
