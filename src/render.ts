@@ -39,12 +39,9 @@ export function topGamesRender(json: any): string {
           .replace(":game_name_text", item.name)
           .replace(":game_name_url", url_name)
           .replace("#game_img_url", img_url)
-          .replace(":item_id", item.id)
+          .replaceAll(":item_id", item.id)
           .replace(":item_json", game_obj_str)
 
-        if (games.some((game) => game.id === item.id)) {
-           html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
-        }
         result += html;
     }
     result += "</ul>";

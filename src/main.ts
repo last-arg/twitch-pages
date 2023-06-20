@@ -16,6 +16,65 @@ declare var twinspark: any;
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
+const key_streams = "streams"
+const extra_globals = { 
+    cat_img_src(src: string) {
+        const c_img = config.image.category;
+        return twitchCatImageSrc(src, c_img.width, c_img.height);
+    },
+    follow: {
+        state: "closed" as SidebarState,
+        games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
+        streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
+        handle(e: Event) {
+            const curr = this.state;
+            const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+            if (btn?.classList.contains("menu-item")) {
+                const new_state = btn.getAttribute("data-menu-item");
+                if (new_state) {
+                    if (curr === new_state) {
+                        this.state = "closed"
+                    } else {
+                        this.state = new_state as SidebarState;
+                    } 
+                }
+                sidebar_state_change(this.state);
+            } else if (btn?.classList.contains("btn-close")) {
+                this.state = "closed"
+                sidebar_state_change(this.state);
+            }
+        },
+        has_game: function(id: string) {
+            return this.games.some((game) => game.id === id).toString();
+        },
+    },
+    sidebar_streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
+    games_search: (e: Event) => {
+        search_term((e.target as HTMLInputElement).value);
+        // search_results();
+    },
+    handle_blur(e: Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.value.length === 0) {
+            sidebar_state("closed")
+        }
+    },
+    handle_focus(e: Event) {
+        search_term((e.target as HTMLInputElement).value);
+        sidebar_state("search")
+        search_results();
+    },
+    encode_json(obj: any) {
+        return encodeURIComponent(JSON.stringify(obj));
+    },
+    handle_path_change: handlePathChange,
+    handle_follow(e: Event) {
+        gameAndStreamFollow.call(this, e.target as Element);
+        // TODO: fire only when changed
+        localStorage.setItem("games", JSON.stringify(this.follow.games))
+    },
+};
+const options = Object.assign(sprae.globals, extra_globals);
 
 document.addEventListener("ts-req-before", (e) => {
     const req = e.detail?.req;
@@ -156,6 +215,8 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     } else if (elem.id === "page-home") {
         document.title = "Home | Twitch Pages";
         twinspark.replaceState(window.location.toString());
+    } else if (elem.tagName === "LI") {
+        sprae(elem);
     }
 });
 
@@ -218,75 +279,15 @@ function getUrlObject(newPath: string): UrlResolve {
   return mainContent[contentKey]
 }
 
-const key_streams = "streams"
+
 async function startup() {
     await twitch.fetchToken();
     // const page_cache = await caches.open('page_cache');
     initRoute();
     initHeader(document.body)
-    const options = Object.assign(sprae.globals, { 
-        s_results: ['hello', 'two'],
-        text: 'top val',
-        s: {
-            v: 'hello',
-        },
-
-        cat_img_src(src: string) {
-            const c_img = config.image.category;
-            return twitchCatImageSrc(src, c_img.width, c_img.height);
-        },
-        sidebar: {
-            state: "closed" as SidebarState,
-            games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
-            streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
-            handle(e: Event) {
-                const curr = this.state;
-                const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
-                if (btn?.classList.contains("menu-item")) {
-                    const new_state = btn.getAttribute("data-menu-item");
-                    if (new_state) {
-                        if (curr === new_state) {
-                            this.state = "closed"
-                        } else {
-                            this.state = new_state as SidebarState;
-                        } 
-                    }
-                    sidebar_state_change(this.state);
-                } else if (btn?.classList.contains("btn-close")) {
-                    this.state = "closed"
-                    sidebar_state_change(this.state);
-                }
-            },
-        },
-        sidebar_streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
-        games_search: (e: Event) => {
-            search_term((e.target as HTMLInputElement).value);
-            // search_results();
-        },
-        handle_blur(e: Event) {
-            const input = e.target as HTMLInputElement;
-            if (input.value.length === 0) {
-                sidebar_state("closed")
-            }
-        },
-        handle_focus(e: Event) {
-            search_term((e.target as HTMLInputElement).value);
-            sidebar_state("search")
-            search_results();
-        },
-        encode_json(obj: any) {
-            return encodeURIComponent(JSON.stringify(obj));
-        },
-        is_game_followed(id: string): string {
-            return isGameFollowed(id).toString();
-        },
-        handle_path_change: handlePathChange,
-        handle_follow: handleGameAndStreamFollow,
-    })
     sprae(document.documentElement, options);
     const main = document.querySelector("#main")!;
     main.addEventListener("mousedown", handlePathChange);
-    main.addEventListener("click", handleGameAndStreamFollow);
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
@@ -346,16 +347,13 @@ function initHeader(root: Element) {
 
 function initHeaderStreams(root: Element) {
     streams_list.addEventListener("mousedown", handlePathChange)
-    streams_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
 function initHeaderSearch() {
     search_list.addEventListener("mousedown", handlePathChange);
-    search_list.addEventListener("click", handleGameAndStreamFollow);
 }
 
-function handleGameAndStreamFollow(e: Event) {  
-    const t = (e.target as Element);
+function gameAndStreamFollow(t: Element) {  
     const btn = t.classList.contains("button-follow") ? t : t.closest(".button-follow");
     if (btn) {
         const item_raw = btn.getAttribute("data-item");
@@ -373,10 +371,22 @@ function handleGameAndStreamFollow(e: Event) {
                 }
             } else {
                 const item = item_untyped as Game;
+                const games = this.follow.games;
                 if (following) {
-                    removeGame(item.id);
+                    let i = 0;
+                    for (; i < games.length; i++) {
+                        const game = games[i];
+                        if (game.id === item.id) {
+                            break;
+                        }
+                    }
+                    if (i === games.length) {
+                        return;
+                    }
+                    games.splice(i, 1);
                 } else {
-                    addGame(item);
+                    games.push(item)
+                    games.sort((a: Game, b: Game) => a.name > b.name);
                 }
             }
             btn.setAttribute("data-is-followed", (!following).toString())

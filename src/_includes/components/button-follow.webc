@@ -1,10 +1,13 @@
 <script webc:type="js">
+console.log(this.webc.attributes)
+this.webc.attributes.attrs = {
+  ":with": "{f: follow}",
+  ":data-is-followed": "f.has_game(':item_id')",
+};
 if (this.obj) {
-  this.webc.attributes.attrs = {
-      ':data-item-id': `${this.obj}.id`,
-      ':data-is-followed': `is_game_followed(${this.obj}.id)`,
-      ':data-item': `encode_json(${this.obj})`, 
-  }
+    this.webc.attributes.attrs[":data-item-id"] = `${this.obj}.id`;
+    this.webc.attributes.attrs[":data-is-followed"] = `f.has_game(${this.obj}.id)`;
+    this.webc.attributes.attrs[":data-item"] = `encode_json(${this.obj})`;
 }
 ''
 </script>
