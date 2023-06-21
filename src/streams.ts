@@ -7,7 +7,7 @@ import { twitch } from "./main";
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
 export const streams_list = document.querySelector(".js-streams-list")!;
-export const stream_tmpl = (streams_list?.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const stream_tmpl = (streams_list?.previousElementSibling! as HTMLTemplateElement).content.firstElementChild!;
 export const streams_scrollbox = streams_list.parentElement!;
 
 const key_streams = "streams"

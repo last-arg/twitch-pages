@@ -109,10 +109,6 @@ export function usersRender(json: any): string {
       .replace(":item_json", item_json)
       .replaceAll(":item_id", item.id);
 
-    if (streams.some((stream) => stream.user_id === item.id)) {
-       result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
-    }
-    
     return result;
 }
 

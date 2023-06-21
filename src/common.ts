@@ -52,6 +52,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
 }
 
 export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
+    return;
     const live_streams = live_streams_local();
     const frag = document.createDocumentFragment();
     let img_urls = [];

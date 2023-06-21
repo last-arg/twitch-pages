@@ -1,12 +1,12 @@
 <script webc:type="js">
-console.log(this.webc.attributes)
 this.webc.attributes.attrs = {
   ":with": "{f: follow}",
-  ":data-is-followed": "f.has_game(':item_id')",
+  ":data-is-followed": `f.has_${this.name}(':item_id')`,
 };
 if (this.obj) {
-    this.webc.attributes.attrs[":data-item-id"] = `${this.obj}.id`;
-    this.webc.attributes.attrs[":data-is-followed"] = `f.has_game(${this.obj}.id)`;
+    const fn_arg = this.name === "game" ? `${this.obj}.id` : `${this.obj}.user_id`;
+    this.webc.attributes.attrs[":data-item-id"] = fn_arg;
+    this.webc.attributes.attrs[":data-is-followed"] = `f.has_${this.name}(${fn_arg})`;
     this.webc.attributes.attrs[":data-item"] = `encode_json(${this.obj})`;
 }
 ''

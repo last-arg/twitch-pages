@@ -1,17 +1,31 @@
+<script webc:type="js">
+let src = "";
+this.webc.attributes.attrs_img = {};
+if (this.name === "user-videos") {
+  src = `/\${window.encodeURIComponent(${this.obj}.user_name)}/videos`;
+  this.webc.attributes.attrs_img[":src"] = `user_img_src(${this.obj}.user_id)`;
+} else {
+  src = `/directory/game/\${window.encodeURIComponent(${this.obj}.name)}`;
+  this.webc.attributes.attrs_img[":src"] = `cat_img_src(${this.obj}.box_art_url)`;
+}
+this.webc.attributes.attrs = {
+    ':with': `{src: \`${src}\`}`,
+    ':href': 'src', 
+    ':ts-req-history': 'src',  
+}
+''
+</script>
 <div webc:root webc:keep class="flex-grow">
   <a class="link-box" href="#" 
     ts-target="#main" ts-swap="inner"
     :ts-req="`/public/partials/${name}.html`"
     :data-card="name"
-    @attributes="({
-      ':with': '{src: `/directory/game/${window.encodeURIComponent(item.name)}`}',
-      ':href': 'src', 
-      ':ts-req-history': 'src'})"
+    @attributes="attrs"
   >
-    <img webc:if="name === 'user-videos'" src="" alt="" 
+    <img webc:if="name === 'user-videos'" src="" alt="" @attributes="attrs_img"
       :width="$data.global.config.image.user.width" 
       :height="$data.global.config.image.user.height" />
-    <img webc:else alt="" @attributes="({':src': 'cat_img_src(item.box_art_url)'})"
+    <img webc:else alt="" @attributes="attrs_img"
       :width="$data.global.config.image[name].width" 
       :height="$data.global.config.image[name].height" />
     <div class="link-title">

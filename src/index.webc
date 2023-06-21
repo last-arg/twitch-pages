@@ -62,7 +62,7 @@ title: "Home | Twitch Pages"
                 <scroll-container>
                   <template @attributes="({':ref': 'game_item'})">
                     <li class="flex" @attributes="({':each': 'item in follow.games', ':key': 'item.id'})">
-                      <link-box @name="category">
+                      <link-box @name="category" @obj="item">
                         <p @attributes="({':text': 'item.name'})"></p>
                       </link-box>
                       <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
@@ -82,19 +82,19 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
                 <!-- streams list -->
                 <scroll-container>
-                  <ul class="js-streams-list stack stack-s" role="list"></ul>
-                  <template id="stream-item" webc:root webc:keep>
-                    <li class="flex" data-card="stream">
-                      <link-box @name="user-videos">
-                          <p class="card-title"></p>
-                          <div class="js-card-live card-live hidden">
-                            <span>LIVE</span>
-                            <p>[Game name]</p>
-                          </div>
+                  <template @attributes="({':ref': 'stream_list'})">
+                    <li class="flex" @attributes="({':each': 'item in follow.streams', ':key': 'item.user_id'})" data-card="stream">
+                      <link-box @name="user-videos" @obj="item">
+                        <p class="card-title" @attributes="({':text': 'item.user_name'})"></p>
+                        <div class="js-card-live card-live hidden">
+                          <span>LIVE</span>
+                          <p>[Game name]</p>
+                        </div>
                       </link-box>
-                      <follow-star data-colormode="dark" @arg="stream" @obj="stream"></follow-star>
+                      <follow-star data-colormode="dark" @arg="stream" @obj="item"></follow-star>
                     </li>
                   </template>
+                  <ul @attributes="({':render': 'stream_list', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})" class="js-streams-list stack stack-s" role="list"></ul>
                 </scroll-container>
               </div>
             </div>

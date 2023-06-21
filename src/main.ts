@@ -22,10 +22,20 @@ const extra_globals = {
         const c_img = config.image.category;
         return twitchCatImageSrc(src, c_img.width, c_img.height);
     },
+    user_img_src(user_id: string) {
+        let img_src = profiles[user_id]?.url;
+        if (!img_src) {
+            img_src = `#${user_id}`;
+            // TODO: get user img
+            // img_urls.push(user_id);
+        }
+
+        return img_src;
+    },
     follow: {
         state: "closed" as SidebarState,
         games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
-        streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
+        streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal[],
         handle(e: Event) {
             const curr = this.state;
             const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
@@ -47,11 +57,14 @@ const extra_globals = {
         has_game(id: string) {
             return this.games.some((game) => game.id === id).toString();
         },
+        has_stream(id: string) {
+            return this.streams.some((stream) => stream.user_id === id).toString();
+        },
     },
-    sidebar_streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal,
     games_search: (e: Event) => {
         search_term((e.target as HTMLInputElement).value);
-        // search_results();
+        // TODO: reenable
+        search_results();
     },
     handle_blur(e: Event) {
         const input = e.target as HTMLInputElement;
@@ -70,8 +83,9 @@ const extra_globals = {
     handle_path_change: handlePathChange,
     handle_follow(e: Event) {
         gameAndStreamFollow.call(this, e.target as Element);
-        // TODO: fire only when changed
+        // TODO: find better solution. fire only when changed
         localStorage.setItem("games", JSON.stringify(this.follow.games))
+        localStorage.setItem("streams", JSON.stringify(this.follow.streams))
     },
 };
 const options = Object.assign(sprae.globals, extra_globals);
@@ -216,7 +230,11 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
         document.title = "Home | Twitch Pages";
         twinspark.replaceState(window.location.toString());
     } else if (elem.tagName === "LI") {
+        // TODO: limit this on pages that need it
+        // pages: top-games (root)
         sprae(elem);
+    } else if (elem.classList.contains("user-heading-box")) {
+        sprae(elem)
     }
 });
 
@@ -360,12 +378,28 @@ function gameAndStreamFollow(t: Element) {
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (item_untyped.user_id) {
                 const item = item_untyped as StreamLocal;
+                const streams = this.follow.streams;
                 if (following) {
-                    removeStream(item.user_id);
-                    removeLiveUser(item.user_id);
+                    let i = 0;
+                    for (; i < streams.length; i++) {
+                        const stream = streams[i];
+                        if (stream.user_id === item.user_id) {
+                            break;
+                        }
+                    }
+                    if (i === streams.length) {
+                        return;
+                    }
+                    console.log("idx", i)
+                    streams.splice(i, 1);
+
+                    // TODO: remove live user
+                    // removeLiveUser(item.user_id);
                 } else {
-                    addStream(item);
-                    addLiveUser(twitch, item.user_id);
+                    streams.push(item)
+                    streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
+                    // TODO: add live user
+                    // addLiveUser(twitch, item.user_id);
                 }
             } else {
                 const item = item_untyped as Game;
