@@ -16,7 +16,11 @@ declare var twinspark: any;
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
+
 const key_streams = "streams"
+const key_streams_live = `${key_streams}.live`
+const key_live_check = `${key_streams_live}.last_check`
+
 const extra_globals = { 
     cat_img_src(src: string) {
         const c_img = config.image.category;
@@ -31,6 +35,17 @@ const extra_globals = {
         }
 
         return img_src;
+    },
+    cat_url(name: string): string {
+        return `/directory/game/${window.encodeURIComponent(name)}`;
+    },
+    live: {
+        streams: JSON.parse(localStorage.getItem(key_streams_live) || "{}"),
+        check: parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? "0"), 10),
+        has_user(id: string) {
+            console.log("id", id, this.streams[id]);
+            return !!this.streams[id];
+        }
     },
     follow: {
         state: "closed" as SidebarState,

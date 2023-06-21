@@ -12,9 +12,11 @@ permalink: "public/partials/user-videos.html"
               :width="$data.global.config.image.user.width" :height="$data.global.config.image.user.height">
             :user_display_name
           </heading-link>
-          <div class="js-card-live user-live hidden" data-stream-id=":item_id">
+          <div class="js-card-live user-live" data-stream-id=":item_id"
+            @attributes="({':with': '{name: live.streams[\':item_id\']}', ':class': '{hidden: !name}'})"
+          >
             <span>LIVE</span>
-            <a href="#twitch_game_url"></a>
+            <a href="#twitch_game_url" ts-target="#main" ts-swap="inner" :ts-req="$data.global.paths.category.html" @attributes="({':text': 'name', ':with': '{url: cat_url(name)}', ':href': 'url', ':ts-req-history': 'url'})"></a>
           </div>
         </div>
       </template>
