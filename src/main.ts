@@ -20,21 +20,26 @@ let g_sheet: CSSStyleSheet | null = null;
 const key_streams = "streams"
 const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
+const key_profile = `profile`;
+const key_profile_check = `${key_profile}.last_check`;
 
 const extra_globals = { 
+    image: {
+        profile: JSON.parse(localStorage.getItem(key_profile) || "{}"),
+        check: parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10),
+        user_src(user_id: string) {
+            let img_src = profiles[user_id]?.url;
+            if (!img_src) {
+                img_src = `#${user_id}`;
+                // TODO: get user img
+                // img_urls.push(user_id);
+            }
+            return img_src;
+        },
+    },
     cat_img_src(src: string) {
         const c_img = config.image.category;
         return twitchCatImageSrc(src, c_img.width, c_img.height);
-    },
-    user_img_src(user_id: string) {
-        let img_src = profiles[user_id]?.url;
-        if (!img_src) {
-            img_src = `#${user_id}`;
-            // TODO: get user img
-            // img_urls.push(user_id);
-        }
-
-        return img_src;
     },
     cat_url(name: string): string {
         return `/directory/game/${window.encodeURIComponent(name)}`;
