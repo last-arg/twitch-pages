@@ -19,6 +19,7 @@ export function gamesRender(json: any): string {
       .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
     result += "</div>";
 
+    // TODO: category page: display user un/follow
     if (games.some((game) => game.id === item.id)) {
        result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
     }
@@ -76,11 +77,8 @@ export function streamsRender(json: any): string {
           .replace(":viewer_count", item.viewer_count)
           .replace("#video_img_url", img_url)
           .replace(":item_json", item_json)
-          .replace(":item_id", user_id)
+          .replaceAll(":item_id", user_id)
           .replace("#user_img", profile_img_url);
-        if (streams.some((stream) => stream.user_id === user_id)) {
-           html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
-        }
         result += html;
     }
     result += "</ul>";
