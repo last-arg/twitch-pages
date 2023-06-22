@@ -1,6 +1,5 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { add_profiles, live_streams_local, profiles, StreamLocal } from "./streams";
 
 export const API_URL = "https://api.twitch.tv"
 
@@ -49,56 +48,6 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         frag.append(new_item);
     }
     target.replaceChildren(frag);
-}
-
-export function renderStreams(tmpl: Element, target:Element, data: StreamLocal[]) {
-    return;
-    const live_streams = live_streams_local();
-    const frag = document.createDocumentFragment();
-    let img_urls = [];
-    for (const stream of data) {
-        const new_item = tmpl.cloneNode(true) as Element;
-
-        const link = new_item.querySelector(".link-box")!;
-        const href = `/${stream.user_login}/videos`; 
-        link.setAttribute("href", href)
-        link.setAttribute("ts-req-history", href)
-
-        const img = link.querySelector("img")!;
-        let img_src = profiles[stream.user_id]?.url;
-        if (!img_src) {
-            img_src = `#${stream.user_id}`;
-            img_urls.push(stream.user_id);
-        }
-        img.src = img_src;
-        
-        const p = new_item.querySelector(".card-title")!;
-        p.textContent = stream.user_name;
-
-        const btn = new_item.querySelector(".button-follow")!;
-        // Always true because streams is render only in one place
-        btn.setAttribute("data-is-followed", "true")
-        const encoded_game = encodeURIComponent(JSON.stringify(stream));
-        btn.setAttribute("data-item", encoded_game);
-        btn.setAttribute("data-item-id", stream.user_id);
-        const span = btn.querySelector("span")!;
-        span.textContent = "Unfollow";
-        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
-        external_link.href = "https://www.twitch.tv/" + stream.user_login + "/";
-        const stream_live = link.querySelector(".card-live")!;
-        stream_live.setAttribute("data-stream-id", stream.user_id);
-
-        const game = live_streams[stream.user_id]
-        if (game) {
-            stream_live.classList.remove("hidden");
-            stream_live.querySelector("p")!.textContent = game;
-        }
-        
-        frag.append(new_item);
-        
-    }
-    target.replaceChildren(frag);
-    add_profiles(img_urls);
 }
 
 export function strCompareField(name: string): (a: any, b: any) => number {
