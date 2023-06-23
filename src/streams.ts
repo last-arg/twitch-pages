@@ -229,8 +229,8 @@ export async function removeLiveUser(user_id: string) {
     live_streams_local(Object.assign({}, live_streams_local()))
 }
 
-type ProfileImage = {url: string, last_access: number};
-type ProfileImages = Record<string, ProfileImage>
+export type ProfileImage = {url: string, last_access: number};
+export type ProfileImages = Record<string, ProfileImage>
 const key_profile = `profile`;
 const key_profile_check = `${key_profile}.last_check`;
 export let profiles: ProfileImages = JSON.parse(localStorage.getItem(key_profile) || "{}");

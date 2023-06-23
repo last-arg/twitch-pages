@@ -2,7 +2,7 @@ import { Twitch } from './twitch';
 import { clearGames} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams } from './streams';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages } from './streams';
 import { API_URL, Game, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
@@ -25,14 +25,37 @@ const key_profile_check = `${key_profile}.last_check`;
 
 const extra_globals = { 
     image: {
-        profile: JSON.parse(localStorage.getItem(key_profile) || "{}"),
+        profiles: JSON.parse(localStorage.getItem(key_profile) || "{}") as ProfileImages,
         check: parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10),
-        user_src(user_id: string) {
-            let img_src = profiles[user_id]?.url;
+        fetch_ids: [] as string[],
+        f: function() {
+            // console.log(this)
+            const ids = this.fetch_ids;
+            console.log("ids", [...ids])
+            if (ids.length === 0) { 
+                console.log("nothing to fetch")
+                return; 
+            }
+            this.fetch_ids = [];
+            // TODO: async fetch request
+            console.log("fetch profile images", ids.length, this.fetch_ids);
+        },
+        // set_profile(user_id: string) {
+        //     this.profiles[user_id] = {url: "#hello", last_access: 0};
+        // },
+        user_src: function(user_id: string) {
+            // return;
+            // console.log(this.new_profiles);
+            let img_src = this.profiles[user_id]?.url;
+            console.log("user_src", user_id, img_src)
             if (!img_src) {
                 img_src = `#${user_id}`;
+                // console.log("no profile", img_src)
                 // TODO: get user img
-                // img_urls.push(user_id);
+                // this.new_profiles = [];
+                console.log("len: ", this.fetch_ids.length)
+                console.log("fetch_ids: ", [...this.fetch_ids])
+                this.fetch_ids.push(user_id);
             }
             return img_src;
         },
@@ -43,6 +66,9 @@ const extra_globals = {
     },
     cat_url(name: string): string {
         return `/directory/game/${window.encodeURIComponent(name)}`;
+    },
+    user_url(name: string): string {
+        return `/${window.encodeURIComponent(name)}/videos`;
     },
     live: {
         streams: JSON.parse(localStorage.getItem(key_streams_live) || "{}"),
@@ -323,7 +349,38 @@ async function startup() {
     // const page_cache = await caches.open('page_cache');
     initRoute();
     initHeader(document.body)
-    sprae(document.documentElement, options);
+    console.log("before sprae")
+    const s = sprae(document.documentElement, options);
+    console.log("after sprae", [...s.image.fetch_ids])
+    // s.image.f();
+
+    // s.image.he = function() {
+    //     console.log("he", this.fetch_ids)
+    // }
+    // s.image.he();
+    
+
+    // setTimeout(() => {
+    //     s.image.new_profiles = [];
+    //     console.log("empty new profiles")
+    // }, 500);
+
+    setTimeout(() => {
+        console.log("new profile")
+        s.image.user_src("222222222")
+    }, 1000);
+
+    // setTimeout(() => {
+    //     console.log("before set profile url")
+    //     s.image.set_profile("25458544")
+    //     // s.image.profiles["25458544"] = {url: "#new_url", last_access: 0};
+    //     console.log("profiles", s.image.profiles)
+    // }, 1500);
+
+    // s.ha = () => {
+    //     console.log("S", this.image.new_profiles)
+    // }
+
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();

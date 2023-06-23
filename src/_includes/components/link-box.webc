@@ -2,16 +2,17 @@
 let src = "";
 this.webc.attributes.attrs_img = {};
 if (this.name === "user-videos") {
-  src = `/\${window.encodeURIComponent(${this.obj}.user_name)}/videos`;
+  src = `user_url(${this.obj}.user_name)`;
+  // this.webc.attributes.attrs_img[":with"] = `{id: image.user_src(${this.obj}.user_id)}`;
+  // this.webc.attributes.attrs_img[":src"] = "id";
   this.webc.attributes.attrs_img[":src"] = `image.user_src(${this.obj}.user_id)`;
+  // this.webc.attributes.attrs_img[":src"] = `image.profiles[${this.obj}.user_id]?.url || '#' + image.fetch_ids.push(${this.obj}.user_id)`;
 } else {
-  src = `/directory/game/\${window.encodeURIComponent(${this.obj}.name)}`;
+  src = `cat_url(${this.obj}.name)`;
   this.webc.attributes.attrs_img[":src"] = `cat_img_src(${this.obj}.box_art_url)`;
 }
 this.webc.attributes.attrs = {
-    ':with': `{src: \`${src}\`}`,
-    ':href': 'src', 
-    ':ts-req-history': 'src',  
+    ':href:ts-req-history': src, 
 }
 ''
 </script>
