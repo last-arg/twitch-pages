@@ -1,11 +1,6 @@
 <script webc:setup>
-const search_attrs = {
-  "@input": "pageFilter(event.target.value)", 
-  "@submit.prevent": "", 
-  "@reset": "resetFilter()"
-}
 </script>
-<form webc:keep class="search-form" @attributes="search_attrs">
+<form webc:keep class="search-form" oninput="filterResults(event)" onsubmit="event.preventDefault()" onreset="resetFilter()">
   <label class="sr-only" for="search">Search title</label>
   <input type="search" id="search" placeholder="Filter title" value="">
   <button type="reset">Reset</button>

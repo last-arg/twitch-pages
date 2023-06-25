@@ -11,7 +11,42 @@ import './libs/twinspark.js';
 // @ts-ignore
 import sprae from '../node_modules/sprae/src/core.js';
 // import sprae from 'sprae';
+import * as sb from './libs/strawberry';
 declare var twinspark: any;
+
+declare global {
+    interface Window { 
+        filterResults: typeof filterResults; 
+        resetFilter: typeof resetFilter;
+    }
+}
+
+type SB_Data = {
+    filter_value: string
+} & ReturnType<typeof sb.init>
+
+const sb_data = sb.init({directives: {
+    hello: function({ el, value, key,  isDelete, parent, prop }) {
+        console.group("directive");
+        console.log("el", el)
+        console.log("value", value)
+        console.log("key", key)
+        console.log("isDelete", isDelete)
+        console.log("parent", parent)
+        console.log("prop", prop)
+        console.groupEnd();
+    }
+}}) as SB_Data;
+
+sb_data.filter_value = "";
+
+window.filterResults = filterResults;
+function filterResults(ev: InputEvent) {
+    sb_data.filter_value = (ev.target as HTMLInputElement).value || "";
+}
+
+sb.watch("filter_value", pageFilter);
+console.log(sb_data)
 
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
@@ -101,7 +136,7 @@ const extra_globals = {
         },
     },
     games_search: (e: Event) => {
-        search_term((e.target as HTMLInputElement).value);
+        search_term((e.target as HTMLInputElement).key);
         // TODO: reenable
         search_results();
     },
@@ -386,6 +421,7 @@ function pageFilter(value: string) {
     }
 }
 
+window.resetFilter = resetFilter;
 function resetFilter() {
     if (g_sheet === null) return;
     g_sheet.deleteRule(0)
