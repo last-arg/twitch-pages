@@ -28,33 +28,27 @@ const extra_globals = {
         profiles: JSON.parse(localStorage.getItem(key_profile) || "{}") as ProfileImages,
         check: parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10),
         fetch_ids: [] as string[],
-        f: function() {
-            // console.log(this)
-            const ids = this.fetch_ids;
-            console.log("ids", [...ids])
-            if (ids.length === 0) { 
+        f() {
+            if (this.fetch_ids.length === 0) { 
                 console.log("nothing to fetch")
                 return; 
             }
-            this.fetch_ids = [];
             // TODO: async fetch request
-            console.log("fetch profile images", ids.length, this.fetch_ids);
+            const ids = this.fetch_ids
+            this.fetch_ids = [];
+            for (const id of ids) {
+                this.profiles[id] = { url: "https://placehold.co/400", last_access: 0 };
+            }
         },
         // set_profile(user_id: string) {
         //     this.profiles[user_id] = {url: "#hello", last_access: 0};
         // },
         user_src: function(user_id: string) {
-            // return;
-            // console.log(this.new_profiles);
             let img_src = this.profiles[user_id]?.url;
-            console.log("user_src", user_id, img_src)
             if (!img_src) {
                 img_src = `#${user_id}`;
-                // console.log("no profile", img_src)
                 // TODO: get user img
                 // this.new_profiles = [];
-                console.log("len: ", this.fetch_ids.length)
-                console.log("fetch_ids: ", [...this.fetch_ids])
                 this.fetch_ids.push(user_id);
             }
             return img_src;
@@ -74,7 +68,6 @@ const extra_globals = {
         streams: JSON.parse(localStorage.getItem(key_streams_live) || "{}"),
         check: parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? "0"), 10),
         has_user(id: string) {
-            console.log("id", id, this.streams[id]);
             return !!this.streams[id];
         }
     },
@@ -215,7 +208,6 @@ document.addEventListener("ts-req-ok", (e) => {
         btn.parentElement!.setAttribute("ts-data", "game_id=" + game_id);
         btn.dispatchEvent(new CustomEvent("click"));
     } else if (url.pathname.startsWith("/helix/streams")) {
-        console.log("/helix/streams")
         const json = JSON.parse(detail.content);
         detail.content = streamsRender(json);
 
@@ -347,40 +339,12 @@ function getUrlObject(newPath: string): UrlResolve {
 async function startup() {
     await twitch.fetchToken();
     // const page_cache = await caches.open('page_cache');
-    initRoute();
-    initHeader(document.body)
     console.log("before sprae")
     const s = sprae(document.documentElement, options);
     console.log("after sprae", [...s.image.fetch_ids])
-    // s.image.f();
 
-    // s.image.he = function() {
-    //     console.log("he", this.fetch_ids)
-    // }
-    // s.image.he();
-    
-
-    // setTimeout(() => {
-    //     s.image.new_profiles = [];
-    //     console.log("empty new profiles")
-    // }, 500);
-
-    setTimeout(() => {
-        console.log("new profile")
-        s.image.user_src("222222222")
-    }, 1000);
-
-    // setTimeout(() => {
-    //     console.log("before set profile url")
-    //     s.image.set_profile("25458544")
-    //     // s.image.profiles["25458544"] = {url: "#new_url", last_access: 0};
-    //     console.log("profiles", s.image.profiles)
-    // }, 1500);
-
-    // s.ha = () => {
-    //     console.log("S", this.image.new_profiles)
-    // }
-
+    initRoute();
+    initHeader(document.body)
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
