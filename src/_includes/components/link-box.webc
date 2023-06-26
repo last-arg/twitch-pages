@@ -16,7 +16,7 @@ this.webc.attributes.attrs = {
 }
 ''
 </script>
-<div webc:root webc:keep class="flex-grow">
+<div webc:root class="flex-grow">
   <a class="link-box" href="#" 
     ts-target="#main" ts-swap="inner"
     :ts-req="`/public/partials/${name}.html`"
