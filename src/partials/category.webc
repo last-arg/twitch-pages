@@ -24,7 +24,7 @@ permalink: "public/partials/category.html"
       <template webc:keep webc:type="11ty" id="category-streams-template">
         <li class="simple-fade-in" data-title=":title_encoded">
           <div class="user">
-            <a class="user-link" href="https://twitch.tv/:user_login" title=":title" rel="external">
+            <a class="user-link" href="https://twitch.tv/:user_login" title=":title" ts-ignore rel="external">
               <div class="relative">
                 <img src="#video_img_url" alt="" 
                   :width="$data.global.config.image.video.width" 
@@ -55,7 +55,7 @@ permalink: "public/partials/category.html"
                     <button-follow @name="stream"></button-follow>
                   </span>
                 </div>
-                <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">
+                <a class="external-video" href="https://www.twitch.tv/:user_login/videos" ts-ignore rel="external">
                   Twitch videos
                   <svg aria-hidden="true" focusable="false">
                     <use href="/public/assets/icons.svg#external-link"></use>

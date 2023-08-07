@@ -2,17 +2,20 @@
 let src = "";
 this.webc.attributes.attrs_img = {};
 if (this.name === "user-videos") {
+  sb_attr = `href:${this.obj}.user_name`;
   src = `user_url(${this.obj}.user_name)`;
   // this.webc.attributes.attrs_img[":with"] = `{id: image.user_src(${this.obj}.user_id)}`;
   // this.webc.attributes.attrs_img[":src"] = "id";
   this.webc.attributes.attrs_img[":src"] = `image.user_src(${this.obj}.user_id)`;
   // this.webc.attributes.attrs_img[":src"] = `image.profiles[${this.obj}.user_id]?.url || '#' + image.fetch_ids.push(${this.obj}.user_id)`;
 } else {
+  sb_attr = `${this.obj}.name | cat_url | href, ts-req-history`;
   src = `cat_url(${this.obj}.name)`;
   this.webc.attributes.attrs_img[":src"] = `cat_img_src(${this.obj}.box_art_url)`;
 }
 this.webc.attributes.attrs = {
     ':href:ts-req-history': src, 
+    'sb-attr': sb_attr,
 }
 ''
 </script>
@@ -22,6 +25,7 @@ this.webc.attributes.attrs = {
     :ts-req="`/public/partials/${name}.html`"
     :data-card="name"
     @attributes="attrs"
+    :sb-attr="sb-attr"
   >
     <img webc:if="name === 'user-videos'" src="" alt="" @attributes="attrs_img"
       :width="$data.global.config.image.user.width" 

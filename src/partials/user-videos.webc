@@ -40,7 +40,7 @@ permalink: "public/partials/user-videos.html"
     <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list">
       <template id="user-video-template">
         <li class="video simple-fade-in" data-video-type=":video_type" data-title=":encoded_video_title">
-          <a class="video-link" href="#video_url" title=":video_title" rel="external">
+          <a class="video-link" href="#video_url" title=":video_title" ts-ignore rel="external">
             <div class="video-img-wrapper">
               <img src="#img_url" alt="" 
                 :width="$data.global.config.image.video.width" 

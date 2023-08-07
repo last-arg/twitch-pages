@@ -18,7 +18,7 @@ permalink: "public/partials/top-games.html"
                 :height="$data.global.config.image.category.height * 2">
             </a>
             <div class="game-action" data-pos="left">
-              <a class="external-link" href="https://www.twitch.tv/directory/games/:game_name_url" rel="external">
+              <a class="external-link" ts-ignore href="https://www.twitch.tv/directory/games/:game_name_url" rel="external">
                 <span class="sr-only">Got to game's Twitch page</span>
                 <svg aria-hidden="true" focusable="false">
                   <use href="/public/assets/icons.svg#external-link"></use>
