@@ -25,23 +25,20 @@ title: "Home | Twitch Pages"
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar"
         sb-listen="nav.handle:click"
         @attributes="({
-          '@click': 'follow.handle(event)',
           '@keyup.document.escape': 'follow.state = `closed`',
         })"
       >
         <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" @attributes="({
+            <form role="search" action="javascript:void(0);" @attributes="({
               '@input.throttle-200': 'games_search(event)',
               '@submit.prevent': '',
             })">
               <label class="sr-only" for="game_name">Search for games</label>
               <input type="search" id="game_name" name="game_name"
                 placeholder="Search for games" aria-expanded="false"
-                @attributes="({
-                  '@focus': 'handle_focus(event)',
-                  '@blur': 'handle_blur(event)',
-                })"
+                sb-listen-focus="handle_focus"
+                sb-listen="handle_blur:blur"
               >
               <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="menu-item" data-menu-item="search" type="submit">

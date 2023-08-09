@@ -67,7 +67,6 @@ sb.directive("attr-src", function({el, param, value}) {
 }, true);
 
 sb.directive("listen", function({ el, value, param }) {
-    console.log(value);
     if (param) {
         el.addEventListener(param, value as any);
     }
@@ -75,9 +74,18 @@ sb.directive("listen", function({ el, value, param }) {
   true
 );
 
+sb.directive("listen-focus", function({ el, value }) {
+    if (value) {
+        el.addEventListener("focus", value as any);
+    }
+  },
+);
+
 type SB_Data = {
     filter_value: string,
     follow_games: Game[],
+    handle_focus: (e: Event) => void
+    handle_blur: (e: Event) => void
     nav: {
         state: SidebarState,
         handle: (e: Event) => void,
@@ -97,6 +105,19 @@ const sb_data = sb.init() as SB_Data;
 
 sb_data.filter_value = "";
 sb_data.follow_games = [];
+sb_data.handle_focus = () => (e: Event) => {
+    console.log("focus")
+    search_term((e.target as HTMLInputElement).value);
+    sidebar_state("search")
+    search_results();
+};
+sb_data.handle_blur = () => (e: Event) => {
+    console.log("blur")
+    const input = e.target as HTMLInputElement;
+    if (input.value.length === 0) {
+        sidebar_state("closed")
+    }
+};
 sb_data.nav = {
     state: "closed",
     handle() { 
@@ -199,17 +220,6 @@ const extra_globals = {
     games_search: (e: Event) => {
         search_term((e.target as HTMLInputElement).key);
         // TODO: reenable
-        search_results();
-    },
-    handle_blur(e: Event) {
-        const input = e.target as HTMLInputElement;
-        if (input.value.length === 0) {
-            sidebar_state("closed")
-        }
-    },
-    handle_focus(e: Event) {
-        search_term((e.target as HTMLInputElement).value);
-        sidebar_state("search")
         search_results();
     },
     encode_json(obj: any) {
