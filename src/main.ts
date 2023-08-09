@@ -100,19 +100,14 @@ type SB_Data = {
 
 const sb_data = sb.init() as SB_Data;
 
-// @debug
-// document.querySelector("[data-menu-item='games']")?.setAttribute("aria-expanded", "true");
-
 sb_data.filter_value = "";
 sb_data.follow_games = [];
 sb_data.handle_focus = () => (e: Event) => {
-    console.log("focus")
     search_term((e.target as HTMLInputElement).value);
     sidebar_state("search")
     search_results();
 };
 sb_data.handle_blur = () => (e: Event) => {
-    console.log("blur")
     const input = e.target as HTMLInputElement;
     if (input.value.length === 0) {
         sidebar_state("closed")
@@ -151,6 +146,16 @@ sb_data.follow = {
         return this.streams.some((stream) => stream.user_id === id).toString();
     },
 }
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+        const el = e.target as Element
+        if (el.id === "game_name") {
+            sb_data.nav.state = "closed";
+            sidebar_state_change(sb_data.nav.state);
+        }
+    }
+});
 
 window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {
