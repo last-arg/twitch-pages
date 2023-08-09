@@ -8,11 +8,11 @@ import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } 
 import { mainContent, UrlResolve, config } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import './libs/twinspark.js';
-// @ts-ignore
-import sprae from '../node_modules/sprae/src/core.js';
-// import sprae from 'sprae';
-import * as sb from './libs/strawberry';
 declare var twinspark: any;
+import * as sb from './libs/strawberry';
+// @ts-ignore
+// import events from 'eventslibjs';
+// console.log(events);
 
 declare global {
     interface Window { 
@@ -22,28 +22,66 @@ declare global {
 }
 
 type SB_Data = {
-    filter_value: string
+    filter_value: string,
+    follow_games: Game[],
 } & ReturnType<typeof sb.init>
 
-const sb_data = sb.init({directives: {
-    hello: function({ el, value, key,  isDelete, parent, prop }) {
-        console.group("directive");
-        console.log("el", el)
-        console.log("value", value)
-        console.log("key", key)
-        console.log("isDelete", isDelete)
-        console.log("parent", parent)
-        console.log("prop", prop)
-        console.groupEnd();
+const fns = {
+    cat_img_src: function(src: string) {
+        const c_img = config.image.category;
+        return twitchCatImageSrc(src, c_img.width, c_img.height);
+    },
+    cat_url: function(name: string): string {
+        return `/directory/game/${window.encodeURIComponent(name)}`;
+    },
+}
+
+// NOTE: can't add several attributes with different values
+sb.directive("attr", function({el, param, value}) {
+    let v = value as string;
+    if (param) {
+        const params = param.split(":");
+        const fn_name = params[1] as (keyof typeof fns | undefined);
+        if (fn_name) {
+            const fn = fns[fn_name];
+            v = fn(v);
+        }
+        for (const key of params[0].split(",")) {
+            el.setAttribute(key, v);
+        }
     }
-}}) as SB_Data;
+}, true)
+
+sb.directive("attr-src", function({el, param, value}) {
+    let v = value as string;
+    if (param) {
+        const fn_name = param as (keyof typeof fns | undefined);
+        console.log(fn_name)
+        if (fn_name) {
+            const fn = fns[fn_name];
+            v = fn(v);
+        }
+    }
+    el.setAttribute("src", v);
+}, true)
+
+const sb_data = sb.init() as SB_Data;
+
+// @debug
+// document.querySelector("[data-menu-item='games']")?.setAttribute("aria-expanded", "true");
 
 sb_data.filter_value = "";
+sb_data.follow_games = [];
 
 window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {
     sb_data.filter_value = (ev.target as HTMLInputElement).value || "";
 }
+
+sb.watch("follow_games", function(val) {
+    console.log("follow", val.name)
+});
+sb_data.follow_games = JSON.parse(localStorage.getItem("games") ?? "[]");
 
 sb.watch("filter_value", pageFilter);
 console.log(sb_data)
@@ -162,7 +200,6 @@ const extra_globals = {
         localStorage.setItem("streams", JSON.stringify(this.follow.streams))
     },
 };
-const options = Object.assign(sprae.globals, extra_globals);
 
 document.addEventListener("ts-req-before", (e) => {
     const req = e.detail?.req;
@@ -305,9 +342,7 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     } else if (elem.tagName === "LI") {
         // TODO: limit this on pages that need it
         // pages: top-games (root)
-        sprae(elem);
     } else if (elem.classList.contains("user-heading-box")) {
-        sprae(elem)
     }
 });
 
@@ -374,9 +409,6 @@ function getUrlObject(newPath: string): UrlResolve {
 async function startup() {
     await twitch.fetchToken();
     // const page_cache = await caches.open('page_cache');
-    console.log("before sprae")
-    const s = sprae(document.documentElement, options);
-    console.log("after sprae", [...s.image.fetch_ids])
 
     initRoute();
     initHeader(document.body)
@@ -430,7 +462,6 @@ function resetFilter() {
 function initFilter(root: Element) {
     const search_form = root.querySelector(".search-form")!;
     g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
-    sprae(root, {pageFilter: pageFilter, resetFilter: resetFilter});
 }
 
 function initHeader(root: Element) {
