@@ -21,10 +21,11 @@ declare global {
     }
 }
 
-type SB_Data = {
-    filter_value: string,
-    follow_games: Game[],
-} & ReturnType<typeof sb.init>
+const key_streams = "streams"
+const key_streams_live = `${key_streams}.live`
+const key_live_check = `${key_streams_live}.last_check`
+const key_profile = `profile`;
+const key_profile_check = `${key_profile}.last_check`;
 
 const fns = {
     cat_img_src: function(src: string) {
@@ -63,7 +64,31 @@ sb.directive("attr-src", function({el, param, value}) {
         }
     }
     el.setAttribute("src", v);
-}, true)
+}, true);
+
+sb.directive("listen", function({ el, value, param }) {
+    console.log(value);
+    if (param) {
+        el.addEventListener(param, value as any);
+    }
+  },
+  true
+);
+
+type SB_Data = {
+    filter_value: string,
+    follow_games: Game[],
+    nav: {
+        state: SidebarState,
+        handle: (e: Event) => void,
+    },
+    follow: {
+        games: Game[],
+        streams: StreamLocal[],
+        has_game: (id: string) => string, // "true" | "false"
+        has_stream: (id: string) => string, // "true" | "false"
+    },
+} & ReturnType<typeof sb.init>;
 
 const sb_data = sb.init() as SB_Data;
 
@@ -72,6 +97,39 @@ const sb_data = sb.init() as SB_Data;
 
 sb_data.filter_value = "";
 sb_data.follow_games = [];
+sb_data.nav = {
+    state: "closed",
+    handle() { 
+        return (e: Event) => {
+            const curr = this.state;
+            const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+            if (btn?.classList.contains("menu-item")) {
+                const new_state = btn.getAttribute("data-menu-item");
+                if (new_state) {
+                    if (curr === new_state) {
+                        this.state = "closed"
+                    } else {
+                        this.state = new_state as SidebarState;
+                    } 
+                }
+                sidebar_state_change(this.state);
+            } else if (btn?.classList.contains("btn-close")) {
+                this.state = "closed"
+                sidebar_state_change(this.state);
+            }
+        }
+    },
+},
+sb_data.follow = {
+    games: JSON.parse(localStorage.getItem("games") ?? "[]"),
+    streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]"),
+    has_game(id: string) {
+        return this.games.some((game) => game.id === id).toString();
+    },
+    has_stream(id: string) {
+        return this.streams.some((stream) => stream.user_id === id).toString();
+    },
+}
 
 window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {
@@ -89,12 +147,6 @@ console.log(sb_data)
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
-
-const key_streams = "streams"
-const key_streams_live = `${key_streams}.live`
-const key_live_check = `${key_streams_live}.last_check`
-const key_profile = `profile`;
-const key_profile_check = `${key_profile}.last_check`;
 
 const extra_globals = { 
     image: {
@@ -143,35 +195,6 @@ const extra_globals = {
         has_user(id: string) {
             return !!this.streams[id];
         }
-    },
-    follow: {
-        state: "closed" as SidebarState,
-        games: JSON.parse(localStorage.getItem("games") ?? "[]") as Game[],
-        streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]") as StreamLocal[],
-        handle(e: Event) {
-            const curr = this.state;
-            const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
-            if (btn?.classList.contains("menu-item")) {
-                const new_state = btn.getAttribute("data-menu-item");
-                if (new_state) {
-                    if (curr === new_state) {
-                        this.state = "closed"
-                    } else {
-                        this.state = new_state as SidebarState;
-                    } 
-                }
-                sidebar_state_change(this.state);
-            } else if (btn?.classList.contains("btn-close")) {
-                this.state = "closed"
-                sidebar_state_change(this.state);
-            }
-        },
-        has_game(id: string) {
-            return this.games.some((game) => game.id === id).toString();
-        },
-        has_stream(id: string) {
-            return this.streams.some((stream) => stream.user_id === id).toString();
-        },
     },
     games_search: (e: Event) => {
         search_term((e.target as HTMLInputElement).key);
@@ -442,7 +465,8 @@ async function updateLiveUsers() {
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
-function pageFilter(value: string) {
+function pageFilter(input: unknown) {
+    let value = input as string;
     if (g_sheet === null) return;
     if (g_sheet.cssRules.length > 0) {
         g_sheet.deleteRule(0)

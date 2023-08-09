@@ -23,6 +23,7 @@ title: "Home | Twitch Pages"
         </ul>
       </nav>
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar"
+        sb-listen="nav.handle:click"
         @attributes="({
           '@click': 'follow.handle(event)',
           '@keyup.document.escape': 'follow.state = `closed`',
@@ -68,7 +69,19 @@ title: "Home | Twitch Pages"
                       <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
                     </li>
                   </template>
-                  <ul @attributes="({':render': 'game_item', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})" class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list"></ul>
+                  <!-- TODO: strawberry add 'click' and 'mousedown' event handlers
+                  @attributes="({'render': 'game_item', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})"
+                  -->
+                  <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
+                    <template sb-mark="follow_games.#">
+                      <li class="flex">
+                        <link-box @name="category" @obj="follow_games.#">
+                          <p sb-mark="follow_games.#.name">item</p>
+                        </link-box>
+                        <follow-star data-colormode="dark" @arg="game" @obj="follow_games.#"></follow-star>
+                      </li>
+                    </template>
+                  </ul>
                 </scroll-container>
               </div>
             </div>
