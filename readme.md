@@ -10,6 +10,10 @@ Pages:
 - use Cache API to store some stuff
   - user header
   - category header
+- service worker
+  - libs:
+    - https://github.com/veiss-com/sw-tools
+    - https://github.com/americanexpress/one-service-worker
 
 ## Resources
 
