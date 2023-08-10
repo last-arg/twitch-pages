@@ -80,18 +80,21 @@ sb.directive("listen-focus", function({ el, value }) {
   }
 );
 
-// document.querySelector("form[role=search]")?.addEventListener("submit", (e: Event) => {
-//     console.log("submit")
-//     e.preventDefault();  
-// });
-
+// TODO: why isn't this working?
 sb.directive("prevent", function({ el, value }) {
     console.log("prevent", value, el)
     if (value) {
         el.addEventListener(value as string, (e: Event) => {
-        e.preventDefault(); console.log("prev")});
+            e.preventDefault(); 
+            console.log("prev");
+        });
     }
-}, true);
+}, false);
+
+// document.querySelector("form[role=search]")?.addEventListener("submit", (e: Event) => {
+//     console.log("submit")
+//     // e.preventDefault();  
+// });
 
 type SB_Data = {
     filter_value: string,
@@ -119,13 +122,11 @@ const sb_data = sb.init() as SB_Data;
 sb_data.filter_value = "";
 sb_data.follow_games = [];
 sb_data.handle_focus = () => (e: Event) => {
-    console.log("handle_focus")
     search_term((e.target as HTMLInputElement).value);
     sidebar_state("search")
     search_results();
 };
 sb_data.handle_blur = () => (e: Event) => {
-    console.log("handle_blur")
     const input = e.target as HTMLInputElement;
     if (input.value.length === 0) {
         sidebar_state("closed")
@@ -168,7 +169,6 @@ sb_data.nav = {
     search_results() {
         clearTimeout(search_timeout);
         const val = this.search_input;
-        console.log("state", val)
         if (val.length === 0) {
             feedback_elem.textContent = "Enter game name to search";
             // TODO: empty DOM or variable that holds search results
@@ -194,16 +194,15 @@ sb_data.follow = {
     },
 }
 
-// document.addEventListener("keyup", (e: KeyboardEvent) => {
-//     console.log("keyup")
-//     if (e.key === "Escape") {
-//         const el = e.target as Element
-//         if (el.id === "game_name") {
-//             sb_data.nav.state = "closed";
-//             sidebar_state_change(sb_data.nav.state);
-//         }
-//     }
-// });
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+        const el = e.target as Element
+        if (el.id === "game_name") {
+            sb_data.nav.state = "closed";
+            sidebar_state_change(sb_data.nav.state);
+        }
+    }
+});
 
 window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {

@@ -26,8 +26,7 @@ title: "Home | Twitch Pages"
         <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
             <form role="search" action="javascript:void(0);" 
-              sb-prevent="submit"
-              sb-listen="nav.handle_input:input"
+              sb-prevent="submit" sb-listen="nav.handle_input:input"
             >
               <label class="sr-only" for="game_name">Search for games</label>
               <input type="search" id="game_name" name="game_name"
@@ -36,7 +35,7 @@ title: "Home | Twitch Pages"
                 sb-listen="handle_blur:blur"
               >
               <!-- TODO: see if I can make this <button> into <menu-button> -->
-              <button class="menu-item" data-menu-item="search" type="submit">
+              <button class="menu-item" data-menu-item="search" type="button">
                 <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#looking-class"></use></svg>
                 <span class="sr-only">Search for games</span>
               </button>
