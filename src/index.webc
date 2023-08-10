@@ -22,18 +22,13 @@ title: "Home | Twitch Pages"
           </li>
         </ul>
       </nav>
-      <nav class="sidebar-nav flex-grow" aria-label="Sidebar"
-        sb-listen="nav.handle:click"
-        @attributes="({
-          '@keyup.document.escape': 'follow.state = `closed`',
-        })"
-      >
+      <nav class="sidebar-nav flex-grow" aria-label="Sidebar" sb-listen="nav.handle:click">
         <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" action="javascript:void(0);" @attributes="({
-              '@input.throttle-200': 'games_search(event)',
-              '@submit.prevent': '',
-            })">
+            <form role="search" action="javascript:void(0);" 
+              sb-prevent="submit"
+              sb-listen="nav.handle_input:input"
+            >
               <label class="sr-only" for="game_name">Search for games</label>
               <input type="search" id="game_name" name="game_name"
                 placeholder="Search for games" aria-expanded="false"

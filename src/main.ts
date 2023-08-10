@@ -57,7 +57,6 @@ sb.directive("attr-src", function({el, param, value}) {
     let v = value as string;
     if (param) {
         const fn_name = param as (keyof typeof fns | undefined);
-        console.log(fn_name)
         if (fn_name) {
             const fn = fns[fn_name];
             v = fn(v);
@@ -78,17 +77,34 @@ sb.directive("listen-focus", function({ el, value }) {
     if (value) {
         el.addEventListener("focus", value as any);
     }
-  },
+  }
 );
+
+// document.querySelector("form[role=search]")?.addEventListener("submit", (e: Event) => {
+//     console.log("submit")
+//     e.preventDefault();  
+// });
+
+sb.directive("prevent", function({ el, value }) {
+    console.log("prevent", value, el)
+    if (value) {
+        el.addEventListener(value as string, (e: Event) => {
+        e.preventDefault(); console.log("prev")});
+    }
+}, true);
 
 type SB_Data = {
     filter_value: string,
     follow_games: Game[],
+    prevent: (e: Event) => void
     handle_focus: (e: Event) => void
     handle_blur: (e: Event) => void
     nav: {
         state: SidebarState,
+        search_input: string,
         handle: (e: Event) => void,
+        handle_input: (e: Event) => void,
+        search_results: () => void,
     },
     follow: {
         games: Game[],
@@ -103,18 +119,25 @@ const sb_data = sb.init() as SB_Data;
 sb_data.filter_value = "";
 sb_data.follow_games = [];
 sb_data.handle_focus = () => (e: Event) => {
+    console.log("handle_focus")
     search_term((e.target as HTMLInputElement).value);
     sidebar_state("search")
     search_results();
 };
 sb_data.handle_blur = () => (e: Event) => {
+    console.log("handle_blur")
     const input = e.target as HTMLInputElement;
     if (input.value.length === 0) {
         sidebar_state("closed")
     }
 };
+
+
+const feedback_elem = document.querySelector(".search-feedback")!;
+let search_timeout = 0;
 sb_data.nav = {
     state: "closed",
+    search_input: "",
     handle() { 
         return (e: Event) => {
             const curr = this.state;
@@ -135,7 +158,31 @@ sb_data.nav = {
             }
         }
     },
-},
+    handle_input() {
+        return (e: InputEvent) => {
+            e.preventDefault();
+            const el = e.target as (HTMLInputElement | undefined);
+            this.search_input = el?.value.trim() || "";
+        }
+    },
+    search_results() {
+        clearTimeout(search_timeout);
+        const val = this.search_input;
+        console.log("state", val)
+        if (val.length === 0) {
+            feedback_elem.textContent = "Enter game name to search";
+            // TODO: empty DOM or variable that holds search results
+            return;
+        }
+
+        feedback_elem.textContent = "Searching...";
+        search_timeout = window.setTimeout(() => {
+            console.log("fetch search results", val);
+            // TODO: fetch and render. search_results
+        }, 400);
+    },
+};
+
 sb_data.follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
     streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]"),
@@ -147,28 +194,28 @@ sb_data.follow = {
     },
 }
 
-document.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-        const el = e.target as Element
-        if (el.id === "game_name") {
-            sb_data.nav.state = "closed";
-            sidebar_state_change(sb_data.nav.state);
-        }
-    }
-});
+// document.addEventListener("keyup", (e: KeyboardEvent) => {
+//     console.log("keyup")
+//     if (e.key === "Escape") {
+//         const el = e.target as Element
+//         if (el.id === "game_name") {
+//             sb_data.nav.state = "closed";
+//             sidebar_state_change(sb_data.nav.state);
+//         }
+//     }
+// });
 
 window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {
     sb_data.filter_value = (ev.target as HTMLInputElement).value || "";
 }
 
-sb.watch("follow_games", function(val) {
-    console.log("follow", val.name)
+sb.watch("nav.state", function(val) {
+    console.log("state", val)
 });
 sb_data.follow_games = JSON.parse(localStorage.getItem("games") ?? "[]");
 
 sb.watch("filter_value", pageFilter);
-console.log(sb_data)
 
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
@@ -221,11 +268,6 @@ const extra_globals = {
         has_user(id: string) {
             return !!this.streams[id];
         }
-    },
-    games_search: (e: Event) => {
-        search_term((e.target as HTMLInputElement).key);
-        // TODO: reenable
-        search_results();
     },
     encode_json(obj: any) {
         return encodeURIComponent(JSON.stringify(obj));
