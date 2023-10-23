@@ -34,7 +34,6 @@ module.exports = function(eleventyConfig) {
     })
 
 	return {
-		// domdiff: false,
 		dir: {
 			input: "src",
 			output: "_site",
