@@ -10,8 +10,8 @@ permalink: "public/partials/top-games.html"
       <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
-            <a class="game-img-link" href="#game_url" ts-req-history="#game_url"
-              :ts-req="$data.global.paths.category.html" ts-target="#main" ts-swap="inner"
+            <a class="game-img-link" href="#game_url" hx-push-url="#game_url"
+              :hx-get="$data.global.paths.category.html" ts-target="#main" ts-swap="inner"
             >
               <img class="game-img" src="#game_img_url" alt=""
                 :width="$data.global.config.image.category.width * 2" 
@@ -37,7 +37,7 @@ permalink: "public/partials/top-games.html"
         </div>
       </li>
     </template>
-    <div ts-req="/helix/games/top" ts-trigger="load" ts-swap="replace" ts-req-selector="children ul"></div>
+    <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML"></div>
   </ul>
   <btn-load-more class="block fluid-my-xl" @req_url="/helix/games/top"></btn-load-more>
 </div>

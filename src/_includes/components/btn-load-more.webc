@@ -1,12 +1,11 @@
 <slot></slot>
 <button type="button" class="btn-frame btn-load-more"
-  :ts-req="req_url"
-  :ts-target="req_target ? req_target : '#output-list'" 
-  ts-data=""
-  ts-swap="append"
-  ts-req-selector="children ul"
-  ts-trigger="click"
-  ts-action="target .btn-load-more, attr aria-disabled true"
+  hx-ext="twitch-api"
+  :hx-get="req_url"
+  :hx-target="req_target ? req_target : '#output-list'" 
+  hx-vals=""
+  hx-swap="beforeend"
+  hx-trigger="click"
   aria-disabled="true"
 >
   <span>Load more games</span>
@@ -48,8 +47,15 @@
 }
 
 .btn-load-more[aria-disabled=false],
-.btn-load-more[aria-disabled=true][ts-data] ~ .msg-loading,
-.btn-load-more[aria-disabled=true]:not([ts-data]) ~ .msg-no-more {
+.btn-load-more[aria-disabled=true] ~ .msg-loading {
+  display: block;
+}
+
+.btn-load-more:not([hx-vals]) ~ * {
+  display: none;
+}
+
+.btn-load-more:not([hx-vals]) ~ .msg-no-more {
   display: block;
 }
 

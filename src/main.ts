@@ -7,8 +7,7 @@ import { API_URL, Game, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
-import './libs/twinspark.js';
-declare var twinspark: any;
+import {initHtmx} from "./htmx_init";
 import * as sb from './libs/strawberry';
 // @ts-ignore
 // import events from 'eventslibjs';
@@ -20,6 +19,27 @@ declare global {
         resetFilter: typeof resetFilter;
     }
 }
+
+window.addEventListener("htmx:load", (e: Event) => {
+    const elem = e.target as Element;
+    if (elem.classList.contains("user-live")) {
+        const stream_id = elem?.getAttribute("data-stream-id");
+        if (stream_id) {
+            // const game = live_streams_local()[stream_id];
+            // if (game) {
+            //     const link = elem!.querySelector("a")!;
+            //     link.textContent = game;
+            //     link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+            //     elem!.classList.remove("hidden");
+            // }
+        }
+    } else if (elem.id === "partial-settings") {
+        document.title = "Settings | Twitch Pages";
+        initSettings(elem);
+    } else if (elem.id === "page-user") {
+        initUserVideoTypeFilter(elem);
+    }
+});
 
 const key_streams = "streams"
 const key_streams_live = `${key_streams}.live`
@@ -77,19 +97,23 @@ sb.directive("listen-focus", function({ el, value }) {
     if (value) {
         el.addEventListener("focus", value as any);
     }
-  }
-);
+});
+
+sb.directive("prevent", function({el, value}) {
+    console.log("prevent", el, value)
+    // el.addEventListener("click", () => console.log("click prevetn"));
+}, false);
 
 // TODO: why isn't this working?
-sb.directive("prevent", function({ el, value }) {
-    console.log("prevent", value, el)
-    if (value) {
-        el.addEventListener(value as string, (e: Event) => {
-            e.preventDefault(); 
-            console.log("prev");
-        });
-    }
-}, false);
+// sb.directive("test", function({ el, value }) {
+//     console.log("prevent", value, el)
+//     if (value) {
+//         el.addEventListener(value as string, (e: Event) => {
+//             e.preventDefault(); 
+//             console.log("prev");
+//         });
+//     }
+// });
 
 // document.querySelector("form[role=search]")?.addEventListener("submit", (e: Event) => {
 //     console.log("submit")
@@ -414,10 +438,10 @@ document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
-        twinspark.replaceState(window.location.toString());
+        // twinspark.replaceState(window.location.toString());
     } else if (elem.id === "page-home") {
         document.title = "Home | Twitch Pages";
-        twinspark.replaceState(window.location.toString());
+        // twinspark.replaceState(window.location.toString());
     } else if (elem.tagName === "LI") {
         // TODO: limit this on pages that need it
         // pages: top-games (root)
@@ -452,13 +476,6 @@ function initUserVideoTypeFilter(elem: Element) {
     })
 }
 
-function initRoute() {
-    const r = getUrlObject(location.pathname);
-    const main = document.querySelector("#main");
-    const req = twinspark.makeReq(main, new Event("load"), false, {url: r.html});
-    twinspark.executeReqs(req);
-}
-
 function getUrlObject(newPath: string): UrlResolve {
   if (newPath === "/") return mainContent["top-games"]
   let contentKey = "not-found"
@@ -487,9 +504,7 @@ function getUrlObject(newPath: string): UrlResolve {
 
 async function startup() {
     await twitch.fetchToken();
-    // const page_cache = await caches.open('page_cache');
-
-    initRoute();
+    initHtmx();
     initHeader(document.body)
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {

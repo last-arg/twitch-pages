@@ -10,33 +10,27 @@ title: "Home | Twitch Pages"
       <nav aria-label="Main">
         <ul class="flex fluid-gap-s" role="list">
           <li>
-            <a href="/" class="menu-item" ts-req-history="/" ts-swap="inner"
-              ts-req="/public/partials/top-games.html" ts-target="#main"
-            >Home</a>
+            <a href="/" class="menu-item" ts-req-history="/" ts-swap="inner" ts-req="/public/partials/top-games.html"
+              ts-target="#main">Home</a>
           </li>
           <li>
-            <a href="/settings" class="menu-item" ts-swap="inner"
-              ts-req="/public/partials/settings.html" ts-target="#main"
-              ts-req-history="/settings"
-            >Settings</a>
+            <a href="/settings" class="menu-item" ts-swap="inner" ts-req="/public/partials/settings.html"
+              ts-target="#main" ts-req-history="/settings">Settings</a>
           </li>
         </ul>
       </nav>
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar" sb-listen="nav.handle:click">
-        <ul class="flex fluid-gap-s h-full justify-end" role="list">
+        <ul sb-prevent="input" class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" action="javascript:void(0);" 
-              sb-prevent="submit" sb-listen="nav.handle_input:input"
-            >
+            <form role="search" action="javascript:void(0);" sb-listen="nav.handle_input:input">
               <label class="sr-only" for="game_name">Search for games</label>
-              <input type="search" id="game_name" name="game_name"
-                placeholder="Search for games" aria-expanded="false"
-                sb-listen-focus="handle_focus"
-                sb-listen="handle_blur:blur"
-              >
+              <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false"
+                sb-listen-focus="handle_focus" sb-listen="handle_blur:blur">
               <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="menu-item" data-menu-item="search" type="button">
-                <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#looking-class"></use></svg>
+                <svg aria-hidden="true" focusable="false">
+                  <use href="/public/assets/icons.svg#looking-class"></use>
+                </svg>
                 <span class="sr-only">Search for games</span>
               </button>
               <!-- search sidebar -->
@@ -53,62 +47,65 @@ title: "Home | Twitch Pages"
                 <!-- games list -->
                 <scroll-container>
                   <template @attributes="({':ref': 'game_item'})">
-                    <li class="flex" @attributes="({':each': 'item in follow.games', ':key': 'item.id'})">
-                      <link-box @name="category" @obj="item">
-                        <p @attributes="({':text': 'item.name'})"></p>
-                      </link-box>
-                      <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
-                    </li>
-                  </template>
-                  <!-- TODO: strawberry add 'click' and 'mousedown' event handlers
+          <li class="flex" @attributes="({':each': 'item in follow.games', ':key': 'item.id'})">
+            <link-box @name="category" @obj="item">
+              <p @attributes="({':text': 'item.name'})"></p>
+            </link-box>
+            <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
+          </li>
+          </template>
+          <!-- TODO: strawberry add 'click' and 'mousedown' event handlers
                   @attributes="({'render': 'game_item', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})"
                   -->
-                  <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
-                    <template sb-mark="follow_games.#">
-                      <li class="flex">
-                        <link-box @name="category" @obj="follow_games.#">
-                          <p sb-mark="follow_games.#.name">item</p>
-                        </link-box>
-                        <follow-star data-colormode="dark" @arg="game" @obj="follow_games.#"></follow-star>
-                      </li>
-                    </template>
-                  </ul>
-                </scroll-container>
-              </div>
-            </div>
-          </li>
-          <li>
-            <!-- streams button -->
-            <menu-button @name="streams" @icon="people"></menu-button>
-            <!-- streams sidebar -->
-            <div class="sidebar-position">
-              <div class="sidebar-content">
-                <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
-                <!-- streams list -->
-                <scroll-container>
-                  <template @attributes="({':ref': 'stream_list'})">
-                    <li class="flex" @attributes="({':each': 'item in follow.streams', ':key': 'item.user_id'})" data-card="stream">
-                      <link-box @name="user-videos" @obj="item">
-                        <p class="card-title" @attributes="({':text': 'item.user_name'})"></p>
-                        <div class="js-card-live card-live hidden">
-                          <span>LIVE</span>
-                          <p>[Game name]</p>
-                        </div>
-                      </link-box>
-                      <follow-star data-colormode="dark" @arg="stream" @obj="item"></follow-star>
-                    </li>
-                  </template>
-                  <ul @attributes="({':render': 'stream_list', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})" class="js-streams-list stack stack-s" role="list"></ul>
-                </scroll-container>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </nav>
+          <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
+            <template sb-mark="follow_games.#">
+              <li class="flex">
+                <link-box @name="category" @obj="follow_games.#">
+                  <p sb-mark="follow_games.#.name">item</p>
+                </link-box>
+                <follow-star data-colormode="dark" @arg="game" @obj="follow_games.#"></follow-star>
+              </li>
+            </template>
+          </ul>
+          </scroll-container>
     </div>
-  </header>
-  <main class="wrapper" id="main" tabindex="-1" ts-swap="inner" @attributes="({'@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})">
-    Loading...
-  </main>
+</div>
+</li>
+<li>
+  <!-- streams button -->
+  <menu-button @name="streams" @icon="people"></menu-button>
+  <!-- streams sidebar -->
+  <div class="sidebar-position">
+    <div class="sidebar-content">
+      <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
+      <!-- streams list -->
+      <scroll-container>
+        <template @attributes="({':ref': 'stream_list'})">
+<li class="flex" @attributes="({':each': 'item in follow.streams', ':key': 'item.user_id'})" data-card="stream">
+  <link-box @name="user-videos" @obj="item">
+    <p class="card-title" @attributes="({':text': 'item.user_name'})"></p>
+    <div class="js-card-live card-live hidden">
+      <span>LIVE</span>
+      <p>[Game name]</p>
+    </div>
+  </link-box>
+  <follow-star data-colormode="dark" @arg="stream" @obj="item"></follow-star>
+</li>
+</template>
+<ul
+  @attributes="({':render': 'stream_list', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})"
+  class="js-streams-list stack stack-s" role="list"></ul>
+</scroll-container>
+</div>
+</div>
+</li>
+</ul>
+</nav>
+</div>
+</header>
+<main class="wrapper" id="main" tabindex="-1"
+  @attributes="({'@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})">
+  Loading...
+</main>
 </div>
 <div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>
