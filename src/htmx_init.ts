@@ -96,7 +96,7 @@ export function initHtmx() {
         const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.title = `${item.name} | Twitch Pages`;
-        document.querySelector("#param-game_id")!.setAttribute("value", item.id);
+        document.querySelector(".btn-load-more")!.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
         htmx.trigger(".btn-load-more", "click", {})
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
         const game_obj_str = encodeURIComponent(JSON.stringify(item));
@@ -154,10 +154,13 @@ export function initHtmx() {
         }
         
         const cursor = json.pagination.cursor;
+        const btn = document.querySelector(".btn-load-more")!;
         if (cursor) {
-          document.querySelector("#param-after")!.setAttribute("value", cursor);
+          const hx_vals = JSON.parse(btn.getAttribute("hx-vals") || "{}");
+          hx_vals.after = cursor;
+          btn.setAttribute("hx-vals", JSON.stringify(hx_vals));
         } else {
-          document.querySelector("#param-after")!.removeAttribute("value");
+          btn.removeAttribute("hx-vals");
         }
         return result;
       } else if (path === "/helix/users") {

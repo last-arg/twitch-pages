@@ -4,8 +4,7 @@ permalink: "public/partials/category.html"
 <div id="page-category">
   <div class="flex flex-wrap content-start gap-4">
     <div id="category-header" class="flex place-items-start">
-      <div ts-req="/helix/games" ts-trigger="load" ts-target="#category-header" 
-        ts-swap="inner" ts-req-selector="div"></div>
+      <div hx-ext="twitch-api" hx-get="/helix/games" hx-trigger="load" hx-target="#category-header"></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
         <heading-link @name="game">
@@ -24,7 +23,7 @@ permalink: "public/partials/category.html"
       <template webc:keep webc:type="11ty" id="category-streams-template">
         <li class="simple-fade-in" data-title=":title_encoded">
           <div class="user">
-            <a class="user-link" href="https://twitch.tv/:user_login" title=":title" ts-ignore rel="external">
+            <a class="user-link" href="https://twitch.tv/:user_login" title=":title" rel="external">
               <div class="relative">
                 <img src="#video_img_url" alt="" 
                   :width="$data.global.config.image.video.width" 
@@ -39,8 +38,8 @@ permalink: "public/partials/category.html"
               </div>
             </a>
             <div class="user-info">
-              <a class="user-info-img-link" aria-hidden="true" href="#video_url" ts-swap="inner"
-                ts-req-history="#video_url" :ts-req="$data.global.paths['user-videos'].html" ts-target="#main"
+              <a class="user-info-img-link" aria-hidden="true" href="#video_url"
+                hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
               >
                 <img class="block w-14" src="#user_img" alt="" 
                   :width="$data.global.config.image.user.width" 
@@ -48,14 +47,14 @@ permalink: "public/partials/category.html"
               </a>
               <div class="fluid-ml-2xs flex flex-col justify-between">
                 <div class="flex items-center">
-                  <a class="user-info-link" href="#video_url" ts-req-history="#video_url" 
-                    :ts-req="$data.global.paths['user-videos'].html" ts-target="#main" ts-swap="inner"
+                  <a class="user-info-link" href="#video_url" hx-push-url="#video_url" 
+                    :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
                   >:user_name</a>
                   <span class="user-info-follow">
                     <button-follow @name="stream"></button-follow>
                   </span>
                 </div>
-                <a class="external-video" href="https://www.twitch.tv/:user_login/videos" ts-ignore rel="external">
+                <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">
                   Twitch videos
                   <svg aria-hidden="true" focusable="false">
                     <use href="/public/assets/icons.svg#external-link"></use>
