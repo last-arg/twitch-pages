@@ -10,12 +10,12 @@ title: "Home | Twitch Pages"
       <nav aria-label="Main">
         <ul class="flex fluid-gap-s" role="list">
           <li>
-            <a href="/" class="menu-item" ts-req-history="/" ts-swap="inner" ts-req="/public/partials/top-games.html"
-              ts-target="#main">Home</a>
+            <a href="/" class="menu-item" hx-push-url="/" hx-get="/public/partials/top-games.html"
+              hx-target="#main">Home</a>
           </li>
           <li>
-            <a href="/settings" class="menu-item" ts-swap="inner" ts-req="/public/partials/settings.html"
-              ts-target="#main" ts-req-history="/settings">Settings</a>
+            <a href="/settings" class="menu-item" hx-get="/public/partials/settings.html"
+              hx-target="#main" hx-push-url="/settings">Settings</a>
           </li>
         </ul>
       </nav>
