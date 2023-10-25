@@ -295,7 +295,6 @@ const extra_globals = {
     encode_json(obj: any) {
         return encodeURIComponent(JSON.stringify(obj));
     },
-    handle_path_change: handlePathChange,
     handle_follow(e: Event) {
         gameAndStreamFollow.call(this, e.target as Element);
         // TODO: find better solution. fire only when changed
@@ -505,7 +504,7 @@ function getUrlObject(newPath: string): UrlResolve {
 async function startup() {
     await twitch.fetchToken();
     initHtmx();
-    initHeader(document.body)
+    document.body.addEventListener("mousedown", handlePathChange)
     initSidebarScroll();
     if (live_check + live_check_ms < Date.now()) {
         updateLiveUsers();
@@ -557,19 +556,6 @@ function resetFilter() {
 function initFilter(root: Element) {
     const search_form = root.querySelector(".search-form")!;
     g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
-}
-
-function initHeader(root: Element) {
-    initHeaderSearch()
-    initHeaderStreams(root);
-}
-
-function initHeaderStreams(root: Element) {
-    streams_list.addEventListener("mousedown", handlePathChange)
-}
-
-function initHeaderSearch() {
-    search_list.addEventListener("mousedown", handlePathChange);
 }
 
 function gameAndStreamFollow(t: Element) {  
@@ -631,8 +617,8 @@ function gameAndStreamFollow(t: Element) {
 
 function handlePathChange(e: Event) {
     const target = e.target as Element;
-    const hx_link = target.closest("a[ts-req-history]");
-    current_path(hx_link?.getAttribute("ts-req-history") || null);
+    const hx_link = target.closest("a[hx-push-url]");
+    current_path(hx_link?.getAttribute("hx-push-url") || null);
 }
 
 function initSettings(root: Element) {
