@@ -7,7 +7,7 @@
 	<title @raw="title"></title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
-  <script defer webc:keep src="/public/js/main.js" history-selector="#main"></script>
+  <script defer webc:keep src="/public/js/main.js"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/" />
 </head>
 <body>

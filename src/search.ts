@@ -18,7 +18,7 @@ export const search_results = act(() => {
     if (term.length > 0) {
         feedback_elem.textContent = "Searching...";
         search_timeout = window.setTimeout(async () => {
-            const results = await twitch.fetchSearch(search_term());
+            const results = await twitch.fetchSearch(term);
             if (results.length === 0) {
                 feedback_elem.textContent = "Found no games";
                 search_list.innerHTML = "";

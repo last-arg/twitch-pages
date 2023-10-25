@@ -4,7 +4,7 @@ title: "Home | Twitch Pages"
 ---
 <a class="skip-content" href="#main">skip to content</a>
 <h1 class="sr-only">Twich Pages</h1>
-<div id="app" @attributes="({':init': 'image.f()'})">
+<div id="app">
   <header class="fixed z-1">
     <div class="wrapper flex flex-wrap align-stretch fluid-gap-s relative">
       <nav aria-label="Main">
@@ -14,15 +14,15 @@ title: "Home | Twitch Pages"
               hx-target="#main">Home</a>
           </li>
           <li>
-            <a href="/settings" class="menu-item" hx-get="/public/partials/settings.html"
-              hx-target="#main" hx-push-url="/settings">Settings</a>
+            <a href="/settings" class="menu-item" hx-get="/public/partials/settings.html" hx-target="#main"
+              hx-push-url="/settings">Settings</a>
           </li>
         </ul>
       </nav>
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar" sb-listen="nav.handle:click">
         <ul sb-prevent="input" class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" action="javascript:void(0);" sb-listen="nav.handle_input:input">
+            <form role="search" hx-on:input="search_term(event)">
               <label class="sr-only" for="game_name">Search for games</label>
               <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false"
                 sb-listen-focus="handle_focus" sb-listen="handle_blur:blur">
@@ -54,9 +54,6 @@ title: "Home | Twitch Pages"
             <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
           </li>
           </template>
-          <!-- TODO: strawberry add 'click' and 'mousedown' event handlers
-                  @attributes="({'render': 'game_item', '@click': 'handle_follow(event)', '@mousedown': 'handle_path_change(event)'})"
-                  -->
           <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
             <template sb-mark="follow_games.#">
               <li class="flex">

@@ -24,7 +24,6 @@ export function twitchCatImageSrc(url_template: string, width: number, height: n
 // TODO: improve updating DOM 
 // Update main content follows
 export function renderGames(base_elem: Element, target:Element, data: Game[]) {
-    return;
     const frag = document.createDocumentFragment();
     for (const game of data) {
         const new_item = base_elem.cloneNode(true) as Element;

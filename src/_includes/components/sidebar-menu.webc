@@ -4,15 +4,15 @@
     <p class="search-feedback"></p>
     <!-- search results -->
     <scroll-container>
-      <template @attributes="({':ref': 'search_item'})">
-        <li class="flex" @attributes="({':each': 'val, idx in s_results', ':text': 'idx'})">
-        </li>
-      </template>
       <ul class="js-search-list stack stack-s" role="list" @attributes="({':render': 'search_item'})"></ul>
-      <!-- TODO: remove -->
-      <template>
-      hello
-      </template>
+        <template>
+          <li class="flex">
+            <link-box @name="category">
+              <p>item</p>
+            </link-box>
+            <follow-star data-colormode="dark" @arg="search"></follow-star>
+          </li>
+        </template>
       <li class="flex" @attributes="({':each': 'val, idx in s_results', ':text': 'idx'})"></li>
     </scroll-container>
   </div>

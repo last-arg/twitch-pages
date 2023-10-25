@@ -20,6 +20,13 @@ declare global {
     }
 }
 
+window.search_term = function(e) {
+    e.preventDefault();
+    console.log("searchval", e.target.value); 
+    search_term(e.target.value);
+    search_results();
+};
+
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-live")) {
