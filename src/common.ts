@@ -33,7 +33,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const link = new_item.querySelector(".link-box")!;
         const href = "/directory/game/" + encodeURIComponent(game.name); 
         link.setAttribute("href", href)
-        link.setAttribute("ts-req-history", href)
+        link.setAttribute("hx-push-url", href)
         const img = link.querySelector("img")!;
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
         const btn = new_item.querySelector(".button-follow")!;
@@ -61,7 +61,7 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         const link = new_item.querySelector(".link-box")!;
         const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
         link.setAttribute("href", href)
-        link.setAttribute("ts-req-history", href)
+        link.setAttribute("hx-push-url", href)
         // const img = link.querySelector("img")!;
         // img.src = twitchCatImageSrc(stream.box_art_url, config.image.category.width, config.image.category.height);
         const btn = new_item.querySelector(".button-follow")!;

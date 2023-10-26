@@ -1,30 +1,8 @@
-<script webc:type="js">
-let src = "";
-this.webc.attributes.attrs_img = {};
-if (this.name === "user-videos") {
-  sb_attr = `${this.obj}.user_name:href`;
-  src = `user_url(${this.obj}.user_name)`;
-  // this.webc.attributes.attrs_img[":with"] = `{id: image.user_src(${this.obj}.user_id)}`;
-  // this.webc.attributes.attrs_img[":src"] = "id";
-  this.webc.attributes.attrs_img[":src"] = `image.user_src(${this.obj}.user_id)`;
-  // this.webc.attributes.attrs_img[":src"] = `image.profiles[${this.obj}.user_id]?.url || '#' + image.fetch_ids.push(${this.obj}.user_id)`;
-} else {
-  sb_attr = `${this.obj}.name:href,ts-req-history:cat_url`;
-  this.webc.attributes.attrs_img["sb-attr-src"] = `${this.obj}.box_art_url:cat_img_src`;
-}
-this.webc.attributes.attrs = {
-    ':href:ts-req-history': src, 
-    'sb-attr': sb_attr,
-}
-''
-</script>
 <div webc:root class="flex-grow">
-  <a class="link-box" href="#" 
-    ts-target="#main" ts-swap="inner"
-    :ts-req="`/public/partials/${name}.html`"
+  <a class="link-box" href="#" hx-push-url="#"
+    hx-target="#main"
+    :hx-get="`/public/partials/${name}.html`"
     :data-card="name"
-    @attributes="attrs"
-    :sb-attr="sb-attr"
   >
     <img webc:if="name === 'user-videos'" src="" alt="" @attributes="attrs_img"
       :width="$data.global.config.image.user.width" 
