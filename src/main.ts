@@ -228,9 +228,76 @@ const follow = {
     save_streams() {
         localStorage.setItem("streams", JSON.stringify(this.streams))
     },
+    toggleStreamFollow(item: StreamLocal, following: boolean): FollowUpdate {
+        const streams = this.streams;
+        if (following) {
+            let i = 0;
+            for (; i < streams.length; i++) {
+                const stream = streams[i];
+                if (stream.user_id === item.user_id) {
+                    break;
+                }
+            }
+            if (i === streams.length) {
+                return false;
+            }
+            console.log("idx", i)
+            streams.splice(i, 1);
+
+            // TODO: remove live user
+            // removeLiveUser(item.user_id);
+        } else {
+            streams.push(item)
+            streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
+            // TODO: add live user
+            // addLiveUser(twitch, item.user_id);
+        }
+        return "stream";
+    },
+    toggleGameFollow(item: Game, following: boolean): FollowUpdate {
+        const games = this.games;
+        if (following) {
+            let i = 0;
+            for (; i < games.length; i++) {
+                const game = games[i];
+                if (game.id === item.id) {
+                    break;
+                }
+            }
+            if (i === games.length) {
+                return false;
+            }
+            games.splice(i, 1);
+        } else {
+            games.push(item)
+            games.sort((a: Game, b: Game) => a.name > b.name);
+        }
+        return "game";
+    }
 }
 
 window.follow = follow;
+
+type FollowUpdate = "stream" | "game" | false;
+
+function gameAndStreamFollow(t: Element): FollowUpdate {
+    const btn = t.closest(".button-follow");
+    var result: FollowUpdate = false;
+    if (btn) {
+        const item_raw = btn.getAttribute("data-item");
+        if (item_raw) {
+            const item_untyped = JSON.parse(decodeURIComponent(item_raw));
+            const following = (btn.getAttribute("data-is-followed") || "false") === "true";
+            if (item_untyped.user_id) {
+                result = follow.toggleStreamFollow(item_untyped as StreamLocal, following);
+            } else {
+                result = follow.toggleGameFollow(item_untyped as Game, following);
+            }
+            btn.setAttribute("data-is-followed", (!following).toString())
+        }
+    }
+    return result;
+}
 
 document.addEventListener("click", function(e: Event) {
     const update_type = gameAndStreamFollow(e.target)
@@ -450,68 +517,6 @@ function initFilter(root: Element) {
     g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
 }
 
-type FollowUpdate = "stream" | "game" | false;
-
-function gameAndStreamFollow(t: Element): FollowUpdate {
-    const btn = t.closest(".button-follow");
-    var result: FollowUpdate = false;
-    if (btn) {
-        const item_raw = btn.getAttribute("data-item");
-        if (item_raw) {
-            const item_untyped = JSON.parse(decodeURIComponent(item_raw));
-            const following = (btn.getAttribute("data-is-followed") || "false") === "true";
-            if (item_untyped.user_id) {
-                const item = item_untyped as StreamLocal;
-                const streams = window.follow.streams;
-                if (following) {
-                    let i = 0;
-                    for (; i < streams.length; i++) {
-                        const stream = streams[i];
-                        if (stream.user_id === item.user_id) {
-                            break;
-                        }
-                    }
-                    if (i === streams.length) {
-                        return result;
-                    }
-                    console.log("idx", i)
-                    streams.splice(i, 1);
-
-                    // TODO: remove live user
-                    // removeLiveUser(item.user_id);
-                } else {
-                    streams.push(item)
-                    streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
-                    // TODO: add live user
-                    // addLiveUser(twitch, item.user_id);
-                }
-                result = "stream";
-            } else {
-                const item = item_untyped as Game;
-                const games = window.follow.games;
-                if (following) {
-                    let i = 0;
-                    for (; i < games.length; i++) {
-                        const game = games[i];
-                        if (game.id === item.id) {
-                            break;
-                        }
-                    }
-                    if (i === games.length) {
-                        return result;
-                    }
-                    games.splice(i, 1);
-                } else {
-                    games.push(item)
-                    games.sort((a: Game, b: Game) => a.name > b.name);
-                }
-                result = "game";
-            }
-            btn.setAttribute("data-is-followed", (!following).toString())
-        }
-    }
-    return result;
-}
 
 function handlePathChange(e: Event) {
     const target = e.target as Element;
