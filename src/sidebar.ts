@@ -1,6 +1,6 @@
 import { act } from "@artalar/act";
 import { renderGames } from "./common";
-// import { games, games_list, games_scrollbox, game_tmpl } from "./games";
+import { games, games_list, games_scrollbox, game_tmpl } from "./games";
 import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
@@ -10,6 +10,9 @@ export function renderSidebarItems(state: SidebarState) {
     if (state === "search") {
         renderGames(search_item_tmpl, search_list, search_items);
         sidebarShadows(search_scrollbox);
+    } else if (state === "games") {
+        renderGames(game_tmpl, games_list, games);
+        sidebarShadows(games_scrollbox);
     }
 }
 
