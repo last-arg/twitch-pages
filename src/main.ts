@@ -6,9 +6,7 @@ import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profil
 import { API_URL, Game, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
-import { topGamesRender, gamesRender, streamsRender, usersRender, videosRender } from './render';
 import {initHtmx} from "./htmx_init";
-import * as sb from './libs/strawberry';
 // @ts-ignore
 // import events from 'eventslibjs';
 // console.log(events);
@@ -63,155 +61,6 @@ const fns = {
     },
 }
 
-// NOTE: can't add several attributes with different values
-sb.directive("attr", function({el, param, value}) {
-    let v = value as string;
-    if (param) {
-        const params = param.split(":");
-        const fn_name = params[1] as (keyof typeof fns | undefined);
-        if (fn_name) {
-            const fn = fns[fn_name];
-            v = fn(v);
-        }
-        for (const key of params[0].split(",")) {
-            el.setAttribute(key, v);
-        }
-    }
-}, true)
-
-sb.directive("attr-src", function({el, param, value}) {
-    let v = value as string;
-    if (param) {
-        const fn_name = param as (keyof typeof fns | undefined);
-        if (fn_name) {
-            const fn = fns[fn_name];
-            v = fn(v);
-        }
-    }
-    el.setAttribute("src", v);
-}, true);
-
-sb.directive("listen", function({ el, value, param }) {
-    if (param) {
-        el.addEventListener(param, value as any);
-    }
-  },
-  true
-);
-
-sb.directive("listen-focus", function({ el, value }) {
-    if (value) {
-        el.addEventListener("focus", value as any);
-    }
-});
-
-sb.directive("prevent", function({el, value}) {
-    console.log("prevent", el, value)
-    // el.addEventListener("click", () => console.log("click prevetn"));
-}, false);
-
-// TODO: why isn't this working?
-// sb.directive("test", function({ el, value }) {
-//     console.log("prevent", value, el)
-//     if (value) {
-//         el.addEventListener(value as string, (e: Event) => {
-//             e.preventDefault(); 
-//             console.log("prev");
-//         });
-//     }
-// });
-
-// document.querySelector("form[role=search]")?.addEventListener("submit", (e: Event) => {
-//     console.log("submit")
-//     // e.preventDefault();  
-// });
-
-type SB_Data = {
-    filter_value: string,
-    follow_games: Game[],
-    prevent: (e: Event) => void
-    handle_focus: (e: Event) => void
-    handle_blur: (e: Event) => void
-    nav: {
-        state: SidebarState,
-        search_input: string,
-        handle: (e: Event) => void,
-        handle_input: (e: Event) => void,
-        search_results: () => void,
-    },
-    follow: {
-        games: Game[],
-        streams: StreamLocal[],
-        has_game: (id: string) => string, // "true" | "false"
-        has_stream: (id: string) => string, // "true" | "false"
-    },
-} & ReturnType<typeof sb.init>;
-
-const sb_data = sb.init() as SB_Data;
-
-sb_data.filter_value = "";
-sb_data.follow_games = [];
-sb_data.handle_focus = () => (e: Event) => {
-    search_term((e.target as HTMLInputElement).value);
-    sidebar_state("search")
-    search_results();
-};
-sb_data.handle_blur = () => (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    if (input.value.length === 0) {
-        sidebar_state("closed")
-    }
-};
-
-
-const feedback_elem = document.querySelector(".search-feedback")!;
-let search_timeout = 0;
-sb_data.nav = {
-    state: "closed",
-    search_input: "",
-    handle() { 
-        return (e: Event) => {
-            const curr = this.state;
-            const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
-            if (btn?.classList.contains("menu-item")) {
-                const new_state = btn.getAttribute("data-menu-item");
-                if (new_state) {
-                    if (curr === new_state) {
-                        this.state = "closed"
-                    } else {
-                        this.state = new_state as SidebarState;
-                    } 
-                }
-                sidebar_state_change(this.state);
-            } else if (btn?.classList.contains("btn-close")) {
-                this.state = "closed"
-                sidebar_state_change(this.state);
-            }
-        }
-    },
-    handle_input() {
-        return (e: InputEvent) => {
-            e.preventDefault();
-            const el = e.target as (HTMLInputElement | undefined);
-            this.search_input = el?.value.trim() || "";
-        }
-    },
-    search_results() {
-        clearTimeout(search_timeout);
-        const val = this.search_input;
-        if (val.length === 0) {
-            feedback_elem.textContent = "Enter game name to search";
-            // TODO: empty DOM or variable that holds search results
-            return;
-        }
-
-        feedback_elem.textContent = "Searching...";
-        search_timeout = window.setTimeout(() => {
-            console.log("fetch search results", val);
-            // TODO: fetch and render. search_results
-        }, 400);
-    },
-};
 
 const follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
@@ -309,23 +158,6 @@ document.addEventListener("click", function(e: Event) {
     }
 });
 
-document.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-        const el = e.target as Element
-        if (el.id === "game_name") {
-            sb_data.nav.state = "closed";
-            sidebar_state_change(sb_data.nav.state);
-        }
-    }
-});
-
-window.filterResults = filterResults;
-function filterResults(ev: InputEvent) {
-    sb_data.filter_value = (ev.target as HTMLInputElement).value || "";
-}
-
-sb.watch("filter_value", pageFilter);
-
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
@@ -385,27 +217,6 @@ const extra_globals = {
         gameAndStreamFollow.call(this, e.target as Element);
     },
 };
-
-document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
-    const elem = e.target as Element;
-    if (elem.id === "page-category") {
-        initFilter(elem);
-    } else if (elem.id === "page-user") {
-        initUserVideoTypeFilter(elem)
-        initFilter(elem);
-    } else if (elem.id === "page-settings") {
-        document.title = "Settings | Twitch Pages";
-        initSettings(elem);
-        // twinspark.replaceState(window.location.toString());
-    } else if (elem.id === "page-home") {
-        document.title = "Home | Twitch Pages";
-        // twinspark.replaceState(window.location.toString());
-    } else if (elem.tagName === "LI") {
-        // TODO: limit this on pages that need it
-        // pages: top-games (root)
-    } else if (elem.classList.contains("user-heading-box")) {
-    }
-});
 
 function initUserVideoTypeFilter(elem: Element) {
     const fieldset = elem.querySelector(".filter-video-type");
