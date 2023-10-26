@@ -46,60 +46,53 @@ title: "Home | Twitch Pages"
                 <sidebar-header @sb_title="Games" @icon="game-controller"></sidebar-header>
                 <!-- games list -->
                 <scroll-container>
-                  <template @attributes="({':ref': 'game_item'})">
-          <li class="flex" @attributes="({':each': 'item in follow.games', ':key': 'item.id'})">
-            <link-box @name="category" @obj="item">
-              <p @attributes="({':text': 'item.name'})"></p>
-            </link-box>
-            <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
+                  <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
+                    <template>
+                      <li class="flex">
+                        <link-box @name="category" @obj="item">
+                          <p></p>
+                        </link-box>
+                        <follow-star data-colormode="dark" @arg="game" @obj="item"></follow-star>
+                      </li>
+                    </template>
+                  </ul>
+                </scroll-container>
+              </div>
+            </div>
           </li>
-          </template>
-          <ul class="js-games-list stack stack-s" style="--stack-space: var(--space-s)" role="list">
-            <template sb-mark="follow_games.#">
-              <li class="flex">
-                <link-box @name="category" @obj="follow_games.#">
-                  <p sb-mark="follow_games.#.name">item</p>
-                </link-box>
-                <follow-star data-colormode="dark" @arg="game" @obj="follow_games.#"></follow-star>
-              </li>
-            </template>
-          </ul>
-          </scroll-container>
+          <li>
+            <!-- streams button -->
+            <menu-button @name="streams" @icon="people"></menu-button>
+            <!-- streams sidebar -->
+            <div class="sidebar-position">
+              <div class="sidebar-content">
+                <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
+                <!-- streams list -->
+                <scroll-container>
+                  <ul class="js-streams-list stack stack-s" role="list">
+                    <template @attributes="({':ref': 'stream_list'})">
+                      <li class="flex" data-card="stream">
+                        <link-box @name="user-videos" @obj="item">
+                          <p class="card-title"></p>
+                          <div class="js-card-live card-live hidden">
+                            <span>LIVE</span>
+                            <p>[Game name]</p>
+                          </div>
+                        </link-box>
+                        <follow-star data-colormode="dark" @arg="stream" @obj="item"></follow-star>
+                      </li>
+                    </template>
+                  </ul>
+                </scroll-container>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
     </div>
-</div>
-</li>
-<li>
-  <!-- streams button -->
-  <menu-button @name="streams" @icon="people"></menu-button>
-  <!-- streams sidebar -->
-  <div class="sidebar-position">
-    <div class="sidebar-content">
-      <sidebar-header @sb_title="Streams" @icon="people"></sidebar-header>
-      <!-- streams list -->
-      <scroll-container>
-        <template @attributes="({':ref': 'stream_list'})">
-<li class="flex" @attributes="({':each': 'item in follow.streams', ':key': 'item.user_id'})" data-card="stream">
-  <link-box @name="user-videos" @obj="item">
-    <p class="card-title" @attributes="({':text': 'item.user_name'})"></p>
-    <div class="js-card-live card-live hidden">
-      <span>LIVE</span>
-      <p>[Game name]</p>
-    </div>
-  </link-box>
-  <follow-star data-colormode="dark" @arg="stream" @obj="item"></follow-star>
-</li>
-</template>
-<ul class="js-streams-list stack stack-s" role="list"></ul>
-</scroll-container>
-</div>
-</div>
-</li>
-</ul>
-</nav>
-</div>
-</header>
-<main class="wrapper" id="main" tabindex="-1">
-  Loading...
-</main>
+  </header>
+  <main class="wrapper" id="main" tabindex="-1">
+    Loading...
+  </main>
 </div>
 <div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>

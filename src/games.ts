@@ -7,7 +7,7 @@ const remove_ids = act<string[]>([]);
 const add_games = act<Game[]>([]);
 
 export const games_list = document.querySelector(".js-games-list")!;
-export const game_tmpl = (games_list?.previousElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const game_tmpl = (games_list?.firstElementChild as HTMLTemplateElement).content.firstElementChild!;
 export const games_scrollbox = games_list.parentElement!;
 
 const sel_start = "[data-for=\"game\"][data-item-id=\"";

@@ -280,7 +280,7 @@ window.follow = follow;
 
 type FollowUpdate = "stream" | "game" | false;
 
-function gameAndStreamFollow(t: Element): FollowUpdate {
+function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
     const btn = t.closest(".button-follow");
     var result: FollowUpdate = false;
     if (btn) {
@@ -300,7 +300,7 @@ function gameAndStreamFollow(t: Element): FollowUpdate {
 }
 
 document.addEventListener("click", function(e: Event) {
-    const update_type = gameAndStreamFollow(e.target)
+    const update_type = gameAndStreamFollow(e.target as HTMLElement)
 
     if (update_type === "game") {
         follow.save_games();

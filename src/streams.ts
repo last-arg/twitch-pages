@@ -9,7 +9,7 @@ import { twitch } from "./main";
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
 export const streams_list = document.querySelector(".js-streams-list")!;
-export const stream_tmpl = (streams_list?.previousElementSibling! as HTMLTemplateElement).content.firstElementChild!;
+export const stream_tmpl = (streams_list?.firstElementChild! as HTMLTemplateElement).content.firstElementChild!;
 export const streams_scrollbox = streams_list.parentElement!;
 
 const key_streams = "streams"
@@ -285,4 +285,8 @@ export function saveProfileImages() {
 export function clearProfiles() {
     profiles = {};
     localStorage.setItem(key_profile, JSON.stringify(profiles));
+}
+
+export function isStreamFollowed(input_id: string) {
+    return streams.some(({user_id}) => input_id === user_id);
 }

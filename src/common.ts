@@ -1,5 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
+import { isStreamFollowed, StreamLocal } from "./streams";
 
 export const API_URL = "https://api.twitch.tv"
 
@@ -39,6 +40,34 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         btn.setAttribute("data-item-id", game.id)
         btn.setAttribute("data-is-followed", isGameFollowed(game.id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(game));
+        btn.setAttribute("data-item", encoded_game);
+        const span = btn.querySelector("span")!;
+        span.textContent = "Unfollow";
+        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
+        external_link.href = "https://www.twitch.tv" + href;
+        frag.append(new_item);
+    }
+    target.replaceChildren(frag);
+}
+
+// TODO: improve updating DOM 
+// Update main content follows
+export function renderStreams(base_elem: Element, target:Element, data: StreamLocal[]) {
+    const frag = document.createDocumentFragment();
+    for (const stream of data) {
+        const new_item = base_elem.cloneNode(true) as Element;
+        const p = new_item.querySelector("p")!;
+        p.textContent = decodeURIComponent(stream.user_name);
+        const link = new_item.querySelector(".link-box")!;
+        const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
+        link.setAttribute("href", href)
+        link.setAttribute("ts-req-history", href)
+        // const img = link.querySelector("img")!;
+        // img.src = twitchCatImageSrc(stream.box_art_url, config.image.category.width, config.image.category.height);
+        const btn = new_item.querySelector(".button-follow")!;
+        btn.setAttribute("data-item-id", stream.user_id)
+        btn.setAttribute("data-is-followed", isStreamFollowed(stream.user_id).toString())
+        const encoded_game = encodeURIComponent(JSON.stringify(stream));
         btn.setAttribute("data-item", encoded_game);
         const span = btn.querySelector("span")!;
         span.textContent = "Unfollow";
