@@ -177,7 +177,7 @@ export function initHtmx() {
         const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.title = `${item.display_name} | Twitch Pages`;
-        document.querySelector("#param-user_id")!.setAttribute("value", item.id);
+        document.querySelector(".btn-load-more")!.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
         htmx.ajax('GET', '/helix/videos', {source:'.btn-load-more'})
         const item_json = encodeURIComponent(JSON.stringify({
            user_id: item.id,
@@ -240,10 +240,13 @@ export function initHtmx() {
         elArchives.textContent = new_len_archive;
         
         const cursor = json.pagination.cursor;
+        const btn_more = document.querySelector(".btn-load-more")!
         if (cursor) {
-          document.querySelector("#param-after")!.setAttribute("value", cursor);
+          const obj = JSON.parse(btn_more.getAttribute("hx-vals") || "{}");
+          obj.after = cursor;
+          btn_more.setAttribute("hx-vals", JSON.stringify(obj));
         } else {
-          document.querySelector("#param-after")!.removeAttribute("value");
+          btn_more.removeAttribute("hx-vals");
         }
 
         return result;
