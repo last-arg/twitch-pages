@@ -22,10 +22,9 @@ title: "Home | Twitch Pages"
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar" sb-listen="nav.handle:click">
         <ul sb-prevent="input" class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
-            <form role="search" hx-on:input="search_term(event)">
+            <form role="search">
               <label class="sr-only" for="game_name">Search for games</label>
-              <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false"
-                sb-listen-focus="handle_focus" sb-listen="handle_blur:blur">
+              <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false">
               <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="menu-item" data-menu-item="search" type="button">
                 <svg aria-hidden="true" focusable="false">

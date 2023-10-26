@@ -18,12 +18,6 @@ declare global {
     }
 }
 
-window.search_term = function(e) {
-    e.preventDefault();
-    search_term(e.target.value);
-    search_results();
-};
-
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-live")) {
@@ -50,17 +44,6 @@ const key_streams_live = `${key_streams}.live`
 const key_live_check = `${key_streams_live}.last_check`
 const key_profile = `profile`;
 const key_profile_check = `${key_profile}.last_check`;
-
-const fns = {
-    cat_img_src: function(src: string) {
-        const c_img = config.image.category;
-        return twitchCatImageSrc(src, c_img.width, c_img.height);
-    },
-    cat_url: function(name: string): string {
-        return `/directory/game/${window.encodeURIComponent(name)}`;
-    },
-}
-
 
 const follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
@@ -156,7 +139,37 @@ document.addEventListener("click", function(e: Event) {
     } else if (update_type === "stream") {
         follow.save_streams();
     }
+
+    const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+    if (btn?.classList.contains("menu-item")) {
+        const new_state = btn.getAttribute("data-menu-item") as SidebarState || "closed";
+        sidebar_state_change(new_state);
+    } else if (btn?.classList.contains("btn-close")) {
+        sidebar_state_change("closed");
+    }
 });
+
+const form_search = document.querySelector("form")!;
+const input_search = form_search.querySelector("#game_name")!;
+
+form_search.addEventListener("input", function(e: Event) {
+    e.preventDefault();
+    search_term((e.target as HTMLInputElement).value);
+    search_results();
+});
+
+input_search.addEventListener("focus", function(e: Event) {
+    search_term((e.target as HTMLInputElement).value)    
+    sidebar_state("search");
+    search_results();
+});
+
+input_search.addEventListener("blur", function(e: Event) {
+    if ((e.target as HTMLInputElement).value.length === 0) {
+        sidebar_state("closed")
+    }
+});
+
 
 export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
