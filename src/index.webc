@@ -19,8 +19,8 @@ title: "Home | Twitch Pages"
           </li>
         </ul>
       </nav>
-      <nav class="sidebar-nav flex-grow" aria-label="Sidebar" sb-listen="nav.handle:click">
-        <ul sb-prevent="input" class="flex fluid-gap-s h-full justify-end" role="list">
+      <nav class="sidebar-nav flex-grow" aria-label="Sidebar">
+        <ul class="flex fluid-gap-s h-full justify-end" role="list">
           <li class="flex-grow">
             <form role="search">
               <label class="sr-only" for="game_name">Search for games</label>
@@ -69,7 +69,7 @@ title: "Home | Twitch Pages"
                 <!-- streams list -->
                 <scroll-container>
                   <ul class="js-streams-list stack stack-s" role="list">
-                    <template @attributes="({':ref': 'stream_list'})">
+                    <template>
                       <li class="flex" data-card="stream">
                         <link-box @name="user-videos" @obj="item">
                           <p class="card-title"></p>
