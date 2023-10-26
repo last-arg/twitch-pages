@@ -22,7 +22,6 @@ declare global {
 
 window.search_term = function(e) {
     e.preventDefault();
-    console.log("searchval", e.target.value); 
     search_term(e.target.value);
     search_results();
 };
@@ -214,7 +213,7 @@ sb_data.nav = {
     },
 };
 
-sb_data.follow = {
+const follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
     streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]"),
     has_game(id: string) {
@@ -223,7 +222,25 @@ sb_data.follow = {
     has_stream(id: string) {
         return this.streams.some((stream) => stream.user_id === id).toString();
     },
+    save_games() {
+        localStorage.setItem("games", JSON.stringify(this.games))
+    },
+    save_streams() {
+        localStorage.setItem("streams", JSON.stringify(this.streams))
+    },
 }
+
+window.follow = follow;
+
+document.addEventListener("click", function(e: Event) {
+    const update_type = gameAndStreamFollow(e.target)
+
+    if (update_type === "game") {
+        follow.save_games();
+    } else if (update_type === "stream") {
+        follow.save_streams();
+    }
+});
 
 document.addEventListener("keyup", (e: KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -239,11 +256,6 @@ window.filterResults = filterResults;
 function filterResults(ev: InputEvent) {
     sb_data.filter_value = (ev.target as HTMLInputElement).value || "";
 }
-
-sb.watch("nav.state", function(val) {
-    console.log("state", val)
-});
-sb_data.follow_games = JSON.parse(localStorage.getItem("games") ?? "[]");
 
 sb.watch("filter_value", pageFilter);
 
@@ -304,135 +316,8 @@ const extra_globals = {
     },
     handle_follow(e: Event) {
         gameAndStreamFollow.call(this, e.target as Element);
-        // TODO: find better solution. fire only when changed
-        localStorage.setItem("games", JSON.stringify(this.follow.games))
-        localStorage.setItem("streams", JSON.stringify(this.follow.streams))
     },
 };
-
-document.addEventListener("ts-req-before", (e) => {
-    const req = e.detail?.req;
-    const url_str = req.url;
-    if (url_str && url_str.startsWith("/helix/games/top")) {
-        const url = new URL(url_str, API_URL)
-        const req_url = url.toString();
-        req.opts.data.set("first", settings.general()["top-games-count"]);
-        req.url = req_url;
-        req.opts.headers = Twitch.headers;
-    } else if (url_str && url_str.startsWith("/helix/games")) {
-        const url = new URL(url_str, API_URL)
-        const req_url = url.toString();
-        req.url = req_url;
-        req.opts.headers = Twitch.headers;
-
-        const path = current_path() || location.pathname;
-        const path_arr = path.split("/")
-        req.opts.data.set("name", decodeURIComponent(path_arr[path_arr.length - 1]));
-        current_path(null)
-    } else if (url_str && url_str.startsWith("/helix/streams")) {
-        const url = new URL(url_str, API_URL)
-        const req_url = url.toString();
-        req.url = req_url;
-        req.opts.data.set("first", settings.general()["category-count"]);
-        if (!settings.category().show_all) {
-          req.opts.data.set("language", settings.category().languages);
-        }
-        req.opts.headers = Twitch.headers;
-    } else if (url_str && url_str.startsWith("/helix/users")) {
-        const url = new URL(url_str, API_URL)
-        const req_url = url.toString();
-        req.url = req_url;
-        req.opts.headers = Twitch.headers;
-        const path = current_path() || location.pathname;
-        const path_arr = path.split("/")
-        req.opts.data.set("login", decodeURIComponent(path_arr[1]));
-        current_path(null)
-    } else if (url_str && url_str.startsWith("/helix/videos")) {
-        const url = new URL(url_str, API_URL)
-        const req_url = url.toString();
-        req.url = req_url;
-        req.opts.data.set("first", settings.general()["user-videos-count"]);
-        req.opts.headers = Twitch.headers;
-    }
-});
-
-document.addEventListener("ts-req-ok", (e) => {
-    const detail = e.detail;
-    const url_str = detail.url;
-    if (!url_str) {
-        return;
-    }
-    const url = new URL(url_str);
-    if (url.host !== "api.twitch.tv") {
-        return;
-    }
-
-    if (url.pathname.startsWith("/helix/games/top")) {
-        const json = JSON.parse(detail.content);
-        detail.content = topGamesRender(json);
-        const cursor = json.pagination.cursor;
-        const btn = document.querySelector(".btn-load-more");
-        if (cursor) {
-            btn?.setAttribute("aria-disabled", "false");
-            btn?.setAttribute("ts-data", "after=" + cursor);
-        } else {
-            btn?.setAttribute("aria-disabled", "true");
-            btn?.removeAttribute("ts-data");
-        }
-    } else if (url.pathname.startsWith("/helix/games")) {
-        const json = JSON.parse(detail.content);
-        // TODO: Failed response
-        detail.content = gamesRender(json);
-        detail.headers["ts-title"] = `${json.data[0].name} | Twitch Pages`;
-        const game_id = json.data[0].id;
-        const btn = document.querySelector(".btn-load-more")!;
-        btn.parentElement!.setAttribute("ts-data", "game_id=" + game_id);
-        btn.dispatchEvent(new CustomEvent("click"));
-    } else if (url.pathname.startsWith("/helix/streams")) {
-        const json = JSON.parse(detail.content);
-        detail.content = streamsRender(json);
-
-        const btn = document.querySelector(".btn-load-more")!;
-        const cursor = json.pagination.cursor;
-        if (cursor) {
-            btn.setAttribute("aria-disabled", "false");
-            btn.setAttribute("ts-data", "after=" + cursor);
-        } else {
-            btn.setAttribute("aria-disabled", "true");
-            btn?.removeAttribute("ts-data");
-        }
-    } else if (url.pathname.startsWith("/helix/users")) {
-        const json = JSON.parse(detail.content);
-        if (detail.status !== 200 || json.data.length === 0) {
-            const pathArr = location.pathname.split("/")
-            return `
-              <h2>${decodeURIComponent(pathArr[1])}</h2>
-              <div id="feedback" ts-swap-push="#feedback">User not found</div>
-            `;
-        }
-
-        detail.content = usersRender(json);
-        detail.headers["ts-title"] = `${json.data[0].display_name} | Twitch Pages`;
-        const user_id = json.data[0].id;
-        const btn = document.querySelector(".btn-load-more")!;
-        btn.parentElement!.setAttribute("ts-data", "user_id=" + user_id);
-        btn.dispatchEvent(new CustomEvent("click"));
-    } else if (url.pathname.startsWith("/helix/videos")) {
-        const json = JSON.parse(detail.content);
-        detail.content = videosRender(json);
-
-        const btn = document.querySelector(".btn-load-more")!;
-        const cursor = json.pagination.cursor;
-        if (cursor) {
-            btn.setAttribute("aria-disabled", "false");
-            btn.setAttribute("ts-data", "after=" + cursor);
-        } else {
-            btn.setAttribute("aria-disabled", "true");
-            btn?.removeAttribute("ts-data");
-        }
-    }
-    return;
-});
 
 document.querySelector("#main")!.addEventListener("ts-ready", (e) => {
     const elem = e.target as Element;
@@ -565,8 +450,11 @@ function initFilter(root: Element) {
     g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
 }
 
-function gameAndStreamFollow(t: Element) {  
-    const btn = t.classList.contains("button-follow") ? t : t.closest(".button-follow");
+type FollowUpdate = "stream" | "game" | false;
+
+function gameAndStreamFollow(t: Element): FollowUpdate {
+    const btn = t.closest(".button-follow");
+    var result: FollowUpdate = false;
     if (btn) {
         const item_raw = btn.getAttribute("data-item");
         if (item_raw) {
@@ -574,7 +462,7 @@ function gameAndStreamFollow(t: Element) {
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (item_untyped.user_id) {
                 const item = item_untyped as StreamLocal;
-                const streams = this.follow.streams;
+                const streams = window.follow.streams;
                 if (following) {
                     let i = 0;
                     for (; i < streams.length; i++) {
@@ -584,7 +472,7 @@ function gameAndStreamFollow(t: Element) {
                         }
                     }
                     if (i === streams.length) {
-                        return;
+                        return result;
                     }
                     console.log("idx", i)
                     streams.splice(i, 1);
@@ -597,9 +485,10 @@ function gameAndStreamFollow(t: Element) {
                     // TODO: add live user
                     // addLiveUser(twitch, item.user_id);
                 }
+                result = "stream";
             } else {
                 const item = item_untyped as Game;
-                const games = this.follow.games;
+                const games = window.follow.games;
                 if (following) {
                     let i = 0;
                     for (; i < games.length; i++) {
@@ -609,17 +498,19 @@ function gameAndStreamFollow(t: Element) {
                         }
                     }
                     if (i === games.length) {
-                        return;
+                        return result;
                     }
                     games.splice(i, 1);
                 } else {
                     games.push(item)
                     games.sort((a: Game, b: Game) => a.name > b.name);
                 }
+                result = "game";
             }
             btn.setAttribute("data-is-followed", (!following).toString())
         }
     }
+    return result;
 }
 
 function handlePathChange(e: Event) {
