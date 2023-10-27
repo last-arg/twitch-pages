@@ -13,10 +13,13 @@ import {initHtmx} from "./htmx_init";
 
 declare global {
     interface Window { 
-        filterResults: typeof filterResults; 
-        resetFilter: typeof resetFilter;
+        follow: typeof follow; 
     }
 }
+
+// TODO: when opening streams sidebar check for missing live stream ids. 
+
+export const twitch = new Twitch();
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
@@ -30,7 +33,7 @@ window.addEventListener("htmx:load", (e: Event) => {
             link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
             elem_card.classList.remove("hidden");
         } else {
-            // TODO: check if user is live
+            addLiveUser(twitch, stream_id);
         }
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
@@ -78,7 +81,6 @@ const follow = {
         } else {
             streams.push(item)
             streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
-            addLiveUser(twitch, item.user_id);
         }
         return "stream";
     },
@@ -138,7 +140,11 @@ document.addEventListener("click", function(e: Event) {
 
     const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
     if (btn?.classList.contains("menu-item")) {
-        const new_state = btn.getAttribute("data-menu-item") as SidebarState || "closed";
+        let new_state = btn.getAttribute("data-menu-item") as SidebarState || "closed";
+        const is_expanded = btn.getAttribute("aria-expanded") || "false";
+        if (is_expanded === "true") {
+            new_state = "closed"
+        }
         sidebar_state_change(new_state);
     } else if (btn?.classList.contains("btn-close")) {
         sidebar_state_change("closed");
@@ -167,7 +173,6 @@ input_search.addEventListener("blur", function(e: Event) {
 });
 
 
-export const twitch = new Twitch();
 const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
 
