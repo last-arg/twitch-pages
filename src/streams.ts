@@ -184,35 +184,6 @@ function renderLiveUpdate(ids: string[]) {
     live_check_updates.length = 0;
 };
 
-export function updateLiveStreams(streams: StreamTwitch[]) {
-    const live_streams = live_streams_local();
-    if (streams.length >= 0) {
-        const new_ids = streams.map(({user_id}) => user_id);
-        for (const user_id of Object.keys(live_streams)) {
-           if (!new_ids.includes(user_id)) {
-                live_check_removes.push(user_id);
-                delete live_streams[user_id];
-           }
-        }
-        for (const stream of streams) {
-            const user_id = stream.user_id;
-            const game = stream.game_name;
-            const curr_game = live_streams[user_id];
-            if (!curr_game) {
-                live_check_adds.push(user_id);
-                live_streams[user_id] = game;
-            } else if (curr_game && curr_game !== game) {
-                live_check_updates.push(user_id);
-                live_streams[user_id] = game;
-            }
-        }
-    }
-
-    live_check = Date.now();
-    localStorage.setItem(key_live_check, live_check.toString());
-    live_streams_local(Object.assign({}, live_streams_local()));
-}
-
 function renderLiveStreamSidebar(id: string) {
     const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
     if (card) {

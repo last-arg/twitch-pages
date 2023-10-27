@@ -23,7 +23,7 @@ declare global {
 
 export const twitch = new Twitch();
 
-const live_users = persistentAtom<Record<string, string>>("live_users", {}, {
+const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
@@ -37,6 +37,47 @@ const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: str
         }
     }
 });
+
+const live_last_update = persistentAtom<number>("live_last_update", 0, {
+    encode: (val) => val.toString(),
+    decode: (val) => parseInt(val, 10),
+});
+
+const live_check_ms = 300000; // 5 minutes
+live_last_update.subscribe(function(last_update) {
+    if (last_update + live_check_ms < Date.now()) {
+        updateLiveUsers();
+    } else {
+        setTimeout(updateLiveUsers, live_check_ms);
+    }
+})
+
+const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
+    const users = store.get();
+    for (const stream of streams) {
+        users[stream.user_id] = stream.game_name;
+    }
+
+    for (const id of curr_ids) {
+        if (!streams.some(({user_id}) => user_id === id)) {
+            delete users[id];
+        }
+    }
+
+    live_users.set(users);
+    live_last_update.set(Date.now())
+});
+
+async function updateLiveUsers() {
+    // TODO: concat with live_users ids?
+    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
+    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
+    console.log(new_live_streams)
+    updateLiveStreams(curr_ids, new_live_streams);
+    setTimeout(updateLiveUsers, live_check_ms);
+}
+
+
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
@@ -129,7 +170,6 @@ input_search.addEventListener("blur", function(e: Event) {
 });
 
 
-const live_check_ms = 600000; // 10 minutes
 let g_sheet: CSSStyleSheet | null = null;
 
 const extra_globals = { 
@@ -246,11 +286,6 @@ async function startup() {
     initHtmx();
     document.body.addEventListener("mousedown", handlePathChange)
     initSidebarScroll();
-    if (live_check + live_check_ms < Date.now()) {
-        updateLiveUsers();
-    } else {
-        setTimeout(updateLiveUsers, live_check_ms);
-    }
     removeOldProfileImages();
 };
 window.addEventListener("DOMContentLoaded", startup);
@@ -266,13 +301,6 @@ function removeOldProfileImages() {
     }
 
     saveProfileImages();
-}
-
-async function updateLiveUsers() {
-    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
-    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
-    updateLiveStreams(new_live_streams);
-    setTimeout(updateLiveUsers, live_check_ms);
 }
 
 function pageFilter(input: unknown) {
