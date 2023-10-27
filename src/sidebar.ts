@@ -15,7 +15,6 @@ export function renderSidebarItems(state: SidebarState) {
         renderGames(game_tmpl, games_list, followed_games.get());
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
-    console.log("render")
         renderStreams(stream_tmpl, streams_list, followed_streams.get());
         sidebarShadows(streams_scrollbox);
     }

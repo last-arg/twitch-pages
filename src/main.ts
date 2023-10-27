@@ -223,9 +223,6 @@ const extra_globals = {
     encode_json(obj: any) {
         return encodeURIComponent(JSON.stringify(obj));
     },
-    handle_follow(e: Event) {
-        gameAndStreamFollow.call(this, e.target as Element);
-    },
 };
 
 function initUserVideoTypeFilter(elem: Element) {
