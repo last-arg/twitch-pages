@@ -2,12 +2,12 @@ import { Twitch } from './twitch';
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
+import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream, isStreamFollowed } from './streams';
 import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
 import { initSidebarScroll, sb_state, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
-import { action } from 'nanostores'
+import { action, atom } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
 // @ts-ignore
 // import events from 'eventslibjs';
@@ -52,6 +52,27 @@ live_last_update.subscribe(function(last_update) {
     }
 })
 
+function getLiveCount(): number {
+    let result = 0;
+    const users = live_users.get();
+    for (const key in users) {
+        if (isStreamFollowed(key)) {
+            result += 1;
+        }
+    }
+    return result;
+}
+const live_count = atom(getLiveCount());
+live_count.subscribe(function(count) {
+    const stream_count = document.querySelector(".streams-count")!;
+    if (count === 0) {
+        stream_count.classList.add("hidden")
+    } else {
+        stream_count.textContent = count.toString();
+        stream_count.classList.remove("hidden")
+    }
+});
+
 const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
     const users = store.get();
     for (const stream of streams) {
@@ -65,6 +86,7 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
     }
 
     live_users.set(users);
+    live_count.set(getLiveCount())
     live_last_update.set(Date.now())
 });
 
