@@ -6,9 +6,6 @@ import { twitch } from "./main";
 import { action } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
 
-
-// TODO: delete file
-
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
 export const streams_list = document.querySelector(".js-streams-list")!;
