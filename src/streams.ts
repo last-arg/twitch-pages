@@ -1,5 +1,6 @@
 import { act } from "@artalar/act";
-import { strCompareField, StreamTwitch, twitch } from "./common";
+import { strCompareField, StreamTwitch } from "./common";
+import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state, sidebarShadows, sidebar_state } from "./sidebar";
 import { action, atom } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
@@ -121,7 +122,6 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
     }
 
     live_users.set(users);
-    live_count.set(getLiveCount())
     live_last_update.set(Date.now())
 });
 

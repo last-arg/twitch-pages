@@ -1,5 +1,6 @@
 import {act} from '@artalar/act';
-import { Game, twitch } from './common'
+import { Game, } from './common'
+import { twitch } from './twitch'
 import { renderSidebarItems } from './sidebar';
 
 export const search_term = act("");

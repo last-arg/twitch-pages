@@ -131,3 +131,5 @@ export class Twitch {
       return result.flat();
   }
 }
+
+export const twitch = new Twitch();
