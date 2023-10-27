@@ -2,7 +2,7 @@ import { Twitch } from './twitch';
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { clearProfiles, clearStreams, live_check, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
+import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
 import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
 import { initSidebarScroll, sb_state, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
@@ -342,12 +342,12 @@ function initCacheSettings(root:  Element) {
         if (t.classList.contains("js-clear-games")) {
             clearGames();
         } else if (t.classList.contains("js-clear-streams")) {
-            clearStreams();
+            // clearStreams();
         } else if (t.classList.contains("js-clear-profiles")) {
             clearProfiles();
         } else if (t.classList.contains("js-clear-all")) {
             clearGames();
-            clearStreams();
+            // clearStreams();
             clearProfiles();
         }
     })

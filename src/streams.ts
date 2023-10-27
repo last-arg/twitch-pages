@@ -54,92 +54,6 @@ export function isStreamFollowed(input_id: string) {
 }
 
 // TODO: delete old stuff below here
-const key_streams = "streams"
-export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
-const add_streams = act<StreamLocal[]>([]);
-const remove_streams = act<string[]>([]);
-
-add_streams.subscribe((adds) => {
-    if (adds.length === 0) {
-        return;
-    }
-    
-    for (const add of adds as StreamLocal[]) {
-        if (!streams.some(stream => stream.user_id === add.user_id)) {
-            streams.push(add);
-        }
-    }
-
-    streams.sort(strCompareField("user_login"));
-    localStorage.setItem(key_streams, JSON.stringify(streams))
-
-    if (adds.length > 0) {
-        renderSidebarItems(sidebar_state());
-    }
-
-    add_streams().length = 0;
-});
-
-remove_streams.subscribe((removes) => {
-    const sel_start = "[data-for=\"stream\"][data-item-id=\"";
-    if (removes.length === 0) {
-        return;
-    }
-    
-    for (const id of removes) {
-        const index = streams.findIndex((stream) => stream.user_id === id);
-        if (index === -1) {
-            continue;
-        }
-        streams.splice(index, 1)
-    }
-
-    localStorage.setItem(key_streams, JSON.stringify(streams))
-
-    if (removes.length > 0) {
-        // remove sidebar list item(s)
-        const sel_sidebar = ".js-streams-list .button-follow[data-item-id=\"";
-        const query_selector = `${sel_sidebar}${removes.join("\"]," + sel_sidebar)}"]`;
-        const list_items = document.querySelectorAll(query_selector)
-        list_items.forEach((node) => node.closest("li")?.remove());
-        
-        // Update main content follows
-        const selector = `${sel_start}${removes.join("\"]," + sel_start)}"]`;
-        const nodes = document.querySelectorAll(selector)
-        nodes.forEach((node) => node.setAttribute("data-is-followed", "false"));
-        sidebarShadows(streams_scrollbox);
-    }
-
-    remove_streams().length = 0;
-})
-
-export function clearStreams() {
-    streams = [];
-    localStorage.setItem(key_streams, JSON.stringify(streams));
-}
-
-const key_streams_live = `${key_streams}.live`
-const key_live_check = `${key_streams_live}.last_check`
-const live_streams = JSON.parse(localStorage.getItem(key_streams_live) || "{}");
-export let live_check = parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? "0"), 10);
-const live_check_adds: string[] = Object.keys(live_streams);
-const live_check_removes: string[] = [];
-const live_check_updates: string[] = [];
-
-export const live_streams_local = act(live_streams);
-live_streams_local.subscribe((lives) => {
-    renderLiveAdd(live_check_adds);
-    renderLiveUpdate(live_check_updates);
-    renderLiveRemove(live_check_removes);
-    localStorage.setItem(key_streams_live, JSON.stringify(lives));
-})
-
-const live_count = act(() => Object.keys(live_streams_local()).length);
-
-live_count.subscribe((val) => {
-    renderLiveCount(val);
-});
-
 function renderLiveCount(count: number) {
     const stream_count = document.querySelector(".streams-count")!;
     if (count === 0) {
@@ -213,23 +127,6 @@ function createSelector(ids: string[]): string {
     const sel_start = `.js-card-live[data-stream-id="`;
     const middle = ids.join(`"],${sel_start}`);
     return `${sel_start}${middle}"]`;
-}
-
-export async function addLiveUser(twitch: Twitch, user_id: string) {
-    const live_streams = live_streams_local();
-    if (live_streams[user_id] === undefined) {
-        const stream = (await twitch.fetchStreams([user_id]))[0]
-        if (stream) {
-            live_check_adds.push(user_id);
-            live_streams_local(Object.assign({[stream.user_id]: stream.game_name}, live_streams_local()))
-        }
-    }
-}
-
-export async function removeLiveUser(user_id: string) {
-    live_check_removes.push(user_id);
-    delete live_streams_local()[user_id]
-    live_streams_local(Object.assign({}, live_streams_local()))
 }
 
 export type ProfileImage = {url: string, last_access: number};
