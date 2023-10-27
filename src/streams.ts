@@ -21,6 +21,7 @@ followed_streams.listen(function(_) {
     if (sb_state.get() === "streams") {
         renderSidebarItems("streams");
     }
+    live_count.set(getLiveCount())
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
     if (!isStreamFollowed(data.user_id)) {
@@ -28,6 +29,9 @@ export const followStream = action(followed_streams, 'followStream', async (stor
         curr.push(data);
         // TODO: copying is wasteful, do it better
         store.set([...curr]);
+        if (!live_users.get()[data.user_id]) {
+            addLiveUser(data.user_id);
+        }
     }
 });
 
@@ -55,6 +59,9 @@ export const live_users = persistentAtom<Record<string, string | undefined>>("li
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+live_users.listen(function() {
+    live_count.set(getLiveCount())
+})
 export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
     const new_value = live_users.get();
     if (!new_value[user_id]) {

@@ -16,7 +16,6 @@ declare global {
     }
 }
 
-
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-heading-box")) {
