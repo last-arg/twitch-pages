@@ -1,9 +1,7 @@
 import { act } from "@artalar/act";
-import { strCompareField, StreamTwitch } from "./common";
-import { Twitch } from "./twitch";
+import { strCompareField, StreamTwitch, twitch } from "./common";
 import { renderSidebarItems, sb_state, sidebarShadows, sidebar_state } from "./sidebar";
-import { twitch } from "./main";
-import { action } from 'nanostores'
+import { action, atom } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
@@ -52,6 +50,83 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
 export function isStreamFollowed(input_id: string) {
     return followed_streams.get().some(({user_id}) => input_id === user_id);
 }
+
+export const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
+    const new_value = live_users.get();
+    if (!new_value[user_id]) {
+        const stream = (await twitch.fetchStreams([user_id]))
+        if (stream.length > 0) {
+            new_value[user_id] = stream[0].game_name;
+            store.set(new_value);
+        }
+    }
+});
+
+const live_last_update = persistentAtom<number>("live_last_update", 0, {
+    encode: (val) => val.toString(),
+    decode: (val) => parseInt(val, 10),
+});
+
+const live_check_ms = 300000; // 5 minutes
+live_last_update.subscribe(function(last_update) {
+    if (last_update + live_check_ms < Date.now()) {
+        updateLiveUsers();
+    } else {
+        setTimeout(updateLiveUsers, live_check_ms);
+    }
+})
+
+function getLiveCount(): number {
+    let result = 0;
+    const users = live_users.get();
+    for (const key in users) {
+        if (isStreamFollowed(key)) {
+            result += 1;
+        }
+    }
+    return result;
+}
+const live_count = atom(getLiveCount());
+live_count.subscribe(function(count) {
+    const stream_count = document.querySelector(".streams-count")!;
+    if (count === 0) {
+        stream_count.classList.add("hidden")
+    } else {
+        stream_count.textContent = count.toString();
+        stream_count.classList.remove("hidden")
+    }
+});
+
+const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
+    const users = store.get();
+    for (const stream of streams) {
+        users[stream.user_id] = stream.game_name;
+    }
+
+    for (const id of curr_ids) {
+        if (!streams.some(({user_id}) => user_id === id)) {
+            delete users[id];
+        }
+    }
+
+    live_users.set(users);
+    live_count.set(getLiveCount())
+    live_last_update.set(Date.now())
+});
+
+async function updateLiveUsers() {
+    // TODO: concat with live_users ids?
+    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
+    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
+    console.log(new_live_streams)
+    updateLiveStreams(curr_ids, new_live_streams);
+    setTimeout(updateLiveUsers, live_check_ms);
+}
+
 
 // TODO: delete old stuff below here
 function renderLiveCount(count: number) {

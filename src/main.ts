@@ -1,14 +1,11 @@
-import { Twitch } from './twitch';
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream, isStreamFollowed } from './streams';
-import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
+import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream, isStreamFollowed, live_users, addLiveUser } from './streams';
+import { Game, StreamTwitch, twitchCatImageSrc, twitch } from './common';
 import { initSidebarScroll, sb_state, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
-import { action, atom } from 'nanostores'
-import { persistentAtom } from '@nanostores/persistent' 
 // @ts-ignore
 // import events from 'eventslibjs';
 // console.log(events);
@@ -18,87 +15,6 @@ declare global {
         // follow: typeof follow; 
     }
 }
-
-// TODO: when opening streams sidebar check for missing live stream ids. 
-
-export const twitch = new Twitch();
-
-const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
-    const new_value = live_users.get();
-    if (!new_value[user_id]) {
-        const stream = (await twitch.fetchStreams([user_id]))
-        if (stream.length > 0) {
-            new_value[user_id] = stream[0].game_name;
-            store.set(new_value);
-        }
-    }
-});
-
-const live_last_update = persistentAtom<number>("live_last_update", 0, {
-    encode: (val) => val.toString(),
-    decode: (val) => parseInt(val, 10),
-});
-
-const live_check_ms = 300000; // 5 minutes
-live_last_update.subscribe(function(last_update) {
-    if (last_update + live_check_ms < Date.now()) {
-        updateLiveUsers();
-    } else {
-        setTimeout(updateLiveUsers, live_check_ms);
-    }
-})
-
-function getLiveCount(): number {
-    let result = 0;
-    const users = live_users.get();
-    for (const key in users) {
-        if (isStreamFollowed(key)) {
-            result += 1;
-        }
-    }
-    return result;
-}
-const live_count = atom(getLiveCount());
-live_count.subscribe(function(count) {
-    const stream_count = document.querySelector(".streams-count")!;
-    if (count === 0) {
-        stream_count.classList.add("hidden")
-    } else {
-        stream_count.textContent = count.toString();
-        stream_count.classList.remove("hidden")
-    }
-});
-
-const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
-    const users = store.get();
-    for (const stream of streams) {
-        users[stream.user_id] = stream.game_name;
-    }
-
-    for (const id of curr_ids) {
-        if (!streams.some(({user_id}) => user_id === id)) {
-            delete users[id];
-        }
-    }
-
-    live_users.set(users);
-    live_count.set(getLiveCount())
-    live_last_update.set(Date.now())
-});
-
-async function updateLiveUsers() {
-    // TODO: concat with live_users ids?
-    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
-    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
-    console.log(new_live_streams)
-    updateLiveStreams(curr_ids, new_live_streams);
-    setTimeout(updateLiveUsers, live_check_ms);
-}
-
 
 
 window.addEventListener("htmx:load", (e: Event) => {

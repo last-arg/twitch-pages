@@ -1,4 +1,3 @@
-import { act } from "@artalar/act";
 import { renderGames, renderStreams } from "./common";
 import { followed_games, games_list, games_scrollbox, game_tmpl } from "./games";
 import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
@@ -39,7 +38,12 @@ export function sidebar_state_change(state: SidebarState) {
 }
 
 // TODO: remove this code and renmae sb_state to sidebar_state
-export const sidebar_state = () => sb_state.get();
+export const sidebar_state = (val) => {
+  if (val) {
+    sb_state.set(val);
+  }
+  return sb_state.get();
+}
 
 export function initSidebarScroll() {
   const scrollContainers = document.querySelectorAll('.scroll-container') as any;

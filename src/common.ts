@@ -1,3 +1,4 @@
+import { Twitch } from './twitch';
 import { config } from "config";
 import { isGameFollowed } from "./games";
 import { isStreamFollowed, StreamLocal } from "./streams";
@@ -17,6 +18,8 @@ export type Game = {
     id: string,
     box_art_url: string,
 }
+
+export const twitch = new Twitch();
 
 export function twitchCatImageSrc(url_template: string, width: number, height: number): string {
   return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
