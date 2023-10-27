@@ -175,8 +175,6 @@ export function updateLiveStreams(streams: StreamTwitch[]) {
                 live_streams[user_id] = game;
             }
         }
-    } else {
-        live_streams_local({});
     }
 
     live_check = Date.now();

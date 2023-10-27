@@ -2,8 +2,8 @@ import { Twitch } from './twitch';
 import { clearGames} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages } from './streams';
-import { API_URL, Game, twitchCatImageSrc } from './common';
+import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages, live_streams_local } from './streams';
+import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import {initHtmx} from "./htmx_init";
@@ -20,16 +20,17 @@ declare global {
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
-    if (elem.classList.contains("user-live")) {
-        const stream_id = elem?.getAttribute("data-stream-id");
-        if (stream_id) {
-            // const game = live_streams_local()[stream_id];
-            // if (game) {
-            //     const link = elem!.querySelector("a")!;
-            //     link.textContent = game;
-            //     link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
-            //     elem!.classList.remove("hidden");
-            // }
+    if (elem.classList.contains("user-heading-box")) {
+        const elem_card = elem!.querySelector(".js-card-live")!;
+        const stream_id = elem_card.getAttribute("data-stream-id")!;
+        const game = live_streams_local()[stream_id];
+        if (game) {
+            const link = elem_card.querySelector("a")!;
+            link.textContent = game;
+            link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+            elem_card.classList.remove("hidden");
+        } else {
+            // TODO: check if user is live
         }
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
@@ -49,10 +50,10 @@ const follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
     streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]"),
     has_game(id: string) {
-        return this.games.some((game) => game.id === id).toString();
+        return this.games.some((game: Game) => game.id === id).toString();
     },
     has_stream(id: string) {
-        return this.streams.some((stream) => stream.user_id === id).toString();
+        return this.streams.some((stream: StreamTwitch) => stream.user_id === id).toString();
     },
     save_games() {
         localStorage.setItem("games", JSON.stringify(this.games))
@@ -73,16 +74,11 @@ const follow = {
             if (i === streams.length) {
                 return false;
             }
-            console.log("idx", i)
             streams.splice(i, 1);
-
-            // TODO: remove live user
-            // removeLiveUser(item.user_id);
         } else {
             streams.push(item)
             streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
-            // TODO: add live user
-            // addLiveUser(twitch, item.user_id);
+            addLiveUser(twitch, item.user_id);
         }
         return "stream";
     },
