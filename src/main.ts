@@ -2,11 +2,13 @@ import { Twitch } from './twitch';
 import { clearGames} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { addLiveUser, addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeLiveUser, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages, live_streams_local } from './streams';
+import { addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages, live_streams_local } from './streams';
 import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
-import {initHtmx} from "./htmx_init";
+import { initHtmx } from "./htmx_init";
+import { action } from 'nanostores'
+import { persistentAtom } from '@nanostores/persistent' 
 // @ts-ignore
 // import events from 'eventslibjs';
 // console.log(events);
@@ -21,19 +23,34 @@ declare global {
 
 export const twitch = new Twitch();
 
+const live_users = persistentAtom<Record<string, string>>("live_users", {}, {
+  encode: JSON.stringify,
+  decode: JSON.parse,
+})
+const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
+    const new_value = live_users.get();
+    if (!new_value[user_id]) {
+        const stream = (await twitch.fetchStreams([user_id]))
+        if (stream.length > 0) {
+            new_value[user_id] = stream[0].game_name;
+            store.set(new_value);
+        }
+    }
+})
+
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-heading-box")) {
         const elem_card = elem!.querySelector(".js-card-live")!;
         const stream_id = elem_card.getAttribute("data-stream-id")!;
-        const game = live_streams_local()[stream_id];
+        const game = live_users.get()[stream_id];
         if (game) {
             const link = elem_card.querySelector("a")!;
             link.textContent = game;
             link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
             elem_card.classList.remove("hidden");
         } else {
-            addLiveUser(twitch, stream_id);
+            addLiveUser(stream_id);
         }
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
