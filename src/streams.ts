@@ -28,8 +28,9 @@ export const followStream = action(followed_streams, 'followStream', async (stor
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
         curr.push(data);
-        // TODO: copying is wasteful, do it better
-        store.set([...curr]);
+        // NOTE: make listen fire
+        store.set([]);
+        store.set(curr);
     }
 });
 
@@ -45,8 +46,9 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
         return;
     }
     curr.splice(i, 1);
-    // TODO: copying is wasteful, do it better
-    store.set([...curr]);
+    // NOTE: make listen fire
+    store.set([]);
+    store.set(curr);
 });
 
 export function isStreamFollowed(input_id: string) {
