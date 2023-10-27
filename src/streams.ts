@@ -24,8 +24,8 @@ followed_streams.listen(function(val) {
     console.log(val);
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
-    const curr = store.get();
-    if (!curr.some(function({user_id}) {return user_id === data.user_id})) {
+    if (!isStreamFollowed(data.user_id)) {
+        const curr = store.get();
         curr.push(data);
         store.set(curr);
     }
@@ -46,6 +46,9 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
     store.set(curr);
 });
 
+export function isStreamFollowed(input_id: string) {
+    return followed_streams.get().some(({user_id}) => input_id === user_id);
+}
 
 // TODO: delete old stuff below here
 const key_streams = "streams"
@@ -313,6 +316,3 @@ export function clearProfiles() {
     localStorage.setItem(key_profile, JSON.stringify(profiles));
 }
 
-export function isStreamFollowed(input_id: string) {
-    return streams.some(({user_id}) => input_id === user_id);
-}
