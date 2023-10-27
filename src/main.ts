@@ -1,10 +1,10 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
-import { search_term, search_results, search_list } from './search';
-import { clearProfiles, clearStreams, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream, isStreamFollowed, live_users, addLiveUser } from './streams';
-import { Game, StreamTwitch, twitchCatImageSrc } from './common';
+import { search_term, search_results, } from './search';
+import { clearProfiles, profiles, profile_check, saveProfileImages, StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser } from './streams';
+import { Game, twitchCatImageSrc } from './common';
 import { twitch } from './twitch';
-import { initSidebarScroll, sb_state, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
+import { initSidebarScroll, sb_state, SidebarState, sidebar_state } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
 // @ts-ignore
