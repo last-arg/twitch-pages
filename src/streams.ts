@@ -20,6 +20,7 @@ export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams"
     decode: JSON.parse,
 });
 followed_streams.listen(function(val) {
+    // TODO: if sidebar open render?
     console.log(val);
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
@@ -30,7 +31,7 @@ export const followStream = action(followed_streams, 'followStream', async (stor
     }
 });
 
-export const unfollowStream = action(followed_streams, 'followStream', async (store, user_id: string) => {
+export const unfollowStream = action(followed_streams, 'unfollowStream', async (store, user_id: string) => {
     const curr = store.get();
     let i = 0
     for (; i < curr.length; i++) {

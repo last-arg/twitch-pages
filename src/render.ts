@@ -1,6 +1,6 @@
 import { mainContent, config } from 'config';
 import { twitchCatImageSrc } from './common';
-import { games } from './games';
+import { followed_games, games } from './games';
 import { add_profiles, profiles } from './streams';
 
 export function gamesRender(json: any): string {
@@ -20,7 +20,7 @@ export function gamesRender(json: any): string {
     result += "</div>";
 
     // TODO: category page: display user un/follow
-    if (games.some((game) => game.id === item.id)) {
+    if (followed_games.get().some((game) => game.id === item.id)) {
        result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
     }
 

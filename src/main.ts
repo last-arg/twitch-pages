@@ -1,5 +1,5 @@
 import { Twitch } from './twitch';
-import { clearGames} from './games';
+import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { clearProfiles, clearStreams, live_check, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
@@ -15,7 +15,7 @@ import { persistentAtom } from '@nanostores/persistent'
 
 declare global {
     interface Window { 
-        follow: typeof follow; 
+        // follow: typeof follow; 
     }
 }
 
@@ -66,35 +66,7 @@ const key_live_check = `${key_streams_live}.last_check`
 const key_profile = `profile`;
 const key_profile_check = `${key_profile}.last_check`;
 
-const follow = {
-    games: JSON.parse(localStorage.getItem("games") ?? "[]"),
-    toggleGameFollow(item: Game, following: boolean): FollowUpdate {
-        const games = this.games;
-        if (following) {
-            let i = 0;
-            for (; i < games.length; i++) {
-                const game = games[i];
-                if (game.id === item.id) {
-                    break;
-                }
-            }
-            if (i === games.length) {
-                return false;
-            }
-            games.splice(i, 1);
-        } else {
-            games.push(item)
-            games.sort((a: Game, b: Game) => a.name > b.name);
-        }
-        return "game";
-    }
-}
-
-window.follow = follow;
-
-type FollowUpdate = "stream" | "game" | false;
-
-function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
+function gameAndStreamFollow(t: HTMLElement) {
     const btn = t.closest(".button-follow");
     if (btn) {
         const item_raw = btn.getAttribute("data-item");
@@ -108,7 +80,11 @@ function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
                     followStream(item_untyped as StreamLocal);
                 }
             } else {
-                follow.toggleGameFollow(item_untyped as Game, following);
+                if (following) {
+                    unfollowGame(item_untyped.id);
+                } else {
+                    followGame(item_untyped as Game);
+                }
             }
             btn.setAttribute("data-is-followed", (!following).toString())
         }

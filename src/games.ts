@@ -1,14 +1,49 @@
 import {act} from '@artalar/act';
 import { Game, strCompareField } from './common';
 import { renderSidebarItems, sidebarShadows, sidebar_state } from './sidebar';
-
-export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
-const remove_ids = act<string[]>([]);
-const add_games = act<Game[]>([]);
+import { action } from 'nanostores'
+import { persistentAtom } from '@nanostores/persistent' 
 
 export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.firstElementChild as HTMLTemplateElement).content.firstElementChild!;
 export const games_scrollbox = games_list.parentElement!;
+
+export const followed_games = persistentAtom<Game[]>("followed_games", [], {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+
+export const followGame = action(followed_games, 'followGame', async (store, data: Game) => {
+    if (!isGameFollowed(data.id)) {
+        const curr = store.get();
+        curr.push(data);
+        store.set(curr);
+    }
+});
+
+export const unfollowGame = action(followed_games, 'unfollowGame', async (store, game_id: string) => {
+    const curr = store.get();
+    let i = 0
+    for (; i < curr.length; i++) {
+        if (curr[i].id === game_id) {
+            break;
+        }
+    }
+    if (curr.length === i) {
+        return;
+    }
+    curr.splice(i, 1);
+    store.set(curr);
+});
+
+export function isGameFollowed(input_id: string): boolean {
+    return followed_games.get().some(function({id}) {return id === input_id})
+}
+
+// TODO: remove old code
+export let games: Game[] = JSON.parse(localStorage.getItem("games") ?? "[]");
+const remove_ids = act<string[]>([]);
+const add_games = act<Game[]>([]);
 
 const sel_start = "[data-for=\"game\"][data-item-id=\"";
 add_games.subscribe((adds) => {
@@ -67,10 +102,6 @@ remove_ids.subscribe((ids) => {
     
     remove_ids().length = 0;
 });
-
-export function isGameFollowed(input_id: string): boolean {
-    return games.some(({id}) => input_id === id);
-}
 
 export function addGame(game: Game) {
     add_games([...add_games(), game]);

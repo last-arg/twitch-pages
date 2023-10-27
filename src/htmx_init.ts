@@ -1,5 +1,5 @@
 import { settings, current_path } from './global';
-import { games } from './games';
+import { followed_games } from './games';
 import { API_URL, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
@@ -70,7 +70,7 @@ export function initHtmx() {
               .replace("#game_img_url", img_url)
               .replace(":item_id", item.id)
               .replace(":item_json", game_obj_str)
-            if (games.some((game) => game.id === item.id)) {
+            if (followed_games.get().some((game) => game.id === item.id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
@@ -107,7 +107,7 @@ export function initHtmx() {
           .replace(":item_json", game_obj_str)
           .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
 
-        if (games.some((game) => game.id === item.id)) {
+        if (followed_games.get().some((game) => game.id === item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
 
