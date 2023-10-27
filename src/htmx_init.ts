@@ -4,7 +4,7 @@ import { API_URL, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
 import { Twitch } from './twitch';
-import { add_profiles, profiles, streams } from './streams';
+import { add_profiles, followed_streams, profiles } from './streams';
 declare var htmx: any;
 
 export function initHtmx() {
@@ -143,7 +143,7 @@ export function initHtmx() {
               .replace(":item_json", item_json)
               .replace(":item_id", user_id)
               .replace("#user_img", profile_img_url);
-            if (streams.some((stream) => stream.user_id === user_id)) {
+            if (followed_streams.get().some((stream) => stream.user_id === user_id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
@@ -192,7 +192,7 @@ export function initHtmx() {
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
           .replace(":item_json", item_json)
           .replaceAll(":item_id", item.id);
-        if (streams.some((stream) => stream.user_id === item.id)) {
+        if (followed_streams.get().some((stream) => stream.user_id === item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
 

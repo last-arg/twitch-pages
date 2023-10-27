@@ -1,7 +1,7 @@
 import { mainContent, config } from 'config';
 import { twitchCatImageSrc } from './common';
 import { games } from './games';
-import { add_profiles, profiles, streams } from './streams';
+import { add_profiles, profiles } from './streams';
 
 export function gamesRender(json: any): string {
     let result = "";

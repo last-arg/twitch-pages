@@ -2,7 +2,7 @@ import { act } from "@artalar/act";
 import { renderGames, renderStreams } from "./common";
 import { games, games_list, games_scrollbox, game_tmpl } from "./games";
 import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
-import { streams, stream_tmpl, streams_list, streams_scrollbox } from "./streams";
+import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
 export const sidebar_state = act<SidebarState>("closed");
@@ -15,7 +15,8 @@ export function renderSidebarItems(state: SidebarState) {
         renderGames(game_tmpl, games_list, games);
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
-        renderStreams(stream_tmpl, streams_list, streams);
+    console.log("render")
+        renderStreams(stream_tmpl, streams_list, followed_streams.get());
         sidebarShadows(streams_scrollbox);
     }
 }

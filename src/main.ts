@@ -2,7 +2,7 @@ import { Twitch } from './twitch';
 import { clearGames} from './games';
 import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
-import { addStream, clearProfiles, clearStreams, live_check, profiles, profile_check, removeStream, saveProfileImages, StreamLocal, streams, streams_list, updateLiveStreams, ProfileImages, live_streams_local } from './streams';
+import { clearProfiles, clearStreams, live_check, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
 import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
 import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
@@ -24,9 +24,9 @@ declare global {
 export const twitch = new Twitch();
 
 const live_users = persistentAtom<Record<string, string>>("live_users", {}, {
-  encode: JSON.stringify,
-  decode: JSON.parse,
-})
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
 const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
     const new_value = live_users.get();
     if (!new_value[user_id]) {
@@ -36,7 +36,7 @@ const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: str
             store.set(new_value);
         }
     }
-})
+});
 
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
@@ -136,7 +136,11 @@ function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
             const item_untyped = JSON.parse(decodeURIComponent(item_raw));
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (item_untyped.user_id) {
-                result = follow.toggleStreamFollow(item_untyped as StreamLocal, following);
+                if (following) {
+                    unfollowStream(item_untyped.user_id);
+                } else {
+                    followStream(item_untyped as StreamLocal);
+                }
             } else {
                 result = follow.toggleGameFollow(item_untyped as Game, following);
             }
@@ -147,13 +151,7 @@ function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
 }
 
 document.addEventListener("click", function(e: Event) {
-    const update_type = gameAndStreamFollow(e.target as HTMLElement)
-
-    if (update_type === "game") {
-        follow.save_games();
-    } else if (update_type === "stream") {
-        follow.save_streams();
-    }
+    gameAndStreamFollow(e.target as HTMLElement)
 
     const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
     if (btn?.classList.contains("menu-item")) {
@@ -330,7 +328,7 @@ function removeOldProfileImages() {
 }
 
 async function updateLiveUsers() {
-    const curr_ids = streams.map(({user_id}) => user_id);
+    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
     const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
     updateLiveStreams(new_live_streams);
     setTimeout(updateLiveUsers, live_check_ms);

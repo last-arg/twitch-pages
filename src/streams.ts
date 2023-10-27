@@ -3,6 +3,9 @@ import { strCompareField, StreamTwitch } from "./common";
 import { Twitch } from "./twitch";
 import { renderSidebarItems, sidebarShadows, sidebar_state } from "./sidebar";
 import { twitch } from "./main";
+import { action } from 'nanostores'
+import { persistentAtom } from '@nanostores/persistent' 
+
 
 // TODO: delete file
 
@@ -12,6 +15,38 @@ export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.firstElementChild! as HTMLTemplateElement).content.firstElementChild!;
 export const streams_scrollbox = streams_list.parentElement!;
 
+export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams", [], {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+});
+followed_streams.listen(function(val) {
+    console.log(val);
+});
+export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
+    const curr = store.get();
+    if (!curr.some(function({user_id}) {return user_id === data.user_id})) {
+        curr.push(data);
+        store.set(curr);
+    }
+});
+
+export const unfollowStream = action(followed_streams, 'followStream', async (store, user_id: string) => {
+    const curr = store.get();
+    let i = 0
+    for (; i < curr.length; i++) {
+        if (curr[i].user_id === user_id) {
+            break;
+        }
+    }
+    if (curr.length === i) {
+        return;
+    }
+    curr.splice(i, 1);
+    store.set(curr);
+});
+
+
+// TODO: delete old stuff below here
 const key_streams = "streams"
 export let streams: StreamLocal[] = JSON.parse(localStorage.getItem(key_streams) ?? "[]");
 const add_streams = act<StreamLocal[]>([]);
@@ -70,14 +105,6 @@ remove_streams.subscribe((removes) => {
 
     remove_streams().length = 0;
 })
-
-export function addStream(item: StreamLocal) {
-    add_streams([...add_streams(), item]);
-};
-
-export function removeStream(id: string) {
-    remove_streams([...remove_streams(), id]);
-};
 
 export function clearStreams() {
     streams = [];
