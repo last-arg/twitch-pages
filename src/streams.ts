@@ -1,7 +1,7 @@
 import { act } from "@artalar/act";
 import { strCompareField, StreamTwitch } from "./common";
 import { Twitch } from "./twitch";
-import { renderSidebarItems, sidebarShadows, sidebar_state } from "./sidebar";
+import { renderSidebarItems, sb_state, sidebarShadows, sidebar_state } from "./sidebar";
 import { twitch } from "./main";
 import { action } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
@@ -19,15 +19,20 @@ export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams"
     encode: JSON.stringify,
     decode: JSON.parse,
 });
-followed_streams.listen(function(val) {
-    // TODO: if sidebar open render?
-    console.log(val);
+followed_streams.listen(function(_) {
+    // TODO: have check items in <main> also 
+    // - user page heading
+    // - category page list (user/stream) items
+    if (sb_state.get() === "streams") {
+        renderSidebarItems("streams");
+    }
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
         curr.push(data);
-        store.set(curr);
+        // TODO: copying is wasteful, do it better
+        store.set([...curr]);
     }
 });
 
@@ -43,7 +48,8 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
         return;
     }
     curr.splice(i, 1);
-    store.set(curr);
+    // TODO: copying is wasteful, do it better
+    store.set([...curr]);
 });
 
 export function isStreamFollowed(input_id: string) {

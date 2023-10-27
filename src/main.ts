@@ -4,7 +4,7 @@ import { settings, current_path } from './global';
 import { search_term, search_results, search_list } from './search';
 import { clearProfiles, clearStreams, live_check, profiles, profile_check, saveProfileImages, StreamLocal, updateLiveStreams, ProfileImages, followed_streams, unfollowStream, followStream } from './streams';
 import { API_URL, Game, StreamTwitch, twitchCatImageSrc } from './common';
-import { initSidebarScroll, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
+import { initSidebarScroll, sb_state, SidebarState, sidebar_state, sidebar_state_change } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
 import { action } from 'nanostores'
@@ -142,9 +142,9 @@ document.addEventListener("click", function(e: Event) {
         if (is_expanded === "true") {
             new_state = "closed"
         }
-        sidebar_state_change(new_state);
+        sb_state.set(new_state);
     } else if (btn?.classList.contains("btn-close")) {
-        sidebar_state_change("closed");
+        sb_state.set("closed");
     }
 });
 

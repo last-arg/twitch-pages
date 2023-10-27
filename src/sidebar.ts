@@ -3,9 +3,14 @@ import { renderGames, renderStreams } from "./common";
 import { followed_games, games_list, games_scrollbox, game_tmpl } from "./games";
 import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
 import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
+import { atom } from 'nanostores'
 
 export type SidebarState = "closed" | "games" | "streams" | "search"
-export const sidebar_state = act<SidebarState>("closed");
+export const sb_state = atom<SidebarState>("closed");
+
+sb_state.listen(function(state) {
+  sidebar_state_change(state)
+});
 
 export function renderSidebarItems(state: SidebarState) {
     if (state === "search") {
@@ -33,7 +38,8 @@ export function sidebar_state_change(state: SidebarState) {
     }
 }
 
-sidebar_state.subscribe(sidebar_state_change)
+// TODO: remove this code and renmae sb_state to sidebar_state
+export const sidebar_state = () => sb_state.get();
 
 export function initSidebarScroll() {
   const scrollContainers = document.querySelectorAll('.scroll-container') as any;
