@@ -68,39 +68,6 @@ const key_profile_check = `${key_profile}.last_check`;
 
 const follow = {
     games: JSON.parse(localStorage.getItem("games") ?? "[]"),
-    streams: JSON.parse(localStorage.getItem(key_streams) ?? "[]"),
-    has_game(id: string) {
-        return this.games.some((game: Game) => game.id === id).toString();
-    },
-    has_stream(id: string) {
-        return this.streams.some((stream: StreamTwitch) => stream.user_id === id).toString();
-    },
-    save_games() {
-        localStorage.setItem("games", JSON.stringify(this.games))
-    },
-    save_streams() {
-        localStorage.setItem("streams", JSON.stringify(this.streams))
-    },
-    toggleStreamFollow(item: StreamLocal, following: boolean): FollowUpdate {
-        const streams = this.streams;
-        if (following) {
-            let i = 0;
-            for (; i < streams.length; i++) {
-                const stream = streams[i];
-                if (stream.user_id === item.user_id) {
-                    break;
-                }
-            }
-            if (i === streams.length) {
-                return false;
-            }
-            streams.splice(i, 1);
-        } else {
-            streams.push(item)
-            streams.sort((a: StreamLocal, b: StreamLocal) => a.user_name.toLowerCase() > b.user_name.toLowerCase())
-        }
-        return "stream";
-    },
     toggleGameFollow(item: Game, following: boolean): FollowUpdate {
         const games = this.games;
         if (following) {
@@ -129,7 +96,6 @@ type FollowUpdate = "stream" | "game" | false;
 
 function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
     const btn = t.closest(".button-follow");
-    var result: FollowUpdate = false;
     if (btn) {
         const item_raw = btn.getAttribute("data-item");
         if (item_raw) {
@@ -142,12 +108,11 @@ function gameAndStreamFollow(t: HTMLElement): FollowUpdate {
                     followStream(item_untyped as StreamLocal);
                 }
             } else {
-                result = follow.toggleGameFollow(item_untyped as Game, following);
+                follow.toggleGameFollow(item_untyped as Game, following);
             }
             btn.setAttribute("data-is-followed", (!following).toString())
         }
     }
-    return result;
 }
 
 document.addEventListener("click", function(e: Event) {
