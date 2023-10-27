@@ -1,6 +1,6 @@
 import {act} from '@artalar/act';
 import { Game, strCompareField } from './common';
-import { renderSidebarItems, sidebarShadows, sidebar_state } from './sidebar';
+import { renderSidebarItems, sidebarShadows, sb_state } from './sidebar';
 import { action } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
 
@@ -13,11 +13,22 @@ export const followed_games = persistentAtom<Game[]>("followed_games", [], {
     decode: JSON.parse,
 });
 
+followed_games.listen(function(_) {
+    // TODO: have check items in <main> also 
+    // - home page: list (game) items
+    // - category page: heading
+    if (sb_state.get() === "games") {
+        renderSidebarItems("games");
+    }
+});
+
+
 export const followGame = action(followed_games, 'followGame', async (store, data: Game) => {
     if (!isGameFollowed(data.id)) {
         const curr = store.get();
         curr.push(data);
-        store.set(curr);
+        // TODO: copying is wasteful, do it better
+        store.set([...curr]);
     }
 });
 
@@ -33,7 +44,8 @@ export const unfollowGame = action(followed_games, 'unfollowGame', async (store,
         return;
     }
     curr.splice(i, 1);
-    store.set(curr);
+    // TODO: copying is wasteful, do it better
+    store.set([...curr]);
 });
 
 export function isGameFollowed(input_id: string): boolean {

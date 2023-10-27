@@ -18,8 +18,8 @@ export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams"
 });
 followed_streams.listen(function(_) {
     // TODO: have check items in <main> also 
-    // - user page heading
-    // - category page list (user/stream) items
+    // - user page: heading
+    // - category page: list (user/stream) items
     if (sb_state.get() === "streams") {
         renderSidebarItems("streams");
     }
@@ -28,9 +28,8 @@ export const followStream = action(followed_streams, 'followStream', async (stor
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
         curr.push(data);
-        // NOTE: make listen fire
-        store.set([]);
-        store.set(curr);
+        // TODO: copying is wasteful, do it better
+        store.set([...curr]);
     }
 });
 
@@ -46,9 +45,8 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
         return;
     }
     curr.splice(i, 1);
-    // NOTE: make listen fire
-    store.set([]);
-    store.set(curr);
+    // TODO: copying is wasteful, do it better
+    store.set([...curr]);
 });
 
 export function isStreamFollowed(input_id: string) {
