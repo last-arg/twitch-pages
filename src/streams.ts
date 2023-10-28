@@ -1,7 +1,7 @@
 import { act } from "@artalar/act";
-import { strCompareField, StreamTwitch } from "./common";
+import { StreamTwitch } from "./common";
 import { twitch } from "./twitch"
-import { renderSidebarItems, sb_state, sidebarShadows, sidebar_state } from "./sidebar";
+import { renderSidebarItems, sb_state } from "./sidebar";
 import { action, atom } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
 

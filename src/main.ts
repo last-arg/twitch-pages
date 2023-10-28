@@ -4,7 +4,7 @@ import { search_term, search_results, } from './search';
 import { clearProfiles, profiles, profile_check, saveProfileImages, StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser } from './streams';
 import { Game, twitchCatImageSrc } from './common';
 import { twitch } from './twitch';
-import { initSidebarScroll, sb_state, SidebarState, sidebar_state } from './sidebar';
+import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
 import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
 // @ts-ignore
@@ -97,13 +97,13 @@ form_search.addEventListener("input", function(e: Event) {
 
 input_search.addEventListener("focus", function(e: Event) {
     search_term((e.target as HTMLInputElement).value)    
-    sidebar_state("search");
+    sb_state.set("search");
     search_results();
 });
 
 input_search.addEventListener("blur", function(e: Event) {
     if ((e.target as HTMLInputElement).value.length === 0) {
-        sidebar_state("closed")
+        sb_state.set("closed")
     }
 });
 

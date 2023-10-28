@@ -37,14 +37,6 @@ export function sidebar_state_change(state: SidebarState) {
     }
 }
 
-// TODO: remove this code and renmae sb_state to sidebar_state
-export const sidebar_state = (val) => {
-  if (val) {
-    sb_state.set(val);
-  }
-  return sb_state.get();
-}
-
 export function initSidebarScroll() {
   const scrollContainers = document.querySelectorAll('.scroll-container') as any;
   for (const scrollContainer of scrollContainers) {

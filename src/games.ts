@@ -72,7 +72,7 @@ add_games.subscribe((adds) => {
     localStorage.setItem("games", JSON.stringify(games))
 
     if (adds.length > 0) {
-        renderSidebarItems(sidebar_state());
+        renderSidebarItems(sb_state.get());
 
         // This is needed because can follow/unfollow games from search sidebar
         const middle = (adds as Game[]).map(game => game.id).join("\"]," + sel_start);
