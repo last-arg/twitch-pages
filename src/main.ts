@@ -1,6 +1,6 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
-import { search_term, search_results, } from './search';
+import { search_value, } from './search';
 import { clearProfiles, profiles, profile_check, saveProfileImages, StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser } from './streams';
 import { Game, twitchCatImageSrc } from './common';
 import { twitch } from './twitch';
@@ -91,13 +91,12 @@ const input_search = form_search.querySelector("#game_name")!;
 
 form_search.addEventListener("input", function(e: Event) {
     e.preventDefault();
-    search_term((e.target as HTMLInputElement).value);
-    search_results();
+    search_value.set((e.target as HTMLInputElement).value);
 });
 
 input_search.addEventListener("focus", function(e: Event) {
-    search_term((e.target as HTMLInputElement).value)    
     sb_state.set("search");
+    search_value.set((e.target as HTMLInputElement).value);
     search_results();
 });
 
