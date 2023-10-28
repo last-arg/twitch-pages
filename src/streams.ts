@@ -56,12 +56,22 @@ export function isStreamFollowed(input_id: string) {
     return followed_streams.get().some(({user_id}) => input_id === user_id);
 }
 
+let live_removes: string[] = [];
+let live_updates: string[] = [];
+let live_adds: string[] = followed_streams.get().map(({user_id}) => user_id);
 export const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 live_users.listen(function() {
+    console.log("update live users info")
     live_count.set(getLiveCount())
+    renderLiveRemove(live_removes);
+    live_removes.length = 0;
+    renderLiveUpdate(live_updates);
+    live_updates.length = 0;
+    renderLiveAdd(live_adds);
+    live_adds.length = 0;
 })
 export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
     const new_value = live_users.get();
@@ -73,6 +83,66 @@ export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_
         }
     }
 });
+
+function renderLiveRemove(ids: string[]) {
+    if (ids.length === 0)  {
+        return;
+    }
+
+    const sel_start = `.js-card-live[data-stream-id="`;
+    const middle = ids.join(`"],${sel_start}`);
+    const selector = `${sel_start}${middle}"]`;
+
+    document.querySelectorAll(selector).forEach(node => node.classList.add("hidden"));
+};
+
+function renderLiveUpdate(ids: string[]) {
+    if (ids.length === 0)  {
+        return;
+    }
+    const live_streams = live_users.get();
+    for (const id of ids) {
+        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
+        cards.forEach(node => node.textContent = live_streams[id] || "")
+    }
+};
+
+function renderLiveAdd(ids: string[]) {
+    if (ids.length === 0) {
+        return;
+    }
+    if (sb_state.get() === "streams") {
+        for (const id of ids) {
+            renderLiveStreamSidebar(id)
+        }
+    }
+    if (document.location.pathname.endsWith("/videos")) {
+        for (const id of ids) {
+            renderLiveStreamPageUser(id);
+        }
+    }
+}
+
+function renderLiveStreamSidebar(id: string) {
+    const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
+    if (card) {
+        const p = card.querySelector("p")!;
+        p.textContent = live_users.get()[id] || "";
+        card.classList.remove("hidden")
+    }
+}
+
+function renderLiveStreamPageUser(id: string) {
+    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
+    if (card) {
+        const live_streams = live_streams_local();
+        const a = card.querySelector("a")!;
+        const game = live_streams[id];
+        a.textContent = game;
+        a.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+        card.classList.remove("hidden")
+    }
+}
 
 const live_last_update = persistentAtom<number>("live_last_update", 0, {
     encode: (val) => val.toString(),
@@ -112,16 +182,28 @@ live_count.subscribe(function(count) {
 
 const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
     const users = store.get();
+    const updates = [];
+    const adds = [];
     for (const stream of streams) {
+        if (users[stream.user_id])  {
+            updates.push(stream.user_id)
+        } else {
+            adds.push(stream.user_id)
+        }
         users[stream.user_id] = stream.game_name;
     }
 
+    const removes = []
     for (const id of curr_ids) {
         if (!streams.some(({user_id}) => user_id === id)) {
+            removes.push(id);
             delete users[id];
         }
     }
 
+    live_removes = removes;
+    live_adds = adds;
+    live_updates = updates;
     live_users.set(users);
     live_last_update.set(Date.now())
 });
@@ -130,88 +212,12 @@ async function updateLiveUsers() {
     // TODO: concat with live_users ids?
     const curr_ids = followed_streams.get().map(({user_id}) => user_id);
     const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
-    console.log(new_live_streams)
     updateLiveStreams(curr_ids, new_live_streams);
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
 
 // TODO: delete old stuff below here
-function renderLiveCount(count: number) {
-    const stream_count = document.querySelector(".streams-count")!;
-    if (count === 0) {
-        stream_count.classList.add("hidden")
-    } else {
-        stream_count.textContent = count.toString();
-        stream_count.classList.remove("hidden")
-    }
-}
-
-function renderLiveAdd(ids: string[]) {
-    if (ids.length === 0) {
-        return;
-    }
-    if (sidebar_state && sidebar_state() === "streams") {
-        for (const id of ids) {
-            renderLiveStreamSidebar(id)
-        }
-    }
-    if (document.location.pathname.endsWith("/videos")) {
-        for (const id of ids) {
-            renderLiveStreamPageUser(id);
-        }
-    }
-    live_check_adds.length = 0;
-}
-
-function renderLiveRemove(ids: string[]) {
-    if (ids.length === 0)  {
-        return;
-    }
-    document.querySelectorAll(createSelector(ids)).forEach(node => node.classList.add("hidden"));
-    live_check_removes.length = 0;
-};
-
-function renderLiveUpdate(ids: string[]) {
-    if (ids.length === 0)  {
-        return;
-    }
-    const live_streams = live_streams_local();
-    for (const id of ids) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
-        cards.forEach(node => node.textContent = live_streams[id])
-    }
-    live_check_updates.length = 0;
-};
-
-function renderLiveStreamSidebar(id: string) {
-    const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
-    if (card) {
-        const live_streams = live_streams_local();
-        const p = card.querySelector("p")!;
-        p.textContent = live_streams[id];
-        card.classList.remove("hidden")
-    }
-}
-
-function renderLiveStreamPageUser(id: string) {
-    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
-    if (card) {
-        const live_streams = live_streams_local();
-        const a = card.querySelector("a")!;
-        const game = live_streams[id];
-        a.textContent = game;
-        a.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
-        card.classList.remove("hidden")
-    }
-}
-
-function createSelector(ids: string[]): string {
-    const sel_start = `.js-card-live[data-stream-id="`;
-    const middle = ids.join(`"],${sel_start}`);
-    return `${sel_start}${middle}"]`;
-}
-
 export type ProfileImage = {url: string, last_access: number};
 export type ProfileImages = Record<string, ProfileImage>
 const key_profile = `profile`;

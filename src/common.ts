@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { isStreamFollowed, StreamLocal } from "./streams";
+import { isStreamFollowed, live_users, StreamLocal } from "./streams";
 
 export const API_URL = "https://api.twitch.tv"
 
@@ -74,6 +74,14 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         span.textContent = "Unfollow";
         const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
         external_link.href = "https://www.twitch.tv" + href;
+        const lu = live_users.get();
+        const card = new_item.querySelector(".js-card-live")!;
+        if (lu[stream.user_id]) {
+            card.classList.remove("hidden");
+            card.querySelector("p")!.textContent = lu[stream.user_id] || "";
+        } else {
+            card.classList.add("hidden");
+        }
         frag.append(new_item);
     }
     target.replaceChildren(frag);
