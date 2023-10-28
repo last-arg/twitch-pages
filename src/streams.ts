@@ -81,10 +81,11 @@ const live_last_update = persistentAtom<number>("live_last_update", 0, {
 
 const live_check_ms = 300000; // 5 minutes
 live_last_update.subscribe(function(last_update) {
-    if (last_update + live_check_ms < Date.now()) {
+    const diff = last_update - Date.now() + live_check_ms;
+    if (diff < 0) {
         updateLiveUsers();
     } else {
-        setTimeout(updateLiveUsers, live_check_ms);
+        setTimeout(updateLiveUsers, Math.min(diff, live_check_ms));
     }
 })
 
