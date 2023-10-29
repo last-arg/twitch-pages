@@ -97,7 +97,6 @@ form_search.addEventListener("input", function(e: Event) {
 input_search.addEventListener("focus", function(e: Event) {
     sb_state.set("search");
     search_value.set((e.target as HTMLInputElement).value);
-    search_results();
 });
 
 input_search.addEventListener("blur", function(e: Event) {
