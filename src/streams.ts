@@ -213,8 +213,12 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
 });
 
 async function updateLiveUsers() {
-    // TODO: concat with live_users ids?
     const curr_ids = followed_streams.get().map(({user_id}) => user_id);
+    for (const id of Object.keys(live_users.get())) {
+        if (!curr_ids.includes(id)) {
+            curr_ids.push(id);
+        }
+    }
     const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
     updateLiveStreams(curr_ids, new_live_streams);
     setTimeout(updateLiveUsers, live_check_ms);
