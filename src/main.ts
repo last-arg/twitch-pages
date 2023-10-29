@@ -13,7 +13,8 @@ import { initHtmx } from "./htmx_init";
 
 declare global {
     interface Window { 
-        // follow: typeof follow; 
+        filterItems: typeof pageFilter;
+        resetFilter: typeof resetFilter;
     }
 }
 
@@ -169,8 +170,7 @@ function initUserVideoTypeFilter(elem: Element) {
     const output_list = elem.querySelector(".output-list");
     const general = settings.general();
     for (const which of ["archive", "upload", "highlight"]) {
-        const key = `video-${which}s`;
-        // @ts-ignore
+        const key = `video-${which}s` as keyof typeof general;
         const check_value = !!general[key];
         const input = fieldset?.querySelector(`#check-${which}`) as HTMLInputElement;
         input.checked = check_value;
