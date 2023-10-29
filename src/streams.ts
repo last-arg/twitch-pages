@@ -140,9 +140,8 @@ function renderLiveStreamSidebar(id: string) {
 function renderLiveStreamPageUser(id: string) {
     const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
     if (card) {
-        const live_streams = live_streams_local();
         const a = card.querySelector("a")!;
-        const game = live_streams[id];
+        const game = live_users.get()[id]!;
         a.textContent = game;
         a.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
         card.classList.remove("hidden")
