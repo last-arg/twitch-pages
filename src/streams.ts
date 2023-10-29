@@ -1,4 +1,3 @@
-import { act } from "@artalar/act";
 import { StreamTwitch, strCompareField } from "./common";
 import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state } from "./sidebar";
@@ -290,11 +289,20 @@ export function removeOldProfileImages() {
     }
 
     for (const id in imgs.images) {
-        if (imgs.images[id].last_access > check_time) {
+        if (imgs.images[id].last_access > check_time && !isFollowedStream(id)) {
             delete imgs.images[id];
         }
     }
 
     imgs.last_update = now;
     profile_images.set(imgs);
+}
+
+function isFollowedStream(id: string) {
+    for (const stream of followed_streams.get()) {
+        if (stream.user_id == id) {
+            return true;
+        }
+    }
+    return false;
 }
