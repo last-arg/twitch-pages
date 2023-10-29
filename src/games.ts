@@ -7,18 +7,24 @@ export const games_list = document.querySelector(".js-games-list")!;
 export const game_tmpl = (games_list?.firstElementChild as HTMLTemplateElement).content.firstElementChild!;
 export const games_scrollbox = games_list.parentElement!;
 
+let remove_game: string | undefined = undefined;
 export const followed_games = persistentAtom<Game[]>("followed_games", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 
 followed_games.listen(function(_) {
-    // TODO: have check items in <main> also 
-    // - home page: list (game) items
-    // - category page: heading
     if (sb_state.get() === "games") {
         renderSidebarItems("games");
     }
+    if (remove_game) {
+        const btns = document.body.querySelectorAll(`[data-item-id='${remove_game}']`) as unknown as Element[];
+        for (const btn of btns) {
+            btn.setAttribute("data-is-followed", "false");
+        }
+        remove_game = undefined;
+    }
+    // TODO: when adding from search results
 });
 
 
@@ -42,7 +48,7 @@ export const unfollowGame = action(followed_games, 'unfollowGame', async (store,
     if (curr.length === i) {
         return;
     }
-    curr.splice(i, 1);
+    remove_game = curr.splice(i, 1)[0].id
     // TODO: copying is wasteful, do it better
     store.set([...curr]);
 });
