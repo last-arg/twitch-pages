@@ -11,16 +11,21 @@ export const streams_list = document.querySelector(".js-streams-list")!;
 export const stream_tmpl = (streams_list?.firstElementChild! as HTMLTemplateElement).content.firstElementChild!;
 export const streams_scrollbox = streams_list.parentElement!;
 
+let removed_stream: string | undefined = undefined;
 export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
 followed_streams.listen(function(_) {
-    // TODO: have check items in <main> also 
-    // - user page: heading
-    // - category page: list (user/stream) items
     if (sb_state.get() === "streams") {
         renderSidebarItems("streams");
+    }
+    if (removed_stream) {
+        const btns = document.body.querySelectorAll(`[data-item-id='${removed_stream}']`) as unknown as Element[];
+        for (const btn of btns) {
+            btn.setAttribute("data-is-followed", "false");
+        }
+        removed_stream = undefined;
     }
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
@@ -46,7 +51,7 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
     if (curr.length === i) {
         return;
     }
-    curr.splice(i, 1);
+    removed_stream = curr.splice(i, 1)[0].user_id;
     // TODO: copying is wasteful, do it better
     store.set([...curr]);
 });
