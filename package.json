@@ -18,7 +18,6 @@
     "clean-build": "rm -rf _site/"
   },
   "dependencies": {
-    "@artalar/act": "^3.2.1",
     "@nanostores/persistent": "^0.9.1",
     "eventslibjs": "^1.2.0",
     "htmx.org": "github:last-arg/htmx",
