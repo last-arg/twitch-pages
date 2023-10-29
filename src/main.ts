@@ -1,5 +1,5 @@
 import { clearGames, followGame, unfollowGame} from './games';
-import { settings, current_path } from './global';
+import { settings, current_pathname } from './global';
 import { search_value, } from './search';
 import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages } from './streams';
 import { Game, twitchCatImageSrc } from './common';
@@ -259,7 +259,7 @@ function initFilter(root: Element) {
 function handlePathChange(e: Event) {
     const target = e.target as Element;
     const hx_link = target.closest("a[hx-push-url]");
-    current_path(hx_link?.getAttribute("hx-push-url") || null);
+    current_pathname.set(hx_link?.getAttribute("hx-push-url") || null);
 }
 
 function initSettings(root: Element) {

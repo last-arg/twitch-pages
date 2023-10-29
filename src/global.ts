@@ -1,7 +1,9 @@
 import { settings_default } from 'config';
 import {act} from '@artalar/act';
+import { atom } from 'nanostores'
+// import { persistentAtom, persistentMap } from '@nanostores/persistent' 
 
-export const current_path = act<string | null>(document.location.pathname);
+export const current_pathname = atom<string | null>(document.location.pathname);
 
 export const settings = {
     general: act({

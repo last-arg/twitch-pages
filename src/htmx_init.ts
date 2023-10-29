@@ -1,4 +1,4 @@
-import { settings, current_path } from './global';
+import { settings, current_pathname } from './global';
 import { followed_games } from './games';
 import { API_URL, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
@@ -20,20 +20,20 @@ export function initHtmx() {
         if (url.pathname === "/helix/games/top") {
           evt.detail.parameters["first"] = settings.general()["top-games-count"]
         } else if (url.pathname === "/helix/games") {
-          const path = current_path() || location.pathname;
+          const path = current_pathname.get() || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
-          current_path(null)
+          current_pathname.set(null)
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = settings.general()["category-count"]
           if (!settings.category().show_all) {
             evt.detail.parameters["language"] = settings.category().languages;
           }
         } else if (url.pathname === "/helix/users") {
-          const path = current_path() || location.pathname;
+          const path = current_pathname.get() || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
-          current_path(null)
+          current_pathname.set(null)
         } else if (path === "/helix/videos") {
           evt.detail.parameters["first"] = settings.general()["user-videos-count"]
         }
