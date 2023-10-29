@@ -33,13 +33,12 @@ window.addEventListener("htmx:load", (e: Event) => {
         }
     } else if (elem.id === "page-user") {
         initFilter(elem);
+        initUserVideoTypeFilter(elem);
     } else if (elem.id === "page-category") {
         initFilter(elem);
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
-    } else if (elem.id === "page-user") {
-        initUserVideoTypeFilter(elem);
     }
 });
 
