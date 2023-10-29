@@ -1,7 +1,7 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_pathname } from './global';
 import { search_value, } from './search';
-import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages } from './streams';
+import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages, updateLiveUsers } from './streams';
 import { Game, twitchCatImageSrc } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
@@ -222,6 +222,7 @@ async function startup() {
     initHtmx();
     document.body.addEventListener("mousedown", handlePathChange)
     initSidebarScroll();
+    updateLiveUsers();
     removeOldProfileImages();
 };
 window.addEventListener("DOMContentLoaded", startup);

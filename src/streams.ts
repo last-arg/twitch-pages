@@ -71,7 +71,6 @@ export const live_users = persistentAtom<Record<string, string | undefined>>("li
     decode: JSON.parse,
 });
 live_users.listen(function() {
-    console.log("update live users info")
     live_count.set(getLiveCount())
     renderLiveRemove(live_removes);
     live_removes.length = 0;
@@ -155,16 +154,6 @@ const live_last_update = persistentAtom<number>("live_last_update", 0, {
     decode: (val) => parseInt(val, 10),
 });
 
-const live_check_ms = 300000; // 5 minutes
-live_last_update.subscribe(function(last_update) {
-    const diff = last_update - Date.now() + live_check_ms;
-    if (diff < 0) {
-        updateLiveUsers();
-    } else {
-        setTimeout(updateLiveUsers, Math.min(diff, live_check_ms));
-    }
-})
-
 function getLiveCount(): number {
     let result = 0;
     const users = live_users.get();
@@ -211,10 +200,18 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
     live_adds = adds;
     live_updates = updates;
     live_users.set(users);
-    live_last_update.set(Date.now())
 });
 
-async function updateLiveUsers() {
+const live_check_ms = 300000; // 5 minutes
+let live_user_update = 0;
+export async function updateLiveUsers() {
+    const now = Date.now();
+    const diff = live_last_update.get() - now + live_check_ms;
+    clearTimeout(live_user_update);
+    if (diff > 0) {
+        live_user_update = window.setTimeout(updateLiveUsers, diff + 1000);
+        return;
+    }
     const curr_ids = followed_streams.get().map(({user_id}) => user_id);
     for (const id of Object.keys(live_users.get())) {
         if (!curr_ids.includes(id)) {
@@ -223,7 +220,8 @@ async function updateLiveUsers() {
     }
     const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
     updateLiveStreams(curr_ids, new_live_streams);
-    setTimeout(updateLiveUsers, live_check_ms);
+    live_last_update.set(now)
+    live_user_update = window.setTimeout(updateLiveUsers, live_check_ms + 1000);
 }
 
 export type ProfileImages = Record<string, ProfileImage>
