@@ -72,16 +72,16 @@ permalink: "public/partials/settings.html"
       <h3>Cache</h3>
       <ul class="js-cache-list stack stack-xs" role="list">
         <li>
-          <button type="js-clear-game button">Clear games cache</button>
+          <button class="js-clear-games" type="button">Clear games cache</button>
         </li>
         <li>
-          <button type="js-clear-streams button">Clear streams cache</button>
+          <button class="js-clear-streams" type="button">Clear streams cache</button>
         </li>
         <li>
-          <button type="js-clear-profiles button">Clear profile images cache</button>
+          <button class="js-clear-profiles" type="button">Clear profile images cache</button>
         </li>
         <li>
-          <button type="js-clear-all button">Clear all caches</button>
+          <button class="js-clear-all" type="button">Clear all caches</button>
         </li>
       </ul>
     </section>

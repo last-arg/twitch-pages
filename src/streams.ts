@@ -28,6 +28,11 @@ followed_streams.listen(function(_) {
     }
     live_count.set(getLiveCount());
 });
+
+export const clearStreams = action(followed_streams, "clearStreams", (store) => {
+    store.set([]);
+})
+
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
@@ -238,6 +243,10 @@ export const profile_images = persistentMap<ProfileLocalStorage>("profile_images
     encode: JSON.stringify,
     decode: JSON.parse,
 });
+
+export const clearProfiles = action(followed_streams, "clearProfiles", (store) => {
+    store.set([]);
+})
 
 export const add_images = map<string[]>([]);
 add_images.listen(async function(user_ids) {
