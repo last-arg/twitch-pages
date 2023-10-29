@@ -1,4 +1,4 @@
-import { Game } from './common';
+import { Game, strCompareField } from './common';
 import { renderSidebarItems, sb_state } from './sidebar';
 import { action } from 'nanostores'
 import { persistentAtom } from '@nanostores/persistent' 
@@ -27,7 +27,7 @@ export const followGame = action(followed_games, 'followGame', async (store, dat
         const curr = store.get();
         curr.push(data);
         // TODO: copying is wasteful, do it better
-        store.set([...curr]);
+        store.set([...curr].sort(strCompareField("name")));
     }
 });
 

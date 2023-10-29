@@ -1,5 +1,5 @@
 import { act } from "@artalar/act";
-import { StreamTwitch } from "./common";
+import { StreamTwitch, strCompareField } from "./common";
 import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state } from "./sidebar";
 import { action, atom } from 'nanostores'
@@ -22,14 +22,13 @@ followed_streams.listen(function(_) {
     if (sb_state.get() === "streams") {
         renderSidebarItems("streams");
     }
-    live_count.set(getLiveCount())
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
         curr.push(data);
         // TODO: copying is wasteful, do it better
-        store.set([...curr]);
+        store.set([...curr.sort(strCompareField("user_name"))]);
         if (!live_users.get()[data.user_id]) {
             addLiveUser(data.user_id);
         }
