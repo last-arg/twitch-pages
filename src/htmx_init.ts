@@ -165,7 +165,7 @@ export function initHtmx() {
         }
         return result;
       } else if (path === "/helix/users") {
-        const content_type: string = xhr.getResponseHeader("content-type");
+        // const content_type: string = xhr.getResponseHeader("content-type");
         const json = JSON.parse(text);
         if (xhr.status !== 200 || json.data.length === 0) {
           const pathArr = location.pathname.split("/")

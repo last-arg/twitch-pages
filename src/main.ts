@@ -1,11 +1,10 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { current_pathname, settings, SettingsGeneral } from './global';
 import { search_value, } from './search';
-import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages, updateLiveUsers, clearStreams, clearProfiles } from './streams';
-import { Game, twitchCatImageSrc } from './common';
+import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages, updateLiveUsers, clearStreams, clearProfiles } from './streams';
+import { Game } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
-import { mainContent, UrlResolve, config } from 'config';
 import { initHtmx } from "./htmx_init";
 // @ts-ignore
 // import events from 'eventslibjs';
@@ -42,12 +41,6 @@ window.addEventListener("htmx:load", (e: Event) => {
         initSettings(elem);
     }
 });
-
-const key_streams = "streams"
-const key_streams_live = `${key_streams}.live`
-const key_live_check = `${key_streams_live}.last_check`
-const key_profile = `profile`;
-const key_profile_check = `${key_profile}.last_check`;
 
 function gameAndStreamFollow(t: HTMLElement) {
     const btn = t.closest(".button-follow");
@@ -110,61 +103,6 @@ input_search.addEventListener("blur", function(e: Event) {
 });
 
 
-let g_sheet: CSSStyleSheet | null = null;
-
-const extra_globals = { 
-    image: {
-        profiles: JSON.parse(localStorage.getItem(key_profile) || "{}") as ProfileImages,
-        check: parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10),
-        fetch_ids: [] as string[],
-        f() {
-            if (this.fetch_ids.length === 0) { 
-                console.log("nothing to fetch")
-                return; 
-            }
-            // TODO: async fetch request
-            const ids = this.fetch_ids
-            this.fetch_ids = [];
-            for (const id of ids) {
-                this.profiles[id] = { url: "https://placehold.co/400", last_access: 0 };
-            }
-        },
-        // set_profile(user_id: string) {
-        //     this.profiles[user_id] = {url: "#hello", last_access: 0};
-        // },
-        user_src: function(user_id: string) {
-            let img_src = this.profiles[user_id]?.url;
-            if (!img_src) {
-                img_src = `#${user_id}`;
-                // TODO: get user img
-                // this.new_profiles = [];
-                this.fetch_ids.push(user_id);
-            }
-            return img_src;
-        },
-    },
-    cat_img_src(src: string) {
-        const c_img = config.image.category;
-        return twitchCatImageSrc(src, c_img.width, c_img.height);
-    },
-    cat_url(name: string): string {
-        return `/directory/game/${window.encodeURIComponent(name)}`;
-    },
-    user_url(name: string): string {
-        return `/${window.encodeURIComponent(name)}/videos`;
-    },
-    live: {
-        streams: JSON.parse(localStorage.getItem(key_streams_live) || "{}"),
-        check: parseInt(JSON.parse(localStorage.getItem(key_live_check) ?? "0"), 10),
-        has_user(id: string) {
-            return !!this.streams[id];
-        }
-    },
-    encode_json(obj: any) {
-        return encodeURIComponent(JSON.stringify(obj));
-    },
-};
-
 function initUserVideoTypeFilter(elem: Element) {
     const fieldset = elem.querySelector(".filter-video-type");
     const output_list = elem.querySelector(".output-list");
@@ -191,32 +129,6 @@ function initUserVideoTypeFilter(elem: Element) {
     })
 }
 
-function getUrlObject(newPath: string): UrlResolve {
-  if (newPath === "/") return mainContent["top-games"]
-  let contentKey = "not-found"
-  const newDirs = newPath.split("/").filter((path) => path.length > 0)
-  for (const key in mainContent) {
-    const obj = mainContent[key]
-    const dirs = obj.url.split("/").filter((path) => path.length > 0)
-    if (dirs.length !== newDirs.length || dirs.length === 0) continue
-    let isMatch = true
-    for (let i = 0; i < dirs.length; i+=1) {
-      const dir = dirs[i]
-      if (dir[0] === ":") continue
-      if (dir !== newDirs[i]) {
-        isMatch = false
-        break
-      }
-    }
-    if (isMatch) {
-      contentKey = key
-      break
-    }
-  }
-  return mainContent[contentKey]
-}
-
-
 async function startup() {
     await twitch.fetchToken();
     initHtmx();
@@ -227,8 +139,7 @@ async function startup() {
 };
 window.addEventListener("DOMContentLoaded", startup);
 
-
-
+let g_sheet: CSSStyleSheet | null = null;
 function pageFilter(input: unknown) {
     let value = input as string;
     if (g_sheet === null) return;
