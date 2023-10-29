@@ -27,6 +27,7 @@ followed_streams.listen(function(_) {
         }
         removed_stream = undefined;
     }
+    live_count.set(getLiveCount());
 });
 export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
     if (!isStreamFollowed(data.user_id)) {
