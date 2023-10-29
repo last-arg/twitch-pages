@@ -1,6 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { isStreamFollowed, live_users, StreamLocal } from "./streams";
+import { isStreamFollowed, live_users, profile_images, StreamLocal } from "./streams";
 
 export const API_URL = "https://api.twitch.tv"
 
@@ -63,8 +63,13 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
-        // const img = link.querySelector("img")!;
-        // img.src = twitchCatImageSrc(stream.box_art_url, config.image.category.width, config.image.category.height);
+        const img = link.querySelector("img")!;
+        const img_src = "#" + stream.user_id;
+        const img_obj  = profile_images.get()["images"][stream.user_id];
+        if (img_obj) {
+            img.src = twitchCatImageSrc(img_obj.url, config.image.category.width, config.image.category.height);
+        }
+        img.src = img_src;
         const btn = new_item.querySelector(".button-follow")!;
         btn.setAttribute("data-item-id", stream.user_id)
         btn.setAttribute("data-is-followed", isStreamFollowed(stream.user_id).toString())

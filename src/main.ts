@@ -1,7 +1,7 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { settings, current_path } from './global';
 import { search_value, } from './search';
-import { clearProfiles, profiles, profile_check, saveProfileImages, StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser } from './streams';
+import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages } from './streams';
 import { Game, twitchCatImageSrc } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
@@ -226,18 +226,7 @@ async function startup() {
 };
 window.addEventListener("DOMContentLoaded", startup);
 
-function removeOldProfileImages() {
-    const a_day = 24 * 60 * 60 * 1000;
-    const check_time = profile_check() + a_day;
 
-    for (const id in profiles) {
-        if (profiles[id].last_access > check_time) {
-            delete profiles[id];
-        }
-    }
-
-    saveProfileImages();
-}
 
 function pageFilter(input: unknown) {
     let value = input as string;
@@ -287,11 +276,11 @@ function initCacheSettings(root:  Element) {
         } else if (t.classList.contains("js-clear-streams")) {
             // clearStreams();
         } else if (t.classList.contains("js-clear-profiles")) {
-            clearProfiles();
+            // clearProfiles();
         } else if (t.classList.contains("js-clear-all")) {
             clearGames();
             // clearStreams();
-            clearProfiles();
+            // clearProfiles();
         }
     })
 }

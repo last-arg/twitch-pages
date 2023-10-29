@@ -2,8 +2,8 @@ import { act } from "@artalar/act";
 import { StreamTwitch, strCompareField } from "./common";
 import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state } from "./sidebar";
-import { action, atom } from 'nanostores'
-import { persistentAtom } from '@nanostores/persistent' 
+import { action, atom, map } from 'nanostores'
+import { persistentAtom, persistentMap } from '@nanostores/persistent' 
 
 export type StreamLocal = {user_id: string, user_login: string, user_name: string};
 
@@ -224,63 +224,74 @@ async function updateLiveUsers() {
     setTimeout(updateLiveUsers, live_check_ms);
 }
 
-
-// TODO: delete old stuff below here
-export type ProfileImage = {url: string, last_access: number};
 export type ProfileImages = Record<string, ProfileImage>
-const key_profile = `profile`;
-const key_profile_check = `${key_profile}.last_check`;
-export let profiles: ProfileImages = JSON.parse(localStorage.getItem(key_profile) || "{}");
-export const profile_check = act(parseInt(JSON.parse(localStorage.getItem(key_profile_check) ?? Date.now().toString()), 10));
+export type ProfileImage = {url: string, last_access: number};
+type ProfileLocalStorage = {
+    images: ProfileImages,
+    last_update: number,
+}
 
-profile_check.subscribe((value) => {
-    localStorage.setItem(key_profile_check, value.toString());
+export const profile_images = persistentMap<ProfileLocalStorage>("profile_images:", {
+    images : {},
+    last_update: 0,
+}, {
+    encode: JSON.stringify,
+    decode: JSON.parse,
 });
 
-export const add_profiles = act<string[]>([]);
-
-add_profiles.subscribe(async (user_ids) => {
+export const add_images = map<string[]>([]);
+add_images.listen(async function(user_ids) {
+    console.log("add new profile images");
     if (user_ids.length === 0) {
         return;
     }
 
+    const imgs = profile_images.get()["images"];
     // Filter and updated current profile/user ids
-    const curr_ids = Object.keys(profiles);
+    const curr_ids = Object.keys(imgs);
     const filtered_ids = [];
     const now = Date.now();
     for (const id of user_ids) {
         if (curr_ids.includes(id)) {
-            profiles[id].last_access = now;
+            imgs[id].last_access = now;
         } else {
             filtered_ids.push(id);
         }
     }
+    add_images.get().length = 0;
 
     const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
     if (new_profiles.length === 0) {
         return;
     }
     for (const p of new_profiles) {
-        profiles[p.id] = { url: p.profile_image_url, last_access: now };
-    }
+        imgs[p.id] = { url: p.profile_image_url, last_access: now };
 
-    for (const id of user_ids) {
-        const p = profiles[id];
-        const img = document.querySelector(`img[src="#${id}"]`) as HTMLImageElement;
+        // Update UI
+        const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
         if (img) {
-            img.src = p.url;
+            img.src = p.profile_image_url;
         }
     }
 
-    saveProfileImages();    
-});
+    profile_images.setKey("images", imgs);
+}) 
 
-export function saveProfileImages() {
-    localStorage.setItem(key_profile, JSON.stringify(profiles));
+const a_day = 24 * 60 * 60 * 1000;
+export function removeOldProfileImages() {
+    const imgs = profile_images.get();
+    const check_time = imgs["last_update"] + a_day;
+    const now = Date.now();
+    if (check_time > now) {
+        return;
+    }
+
+    for (const id in imgs.images) {
+        if (imgs.images[id].last_access > check_time) {
+            delete imgs.images[id];
+        }
+    }
+
+    imgs.last_update = now;
+    profile_images.set(imgs);
 }
-
-export function clearProfiles() {
-    profiles = {};
-    localStorage.setItem(key_profile, JSON.stringify(profiles));
-}
-

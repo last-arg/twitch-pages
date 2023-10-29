@@ -4,7 +4,7 @@ import { API_URL, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
 import { Twitch } from './twitch';
-import { add_profiles, followed_streams, profiles } from './streams';
+import { add_images, followed_streams, profile_images } from './streams';
 declare var htmx: any;
 
 export function initHtmx() {
@@ -116,10 +116,11 @@ export function initHtmx() {
         const json = JSON.parse(text);
         const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
         let result = "";
+        const imgs = profile_images.get()["images"]
         let user_ids = [];
         for (const item of json.data) {
             const user_id = item.user_id;
-            let profile_img_url = profiles[user_id]?.url;
+            let profile_img_url = imgs[user_id]?.url;
             if (!profile_img_url) {
               user_ids.push(user_id);
               profile_img_url = `#${user_id}`;
@@ -150,7 +151,7 @@ export function initHtmx() {
         }
 
         if (user_ids.length > 0) {
-          add_profiles(user_ids);
+          add_images.set(user_ids);
         }
         
         const cursor = json.pagination.cursor;

@@ -1,7 +1,7 @@
 import { mainContent, config } from 'config';
 import { twitchCatImageSrc } from './common';
 import { followed_games } from './games';
-import { add_profiles, profiles } from './streams';
+import { add_images, profile_images } from './streams';
 
 export function gamesRender(json: any): string {
     let result = "";
@@ -53,9 +53,10 @@ export function streamsRender(json: any): string {
     const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
     let result = "<ul>";
     let user_ids = [];
+    const imgs = profile_images.get()["images"]
     for (const item of json.data) {
         const user_id = item.user_id;
-        let profile_img_url = profiles[user_id]?.url;
+        let profile_img_url = imgs[user_id]?.url;
         if (!profile_img_url) {
           user_ids.push(user_id);
           profile_img_url = `#${user_id}`;
@@ -84,7 +85,7 @@ export function streamsRender(json: any): string {
     result += "</ul>";
 
     if (user_ids.length > 0) {
-      add_profiles(user_ids);
+      add_images.set(user_ids);
     }
 
     return result;
