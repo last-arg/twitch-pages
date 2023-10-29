@@ -38,6 +38,9 @@ export const followStream = action(followed_streams, 'followStream', async (stor
         if (!live_users.get()[data.user_id]) {
             addLiveUser(data.user_id);
         }
+        if (!profile_images.get()["images"][data.user_id]) {
+            add_images.set([data.user_id]);
+        }
     }
 });
 

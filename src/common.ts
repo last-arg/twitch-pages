@@ -64,12 +64,8 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
         const img = link.querySelector("img")!;
-        const img_src = "#" + stream.user_id;
         const img_obj  = profile_images.get()["images"][stream.user_id];
-        if (img_obj) {
-            img.src = twitchCatImageSrc(img_obj.url, config.image.category.width, config.image.category.height);
-        }
-        img.src = img_src;
+        img.src = img_obj ? img_obj.url : "#" + stream.user_id;
         const btn = new_item.querySelector(".button-follow")!;
         btn.setAttribute("data-item-id", stream.user_id)
         btn.setAttribute("data-is-followed", isStreamFollowed(stream.user_id).toString())
