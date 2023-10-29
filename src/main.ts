@@ -31,6 +31,10 @@ window.addEventListener("htmx:load", (e: Event) => {
         } else {
             addLiveUser(stream_id);
         }
+    } else if (elem.id === "page-user") {
+        initFilter(elem);
+    } else if (elem.id === "page-category") {
+        initFilter(elem);
     } else if (elem.id === "partial-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
@@ -248,11 +252,15 @@ function pageFilter(input: unknown) {
     }
 }
 
-window.resetFilter = resetFilter;
 function resetFilter() {
     if (g_sheet === null) return;
     g_sheet.deleteRule(0)
 }
+
+// TODO: use hx-on:* instead?
+window.filterItems = pageFilter;
+window.resetFilter = resetFilter;
+
 
 function initFilter(root: Element) {
     const search_form = root.querySelector(".search-form")!;

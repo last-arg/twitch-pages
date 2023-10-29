@@ -1,6 +1,4 @@
-<script webc:setup>
-</script>
-<form webc:keep class="search-form" oninput="filterResults(event)" onsubmit="event.preventDefault()" onreset="resetFilter()">
+<form webc:keep class="search-form" oninput="filterItems(event.target.value)" onsubmit="event.preventDefault()" onreset="resetFilter()">
   <label class="sr-only" for="search">Search title</label>
   <input type="search" id="search" placeholder="Filter title" value="">
   <button type="reset">Reset</button>
