@@ -37,7 +37,7 @@ window.addEventListener("htmx:load", (e: Event) => {
         initUserVideoTypeFilter(elem);
     } else if (elem.id === "page-category") {
         initFilter(elem);
-    } else if (elem.id === "partial-settings") {
+    } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         initSettings(elem);
     }
