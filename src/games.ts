@@ -8,6 +8,7 @@ export const game_tmpl = (games_list?.firstElementChild as HTMLTemplateElement).
 export const games_scrollbox = games_list.parentElement!;
 
 let remove_game: string | undefined = undefined;
+let add_game: string | undefined = undefined;
 export const followed_games = persistentAtom<Game[]>("followed_games", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
@@ -24,7 +25,13 @@ followed_games.listen(function(_) {
         }
         remove_game = undefined;
     }
-    // TODO: when adding from search results
+    if (add_game) {
+        const btns = document.body.querySelectorAll(`[data-item-id='${add_game}']`) as unknown as Element[];
+        for (const btn of btns) {
+            btn.setAttribute("data-is-followed", "true");
+        }
+        add_game = undefined;
+    }
 });
 
 
@@ -32,6 +39,7 @@ export const followGame = action(followed_games, 'followGame', async (store, dat
     if (!isGameFollowed(data.id)) {
         const curr = store.get();
         curr.push(data);
+        add_game = data.id;
         // TODO: copying is wasteful, do it better
         store.set([...curr].sort(strCompareField("name")));
     }
