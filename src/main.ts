@@ -27,7 +27,7 @@ window.addEventListener("htmx:load", (e: Event) => {
         if (game) {
             const link = elem_card.querySelector("a")!;
             link.textContent = game;
-            link.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+            link.href = "https://twitch.tv/directory/games/" + encodeURIComponent(game);
             elem_card.classList.remove("hidden");
         } else {
             addLiveUser(stream_id);

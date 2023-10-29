@@ -149,7 +149,7 @@ function renderLiveStreamPageUser(id: string) {
         const a = card.querySelector("a")!;
         const game = live_users.get()[id]!;
         a.textContent = game;
-        a.href = "https://twitch.tv/directory/game/" + encodeURIComponent(game);
+        a.href = "https://twitch.tv/directory/games/" + encodeURIComponent(game);
         card.classList.remove("hidden")
     }
 }
