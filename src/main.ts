@@ -1,5 +1,5 @@
 import { clearGames, followGame, unfollowGame} from './games';
-import { settings, current_pathname } from './global';
+import { current_pathname, settings, SettingsGeneral } from './global';
 import { search_value, } from './search';
 import { StreamLocal, ProfileImages, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages, updateLiveUsers } from './streams';
 import { Game, twitchCatImageSrc } from './common';
@@ -168,7 +168,7 @@ const extra_globals = {
 function initUserVideoTypeFilter(elem: Element) {
     const fieldset = elem.querySelector(".filter-video-type");
     const output_list = elem.querySelector(".output-list");
-    const general = settings.general();
+    const general = settings.get().general;
     for (const which of ["archive", "upload", "highlight"]) {
         const key = `video-${which}s` as keyof typeof general;
         const check_value = !!general[key];
@@ -287,7 +287,7 @@ function initCacheSettings(root:  Element) {
 }
 
 function initGeneralSettings(root:  Element) {
-    const general = settings.general();
+    const general = settings.get().general;
     for (const key in general) {
         // @ts-ignore
         const value = general[key as any];
@@ -306,10 +306,10 @@ function initGeneralSettings(root:  Element) {
     function handleFormSubmit(e: Event) {
         e.preventDefault();
         const elem = e.target as HTMLFormElement;
-        let new_settings: ReturnType<typeof settings.general> = {} as any;
+        let new_settings = {} as SettingsGeneral;
         // @ts-ignore
-        (new FormData(elem)).forEach(function(value, key){ new_settings[key as any] = value });
-        settings.general(new_settings)
+        (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
+        settings.setKey("general", new_settings);
     }
 }
 
@@ -321,7 +321,7 @@ function initCategorySettings(root:  Element) {
         lang_map.set(opt.getAttribute("lang-code")!, opt.value)
     }
 
-    for (const lang of settings.category().languages) {
+    for (const lang of settings.get().category.languages) {
         addLang(lang);
     }
     hasLanguages();
@@ -385,10 +385,10 @@ function initCategorySettings(root:  Element) {
         event.preventDefault();
         const elem = event.target as HTMLFormElement;
         const f_data = new FormData(elem);
-        let curr = settings.category();
+        let curr = settings.get().category;
         curr.languages = f_data.getAll("lang") as string[];
         curr.show_all = f_data.get("all-languages") as any;
-        settings.category({...curr});
+        settings.setKey("category", curr);
     }
 }
 
