@@ -19,11 +19,9 @@
   },
   "dependencies": {
     "@nanostores/persistent": "^0.9.1",
-    "eventslibjs": "^1.2.0",
     "htmx.org": "github:last-arg/htmx",
     "nanostores": "^0.9.4",
-    "open-props": "^1.5.5",
-    "sprae": "^6.1.0"
+    "open-props": "^1.5.5"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",

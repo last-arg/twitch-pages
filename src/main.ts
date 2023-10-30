@@ -6,9 +6,6 @@ import { Game } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
 import { initHtmx } from "./htmx_init";
-// @ts-ignore
-// import events from 'eventslibjs';
-// console.log(events);
 
 declare global {
     interface Window { 
