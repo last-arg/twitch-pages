@@ -4,10 +4,10 @@
     :hx-get="`/public/partials/${name}.html`"
     :data-card="name"
   >
-    <img webc:if="name === 'user-videos'" src="" alt="" @attributes="attrs_img"
+    <img webc:if="name === 'user-videos'" src="" alt=""
       :width="$data.global.config.image.user.width" 
       :height="$data.global.config.image.user.height" />
-    <img webc:else alt="" @attributes="attrs_img"
+    <img webc:else alt=""
       :width="$data.global.config.image[name].width" 
       :height="$data.global.config.image[name].height" />
     <div class="link-title">
