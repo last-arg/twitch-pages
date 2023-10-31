@@ -19,7 +19,6 @@ export function gamesRender(json: any): string {
       .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
     result += "</div>";
 
-    // TODO: category page: display user un/follow
     if (followed_games.get().some((game) => game.id === item.id)) {
        result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
     }
@@ -113,48 +112,5 @@ function twitchDateToString(d: Date): string {
     }
 
     return result_str
-}
-
-
-// TODO: remove?
-export function videosRender(json: any): string {
-    const VIDEO_ICONS: Record<string, string> = {
-      archive: "video-camera",
-      upload: "video-upload",
-      highlight: "video-reel",
-    }
-
-    const tmpl = document.querySelector("#user-video-template") as HTMLTemplateElement;
-    let result = "<ul>";
-    const counts: any = { archive: 0, upload: 0, highlight: 0 };
-    for (const item of json.data) {
-        counts[item.type] += 1;
-        const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
-        const date = new Date(item.published_at)
-        const title = item.title.replaceAll('"', "&quot;");
-        result += tmpl.innerHTML
-          .replaceAll(":video_title", title)
-          .replace(":video_type", item.type)
-          .replace("#video_url", item.url)
-          .replace(":video_duration_str", twitchDurationToString(item.duration))
-          .replace(":date_str", date.toString())
-          .replace(":video_date_str", twitchDateToString(date))
-          .replace(":video_type_title", item.type[0].toUpperCase() + item.type.slice(1))
-          .replace("#img_url", img_url)
-          .replace(":video_icon", VIDEO_ICONS[item.type])
-          .replace(":encoded_video_title", encodeURIComponent(item.title));
-    }
-    result += "</ul>";
-
-    // User page: Update filter counts
-    const elHighlights = document.querySelector("#highlights-count")!;
-    const elUploads = document.querySelector("#uploads-count")!;
-    const elArchives = document.querySelector("#archives-count")!;
-
-    elHighlights.textContent = (+elHighlights.textContent!) + counts.highlight;
-    elUploads.textContent = (+elUploads.textContent!) + counts.upload;
-    elArchives.textContent = (+elArchives.textContent!) + counts.archive;
-
-    return result;
 }
 
