@@ -250,7 +250,6 @@ export const clearProfiles = action(followed_streams, "clearProfiles", (store) =
 
 export const add_images = map<string[]>([]);
 add_images.listen(async function(user_ids) {
-    console.log("add new profile images");
     if (user_ids.length === 0) {
         return;
     }
@@ -268,18 +267,19 @@ add_images.listen(async function(user_ids) {
         }
     }
     add_images.get().length = 0;
+    if (filtered_ids.length > 0) {
+        const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
+        if (new_profiles.length === 0) {
+            return;
+        }
+        for (const p of new_profiles) {
+            imgs[p.id] = { url: p.profile_image_url, last_access: now };
 
-    const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
-    if (new_profiles.length === 0) {
-        return;
-    }
-    for (const p of new_profiles) {
-        imgs[p.id] = { url: p.profile_image_url, last_access: now };
-
-        // Update UI
-        const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
-        if (img) {
-            img.src = p.profile_image_url;
+            // Update UI
+            const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
+            if (img) {
+                img.src = p.profile_image_url;
+            }
         }
     }
 
@@ -287,22 +287,22 @@ add_images.listen(async function(user_ids) {
 }) 
 
 const a_day = 24 * 60 * 60 * 1000;
-export function removeOldProfileImages() {
+export function initProfileImages() {
     const imgs = profile_images.get();
     const check_time = imgs["last_update"] + a_day;
     const now = Date.now();
-    if (check_time > now) {
-        return;
-    }
+    if (check_time < now) {
 
-    for (const id in imgs.images) {
-        if (imgs.images[id].last_access > check_time && !isFollowedStream(id)) {
-            delete imgs.images[id];
+        for (const id in imgs.images) {
+            if (imgs.images[id].last_access > check_time && !isFollowedStream(id)) {
+                delete imgs.images[id];
+            }
         }
-    }
 
-    imgs.last_update = now;
-    profile_images.set(imgs);
+        imgs.last_update = now;
+        profile_images.set(imgs);
+    }
+    add_images.set(followed_streams.get().map(({user_id}) => user_id));
 }
 
 function isFollowedStream(id: string) {
