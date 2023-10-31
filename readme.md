@@ -22,8 +22,17 @@ Pages:
 * [a11y-101](https://a11y-101.com)
 
 ## NOTE: Nixos 
-Have to set interpreter for lightningcss executable
+When using have to be in nix shell (nix-shell -p hello) to have access to $NIX_CC
+
+### Patching lightningcss
 ```
 cd node_modules/lightningcss-cli/
 patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./lightningcss
 ```
+
+### Patching workerd (for wrangler)
+```
+patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./node_modules/@cloudflare/workerd-linux-64/bin/workerd
+```
+
+
