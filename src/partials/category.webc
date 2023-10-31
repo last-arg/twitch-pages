@@ -4,7 +4,7 @@ permalink: "public/partials/category.html"
 <div id="page-category">
   <div class="flex flex-wrap content-start gap-4">
     <div id="category-header" class="flex place-items-start">
-      <div hx-ext="twitch-api" hx-get="/helix/games" hx-trigger="load" hx-target="#category-header"></div>
+      <div hx-ext="twitch-api" hx-get="/helix/games" hx-trigger="load" hx-target="#category-header" hx-template="#category-header-template"></div>
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
         <heading-link @name="game">
@@ -66,7 +66,7 @@ permalink: "public/partials/category.html"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @req_url="/helix/streams" @req_target=".output-list">
+    <btn-load-more class="block fluid-my-xl" @req_url="/helix/streams" @req_target=".output-list" @hx_template="#category-streams-template">
     </btn-load-more>
   </div>
 </div>

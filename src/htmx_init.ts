@@ -54,9 +54,14 @@ export function initHtmx() {
       const pathUrl = new URL(xhr.responseURL)
       const path = pathUrl.pathname;
 
+      const tmpl = document.querySelector(_elt.getAttribute("hx-template")!) as HTMLTemplateElement | null;
+      if (!tmpl) {
+        console.warn("Htmx extension 'twitch-api' could not find attribute 'hx-template' in element ", _elt);
+        return text;
+      }
+
       if (path === "/helix/games/top") {
         const json = JSON.parse(text);
-        const tmpl = document.querySelector("#top-games-template") as HTMLTemplateElement;
         let result = "";
         for (const item of json.data) {
             const url_name = encodeURIComponent(item.name);
@@ -93,7 +98,6 @@ export function initHtmx() {
           `;
         }
 
-        const tmpl = (document.querySelector("#category-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.title = `${item.name} | Twitch Pages`;
         document.querySelector(".btn-load-more")!.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
@@ -114,7 +118,6 @@ export function initHtmx() {
         return result;
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);
-        const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
         let result = "";
         const imgs = profile_images.get()["images"]
         let user_ids = [];
@@ -175,7 +178,6 @@ export function initHtmx() {
           `;
         }
 
-        const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
         const item = json.data[0];
         document.title = `${item.display_name} | Twitch Pages`;
         document.querySelector(".btn-load-more")!.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);

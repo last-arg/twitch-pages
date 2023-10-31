@@ -3,7 +3,7 @@ permalink: "public/partials/user-videos.html"
 ---
 <div id="page-user">
   <div>
-    <div id="user-header" class="user-heading-box" hx-ext="twitch-api" hx-get="/helix/users" hx-trigger="load" hx-swap="replace">
+    <div id="user-header" class="user-heading-box" hx-ext="twitch-api" hx-get="/helix/users" hx-trigger="load" hx-swap="replace" hx-template="#user-header-template">
       <placeholder-title name="user"></placeholder-title>
       <template id="user-header-template">
         <div class="user-heading-box">
@@ -65,7 +65,7 @@ permalink: "public/partials/user-videos.html"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @req_url="/helix/videos" @req_target=".output-list"></btn-load-more>
+    <btn-load-more class="block fluid-my-xl" @req_url="/helix/videos" @req_target=".output-list" @hx_template="#user-video-template"></btn-load-more>
   </div>
 </div>
 <style>
