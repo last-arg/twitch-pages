@@ -12,12 +12,7 @@
     </a>
   </div>
   <div class="action-box">
-    <!-- TODO: try to get this working without <script>
-    Not sure how passing params should work in webc.
-    -->
-    <script webc:type="js" webc:is="template">
-    `<button-follow @name="${this.name}"></button-follow>`
-    </script>
+    <button-follow :@name="name"></button-follow>
   </div>
 </div>
 
