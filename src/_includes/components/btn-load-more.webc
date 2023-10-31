@@ -47,12 +47,12 @@
   color: var(--text1);
 }
 
-.btn-load-more[aria-disabled=false],
-.btn-load-more[aria-disabled=true] ~ .msg-loading {
+.btn-load-more[aria-disabled=false][hx-vals], /* display button */
+.btn-load-more[aria-disabled=true] ~ .msg-loading { /* display loading msg */
   display: block;
 }
 
-.btn-load-more:not([hx-vals]) ~ * {
+.btn-load-more:not([hx-vals]) ~ .msg-loading {
   display: none;
 }
 
