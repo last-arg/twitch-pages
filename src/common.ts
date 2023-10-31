@@ -1,6 +1,11 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
 import { isStreamFollowed, live_users, profile_images, StreamLocal } from "./streams";
+import "idiomorph";
+
+declare var Idiomorph: {
+    morph: (old_node: any, new_content: any, config?: any) => void;
+};
 
 export const API_URL = "https://api.twitch.tv"
 
@@ -20,15 +25,14 @@ export type Game = {
 
 
 export function twitchCatImageSrc(url_template: string, width: number, height: number): string {
-  return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
+    return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
 }
 
-// TODO: improve updating DOM 
-// Update main content follows
 export function renderGames(base_elem: Element, target:Element, data: Game[]) {
     const frag = document.createDocumentFragment();
     for (const game of data) {
         const new_item = base_elem.cloneNode(true) as Element;
+        new_item.id = "game-id-" + game.id;
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(game.name);
         const link = new_item.querySelector(".link-box")!;
@@ -48,11 +52,9 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         external_link.href = "https://www.twitch.tv" + href;
         frag.append(new_item);
     }
-    target.replaceChildren(frag);
+    Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
-// TODO: improve updating DOM 
-// Update main content follows
 export function renderStreams(base_elem: Element, target:Element, data: StreamLocal[]) {
     const frag = document.createDocumentFragment();
     for (const stream of data) {
@@ -85,7 +87,7 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         }
         frag.append(new_item);
     }
-    target.replaceChildren(frag);
+    Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
 export function strCompareField(name: string): (a: any, b: any) => number {

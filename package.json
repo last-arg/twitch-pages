@@ -20,6 +20,7 @@
   "dependencies": {
     "@nanostores/persistent": "^0.9.1",
     "htmx.org": "github:last-arg/htmx",
+    "idiomorph": "^0.0.9",
     "nanostores": "^0.9.4",
     "open-props": "^1.5.5"
   },
