@@ -11,7 +11,7 @@
     "build": "NODE_ENV=production npm-run-all clean-build build:ts build:11ty -p build:css minify:*",
     "build:ts": "esbuild src/main.ts --bundle --outdir=_site/public/js/",
     "build:sw": "workbox generateSW",
-    "build:11ty": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ && eleventy",
+    "build:11ty": "esbuild src/config.prod.ts --format=cjs --outdir=src/js/ && eleventy --config=eleventy.config.js",
     "build:css": "unocss",
     "minify:js": "terser _site/public/js/main.js -m --toplevel -o _site/public/js/main.js",
     "minify:svg": "svgo _site/public/assets/icons.svg",
