@@ -27,28 +27,6 @@ export function gamesRender(json: any): string {
     return result;
 }
 
-export function topGamesRender(json: any): string {
-    const tmpl = document.querySelector("#top-games-template") as HTMLTemplateElement;
-    let result = "<ul>";
-    for (const item of json.data) {
-        const url_name = encodeURIComponent(item.name);
-        const game_url = mainContent['category'].url.replace(":category", url_name)
-        const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
-        const game_obj_str = encodeURIComponent(JSON.stringify(item));
-        let html = tmpl.innerHTML
-          .replaceAll("#game_url", game_url)
-          .replace(":game_name_text", item.name)
-          .replace(":game_name_url", url_name)
-          .replace("#game_img_url", img_url)
-          .replaceAll(":item_id", item.id)
-          .replace(":item_json", game_obj_str)
-
-        result += html;
-    }
-    result += "</ul>";
-    return result;
-}
-
 export function streamsRender(json: any): string {
     const tmpl = document.querySelector("#category-streams-template") as HTMLTemplateElement;
     let result = "<ul>";
@@ -87,26 +65,6 @@ export function streamsRender(json: any): string {
     if (user_ids.length > 0) {
       add_images.set(user_ids);
     }
-
-    return result;
-}
-
-export function usersRender(json: any): string {
-    const tmpl = (document.querySelector("#user-header-template") as HTMLTemplateElement);
-    const item = json.data[0];
-    const item_json = encodeURIComponent(JSON.stringify({
-       user_id: item.id,
-       user_login: item.login,
-       user_name: item.display_name,
-    }));
-    let result = "";
-    result += tmpl.innerHTML
-      .replaceAll(":user_login", item.login)
-      .replaceAll(":user_display_name", item.display_name)
-      .replaceAll("#user_profile_image_url", item.profile_image_url)
-      .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
-      .replace(":item_json", item_json)
-      .replaceAll(":item_id", item.id);
 
     return result;
 }
@@ -157,6 +115,8 @@ function twitchDateToString(d: Date): string {
     return result_str
 }
 
+
+// TODO: remove?
 export function videosRender(json: any): string {
     const VIDEO_ICONS: Record<string, string> = {
       archive: "video-camera",
