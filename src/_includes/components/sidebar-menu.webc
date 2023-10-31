@@ -1,10 +1,10 @@
 <div webc:root="override" class="sidebar-position">
   <div class="sidebar-content">
     <sidebar-header @sb_title="Search results" @icon="looking-class"></sidebar-header>
-    <p class="search-feedback"></p>
+    <p class="search-feedback">Enter game name to search</p>
     <!-- search results -->
     <scroll-container>
-      <ul class="js-search-list stack stack-s" role="list" @attributes="({':render': 'search_item'})"></ul>
+      <ul class="js-search-list stack stack-s" role="list"></ul>
         <template>
           <li class="flex">
             <link-box @name="category">
@@ -13,7 +13,7 @@
             <follow-star data-colormode="dark" @arg="search"></follow-star>
           </li>
         </template>
-      <li class="flex" @attributes="({':each': 'val, idx in s_results', ':text': 'idx'})"></li>
+      </ul>
     </scroll-container>
   </div>
 </div>
@@ -30,7 +30,7 @@
   top: 40px;
   left: 0;
   right: 0;
-  z-index: 1;
+  z-index: 2;
   background: var(--gray-8);
   padding: var(--space-3xs) var(--space-2xs);
   font-size: var(--step--1);
