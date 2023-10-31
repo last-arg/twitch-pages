@@ -6,7 +6,7 @@
   status = 301
 
 [[redirects]]
-  from = "/directory/game/*"
+  from = "/directory/category/*"
   to = "/index.html"
   status = 200
 

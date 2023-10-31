@@ -32,7 +32,7 @@ export function renderGames(base_elem: Element, target:Element, data: Game[]) {
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(game.name);
         const link = new_item.querySelector(".link-box")!;
-        const href = "/directory/games/" + encodeURIComponent(game.name); 
+        const href = categoryUrl(game.name); 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
         const img = link.querySelector("img")!;
@@ -100,4 +100,13 @@ export function strCompareField(name: string): (a: any, b: any) => number {
 
         return 0;
     }
+}
+
+export function categoryUrl(cat: string, is_twitch: boolean = false) {
+    let result = "";
+    if (is_twitch) {
+        result += "https://twitch.tv"
+    }
+    result += "/directory/category/" + encodeURIComponent(cat);
+    return result; 
 }

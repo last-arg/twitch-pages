@@ -1,6 +1,6 @@
 import { current_pathname, settings } from './global';
 import { followed_games } from './games';
-import { API_URL, twitchCatImageSrc } from './common'
+import { API_URL, categoryUrl, twitchCatImageSrc } from './common'
 import { mainContent, config, UrlResolve } from 'config';
 import 'htmx.org';
 import { Twitch } from './twitch';
@@ -64,14 +64,13 @@ export function initHtmx() {
         const json = JSON.parse(text);
         let result = "";
         for (const item of json.data) {
-            const url_name = encodeURIComponent(item.name);
-            const game_url = mainContent['category'].url.replace(":category", url_name)
+            const game_url = categoryUrl(item.name)
             const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
             const game_obj_str = encodeURIComponent(JSON.stringify(item));
             let html = tmpl.innerHTML
               .replaceAll("#game_url", game_url)
               .replace(":game_name_text", item.name)
-              .replace(":game_name_url", url_name)
+              .replace("#game_external_url", categoryUrl(item.name, true))
               .replace("#game_img_url", img_url)
               .replace(":item_id", item.id)
               .replace(":item_json", game_obj_str)

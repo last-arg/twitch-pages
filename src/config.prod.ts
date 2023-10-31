@@ -23,7 +23,7 @@ export const mainContent: Record<string, UrlResolve> = {
     html: "/public/partials/top-games.html",
   },
   "category": {
-    url: "/directory/game/:category",
+    url: "/directory/category/:category",
     html: "/public/partials/category.html",
   },
   "user-videos": {

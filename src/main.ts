@@ -2,7 +2,7 @@ import { clearGames, followGame, unfollowGame} from './games';
 import { current_pathname, settings, SettingsGeneral } from './global';
 import { search_value, } from './search';
 import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, removeOldProfileImages, updateLiveUsers, clearStreams, clearProfiles } from './streams';
-import { Game } from './common';
+import { categoryUrl, Game } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -23,7 +23,7 @@ window.addEventListener("htmx:load", (e: Event) => {
         if (game) {
             const link = elem_card.querySelector("a")!;
             link.textContent = game;
-            link.href = "https://twitch.tv/directory/games/" + encodeURIComponent(game);
+            link.href = categoryUrl(game, true);
             elem_card.classList.remove("hidden");
         } else {
             addLiveUser(stream_id);
