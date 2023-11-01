@@ -76,13 +76,13 @@ export const live_users = persistentAtom<Record<string, string | undefined>>("li
     decode: JSON.parse,
 });
 live_users.listen(function() {
-    live_count.set(getLiveCount())
     renderLiveRemove(live_removes);
     live_removes.length = 0;
     renderLiveUpdate(live_updates);
     live_updates.length = 0;
     renderLiveAdd(live_adds);
     live_adds.length = 0;
+    live_count.set(getLiveCount())
 })
 export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
     const new_value = live_users.get();
@@ -204,7 +204,8 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
     live_removes = removes;
     live_adds = adds;
     live_updates = updates;
-    live_users.set(users);
+    // TODO: copying bad
+    live_users.set({...users});
 });
 
 const live_check_ms = 300000; // 5 minutes
