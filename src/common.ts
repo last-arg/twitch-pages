@@ -59,6 +59,7 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
     const frag = document.createDocumentFragment();
     for (const stream of data) {
         const new_item = base_elem.cloneNode(true) as Element;
+        new_item.id = "stream-id-" + stream.user_id;
         const p = new_item.querySelector("p")!;
         p.textContent = decodeURIComponent(stream.user_name);
         const link = new_item.querySelector(".link-box")!;
@@ -79,6 +80,7 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
         external_link.href = "https://www.twitch.tv" + href;
         const lu = live_users.get();
         const card = new_item.querySelector(".js-card-live")!;
+        card.setAttribute("data-stream-id", stream.user_id);
         if (lu[stream.user_id]) {
             card.classList.remove("hidden");
             card.querySelector("p")!.textContent = lu[stream.user_id] || "";
