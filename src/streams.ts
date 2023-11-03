@@ -157,9 +157,9 @@ export function renderUserLiveness(id: string, card: Element) {
     const a = card.querySelector("a")!;
     const game = live_users.get()[id]!;
     a.textContent = game;
-    a.href = categoryUrl(game);
-    a.setAttribute("hx-get", a.href);
-    a.setAttribute("hx-push-url", a.href);
+    const href = categoryUrl(game);
+    a.href = href;
+    a.setAttribute("hx-push-url", href);
     card.classList.remove("hidden")
 }
 
