@@ -14,6 +14,9 @@ declare global {
     }
 }
 
+// TODO: when page is reloaded live count is not right
+// TODO: user page: show liveness
+
 window.addEventListener("htmx:load", (e: Event) => {
     const elem = e.target as Element;
     if (elem.classList.contains("user-heading-box")) {

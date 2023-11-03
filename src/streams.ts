@@ -1,4 +1,4 @@
-import { StreamTwitch, strCompareField } from "./common";
+import { StreamTwitch, strCompareField, categoryUrl } from "./common";
 import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state } from "./sidebar";
 import { action, atom, map } from 'nanostores'
@@ -152,7 +152,8 @@ function renderLiveStreamPageUser(id: string) {
         const a = card.querySelector("a")!;
         const game = live_users.get()[id]!;
         a.textContent = game;
-        a.href = "/" + encodeURIComponent(game);
+        a.href = categoryUrl(game);
+        a.setAttribute("hx-get", a.href);
         card.classList.remove("hidden")
     }
 }
