@@ -159,6 +159,7 @@ export function renderUserLiveness(id: string, card: Element) {
     a.textContent = game;
     a.href = categoryUrl(game);
     a.setAttribute("hx-get", a.href);
+    a.setAttribute("hx-push-url", a.href);
     card.classList.remove("hidden")
 }
 

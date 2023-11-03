@@ -14,7 +14,7 @@ permalink: "public/partials/user-videos.html"
           </heading-link>
           <div class="js-card-live user-live hidden" data-stream-id=":item_id">
             <span>LIVE</span>
-            <a href="#game_url" hx-target="#main" hx-get="#game_url"></a>
+            <a href="#game_url" hx-target="#main" hx-get="#game_url" hx-push-url="#game_url"></a>
           </div>
         </div>
       </template>
