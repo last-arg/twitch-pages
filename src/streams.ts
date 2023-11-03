@@ -146,16 +146,20 @@ function renderLiveStreamSidebar(id: string) {
     }
 }
 
-export function renderLiveStreamPageUser(id: string, root: Element | Document = document) {
-    const card = root.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
+function renderLiveStreamPageUser(id: string) {
+    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
     if (card) {
-        const a = card.querySelector("a")!;
-        const game = live_users.get()[id]!;
-        a.textContent = game;
-        a.href = categoryUrl(game);
-        a.setAttribute("hx-get", a.href);
-        card.classList.remove("hidden")
+        renderUserLiveness(id, card)
     }
+}
+
+export function renderUserLiveness(id: string, card: Element) {
+    const a = card.querySelector("a")!;
+    const game = live_users.get()[id]!;
+    a.textContent = game;
+    a.href = categoryUrl(game);
+    a.setAttribute("hx-get", a.href);
+    card.classList.remove("hidden")
 }
 
 const live_last_update = persistentAtom<number>("live_last_update", 0, {

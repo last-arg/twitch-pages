@@ -1,8 +1,8 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { current_pathname, settings, SettingsGeneral } from './global';
 import { search_value, } from './search';
-import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderLiveStreamPageUser } from './streams';
-import { categoryUrl, Game } from './common';
+import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
+import { Game } from './common';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -24,7 +24,7 @@ window.addEventListener("htmx:load", (e: Event) => {
         const stream_id = elem_card.getAttribute("data-stream-id")!;
         const game = live_users.get()[stream_id];
         if (game) {
-            renderLiveStreamPageUser(stream_id);
+            renderUserLiveness(stream_id, elem_card);
         } else {
             addLiveUser(stream_id);
         }
