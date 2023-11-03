@@ -146,8 +146,8 @@ function renderLiveStreamSidebar(id: string) {
     }
 }
 
-function renderLiveStreamPageUser(id: string) {
-    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
+export function renderLiveStreamPageUser(id: string, root: Element | Document = document) {
+    const card = root.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
     if (card) {
         const a = card.querySelector("a")!;
         const game = live_users.get()[id]!;
