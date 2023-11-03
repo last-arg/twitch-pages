@@ -113,8 +113,11 @@ function renderLiveUpdate(ids: string[]) {
     }
     const live_streams = live_users.get();
     for (const id of ids) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] :is(p, a)`);
+        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] p`);
         cards.forEach(node => node.textContent = live_streams[id] || "")
+        if (document.location.pathname.endsWith("/videos")) {
+            renderLiveStreamPageUser(id);
+        }
     }
 };
 
@@ -149,7 +152,7 @@ function renderLiveStreamPageUser(id: string) {
         const a = card.querySelector("a")!;
         const game = live_users.get()[id]!;
         a.textContent = game;
-        a.href = "https://twitch.tv/directory/games/" + encodeURIComponent(game);
+        a.href = "/" + encodeURIComponent(game);
         card.classList.remove("hidden")
     }
 }
