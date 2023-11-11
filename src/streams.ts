@@ -166,7 +166,7 @@ export function renderUserLiveness(id: string, card: Element) {
 
 const live_last_update = persistentAtom<number>("live_last_update", 0, {
     encode: (val) => val.toString(),
-    decode: (val) => parseInt(val, 10),
+    decode: (val) => Number(val),
 });
 
 function getLiveCount(): number {
@@ -223,11 +223,13 @@ let live_user_update = 0;
 export async function updateLiveUsers() {
     const now = Date.now();
     const diff = live_last_update.get() - now + live_check_ms;
+    console.log("updateLiveUsers", live_last_update.get(), now, diff)
     clearTimeout(live_user_update);
     if (diff > 0) {
         live_user_update = window.setTimeout(updateLiveUsers, diff + 1000);
         return;
     }
+    console.log("update now")
     const curr_ids = followed_streams.get().map(({user_id}) => user_id);
     for (const id of Object.keys(live_users.get())) {
         if (!curr_ids.includes(id)) {
