@@ -90,7 +90,8 @@ export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_
         const stream = (await twitch.fetchStreams([user_id]))
         if (stream.length > 0) {
             new_value[user_id] = stream[0].game_name;
-            store.set(new_value);
+            // TODO: copying bad
+            store.set({...new_value});
         }
     }
 });
