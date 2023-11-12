@@ -76,6 +76,7 @@ export const live_users = persistentAtom<Record<string, string | undefined>>("li
     decode: JSON.parse,
 });
 live_users.listen(function() {
+    console.log("live_users.listen()")
     renderLiveRemove(live_removes);
     live_removes.length = 0;
     renderLiveUpdate(live_updates);
@@ -237,6 +238,8 @@ export async function updateLiveUsers() {
         }
     }
     const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
+    console.log("curr_ids", curr_ids)
+    console.log("new_live_streams", new_live_streams)
     updateLiveStreams(curr_ids, new_live_streams);
     live_last_update.set(now)
     live_user_update = window.setTimeout(updateLiveUsers, live_check_ms + 1000);
