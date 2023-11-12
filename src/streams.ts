@@ -215,6 +215,7 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
     live_removes = removes;
     live_adds = adds;
     live_updates = updates;
+    // TODO: do nothing if no removes, adds, or updates?
     // TODO: copying bad
     live_users.set({...users});
 });

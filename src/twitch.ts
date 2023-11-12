@@ -1,4 +1,5 @@
 import { StreamTwitch } from './common'
+import { TWITCH_CLIENT_ID } from './config.prod'
 
 type UserTwitch = {id: string, profile_image_url: string};
 type Search = {
@@ -7,7 +8,6 @@ type Search = {
 }
 
 const TWITCH_MAX_QUERY_COUNT = 100
-export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
 const SEARCH_COUNT = 10
 
 type TokenLocal = {

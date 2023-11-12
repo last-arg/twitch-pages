@@ -1,5 +1,5 @@
 import { Handler } from "@netlify/functions";
-import { TWITCH_CLIENT_ID } from "../../src/twitch"
+import { TWITCH_CLIENT_ID } from "../../src/config.prod"
 
 const { TWITCH_CLIENT_SECRET } = process.env
 
