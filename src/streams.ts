@@ -212,10 +212,13 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
         }
     }
 
+    // if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
+    //     return;
+    // }
+
     live_removes = removes;
     live_adds = adds;
     live_updates = updates;
-    // TODO: do nothing if no removes, adds, or updates?
     // TODO: copying bad
     live_users.set({...users});
 });
@@ -238,7 +241,7 @@ export async function updateLiveUsers() {
             curr_ids.push(id);
         }
     }
-    const new_live_streams = (await twitch.fetchLiveUsers(curr_ids));
+    const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
     console.log("curr_ids", curr_ids)
     console.log("new_live_streams", new_live_streams)
     updateLiveStreams(curr_ids, new_live_streams);
