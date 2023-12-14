@@ -38,7 +38,7 @@ export const followStream = action(followed_streams, 'followStream', async (stor
         const curr = store.get();
         curr.push(data);
         // TODO: copying is wasteful, do it better
-        store.set([...curr.sort(strCompareField("user_name"))]);
+        store.set([...curr.sort(sortStreams)]);
         if (!live_users.get()[data.user_id]) {
             addLiveUser(data.user_id);
         }
@@ -83,8 +83,27 @@ live_users.listen(function() {
     live_updates.length = 0;
     renderLiveAdd(live_adds);
     live_adds.length = 0;
-    live_count.set(getLiveCount())
+    followed_streams.set([...followed_streams.get().sort(sortStreams)]);
 })
+
+function sortStreams(a: StreamLocal, b: StreamLocal) {
+    const cmp = strCompareField("user_name")(a, b);
+    const a_cmp = isLiveStream(a["user_id"]) ? -1e6 : 0;
+    const b_cmp = isLiveStream(b["user_id"]) ? 1e6 : 0;
+    return cmp + a_cmp + b_cmp;
+}
+
+function isLiveStream(name: string) {
+    console.log("is_live", name)
+    for (const user_name in live_users.get()) {
+    console.log("is_live cmp", user_name);
+        if (user_name == name) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
     const new_value = live_users.get();
     if (!new_value[user_id]) {
