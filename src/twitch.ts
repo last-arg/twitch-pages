@@ -20,6 +20,7 @@ type TokenResponse = {
   expires_in: number,
 }
 
+// TODO: getting new token is not working when old one expires
 export class Twitch {
   static headers = {
     "Authorization": "",
@@ -49,15 +50,15 @@ export class Twitch {
         // TODO: handle failed request
       } else {
         const token = await r.json();
-        this.setTwitchToken(token);
+        const expires_date = Math.floor(Date.now() / 1000) + token.expires_in;
+        this.setTwitchToken({ access_token: token.access_token, expires_date: expires_date });
       }
       this.is_fetching_token = false;
     }
   }
 
-  setTwitchToken(token: TokenResponse) {
-    const expires_date = (Date.now() / 1000) + token.expires_in;
-    this.twitch_token = { access_token: token.access_token, expires_date: expires_date };
+  setTwitchToken(token: TokenLocal) {
+    this.twitch_token = token;
     localStorage.setItem("twitch_token", JSON.stringify(this.twitch_token))
     Twitch.headers["Authorization"] = `Bearer ${this.twitch_token.access_token}`;
   }
