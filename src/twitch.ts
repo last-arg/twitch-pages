@@ -15,12 +15,6 @@ type TokenLocal = {
   expires_date: number,
 }
 
-type TokenResponse = {
-  access_token: string,
-  expires_in: number,
-}
-
-// TODO: getting new token is not working when old one expires
 export class Twitch {
   static headers = {
     "Authorization": "",
@@ -78,7 +72,7 @@ export class Twitch {
   async fetchUsers(ids: string[]): Promise<UserTwitch[]> {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    const resp = await fetch(url, {method: "GET", headers: Twitch.headers});
+    let resp = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
     if (resp.status !== 200) {
       console.warn("fetchUsers() status:", resp.status);
       return [];
@@ -86,21 +80,30 @@ export class Twitch {
     return (await resp.json()).data;
   }
 
+  async twitchFetch(url: string, init: RequestInit | undefined): Promise<Response> {
+    let resp = await fetch(url, init)
+    if (resp.status === 401) {
+      await this.fetchToken();
+      resp = await fetch(url, init);
+    }
+    return resp;
+  }
+
   async fetchSearch(input: string): Promise<Search[]> {
     const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
-    const r = await fetch(url, { method: "GET", headers: Twitch.headers })
-    if (r.status !== 200) {
-      console.warn("fetchSearch() status:", r.status);
+    const resp = await this.twitchFetch(url, { method: "GET", headers: Twitch.headers });
+    if (resp.status !== 200) {
+      console.warn("fetchSearch() status:", resp.status);
       return [];
     }
-    const results = await r.json()
+    const results = await resp.json()
     return results.data ?? []
   }
   
   async fetchStreams(user_ids: string[]): Promise<StreamTwitch[]> {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    const r = await fetch(url, {method: "GET", headers: Twitch.headers});
+    const r = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
     if (r.status !== 200) {
       console.warn("fetchStreams() status:", r.status);
       return [];
