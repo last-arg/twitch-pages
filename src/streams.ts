@@ -76,11 +76,14 @@ export const live_users = persistentAtom<Record<string, string | undefined>>("li
     decode: JSON.parse,
 });
 live_users.listen(function() {
-    console.log("live_users.listen()")
+    console.log("live_users render")
+    console.log("live_removes", live_removes)
     renderLiveRemove(live_removes);
     live_removes.length = 0;
+    console.log("live_updates", live_updates)
     renderLiveUpdate(live_updates);
     live_updates.length = 0;
+    console.log("live_adds", live_adds)
     renderLiveAdd(live_adds);
     live_adds.length = 0;
     followed_streams.set([...followed_streams.get().sort(sortStreams)]);
@@ -94,9 +97,7 @@ function sortStreams(a: StreamLocal, b: StreamLocal) {
 }
 
 function isLiveStream(name: string) {
-    console.log("is_live", name)
     for (const user_name in live_users.get()) {
-    console.log("is_live cmp", user_name);
         if (user_name == name) {
             return true;
         }
@@ -231,9 +232,9 @@ const updateLiveStreams = action(live_users, "updateLiveStreams", function(store
         }
     }
 
-    // if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
-    //     return;
-    // }
+    if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
+        return;
+    }
 
     live_removes = removes;
     live_adds = adds;
