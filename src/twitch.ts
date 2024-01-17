@@ -59,16 +59,6 @@ export class Twitch {
 
   getTwitchToken(): string | null { return this.twitch_token?.access_token || null; }
   
-  // setUserToken(token: string) {
-  //   console.log("TODO: setUserToken")
-  // }
-
-  // TODO: when token becomes invalid
-  // From twitch docs: 'If a token becomes invalid, your API requests return 
-  //   HTTP status code 401 Unauthorized. When this happens, you’ll need to get a 
-  //   new access token using the appropriate flow for your app.'
-  // Have to check for 401 in any twitch API request code
-  
   async fetchUsers(ids: string[]): Promise<UserTwitch[]> {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
