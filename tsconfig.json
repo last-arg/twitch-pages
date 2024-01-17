@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es2020",
     "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "module": "es2020",
+    "lib": ["es2020", "DOM"],
     "moduleResolution": "Node",
     "checkJs": true,
     "allowJs": true,

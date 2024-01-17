@@ -4,14 +4,18 @@ import { search_items, search_item_tmpl, search_list, search_scrollbox } from ".
 import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
 import { atom } from 'nanostores'
 
-export type SidebarState = "closed" | "games" | "streams" | "search"
-export const sb_state = atom<SidebarState>("closed");
+/** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
+
+export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
 sb_state.listen(function(state) {
   sidebar_state_change(state)
 });
 
-export function renderSidebarItems(state: SidebarState) {
+/**
+  @param {SidebarState} state
+*/
+export function renderSidebarItems(state) {
     if (state === "search") {
         renderGames(search_item_tmpl, search_list, search_items);
         sidebarShadows(search_scrollbox);
@@ -24,9 +28,12 @@ export function renderSidebarItems(state: SidebarState) {
     }
 }
 
-export const sidebar_nav = document.querySelector(".sidebar-nav")!;
+export const sidebar_nav = /** @type {Element} */ (document.querySelector(".sidebar-nav"));
 
-export function sidebar_state_change(state: SidebarState) {
+/**
+  @param {SidebarState} state
+*/
+export function sidebar_state_change(state) {
     sidebar_nav.querySelector("#game_name[aria-expanded=true] , .menu-item[aria-expanded=true]")?.setAttribute("aria-expanded", "false");
     if (state !== "closed") {
         const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
@@ -38,12 +45,15 @@ export function sidebar_state_change(state: SidebarState) {
 }
 
 export function initSidebarScroll() {
-  const scrollContainers = document.querySelectorAll('.scroll-container') as any;
-  for (const scrollContainer of scrollContainers) {
-    const scrollbox = scrollContainer.querySelector('.scrollbox');
+  const scrollContainers = document.querySelectorAll('.scroll-container');
+  for (let i = 0; i < scrollContainers.length; i++) {
+    const scrollbox = scrollContainers[i].querySelector('.scrollbox');
+    if (!scrollbox) {
+      continue;
+    }
     let scrolling = false;
-    scrollbox.addEventListener("scroll", (event: Event) => {
-      const scrollbox = event.target as HTMLElement
+    scrollbox.addEventListener("scroll", (/** @type {Event} */ event) => {
+      const scrollbox = /** @type {HTMLElement} */ (event.target);
 
       if (!scrolling) {
         window.requestAnimationFrame(function() {
@@ -56,8 +66,14 @@ export function initSidebarScroll() {
   }
 }
 
-export function sidebarShadows(scrollbox: HTMLElement) {
-    const scroll_container = scrollbox.closest('.scroll-container')!;
+/**
+  @param {HTMLElement} scrollbox
+*/
+export function sidebarShadows(scrollbox) {
+    const scroll_container = scrollbox.closest('.scroll-container');
+    if (scroll_container === null) {
+      return;
+    }
     const has_top_shadow = scrollbox.scrollTop > 0;  
     // NOTE: '- 2' is if rounding is a bit off
     const max_scroll = scrollbox.scrollHeight - scrollbox.offsetHeight - 2;
