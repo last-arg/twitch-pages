@@ -70,7 +70,7 @@ export function isStreamFollowed(input_id: string) {
 
 let live_removes: string[] = [];
 let live_updates: string[] = [];
-let live_adds: string[] = followed_streams.get().map(({user_id}) => user_id);
+let live_adds: string[] = [];
 export const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
     encode: JSON.stringify,
     decode: JSON.parse,
@@ -200,8 +200,9 @@ function getLiveCount(): number {
     }
     return result;
 }
-const live_count = atom(getLiveCount());
+const live_count = atom(0);
 live_count.subscribe(function(count) {
+    console.log("change live count", count);
     const stream_count = document.querySelector(".streams-count")!;
     if (count === 0) {
         stream_count.classList.add("hidden")
