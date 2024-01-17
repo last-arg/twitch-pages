@@ -1,15 +1,18 @@
 import { current_pathname, settings } from './global';
 import { followed_games } from './games';
 import { API_URL, categoryUrl, twitchCatImageSrc } from './common'
-import { mainContent, config, UrlResolve } from 'config';
+import { mainContent, config } from 'config';
 import 'htmx.org';
 import { Twitch } from './twitch';
 import { add_images, followed_streams, profile_images } from './streams';
-declare var htmx: any;
 
 export function initHtmx() {
   htmx.defineExtension("twitch-api", {
-    onEvent: (name: string, evt: any) => {
+    /**
+    @param {string} name
+    @param {CustomEvent} evt
+    */
+    onEvent: (name, evt) => {
       // console.log(name, evt)
       if (name === "htmx:configRequest") {
         const path = evt.detail.path;
@@ -49,12 +52,19 @@ export function initHtmx() {
         }
       }
     },
-    transformResponse: function(text: string, xhr: any, _elt: HTMLElement) {
+    /**
+    @param {string} text
+    @param {any} xhr
+    @param {HTMLElement} _elt
+    @returns {string}
+    */
+    transformResponse: function(text, xhr, _elt) {
       // console.log(text, xhr, _elt);
       const pathUrl = new URL(xhr.responseURL)
       const path = pathUrl.pathname;
 
-      const tmpl = document.querySelector(_elt.getAttribute("hx-template")!) as HTMLTemplateElement | null;
+      const attr = /** @type {string} */ (_elt.getAttribute("hx-template"));
+      const tmpl = document.querySelector(attr);
       if (!tmpl) {
         console.warn("Htmx extension 'twitch-api' could not find attribute 'hx-template' in element ", _elt);
         return text;
@@ -80,7 +90,7 @@ export function initHtmx() {
             result += html;
         }
         const cursor = json.pagination.cursor;
-        const btn = document.querySelector(".btn-load-more")!;
+        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
           btn.setAttribute("hx-vals", `{"after": "${cursor}"}`);
         } else {
@@ -99,8 +109,9 @@ export function initHtmx() {
 
         const item = json.data[0];
         document.title = `${item.name} | Twitch Pages`;
-        document.querySelector(".btn-load-more")!.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
-        htmx.trigger(".btn-load-more", "click", {})
+        const btn_load = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+        btn_load.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
+        htmx.trigger(btn_load, "click", {})
         const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
         const game_obj_str = encodeURIComponent(JSON.stringify(item));
         let result = tmpl.innerHTML
@@ -157,7 +168,7 @@ export function initHtmx() {
         }
         
         const cursor = json.pagination.cursor;
-        const btn = document.querySelector(".btn-load-more")!;
+        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
           const hx_vals = JSON.parse(btn.getAttribute("hx-vals") || "{}");
           hx_vals.after = cursor;
@@ -179,7 +190,8 @@ export function initHtmx() {
 
         const item = json.data[0];
         document.title = `${item.display_name} | Twitch Pages`;
-        document.querySelector(".btn-load-more")!.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
+        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+        btn.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
         htmx.ajax('GET', '/helix/videos', {source:'.btn-load-more'})
         const item_json = encodeURIComponent(JSON.stringify({
            user_id: item.id,
@@ -200,16 +212,18 @@ export function initHtmx() {
 
         return result;
       } else if (path === "/helix/videos") {
-        const VIDEO_ICONS: Record<string, string> = {
+        /** @type {Record<string, string>} */
+        const VIDEO_ICONS = {
           archive: "video-camera",
           upload: "video-upload",
           highlight: "video-reel",
         }
 
         const json = JSON.parse(text);
-        const tmpl = document.querySelector("#user-video-template") as HTMLTemplateElement;
+        const tmpl = /** @type {HTMLTemplateElement} */ (document.querySelector("#user-video-template"));
         let result = "";
-        const counts: any = { archive: 0, upload: 0, highlight: 0 };
+        /** @type {Record<string, number>} */
+        const counts = { archive: 0, upload: 0, highlight: 0 };
         for (const item of json.data) {
             counts[item.type] += 1;
             const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
@@ -227,22 +241,23 @@ export function initHtmx() {
               .replace(":video_icon", VIDEO_ICONS[item.type])
               .replace(":encoded_video_title", encodeURIComponent(item.title));
         }
-        
-        // User page: Update filter counts
-        const elHighlights = document.querySelector("#highlights-count")!;
-        const elUploads = document.querySelector("#uploads-count")!;
-        const elArchives = document.querySelector("#archives-count")!;
 
-        const new_len_highlight = (+elHighlights.textContent!) + counts.highlight;
-        const new_len_upload = (+elUploads.textContent!) + counts.upload;
-        const new_len_archive = (+elArchives.textContent!) + counts.archive;
-        
-        elHighlights.textContent = new_len_highlight;
-        elUploads.textContent = new_len_upload;
-        elArchives.textContent = new_len_archive;
+        /**
+        @param {string} selector
+        @param {number} count
+        */
+        function update_count(selector, count) {
+          const elem = /** @type {Element} */ (document.querySelector(selector));
+          const new_len_highlight = +(elem.textContent || "") + count;
+          elem.textContent = new_len_highlight.toString();
+        }
+
+        update_count("#highlights-count", counts.highlight);
+        update_count("#uploads-count", counts.upload);
+        update_count("#archives-count", counts.archive);
         
         const cursor = json.pagination.cursor;
-        const btn_more = document.querySelector(".btn-load-more")!
+        const btn_more = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
           const obj = JSON.parse(btn_more.getAttribute("hx-vals") || "{}");
           obj.after = cursor;
@@ -261,7 +276,11 @@ export function initHtmx() {
   htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
 }
 
-function twitchDurationToString(duration: string): string {
+/**
+@param {string} duration
+@returns {string}
+*/
+function twitchDurationToString(duration) {
   const time = duration.slice(0,-1).split(/[hm]/).reverse()
   const hours = (time.length >= 3) ? `${time[2]}:` : ""
   const minutes = (time.length >= 2) ? `${time[1].padStart(2, "0")}:` : ""
@@ -269,8 +288,16 @@ function twitchDurationToString(duration: string): string {
   return `${hours}${minutes}${seconds}`
 }
 
-function twitchDateToString(d: Date): string {
-  const round = (nr: number): number => {
+/**
+@param {Date} d
+@returns {string}
+*/
+function twitchDateToString(d) {
+  /**
+  @param {number} nr
+  @returns {number}
+  */
+  function round(nr) {
     const nr_floor = Math.floor(nr)
     return (nr - nr_floor) > 0.5 ? Math.ceil(nr) : nr_floor;
   }
@@ -303,11 +330,21 @@ function twitchDateToString(d: Date): string {
   return result_str
 }
 
-function getVideoImageSrc(url: string, width: number, height: number): string {
+/**
+@param {string} url
+@param {number} width
+@param {number} height
+@returns {string}
+*/
+function getVideoImageSrc(url, width, height) {
   return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
 }
 
-const getUrlObject = (newPath: string): UrlResolve => {
+/**
+@param {string} newPath
+@returns {import("config").UrlResolve}
+*/
+function getUrlObject(newPath) {
   if (newPath === "/") return mainContent["top-games"]
   let contentKey = "not-found"
   const newDirs = newPath.split("/").filter((path) => path.length > 0)
