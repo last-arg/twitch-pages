@@ -1,13 +1,18 @@
-import { Game, } from './common'
 import { twitch } from './twitch'
 import { renderSidebarItems } from './sidebar';
 import { atom } from 'nanostores'
 
-export const feedback_elem = document.querySelector(".search-feedback")!;
-export const search_list = document.querySelector(".js-search-list")!;
-export const search_scrollbox = search_list.parentElement!;
-export const search_item_tmpl = (search_list.nextElementSibling! as HTMLTemplateElement).content.firstElementChild!;
-export let search_items: Game[] = [];
+/**
+ * @typedef {import("./common").Game} Game
+ */
+
+export const feedback_elem = /** @type {Element} */ (document.querySelector(".search-feedback"));
+export const search_list = /** @type {Element} */ (document.querySelector(".js-search-list"));
+export const search_scrollbox = /** @type {HTMLElement} */ (search_list.parentElement);
+// @ts-ignore
+export const search_item_tmpl = search_list.nextElementSibling.content.firstElementChild;
+/** @type {Game[]} */
+export let search_items = [];
 
 let search_timeout = 0;
 export const search_value = atom("");
@@ -29,7 +34,7 @@ search_value.listen(function(val) {
             return;
         }
         feedback_elem.textContent = "";
-        search_items = results as Game[];
+        search_items = /** @type {Game[]} */ (results);
         renderSidebarItems("search");
     }, 400);
 })

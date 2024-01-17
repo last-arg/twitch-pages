@@ -1,6 +1,6 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { current_pathname, settings, SettingsGeneral } from './global';
-import { search_value, } from './search';
+import { search_value } from './search';
 import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
 import { Game } from './common';
 import { twitch } from './twitch';
