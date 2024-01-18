@@ -3,7 +3,7 @@ import { presetUno } from 'unocss'
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
-const configFile = process.env.NODE_ENV === "production" ? "config.prod.ts" : "config.prod.ts"
+const configFile = process.env.NODE_ENV === "production" ? "config.prod.js" : "config.prod.js"
 export default defineConfig({
   plugins: [
     // Unocss({

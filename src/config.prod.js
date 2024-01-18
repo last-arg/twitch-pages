@@ -1,7 +1,8 @@
-export interface UrlResolve {
-  url: string,
-  html: string,
-}
+/**
+@typedef {Object} UrlResolve
+@property {string} url
+@property {string} html
+*/
 
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
 
@@ -19,7 +20,8 @@ if (process.env.NODE_ENV === "production") {
 
 export const settings_default = settings_base;
 
-export const mainContent: Record<string, UrlResolve> = {
+/** @type {Record<string, UrlResolve>} */
+export const mainContent = {
   "top-games": {
     url: "/",
     html: "/public/partials/top-games.html",

@@ -17,7 +17,7 @@
     "noImplicitReturns": true,
     "isolatedModules": true,
     "paths": {
-      "config": ["./src/config.prod.ts"]
+      "config": ["./src/config.prod.js"]
     },
     "typeRoots": [
       "node_modules/@types",
