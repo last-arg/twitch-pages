@@ -1,26 +1,25 @@
 import { clearGames, followGame, unfollowGame} from './games';
-import { current_pathname, settings, SettingsGeneral } from './global';
+import { current_pathname, settings } from './global';
 import { search_value } from './search';
-import { StreamLocal, unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
-import { Game } from './common';
+import { unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
 import { twitch } from './twitch';
-import { initSidebarScroll, sb_state, SidebarState } from './sidebar';
+import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
 
-declare global {
-    interface Window { 
-        filterItems: typeof pageFilter;
-        resetFilter: typeof resetFilter;
-    }
-}
+/**
+@typedef {import("./global").SettingsGeneral} SettingsGeneral
+@typedef {import("./streams").StreamLocal} StreamLocal
+@typedef {import("./common").Game} Game
+@typedef {import("./sidebar").SidebarState} SidebarState
+*/
 
 // TODO: when page is reloaded live count is not right
 
-window.addEventListener("htmx:load", (e: Event) => {
-    const elem = e.target as Element;
+window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
+    const elem = /** @type {Element} */ (e.target);
     if (elem.classList.contains("user-heading-box")) {
-        const elem_card = elem!.querySelector(".js-card-live")!;
-        const stream_id = elem_card.getAttribute("data-stream-id")!;
+        const elem_card = /** @type {Element} */ (elem.querySelector(".js-card-live"));
+        const stream_id = /** @type {string} */ (elem_card.getAttribute("data-stream-id"));
         const game = live_users.get()[stream_id];
         if (game) {
             renderUserLiveness(stream_id, elem_card);
@@ -38,7 +37,10 @@ window.addEventListener("htmx:load", (e: Event) => {
     }
 });
 
-function gameAndStreamFollow(t: HTMLElement) {
+/**
+@param {HTMLElement} t
+*/
+function gameAndStreamFollow(t) {
     const btn = t.closest(".button-follow");
     if (btn) {
         const item_raw = btn.getAttribute("data-item");
@@ -49,13 +51,13 @@ function gameAndStreamFollow(t: HTMLElement) {
                 if (following) {
                     unfollowStream(item_untyped.user_id);
                 } else {
-                    followStream(item_untyped as StreamLocal);
+                    followStream(/** @type {StreamLocal} */ item_untyped);
                 }
             } else {
                 if (following) {
                     unfollowGame(item_untyped.id);
                 } else {
-                    followGame(item_untyped as Game);
+                    followGame(/** @type {Game} */ item_untyped);
                 }
             }
             btn.setAttribute("data-is-followed", (!following).toString())
@@ -63,12 +65,13 @@ function gameAndStreamFollow(t: HTMLElement) {
     }
 }
 
-document.addEventListener("click", function(e: Event) {
-    gameAndStreamFollow(e.target as HTMLElement)
+document.addEventListener("click", function(/** {Event} */e) {
+    const target = /** @type {HTMLElement} */ (e.target);
+    gameAndStreamFollow(target)
 
-    const btn = (e.target as HTMLElement).closest(".menu-item, .btn-close");
+    const btn = target.closest(".menu-item, .btn-close");
     if (btn?.classList.contains("menu-item")) {
-        let new_state = btn.getAttribute("data-menu-item") as SidebarState || "closed";
+        let new_state = /** @type {SidebarState} */ (btn.getAttribute("data-menu-item")) || "closed";
         const is_expanded = btn.getAttribute("aria-expanded") || "false";
         if (is_expanded === "true") {
             new_state = "closed"
@@ -79,42 +82,44 @@ document.addEventListener("click", function(e: Event) {
     }
 });
 
-const form_search = document.querySelector("form")!;
-const input_search = form_search.querySelector("#game_name")!;
+const form_search = /** @type {HTMLFormElement} */ (document.querySelector("form"));
+const input_search = /** @type {Element} */(form_search.querySelector("#game_name"));
 
-form_search.addEventListener("input", function(e: Event) {
+form_search.addEventListener("input", function(e) {
     e.preventDefault();
-    search_value.set((e.target as HTMLInputElement).value);
+    search_value.set(/** @type {HTMLInputElement} */ (e.target).value);
 });
 
-input_search.addEventListener("focus", function(e: Event) {
+input_search.addEventListener("focus", function(e) {
     sb_state.set("search");
-    search_value.set((e.target as HTMLInputElement).value);
+    search_value.set(/** @type {HTMLInputElement} */ (e.target).value);
 });
 
-input_search.addEventListener("blur", function(e: Event) {
-    if ((e.target as HTMLInputElement).value.length === 0) {
+input_search.addEventListener("blur", function(e) {
+    if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
         sb_state.set("closed")
     }
 });
 
-
-function initUserVideoTypeFilter(elem: Element) {
+/**
+@param {Element} elem
+*/
+function initUserVideoTypeFilter(elem) {
     const fieldset = elem.querySelector(".filter-video-type");
     const output_list = elem.querySelector(".output-list");
     const general = settings.get().general;
     for (const which of ["archive", "upload", "highlight"]) {
-        const key = `video-${which}s` as keyof typeof general;
+        const key = /** @type {keyof typeof general} */ (`video-${which}s`);
         const check_value = !!general[key];
-        const input = fieldset?.querySelector(`#check-${which}`) as HTMLInputElement;
+        const input = /** @type {HTMLInputElement} */ (fieldset?.querySelector(`#check-${which}`));
         input.checked = check_value;
         if (check_value === false) {
             output_list?.classList.add(`no-${which}s`);
         }
     }
 
-    fieldset?.addEventListener("click", (e: Event) => {
-        const elem = e.target as HTMLInputElement;
+    fieldset?.addEventListener("click", (e) => {
+        const elem = /** @type {HTMLInputElement} */ (e.target);
         if (elem.nodeName === "INPUT") {
             if (elem.checked) {
                 output_list?.classList.remove(`no-${elem.value}s`);
@@ -135,9 +140,11 @@ async function startup() {
 };
 window.addEventListener("DOMContentLoaded", startup);
 
-let g_sheet: CSSStyleSheet | null = null;
-function pageFilter(input: unknown) {
-    let value = input as string;
+/** @type {CSSStyleSheet | null} */
+let g_sheet = null;
+
+/** @param {string} value */
+function pageFilter(value) {
     if (g_sheet === null) return;
     if (g_sheet.cssRules.length > 0) {
         g_sheet.deleteRule(0)
@@ -154,32 +161,36 @@ function resetFilter() {
 }
 
 // TODO: use hx-on:* instead?
+// @ts-ignore
 window.filterItems = pageFilter;
+// @ts-ignore
 window.resetFilter = resetFilter;
 
 
-function initFilter(root: Element) {
-    const search_form = root.querySelector(".search-form")!;
-    g_sheet = (search_form.insertAdjacentElement('afterend', document.createElement('style')) as HTMLStyleElement).sheet;
+/** @param {Element} root */
+function initFilter(root) {
+    const search_form = /** @type {Element} */ (root.querySelector(".search-form"));
+    g_sheet = /** @type {HTMLStyleElement} */ (search_form.insertAdjacentElement('afterend', document.createElement('style'))).sheet;
 }
 
-
-function handlePathChange(e: Event) {
-    const target = e.target as Element;
+/** @param {Event} e */
+function handlePathChange(e) {
+    const target = /** @type {Element} e */ (e.target);
     const hx_link = target.closest("a[hx-push-url]");
     current_pathname.set(hx_link?.getAttribute("hx-push-url") || null);
 }
 
-function initSettings(root: Element) {
+/** @param {Element} root */
+function initSettings(root) {
     initCategorySettings(root);
     initGeneralSettings(root);
     initCacheSettings(root);
 }
 
-function initCacheSettings(root:  Element) {
-    root.querySelector(".js-cache-list")?.addEventListener("click", (e: Event) => {
-        const t = e.target as Element;
-        console.log(t)
+/** @param {Element} root */
+function initCacheSettings(root) {
+    root.querySelector(".js-cache-list")?.addEventListener("click", (e) => {
+        const t = /** @type {Element} root */ (e.target);
         if (t.classList.contains("js-clear-games")) {
             clearGames();
         } else if (t.classList.contains("js-clear-streams")) {
@@ -194,12 +205,13 @@ function initCacheSettings(root:  Element) {
     })
 }
 
-function initGeneralSettings(root:  Element) {
+/** @param {Element} root */
+function initGeneralSettings(root) {
     const general = settings.get().general;
     for (const key in general) {
         // @ts-ignore
-        const value = general[key as any];
-        const input = root.querySelector(`#${key}`) as HTMLInputElement | undefined;
+        const value = general[key];
+        const input = /** @type {HTMLInputElement | undefined} */ (root.querySelector(`#${key}`));
         if (input) {
             if (input.type === "number") {
                 input.value = value;
@@ -211,22 +223,24 @@ function initGeneralSettings(root:  Element) {
 
     root.querySelector("#settings-general")?.addEventListener("submit", handleFormSubmit);
     
-    function handleFormSubmit(e: Event) {
+    function handleFormSubmit(/** @type {Event} */ e) {
         e.preventDefault();
-        const elem = e.target as HTMLFormElement;
-        let new_settings = {} as SettingsGeneral;
+        const elem = /** @type {HTMLFormElement} */ (e.target);
+        let new_settings = /** @type {SettingsGeneral} */ ({});
         // @ts-ignore
         (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
         settings.setKey("general", new_settings);
     }
 }
 
-function initCategorySettings(root:  Element) {
+/** @param {Element} root */
+function initCategorySettings(root) {
     const options = root.querySelectorAll("#lang-list option");
+    /** @type {Map<string, string>} root */
     const lang_map = new Map();
-    // @ts-ignore
-    for (let opt of options) {
-        lang_map.set(opt.getAttribute("lang-code")!, opt.value)
+    for (let i = 0; i < options.length; i++) {
+        const opt = /** @type {HTMLInputElement} */ (options[i]);
+        lang_map.set(/** @type {string} */ (opt.getAttribute("lang-code")), opt.value)
     }
 
     for (const lang of settings.get().category.languages) {
@@ -234,23 +248,25 @@ function initCategorySettings(root:  Element) {
     }
     hasLanguages();
     
-    const form_category = root.querySelector("#form-category")!;
+    const form_category = /** @type {Element} */ (root.querySelector("#form-category"));
     form_category.addEventListener("submit", handleFormSubmit);
     form_category.addEventListener("click", handleFormClick);
     form_category.addEventListener("keydown", handleFormKeydown);
 
-    function addLang(lang: string) {
-      const ul = document.querySelector(".enabled-languages")!;
-      const tmpl = ul.querySelector("template")!;
-      const new_elem = tmpl.content.firstElementChild!.cloneNode(true) as  Element;
-      const input = new_elem.querySelector("input")!;
-      new_elem.querySelector("p")!.textContent = lang_map.get(lang);
+    /** @param {string} lang */
+    function addLang(lang) {
+      const ul = /** @type {Element} */ (document.querySelector(".enabled-languages"));
+      const tmpl = /** @type {HTMLTemplateElement} */ (ul.querySelector("template"));
+      const new_elem = /** @type {Element} */ (tmpl.content.firstElementChild?.cloneNode(true));
+      const input = /** @type {HTMLInputElement} */ (new_elem.querySelector("input"));
+      const p = /** @type {HTMLParagraphElement} */ (new_elem.querySelector("p"));
+      p.textContent = lang_map.get(lang) || "";
       input.setAttribute("value", lang)
       ul.append(new_elem);
     }
 
     function hasLanguages() {
-        const msg_elem = root.querySelector(".js-languages-msg")!;
+        const msg_elem = /** @type {Element} */ (root.querySelector(".js-languages-msg"));
         if (root.querySelectorAll(".enabled-languages > li").length > 0) {
             msg_elem.classList.add("hidden")
         } else {
@@ -258,45 +274,48 @@ function initCategorySettings(root:  Element) {
         }
     }
 
-    function handleFormKeydown(event: Event) {
-        const elem = event.target as HTMLInputElement; 
+    /** @param {Event} event */
+    function handleFormKeydown(event) {
+        const elem = /** @type {HTMLInputElement} */ (event.target); 
         if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
-            addLangFromInput(elem as HTMLInputElement);
+            addLangFromInput(elem);
         }
     }
 
-    function addLangFromInput(input: HTMLInputElement) {
+    /** @param {HTMLInputElement} input */
+    function addLangFromInput(input) {
         const lang_value = input.value;
         if (lang_value) {
             const opt = document.querySelector(`option[value=${lang_value}]`)
             if (opt && !document.querySelector(`input[value=${lang_value}]`)) { 
-              addLang(opt.getAttribute("lang-code")!);
+              addLang(/** @type {string} */ (opt.getAttribute("lang-code")));
               input.value = "";
               hasLanguages();
             }
         }
     }
     
-    function handleFormClick(event: Event) {
-        const elem = event.target as HTMLButtonElement; 
+    /** @param {Event} event */
+    function handleFormClick(event) {
+        const elem = /** @type {HTMLButtonElement} */ (event.target); 
         if (elem.nodeName === "BUTTON") {
           if (elem.classList.contains("add-lang")) {
-            addLangFromInput(elem.previousElementSibling as HTMLInputElement);
+            addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
           } else if (elem.classList.contains("remove-lang")) {
-            elem.closest("li")!.remove();
-            hasLanguages();
+              const li = /** @type {Element} */ (elem.closest("li"));
+              li.remove();
           }
         }
     }
    
-    function handleFormSubmit(event: Event) {
+    /** @param {Event} event */
+    function handleFormSubmit(event) {
         event.preventDefault();
-        const elem = event.target as HTMLFormElement;
+        const elem = /** @type {HTMLFormElement} */ (event.target);
         const f_data = new FormData(elem);
         let curr = settings.get().category;
-        curr.languages = f_data.getAll("lang") as string[];
-        curr.show_all = f_data.get("all-languages") as any;
+        curr.languages = /** @type {string[]} */ (f_data.getAll("lang"));
+        curr.show_all = /** @type {string} */ (f_data.get("all-languages"));
         settings.setKey("category", curr);
     }
 }
-
