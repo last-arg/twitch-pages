@@ -1,19 +1,17 @@
-import { StreamTwitch } from './common'
 import { TWITCH_CLIENT_ID } from './config.prod'
 
-type UserTwitch = {id: string, profile_image_url: string};
-type Search = {
-    name: string,
-    id: string,
-}
+/**
+@typedef {import("./common").StreamTwitch} StreamTwitch
+
+@typedef {{id: string, profile_image_url: string}} UserTwitch
+
+@typedef {{name: string, id: string}} Search
+
+@typedef {{access_token: string, expires_date: number}} TokenLocal
+*/
 
 const TWITCH_MAX_QUERY_COUNT = 100
 const SEARCH_COUNT = 10
-
-type TokenLocal = {
-  access_token: string,
-  expires_date: number,
-}
 
 export class Twitch {
   static headers = {
@@ -22,8 +20,10 @@ export class Twitch {
     "Accept": "application/vnd.twitchtv.v5+json",
   }
 
-  twitch_token: TokenLocal | null = null
-  is_fetching_token: boolean = false
+  /** @type {TokenLocal | null} */
+  twitch_token = null
+  /** @type {boolean} */
+  is_fetching_token = false
 
   constructor() {
     const local_token = localStorage.getItem("twitch_token");
@@ -33,6 +33,7 @@ export class Twitch {
     const token = JSON.parse(local_token);
     this.setTwitchToken(token);
   }
+
   async fetchToken() {
     let token = this.twitch_token
     const now_seconds = Date.now() / 1000;
@@ -51,15 +52,25 @@ export class Twitch {
     }
   }
 
-  setTwitchToken(token: TokenLocal) {
+  /**
+  @param {TokenLocal} token
+  */
+  setTwitchToken(token) {
     this.twitch_token = token;
     localStorage.setItem("twitch_token", JSON.stringify(this.twitch_token))
     Twitch.headers["Authorization"] = `Bearer ${this.twitch_token.access_token}`;
   }
 
-  getTwitchToken(): string | null { return this.twitch_token?.access_token || null; }
+  /**
+  @returns {string | null}
+  */
+  getTwitchToken() { return this.twitch_token?.access_token || null; }
   
-  async fetchUsers(ids: string[]): Promise<UserTwitch[]> {
+  /**
+  @param {string[]} ids
+  @returns {Promise<UserTwitch[]>}
+  */
+  async fetchUsers(ids) {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
     let resp = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
@@ -70,7 +81,12 @@ export class Twitch {
     return (await resp.json()).data;
   }
 
-  async twitchFetch(url: string, init: RequestInit | undefined): Promise<Response> {
+  /**
+  @param {string} url
+  @param {RequestInit | undefined} init
+  @returns {Promise<Response>}
+  */
+  async twitchFetch(url, init) {
     let resp = await fetch(url, init)
     if (resp.status === 401) {
       await this.fetchToken();
@@ -79,7 +95,11 @@ export class Twitch {
     return resp;
   }
 
-  async fetchSearch(input: string): Promise<Search[]> {
+  /**
+    @param {string} input
+    @returns {Promise<Search[]>}
+  */  
+  async fetchSearch(input) {
     const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
     const resp = await this.twitchFetch(url, { method: "GET", headers: Twitch.headers });
     if (resp.status !== 200) {
@@ -90,7 +110,11 @@ export class Twitch {
     return results.data ?? []
   }
   
-  async fetchStreams(user_ids: string[]): Promise<StreamTwitch[]> {
+  /**
+    @param {string[]} user_ids
+    @returns {Promise<StreamTwitch[]>}
+  */
+  async fetchStreams(user_ids) {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
     const r = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
@@ -101,9 +125,14 @@ export class Twitch {
     return (await r.json()).data || [];
   }
 
-  async fetchLiveUsers(user_ids: string[]): Promise<StreamTwitch[]> {
+  /**
+    @param {string[]} user_ids
+    @returns {Promise<StreamTwitch[]>}
+  */
+  async fetchLiveUsers(user_ids) {
       const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT)
-      const promises: ReturnType<Twitch['fetchStreams']>[] = [];
+      /** @type {ReturnType<Twitch['fetchStreams']>[]} */
+      const promises = [];
       for (let i = 0; i < batch_count; i+=1) {
           const start = i * TWITCH_MAX_QUERY_COUNT
           const end = start + TWITCH_MAX_QUERY_COUNT
@@ -113,9 +142,14 @@ export class Twitch {
       return result.flat();
   }
 
-  async fetchNewProfiles(user_ids: string[]): Promise<UserTwitch[]> {
+  /**
+    @param {string[]} user_ids
+    @returns {Promise<UserTwitch[]>}
+  */
+  async fetchNewProfiles(user_ids) {
       const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_COUNT);
-      const promises: ReturnType<Twitch['fetchUsers']>[] = [];
+      /** @type {ReturnType<Twitch['fetchUsers']>[]} */
+      const promises = [];
       for (let i = 0; i < batch_count; i+=1) {
         const start = i * TWITCH_MAX_QUERY_COUNT;
         const end = start + TWITCH_MAX_QUERY_COUNT;
