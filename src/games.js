@@ -43,6 +43,9 @@ followed_games.listen(function(_) {
 });
 
 
+/**
+@type {(game: Game) => void}
+*/
 export const followGame = action(followed_games, 'followGame', async function(store, /** @type {Game} */ game) {
     if (!isGameFollowed(game.id)) {
         const curr = store.get();
@@ -53,6 +56,9 @@ export const followGame = action(followed_games, 'followGame', async function(st
     }
 });
 
+/**
+@type {(game_id: string) => void}
+*/
 export const unfollowGame = action(followed_games, 'unfollowGame', async (store, /** @type {string} */ game_id) => {
     const curr = store.get();
     let i = 0

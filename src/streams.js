@@ -39,6 +39,9 @@ export const clearStreams = action(followed_streams, "clearStreams", (store) => 
     store.set([]);
 })
 
+/**
+@type {(data: StreamLocal) => void}
+*/
 export const followStream = action(followed_streams, 'followStream', async (store, /** @type {StreamLocal} */ data) => {
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
@@ -54,6 +57,9 @@ export const followStream = action(followed_streams, 'followStream', async (stor
     }
 });
 
+/**
+@type {(user_id: string) => void}
+*/
 export const unfollowStream = action(followed_streams, 'unfollowStream', async (store, /** @type {string} */ user_id) => {
     const curr = store.get();
     let i = 0
