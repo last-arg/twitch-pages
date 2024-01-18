@@ -1,89 +1,102 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
-import { isStreamFollowed, live_users, profile_images, StreamLocal } from "./streams";
+import { isStreamFollowed, live_users, profile_images } from "./streams";
 import "idiomorph";
 
-declare var Idiomorph: {
-    morph: (old_node: any, new_content: any, config?: any) => void;
-};
+/**
+@typedef {import("./streams").StreamLocal} StreamLocal
+@typedef {"archive" | "upload" | "highlight"} VideoType
+
+@typedef {Object} StreamTwitch
+@property {string} user_id
+@property {string} game_name
+@property {string} type
+
+@typedef {Object} Game
+@property {string} name
+@property {string} id
+@property {string} box_art_url
+*/
 
 export const API_URL = "https://api.twitch.tv"
 
-export type VideoType = "archive" | "upload" | "highlight"
-
-export type StreamTwitch = {
-  user_id: string,
-  game_name: string,
-  type: string,
-}
-
-export type Game = {
-    name: string,
-    id: string,
-    box_art_url: string,
-}
-
-
-export function twitchCatImageSrc(url_template: string, width: number, height: number): string {
+/**
+@param {string} url_template
+@param {number} width
+@param {number} height
+@returns {string}
+*/
+export function twitchCatImageSrc(url_template, width, height) {
     return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
 }
 
-export function renderGames(base_elem: Element, target:Element, data: Game[]) {
+/**
+@param {Element} base_elem
+@param {Element} target
+@param {Game[]} data
+*/
+export function renderGames(base_elem, target, data) {
     const frag = document.createDocumentFragment();
     for (const game of data) {
-        const new_item = base_elem.cloneNode(true) as Element;
+        const new_item = /** @type {Element} */ (base_elem.cloneNode(true));
         new_item.id = "game-id-" + game.id;
-        const p = new_item.querySelector("p")!;
+        const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
         p.textContent = decodeURIComponent(game.name);
-        const link = new_item.querySelector(".link-box")!;
+        const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
         const href = categoryUrl(game.name); 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
-        const img = link.querySelector("img")!;
+        const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
-        const btn = new_item.querySelector(".button-follow")!;
+        const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
         btn.setAttribute("data-item-id", game.id)
         btn.setAttribute("data-is-followed", isGameFollowed(game.id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(game));
         btn.setAttribute("data-item", encoded_game);
-        const span = btn.querySelector("span")!;
+        const span = /** @type {Element} */ (btn.querySelector("span"));
         span.textContent = "Unfollow";
-        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
+        const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
         external_link.href = "https://www.twitch.tv" + href;
         frag.append(new_item);
     }
     Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
-export function renderStreams(base_elem: Element, target:Element, data: StreamLocal[]) {
+/**
+@param {Element} base_elem
+@param {Element} target
+@param {StreamLocal[]} data
+*/
+export function renderStreams(base_elem, target, data) {
     const frag = document.createDocumentFragment();
     for (const stream of data) {
-        const new_item = base_elem.cloneNode(true) as Element;
+        const new_item = /** @type {Element} */ (base_elem.cloneNode(true));
         new_item.id = "stream-id-" + stream.user_id;
-        const p = new_item.querySelector("p")!;
+        const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
         p.textContent = decodeURIComponent(stream.user_name);
-        const link = new_item.querySelector(".link-box")!;
+        const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
         const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
-        const img = link.querySelector("img")!;
+        const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
         const img_obj  = profile_images.get()["images"][stream.user_id];
         img.src = img_obj ? img_obj.url : "#" + stream.user_id;
-        const btn = new_item.querySelector(".button-follow")!;
+        const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
         btn.setAttribute("data-item-id", stream.user_id)
         btn.setAttribute("data-is-followed", isStreamFollowed(stream.user_id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(stream));
         btn.setAttribute("data-item", encoded_game);
-        const span = btn.querySelector("span")!;
+        const span = /** @type {Element} */ (btn.querySelector("span"));
         span.textContent = "Unfollow";
-        const external_link = new_item.querySelector("[href='#external_link']")! as HTMLLinkElement;
+        const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
         external_link.href = "https://www.twitch.tv" + href;
         const lu = live_users.get();
-        const card = new_item.querySelector(".js-card-live")!;
+        const card = /** @type {Element} */ (new_item.querySelector(".js-card-live"));
         card.setAttribute("data-stream-id", stream.user_id);
         if (lu[stream.user_id]) {
             card.classList.remove("hidden");
-            card.querySelector("p")!.textContent = lu[stream.user_id] || "";
+            const card_p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
+            card_p.textContent = lu[stream.user_id] || "";
         } else {
             card.classList.add("hidden");
         }
@@ -92,13 +105,22 @@ export function renderStreams(base_elem: Element, target:Element, data: StreamLo
     Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
-export function strCompareField(name: string): (a: any, b: any) => number {
+/**
+@param {string} name
+@returns {(a: any, b: any) => number}
+*/
+export function strCompareField(name) {
     return (a, b) => {
         return a[name].localeCompare(b[name], undefined, {sensitivity: "base"});
     }
 }
 
-export function categoryUrl(cat: string, is_twitch: boolean = false) {
+/**
+@param {string} cat
+@param {boolean} is_twitch
+@return {string}
+*/
+export function categoryUrl(cat, is_twitch = false) {
     let result = "";
     if (is_twitch) {
         result += "https://twitch.tv"
