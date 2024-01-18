@@ -1,17 +1,23 @@
-import { StreamTwitch, strCompareField, categoryUrl } from "./common";
+import { strCompareField, categoryUrl } from "./common";
 import { twitch } from "./twitch"
 import { renderSidebarItems, sb_state } from "./sidebar";
 import { action, atom, map } from 'nanostores'
 import { persistentAtom, persistentMap } from '@nanostores/persistent' 
 
-export type StreamLocal = {user_id: string, user_login: string, user_name: string};
+/**
+@typedef {import("./common").StreamTwitch} StreamTwitch
 
-export const streams_list = document.querySelector(".js-streams-list")!;
-export const stream_tmpl = (streams_list?.firstElementChild! as HTMLTemplateElement).content.firstElementChild!;
-export const streams_scrollbox = streams_list.parentElement!;
+@typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
+*/
 
-let removed_stream: string | undefined = undefined;
-export const followed_streams = persistentAtom<StreamLocal[]>("followed_streams", [], {
+export const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
+export const stream_tmpl = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild).content.firstElementChild;
+export const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
+
+/** @type {string | undefined} */
+let removed_stream = undefined;
+/** @type {import("nanostores").WritableAtom<StreamLocal[]>} */
+export const followed_streams = persistentAtom("followed_streams", [], {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
@@ -20,9 +26,9 @@ followed_streams.listen(function(_) {
         renderSidebarItems("streams");
     }
     if (removed_stream) {
-        const btns = document.body.querySelectorAll(`[data-item-id='${removed_stream}']`) as unknown as Element[];
-        for (const btn of btns) {
-            btn.setAttribute("data-is-followed", "false");
+        const btns = document.body.querySelectorAll(`[data-item-id='${removed_stream}']`);
+        for (let i = 0; i < btns.length; i++) {
+            btns[i].setAttribute("data-is-followed", "false");
         }
         removed_stream = undefined;
     }
@@ -33,7 +39,7 @@ export const clearStreams = action(followed_streams, "clearStreams", (store) => 
     store.set([]);
 })
 
-export const followStream = action(followed_streams, 'followStream', async (store, data: StreamLocal) => {
+export const followStream = action(followed_streams, 'followStream', async (store, /** @type {StreamLocal} */ data) => {
     if (!isStreamFollowed(data.user_id)) {
         const curr = store.get();
         curr.push(data);
@@ -48,7 +54,7 @@ export const followStream = action(followed_streams, 'followStream', async (stor
     }
 });
 
-export const unfollowStream = action(followed_streams, 'unfollowStream', async (store, user_id: string) => {
+export const unfollowStream = action(followed_streams, 'unfollowStream', async (store, /** @type {string} */ user_id) => {
     const curr = store.get();
     let i = 0
     for (; i < curr.length; i++) {
@@ -64,14 +70,20 @@ export const unfollowStream = action(followed_streams, 'unfollowStream', async (
     store.set([...curr]);
 });
 
-export function isStreamFollowed(input_id: string) {
+
+/** @param {string} input_id */
+export function isStreamFollowed(input_id) {
     return followed_streams.get().some(({user_id}) => input_id === user_id);
 }
 
-let live_removes: string[] = [];
-let live_updates: string[] = [];
-let live_adds: string[] = [];
-export const live_users = persistentAtom<Record<string, string | undefined>>("live_users", {}, {
+/** @type {string[]} */
+let live_removes = [];
+/** @type {string[]} */
+let live_updates = [];
+/** @type {string[]} */
+let live_adds = [];
+/** @type {import("nanostores").WritableAtom<Record<string, string | undefined>>} */
+export const live_users = persistentAtom("live_users", {}, {
     encode: JSON.stringify,
     decode: JSON.parse,
 });
@@ -89,14 +101,21 @@ live_users.listen(function() {
     followed_streams.set([...followed_streams.get().sort(sortStreams)]);
 })
 
-function sortStreams(a: StreamLocal, b: StreamLocal) {
+/** 
+@param {StreamLocal} a
+@param {StreamLocal} b
+*/
+function sortStreams(a, b) {
     const cmp = strCompareField("user_name")(a, b);
     const a_cmp = isLiveStream(a["user_id"]) ? -1e6 : 0;
     const b_cmp = isLiveStream(b["user_id"]) ? 1e6 : 0;
     return cmp + a_cmp + b_cmp;
 }
 
-function isLiveStream(name: string) {
+/** 
+@param {string} name
+*/
+function isLiveStream(name) {
     for (const user_name in live_users.get()) {
         if (user_name == name) {
             return true;
@@ -105,7 +124,10 @@ function isLiveStream(name: string) {
     return false;
 }
 
-export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_id: string) => {
+/**
+@type {(user_id: string) => void}
+*/
+export const addLiveUser = action(live_users, 'addLiveUser', async (store, /** @type {string} */ user_id) => {
     const new_value = live_users.get();
     if (!new_value[user_id]) {
         const stream = (await twitch.fetchStreams([user_id]))
@@ -117,7 +139,10 @@ export const addLiveUser = action(live_users, 'addLiveUser', async (store, user_
     }
 });
 
-function renderLiveRemove(ids: string[]) {
+/** 
+@param {string[]} ids
+*/
+function renderLiveRemove(ids) {
     if (ids.length === 0)  {
         return;
     }
@@ -129,7 +154,10 @@ function renderLiveRemove(ids: string[]) {
     document.querySelectorAll(selector).forEach(node => node.classList.add("hidden"));
 };
 
-function renderLiveUpdate(ids: string[]) {
+/** 
+@param {string[]} ids
+*/
+function renderLiveUpdate(ids) {
     if (ids.length === 0)  {
         return;
     }
@@ -143,7 +171,10 @@ function renderLiveUpdate(ids: string[]) {
     }
 };
 
-function renderLiveAdd(ids: string[]) {
+/** 
+@param {string[]} ids
+*/
+function renderLiveAdd(ids) {
     if (ids.length === 0) {
         return;
     }
@@ -159,25 +190,35 @@ function renderLiveAdd(ids: string[]) {
     }
 }
 
-function renderLiveStreamSidebar(id: string) {
+/** 
+@param {string} id
+*/
+function renderLiveStreamSidebar(id) {
     const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
     if (card) {
-        const p = card.querySelector("p")!;
+        const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
         p.textContent = live_users.get()[id] || "";
         card.classList.remove("hidden")
     }
 }
 
-function renderLiveStreamPageUser(id: string) {
+/** 
+@param {string} id
+*/
+function renderLiveStreamPageUser(id) {
     const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
     if (card) {
         renderUserLiveness(id, card)
     }
 }
 
-export function renderUserLiveness(id: string, card: Element) {
-    const a = card.querySelector("a")!;
-    const game = live_users.get()[id]!;
+/** 
+@param {string} id
+@param {Element} card
+*/
+export function renderUserLiveness(id, card) {
+    const a = /** @type {HTMLAnchorElement} */ (card.querySelector("a"));
+    const game = /** @type {string} */ (live_users.get()[id]);
     a.textContent = game;
     const href = categoryUrl(game);
     a.href = href;
@@ -185,12 +226,16 @@ export function renderUserLiveness(id: string, card: Element) {
     card.classList.remove("hidden")
 }
 
-const live_last_update = persistentAtom<number>("live_last_update", 0, {
+/** @type {import("nanostores").WritableAtom<number>} */
+const live_last_update = persistentAtom("live_last_update", 0, {
     encode: (val) => val.toString(),
     decode: (val) => Number(val),
 });
 
-function getLiveCount(): number {
+/** 
+@returns {number}
+*/
+function getLiveCount() {
     let result = 0;
     const users = live_users.get();
     for (const key in users) {
@@ -203,7 +248,7 @@ function getLiveCount(): number {
 const live_count = atom(0);
 live_count.subscribe(function(count) {
     console.log("change live count", count);
-    const stream_count = document.querySelector(".streams-count")!;
+    const stream_count = /** @type {Element} */ (document.querySelector(".streams-count"));
     if (count === 0) {
         stream_count.classList.add("hidden")
     } else {
@@ -212,7 +257,10 @@ live_count.subscribe(function(count) {
     }
 });
 
-const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, curr_ids: string[], streams: StreamTwitch[]) {
+/**
+@type {(curr_ids: string[], streams: StreamTwitch[]) => void}
+*/
+const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, /** @type {string[]} */ curr_ids, /** @type {StreamTwitch[]} */ streams) {
     const users = store.get();
     const updates = [];
     const adds = [];
@@ -270,14 +318,16 @@ export async function updateLiveUsers() {
     live_user_update = window.setTimeout(updateLiveUsers, live_check_ms + 1000);
 }
 
-export type ProfileImages = Record<string, ProfileImage>
-export type ProfileImage = {url: string, last_access: number};
-type ProfileLocalStorage = {
-    images: ProfileImages,
-    last_update: number,
-}
+/** 
+@typedef {{url: string, last_access: number}} ProfileImage
 
-export const profile_images = persistentMap<ProfileLocalStorage>("profile_images:", {
+@typedef {Record<string, ProfileImage>} ProfileImages
+
+@typedef {{images: ProfileImages, last_update: number}} ProfileLocalStorage
+*/
+
+/** @type {import("nanostores/map").MapStore<ProfileLocalStorage>} */
+export const profile_images = persistentMap("profile_images:", {
     images : {},
     last_update: 0,
 }, {
@@ -289,7 +339,8 @@ export const clearProfiles = action(followed_streams, "clearProfiles", (store) =
     store.set([]);
 })
 
-export const add_images = map<string[]>([]);
+/** @type {import("nanostores/map").MapStore<string[]>} */
+export const add_images = map([]);
 add_images.listen(async function(user_ids) {
     if (user_ids.length === 0) {
         return;
@@ -317,7 +368,7 @@ add_images.listen(async function(user_ids) {
             imgs[p.id] = { url: p.profile_image_url, last_access: now };
 
             // Update UI
-            const img = document.querySelector(`img[src="#${p.id}"]`) as HTMLImageElement;
+            const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[src="#${p.id}"]`));
             if (img) {
                 img.src = p.profile_image_url;
             }
@@ -346,7 +397,8 @@ export function initProfileImages() {
     add_images.set(followed_streams.get().map(({user_id}) => user_id));
 }
 
-function isFollowedStream(id: string) {
+/** @param {string} id */
+function isFollowedStream(id) {
     for (const stream of followed_streams.get()) {
         if (stream.user_id == id) {
             return true;
