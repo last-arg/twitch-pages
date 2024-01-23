@@ -11,7 +11,8 @@ import { persistentAtom, persistentMap } from '@nanostores/persistent'
 */
 
 export const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
-export const stream_tmpl = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild).content.firstElementChild;
+const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
+export const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
 export const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
 
 /** @type {string | undefined} */

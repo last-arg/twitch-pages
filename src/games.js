@@ -9,8 +9,8 @@ import { persistentAtom } from '@nanostores/persistent'
 
 export const games_list = /** @type {Element} */ (document.querySelector(".js-games-list"));
 // @ts-ignore
-export const game_tmpl = games_list?.firstElementChild.content.firstElementChild;
-export const games_scrollbox = games_list.parentElement;
+export const game_tmpl = /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild);
+export const games_scrollbox = /** @type {HTMLElement} */ (games_list.parentElement);
 
 /** @type {string | undefined} */
 let remove_game = undefined;
