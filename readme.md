@@ -26,8 +26,7 @@ When using have to be in nix shell (nix-shell -p hello) to have access to $NIX_C
 
 ### Patching lightningcss
 ```
-cd node_modules/lightningcss-cli/
-patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./lightningcss
+patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./node_modules/lightningcss-cli/lightningcss
 ```
 
 ### Patching workerd (for wrangler)
