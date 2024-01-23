@@ -15,7 +15,7 @@
     "build:css": "unocss && lightningcss --minify --bundle --targets '>= 0.25%' src/css/main.css -o _site/css/main.css",
     "minify:js": "terser _site/public/js/main.js -m --toplevel -o _site/public/js/main.js",
     "minify:svg": "svgo _site/public/assets/icons.svg",
-    "clean-build": "rm -rf _site/"
+    "clean-build": "rm -rf _site/ && rm -rf public/{css,js}"
   },
   "dependencies": {
     "@nanostores/persistent": "^0.9.1",

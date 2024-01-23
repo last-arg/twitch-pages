@@ -1,20 +1,24 @@
 const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
-const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
+// const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
 const purgeCssPlugin = require("eleventy-plugin-purgecss");
 
+/**
+ * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
+ * @returns {ReturnType<import("@11ty/eleventy/src/defaultConfig")>}
+ */
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 
 	if (is_prod) {
 		eleventyConfig.addPlugin(purgeCssPlugin)
 	}
-	eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
+	// eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
 	});
 
-	eleventyConfig.setUseGitIgnore(false);
+	// eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	// TODO: find better solution for building css with lightningcss
