@@ -2,9 +2,11 @@ import { current_pathname, settings } from './global';
 import { followed_games } from './games';
 import { API_URL, categoryUrl, twitchCatImageSrc } from './common'
 import { mainContent, config } from 'config';
-import 'htmx.org';
 import { Twitch } from './twitch';
 import { add_images, followed_streams, profile_images } from './streams';
+
+// @ts-ignore
+const htmx = /** @type {import("htmx.org")} */ (window.htmx);
 
 export function initHtmx() {
   htmx.defineExtension("twitch-api", {

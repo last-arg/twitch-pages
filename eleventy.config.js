@@ -20,7 +20,9 @@ module.exports = function(eleventyConfig) {
 	// TODO: find better solution for building css with lightningcss
 	eleventyConfig.ignores.add(is_prod ? "src/css/*.css" : "src/css/_*.css");
 	eleventyConfig.addPassthroughCopy("public");
-	// eleventyConfig.addPassthroughCopy("src/sw.js");
+	eleventyConfig.addPassthroughCopy({
+		"node_modules/htmx.org/dist/htmx.min.js": "js/htmx.min.js"
+	});
 	eleventyConfig.addPassthroughCopy("favicon.svg");
 
     eleventyConfig.addTransform ('html-minifier', content => {

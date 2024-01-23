@@ -21,7 +21,7 @@
     },
     "typeRoots": [
       "node_modules/@types",
-      "src/@types",
+      "node_modules/htmx.org/dist/htmx.d.ts",
       "src/index.d.ts",
     ]
   },
