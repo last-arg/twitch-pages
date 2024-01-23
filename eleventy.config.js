@@ -18,7 +18,7 @@ module.exports = function(eleventyConfig) {
 		components: ["./src/_includes/components/**/*.webc"],
 	});
 
-	// eleventyConfig.setUseGitIgnore(false);
+	eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	// TODO: find better solution for building css with lightningcss

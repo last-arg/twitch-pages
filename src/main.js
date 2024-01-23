@@ -13,8 +13,6 @@ import { initHtmx } from "./htmx_init";
 @typedef {import("./sidebar").SidebarState} SidebarState
 */
 
-// TODO: when page is reloaded live count is not right
-
 window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
     const elem = /** @type {Element} */ (e.target);
     if (elem.classList.contains("user-heading-box")) {
