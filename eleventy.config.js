@@ -1,6 +1,6 @@
 const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
-// const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
+const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
 const purgeCssPlugin = require("eleventy-plugin-purgecss");
 
 /**
@@ -12,8 +12,9 @@ module.exports = function(eleventyConfig) {
 
 	if (is_prod) {
 		eleventyConfig.addPlugin(purgeCssPlugin)
+	} else {
+		eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
 	}
-	// eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
 	});
@@ -24,9 +25,6 @@ module.exports = function(eleventyConfig) {
 	// TODO: find better solution for building css with lightningcss
 	eleventyConfig.ignores.add(is_prod ? "src/css/*.css" : "src/css/_*.css");
 	eleventyConfig.addPassthroughCopy("public");
-	eleventyConfig.addPassthroughCopy({
-		"node_modules/htmx.org/dist/htmx.min.js": "js/htmx.min.js"
-	});
 	eleventyConfig.addPassthroughCopy("favicon.svg");
 
     eleventyConfig.addTransform ('html-minifier', content => {

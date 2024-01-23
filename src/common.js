@@ -1,8 +1,6 @@
 import { config } from "config";
 import { isGameFollowed } from "./games";
 import { isStreamFollowed, live_users, profile_images } from "./streams";
-// @ts-ignore
-import { Idiomorph } from "../node_modules/idiomorph/dist/idiomorph.esm";
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
