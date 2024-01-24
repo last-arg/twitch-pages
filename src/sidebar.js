@@ -18,29 +18,32 @@ sb_state.listen(function(state) {
 /**
   @param {SidebarState} state
 */
-// TODO: only render sidebar list items when needed/changed
+// TODO: don't re-render sidebar items every time sidebar is opened
 export function renderSidebarItems(state) {
-  /** @type {undefined | Element[]} */
-    let items;
     if (state === "search") {
-        items = renderGames(search_item_tmpl, search_list, search_items);
+        renderGames(search_item_tmpl, search_list, search_items);
         sidebarShadows(search_scrollbox);
     } else if (state === "games") {
-        items = renderGames(game_tmpl, games_list, followed_games.get());
+        renderGames(game_tmpl, games_list, followed_games.get());
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
-        items = renderStreams(stream_tmpl, streams_list, followed_streams.get());
+        renderStreams(stream_tmpl, streams_list, followed_streams.get());
         sidebarShadows(streams_scrollbox);
-    }
-  
-    if (items) {
-      for (let item of items) {
-        htmx.process(item)
-      }
     }
 }
 
 export const sidebar_nav = /** @type {Element} */ (document.querySelector(".sidebar-nav"));
+
+// Use event delegation to handle adding/removing items form sidebar lists
+sidebar_nav.addEventListener("click", function(e) {
+  e.preventDefault();
+  const link_box = /** @type {Element} */ (e.target).closest(".link-box");
+  if (link_box) {
+    const get = link_box.getAttribute("hx-get");
+    if (!get) { return; }
+    console.log(htmx.ajax("get", get, {source: link_box}));
+  }
+});
 
 /**
   @param {SidebarState} state
