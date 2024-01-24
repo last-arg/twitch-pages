@@ -6,6 +6,9 @@ import { atom } from 'nanostores'
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
+// @ts-ignore
+  const htmx = /** @type {import("htmx.org")} */ (window.htmx);
+
 export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
 sb_state.listen(function(state) {
@@ -15,16 +18,25 @@ sb_state.listen(function(state) {
 /**
   @param {SidebarState} state
 */
+// TODO: only render sidebar list items when needed/changed
 export function renderSidebarItems(state) {
+  /** @type {undefined | Element[]} */
+    let items;
     if (state === "search") {
-        renderGames(search_item_tmpl, search_list, search_items);
+        items = renderGames(search_item_tmpl, search_list, search_items);
         sidebarShadows(search_scrollbox);
     } else if (state === "games") {
-        renderGames(game_tmpl, games_list, followed_games.get());
+        items = renderGames(game_tmpl, games_list, followed_games.get());
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
-        renderStreams(stream_tmpl, streams_list, followed_streams.get());
+        items = renderStreams(stream_tmpl, streams_list, followed_streams.get());
         sidebarShadows(streams_scrollbox);
+    }
+  
+    if (items) {
+      for (let item of items) {
+        htmx.process(item)
+      }
     }
 }
 

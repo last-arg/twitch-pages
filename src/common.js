@@ -33,6 +33,7 @@ export function twitchCatImageSrc(url_template, width, height) {
 @param {Element} base_elem
 @param {Element} target
 @param {Game[]} data
+@returns {Element[]}
 */
 export function renderGames(base_elem, target, data) {
     const frag = document.createDocumentFragment();
@@ -58,13 +59,14 @@ export function renderGames(base_elem, target, data) {
         external_link.href = "https://www.twitch.tv" + href;
         frag.append(new_item);
     }
-    Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
+    return Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
 /**
 @param {Element} base_elem
 @param {Element} target
 @param {StreamLocal[]} data
+@returns {Element[]}
 */
 export function renderStreams(base_elem, target, data) {
     const frag = document.createDocumentFragment();
@@ -101,7 +103,7 @@ export function renderStreams(base_elem, target, data) {
         }
         frag.append(new_item);
     }
-    Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
+    return Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
 /**
