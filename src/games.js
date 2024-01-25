@@ -12,6 +12,12 @@ export class Games extends EventTarget {
         super();
         this.localStorageKey = "followed_games"
         this._readStorage();
+
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
     }
 
     _readStorage() {
