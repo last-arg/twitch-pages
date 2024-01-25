@@ -1,6 +1,6 @@
-import { games, streams } from './common';
+import { games, live, renderUserLiveness, streams } from './common';
 import { current_pathname } from './global';
-import { live_users, addLiveUser, initProfileImages, updateLiveUsers, renderUserLiveness } from './streams';
+import { clearProfiles, initProfileImages } from './streams';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -17,11 +17,11 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
     if (elem.classList.contains("user-heading-box")) {
         const elem_card = /** @type {Element} */ (elem.querySelector(".js-card-live"));
         const stream_id = /** @type {string} */ (elem_card.getAttribute("data-stream-id"));
-        const game = live_users.get()[stream_id];
+        const game = live.users[stream_id];
         if (game) {
             renderUserLiveness(stream_id, elem_card);
         } else {
-            addLiveUser(stream_id);
+            live.addUser(stream_id);
         }
     } else if (elem.id === "page-user") {
         initFilter(elem);
@@ -113,7 +113,7 @@ async function startup() {
     initHtmx();
     document.body.addEventListener("mousedown", handlePathChange)
     initSidebarScroll();
-    updateLiveUsers();
+    live.updateLiveUsers();
     initProfileImages();
 };
 window.addEventListener("DOMContentLoaded", startup);

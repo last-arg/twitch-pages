@@ -1,8 +1,7 @@
-import { strCompareField, categoryUrl, streams } from "./common";
+import { strCompareField, streams, live } from "./common";
 import { twitch } from "./twitch"
-import { sb_state } from "./sidebar";
-import { action, atom, map } from 'nanostores'
-import { persistentAtom, persistentMap } from '@nanostores/persistent' 
+import { atom, map } from 'nanostores'
+import { persistentMap } from '@nanostores/persistent' 
 
 /**
 @typedef {import("./common").StreamTwitch} StreamTwitch
@@ -34,7 +33,7 @@ export class Streams extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        live_count.set(getLiveCount());
+        live_count.set(live.count());
         this.dispatchEvent(new CustomEvent('games:save'));
     }
 
@@ -45,8 +44,8 @@ export class Streams extends EventTarget {
         if (!this.isFollowed(data.user_id)) {
             this.items.push(data);
             this.items.sort(sortStreams);
-            if (!live_users.get()[data.user_id]) {
-                addLiveUser(data.user_id);
+            if (!live.users[data.user_id]) {
+                live.addUser(data.user_id);
             }
             if (!profile_images.get()["images"][data.user_id]) {
                 add_images.set([data.user_id]);
@@ -101,30 +100,155 @@ const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementCh
 export const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
 export const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
 
-/** @type {string[]} */
-let live_removes = [];
-/** @type {string[]} */
-let live_updates = [];
-/** @type {string[]} */
-let live_adds = [];
-/** @type {import("nanostores").WritableAtom<Record<string, string | undefined>>} */
-export const live_users = persistentAtom("live_users", {}, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-live_users.listen(function() {
-    console.log("live_users render")
-    console.log("live_removes", live_removes)
-    renderLiveRemove(live_removes);
-    live_removes.length = 0;
-    console.log("live_updates", live_updates)
-    renderLiveUpdate(live_updates);
-    live_updates.length = 0;
-    console.log("live_adds", live_adds)
-    renderLiveAdd(live_adds);
-    live_adds.length = 0;
-    streams.sort();
-})
+const live_check_ms = 300000; // 5 minutes
+export class LiveStreams extends EventTarget {
+    /** @type {Record<string, string | undefined>} */
+    users = {}
+    last_update = 0;
+    timeout = 0;
+
+    constructor() {
+        super();
+        this.localStorageKey = "live_users";
+        this.localKeyLastUpdate = "live_last_update";
+        this._readStorage();
+
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
+    }
+
+    init() {
+        
+    }
+
+    updateDiff() {
+        return this.last_update - Date.now() + live_check_ms;
+    }
+
+    _readStorage() {
+        let raw = window.localStorage.getItem(this.localStorageKey)
+        if (raw) {
+            this.users = JSON.parse(raw);
+        }
+        raw = window.localStorage.getItem(this.localKeyLastUpdate)
+        if (raw) {
+            this.last_update = Number(raw);
+        }
+    }
+
+    _save() {
+        console.log("_save", this.users.length)
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
+        window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
+        this.dispatchEvent(new CustomEvent('live:save'));
+    }
+
+    /** 
+    @param {string} name
+    */
+    hasUser(name) {
+        for (const user_name in this.users) {
+            if (user_name == name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+    @type {(user_id: string) => Promise<void>}
+    */
+    async addUser(user_id) {
+        if (!this.users[user_id]) {
+            const stream = (await twitch.fetchStreams([user_id]))
+            if (stream.length > 0) {
+                this._save();
+            }
+        }
+    };
+
+    /** 
+    @returns {number}
+    */
+    count() {
+        let result = 0;
+        const users = this.users;
+        for (const key in users) {
+            if (streams.isFollowed(key)) {
+                result += 1;
+            }
+        }
+        return result;
+    }
+
+    /**
+        @param {string[]} curr_ids
+        @param {StreamTwitch[]} streams
+    */
+    updateLiveStreams(curr_ids, streams) {
+        const updates = [];
+        const adds = [];
+        for (const stream of streams) {
+            if (this.users[stream.user_id])  {
+                updates.push(stream.user_id)
+            } else {
+                adds.push(stream.user_id)
+            }
+            this.users[stream.user_id] = stream.game_name;
+        }
+
+        const removes = []
+        for (const id of curr_ids) {
+            if (!streams.some(({user_id}) => user_id === id)) {
+                removes.push(id);
+                delete this.users[id];
+            }
+        }
+
+        this.last_update = Date.now();
+
+        if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
+            return;
+        }
+
+        if (removes.length > 0) {
+            this.dispatchEvent(new CustomEvent('live:remove', {detail: {ids: removes}}));
+        }
+
+        if (updates.length > 0) {
+            this.dispatchEvent(new CustomEvent('live:update', {detail: {ids: updates}}));
+        }
+
+        if (adds.length > 0) {
+            this.dispatchEvent(new CustomEvent('live:add', {detail: {ids: adds}}));
+        }
+
+        this._save();
+    }
+
+    async updateLiveUsers() {
+        const diff = this.updateDiff();
+        clearTimeout(this.timeout);
+        if (diff > 0) {
+            this.timeout = window.setTimeout(this.updateLiveUsers, diff + 1000);
+            return;
+        }
+        if (streams) {
+            const curr_ids = streams.getIds();
+            for (const id of Object.keys(live.users)) {
+                if (!curr_ids.includes(id)) {
+                    curr_ids.push(id);
+                }
+            }
+            const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
+            live.updateLiveStreams(curr_ids, new_live_streams);
+        }
+        this.timeout = window.setTimeout(this.updateLiveUsers, live_check_ms + 1000);
+    }
+}
 
 /** 
 @param {StreamLocal} a
@@ -132,144 +256,11 @@ live_users.listen(function() {
 */
 function sortStreams(a, b) {
     const cmp = strCompareField("user_name")(a, b);
-    const a_cmp = isLiveStream(a["user_id"]) ? -1e6 : 0;
-    const b_cmp = isLiveStream(b["user_id"]) ? 1e6 : 0;
+    const a_cmp = streams.isFollowed(a["user_id"]) ? -1e6 : 0;
+    const b_cmp = streams.isFollowed(b["user_id"]) ? 1e6 : 0;
     return cmp + a_cmp + b_cmp;
 }
 
-/** 
-@param {string} name
-*/
-function isLiveStream(name) {
-    for (const user_name in live_users.get()) {
-        if (user_name == name) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
-@type {(user_id: string) => void}
-*/
-export const addLiveUser = action(live_users, 'addLiveUser', async (store, /** @type {string} */ user_id) => {
-    const new_value = live_users.get();
-    if (!new_value[user_id]) {
-        const stream = (await twitch.fetchStreams([user_id]))
-        if (stream.length > 0) {
-            new_value[user_id] = stream[0].game_name;
-            // TODO: copying bad
-            store.set({...new_value});
-        }
-    }
-});
-
-/** 
-@param {string[]} ids
-*/
-function renderLiveRemove(ids) {
-    if (ids.length === 0)  {
-        return;
-    }
-
-    const sel_start = `.js-card-live[data-stream-id="`;
-    const middle = ids.join(`"],${sel_start}`);
-    const selector = `${sel_start}${middle}"]`;
-
-    document.querySelectorAll(selector).forEach(node => node.classList.add("hidden"));
-};
-
-/** 
-@param {string[]} ids
-*/
-function renderLiveUpdate(ids) {
-    if (ids.length === 0)  {
-        return;
-    }
-    const live_streams = live_users.get();
-    for (const id of ids) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] p`);
-        cards.forEach(node => node.textContent = live_streams[id] || "")
-        if (document.location.pathname.endsWith("/videos")) {
-            renderLiveStreamPageUser(id);
-        }
-    }
-};
-
-/** 
-@param {string[]} ids
-*/
-function renderLiveAdd(ids) {
-    if (ids.length === 0) {
-        return;
-    }
-    if (sb_state.get() === "streams") {
-        for (const id of ids) {
-            renderLiveStreamSidebar(id)
-        }
-    }
-    if (document.location.pathname.endsWith("/videos")) {
-        for (const id of ids) {
-            renderLiveStreamPageUser(id);
-        }
-    }
-}
-
-/** 
-@param {string} id
-*/
-function renderLiveStreamSidebar(id) {
-    const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
-    if (card) {
-        const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
-        p.textContent = live_users.get()[id] || "";
-        card.classList.remove("hidden")
-    }
-}
-
-/** 
-@param {string} id
-*/
-function renderLiveStreamPageUser(id) {
-    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
-    if (card) {
-        renderUserLiveness(id, card)
-    }
-}
-
-/** 
-@param {string} id
-@param {Element} card
-*/
-export function renderUserLiveness(id, card) {
-    const a = /** @type {HTMLAnchorElement} */ (card.querySelector("a"));
-    const game = /** @type {string} */ (live_users.get()[id]);
-    a.textContent = game;
-    const href = categoryUrl(game);
-    a.href = href;
-    a.setAttribute("hx-push-url", href);
-    card.classList.remove("hidden")
-}
-
-/** @type {import("nanostores").WritableAtom<number>} */
-const live_last_update = persistentAtom("live_last_update", 0, {
-    encode: (val) => val.toString(),
-    decode: (val) => Number(val),
-});
-
-/** 
-@returns {number}
-*/
-function getLiveCount() {
-    let result = 0;
-    const users = live_users.get();
-    for (const key in users) {
-        if (streams.isFollowed(key)) {
-            result += 1;
-        }
-    }
-    return result;
-}
 const live_count = atom(0);
 live_count.subscribe(function(count) {
     console.log("change live count", count);
@@ -281,69 +272,6 @@ live_count.subscribe(function(count) {
         stream_count.classList.remove("hidden")
     }
 });
-
-/**
-@type {(curr_ids: string[], streams: StreamTwitch[]) => void}
-*/
-const updateLiveStreams = action(live_users, "updateLiveStreams", function(store, /** @type {string[]} */ curr_ids, /** @type {StreamTwitch[]} */ streams) {
-    const users = store.get();
-    const updates = [];
-    const adds = [];
-    for (const stream of streams) {
-        if (users[stream.user_id])  {
-            updates.push(stream.user_id)
-        } else {
-            adds.push(stream.user_id)
-        }
-        users[stream.user_id] = stream.game_name;
-    }
-
-    const removes = []
-    for (const id of curr_ids) {
-        if (!streams.some(({user_id}) => user_id === id)) {
-            removes.push(id);
-            delete users[id];
-        }
-    }
-
-    if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
-        return;
-    }
-
-    live_removes = removes;
-    live_adds = adds;
-    live_updates = updates;
-    // TODO: copying bad
-    live_users.set({...users});
-});
-
-const live_check_ms = 300000; // 5 minutes
-let live_user_update = 0;
-export async function updateLiveUsers() {
-    const now = Date.now();
-    const diff = live_last_update.get() - now + live_check_ms;
-    console.log("updateLiveUsers", live_last_update.get(), now, diff)
-    clearTimeout(live_user_update);
-    if (diff > 0) {
-        live_user_update = window.setTimeout(updateLiveUsers, diff + 1000);
-        return;
-    }
-    if (streams) {
-        const curr_ids = streams.getIds();
-        console.log(streams.getIds());
-        for (const id of Object.keys(live_users.get())) {
-            if (!curr_ids.includes(id)) {
-                curr_ids.push(id);
-            }
-        }
-        const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
-        console.log("curr_ids", curr_ids)
-        console.log("new_live_streams", new_live_streams)
-        updateLiveStreams(curr_ids, new_live_streams);
-    }
-    live_last_update.set(now)
-    live_user_update = window.setTimeout(updateLiveUsers, live_check_ms + 1000);
-}
 
 /** 
 @typedef {{url: string, last_access: number}} ProfileImage
