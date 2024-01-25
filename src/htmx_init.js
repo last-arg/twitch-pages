@@ -1,4 +1,5 @@
-import { current_pathname, settings } from './global';
+import { current_pathname } from './global';
+import { settings } from './main';
 import { games, API_URL, categoryUrl, twitchCatImageSrc } from './common'
 import { mainContent, config } from 'config';
 import { Twitch } from './twitch';
@@ -22,16 +23,16 @@ export function initHtmx() {
         evt.detail.headers = Twitch.headers;
 
         if (url.pathname === "/helix/games/top") {
-          evt.detail.parameters["first"] = settings.get().general["top-games-count"]
+          evt.detail.parameters["first"] = settings.data.general["top-games-count"]
         } else if (url.pathname === "/helix/games") {
           const path = current_pathname.get() || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
           current_pathname.set(null)
         } else if (url.pathname === "/helix/streams") {
-          evt.detail.parameters["first"] = settings.get().general["category-count"]
-          if (!settings.get().category.show_all) {
-            evt.detail.parameters["language"] = settings.get().category.languages;
+          evt.detail.parameters["first"] = settings.data.general["category-count"]
+          if (!settings.data.category.show_all) {
+            evt.detail.parameters["language"] = settings.data.category.languages;
           }
         } else if (url.pathname === "/helix/users") {
           const path = current_pathname.get() || location.pathname;
@@ -39,7 +40,7 @@ export function initHtmx() {
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
           current_pathname.set(null)
         } else if (path === "/helix/videos") {
-          evt.detail.parameters["first"] = settings.get().general["user-videos-count"]
+          evt.detail.parameters["first"] = settings.data.general["user-videos-count"]
         }
       } else if (name === "htmx:beforeRequest") {
         const btn = document.querySelector(".btn-load-more");

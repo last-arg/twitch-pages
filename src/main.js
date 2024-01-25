@@ -1,12 +1,12 @@
 import { games } from './common';
-import { current_pathname, settings } from './global';
+import { current_pathname } from './global';
 import { unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
+import { settings_default } from 'config';
 
 /**
-@typedef {import("./global").SettingsGeneral} SettingsGeneral
 @typedef {import("./streams").StreamLocal} StreamLocal
 @typedef {import("./common").Game} Game
 @typedef {import("./sidebar").SidebarState} SidebarState
@@ -30,7 +30,7 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
         initFilter(elem);
     } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
-        initSettings(elem);
+        settings.init(elem)
     }
 });
 
@@ -85,7 +85,7 @@ document.addEventListener("click", function(/** {Event} */e) {
 function initUserVideoTypeFilter(elem) {
     const fieldset = elem.querySelector(".filter-video-type");
     const output_list = elem.querySelector(".output-list");
-    const general = settings.get().general;
+    const general = settings.data.general;
     for (const which of ["archive", "upload", "highlight"]) {
         const key = /** @type {keyof typeof general} */ (`video-${which}s`);
         const check_value = !!general[key];
@@ -158,142 +158,197 @@ function handlePathChange(e) {
     current_pathname.set(hx_link?.getAttribute("hx-push-url") || null);
 }
 
-/** @param {Element} root */
-function initSettings(root) {
-    initCategorySettings(root);
-    initGeneralSettings(root);
-    initCacheSettings(root);
-}
+class Settings extends EventTarget {
+    /**
+      @typedef {typeof this.data.general} SettingsGeneral
+    */
 
-/** @param {Element} root */
-function initCacheSettings(root) {
-    root.querySelector(".js-cache-list")?.addEventListener("click", (e) => {
-        const t = /** @type {Element} root */ (e.target);
-        if (t.classList.contains("js-clear-games")) {
-            games.clear();
-        } else if (t.classList.contains("js-clear-streams")) {
-            clearStreams();
-        } else if (t.classList.contains("js-clear-profiles")) {
-            clearProfiles();
-        } else if (t.classList.contains("js-clear-all")) {
-            games.clear();
-            clearStreams();
-            clearProfiles();
+    data = {
+        /** @type {{show_all: string, languages: string[]}} */
+        category: { show_all: 'on', languages: [] },
+        general: {
+          "top-games-count": settings_default.top_games_count,
+          "category-count": settings_default.streams_count,
+          "user-videos-count": settings_default.user_videos_count,
+          "video-archives": 'on',
+          "video-uploads": false,
+          "video-highlights": false,
         }
-    })
-}
+    }
 
-/** @param {Element} root */
-function initGeneralSettings(root) {
-    const general = settings.get().general;
-    for (const key in general) {
-        // @ts-ignore
-        const value = general[key];
-        const input = /** @type {HTMLInputElement | undefined} */ (root.querySelector(`#${key}`));
-        if (input) {
-            if (input.type === "number") {
-                input.value = value;
-            } else if (input.type === "checkbox") {
-                input.checked = value === "on";
+    /** @type {{
+            root: Element
+            lang?: {
+                list: Element
+                tmpl: HTMLTemplateElement
+            }
+        }} 
+    */
+    $ = {
+        root: document.body
+    }
+
+    constructor() {
+        super();
+        this.localStorageKey = "settings"
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
+        this.lang_map = new Map();
+    }
+
+    _readStorage() {
+        const raw = window.localStorage.getItem(this.localStorageKey);
+        if (raw) {
+            this.data = JSON.parse(raw);
+        }
+    }
+    
+    _save() {
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
+        this.dispatchEvent(new CustomEvent('settings:save'));
+    }
+
+    _initCache() {
+        this.$.root.querySelector(".js-cache-list")?.addEventListener("click", (e) => {
+            const t = /** @type {Element} root */ (e.target);
+            if (t.classList.contains("js-clear-games")) {
+                games.clear();
+            } else if (t.classList.contains("js-clear-streams")) {
+                clearStreams();
+            } else if (t.classList.contains("js-clear-profiles")) {
+                clearProfiles();
+            } else if (t.classList.contains("js-clear-all")) {
+                games.clear();
+                clearStreams();
+                clearProfiles();
+            }
+        })
+    }
+
+    
+    _initGeneral() {
+        const general = settings.data.general;
+        for (const key in general) {
+            // @ts-ignore
+            const value = general[key];
+            const input = /** @type {HTMLInputElement | undefined} */ (this.$.root.querySelector(`#${key}`));
+            if (input) {
+                if (input.type === "number") {
+                    input.value = value;
+                } else if (input.type === "checkbox") {
+                    input.checked = value === "on";
+                }
             }
         }
+
+        this.$.root.querySelector("#settings-general")?.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const elem = /** @type {HTMLFormElement} */ (e.target);
+            let new_settings = /** @type {SettingsGeneral} */ ({});
+            // @ts-ignore
+            (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
+            this.data["general"] = new_settings;
+        });
     }
 
-    root.querySelector("#settings-general")?.addEventListener("submit", handleFormSubmit);
-    
-    function handleFormSubmit(/** @type {Event} */ e) {
-        e.preventDefault();
-        const elem = /** @type {HTMLFormElement} */ (e.target);
-        let new_settings = /** @type {SettingsGeneral} */ ({});
-        // @ts-ignore
-        (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
-        settings.setKey("general", new_settings);
-    }
-}
-
-/** @param {Element} root */
-function initCategorySettings(root) {
-    const options = root.querySelectorAll("#lang-list option");
-    /** @type {Map<string, string>} root */
-    const lang_map = new Map();
-    for (let i = 0; i < options.length; i++) {
-        const opt = /** @type {HTMLInputElement} */ (options[i]);
-        lang_map.set(/** @type {string} */ (opt.getAttribute("lang-code")), opt.value)
+    _updateElements() {
+        const list = /** @type {Element} */ (this.$.root.querySelector(".enabled-languages"));
+        this.$.lang = {
+            list: list,
+            tmpl: /** @type {HTMLTemplateElement} */ (list.querySelector("template")),
+        }
     }
 
-    for (const lang of settings.get().category.languages) {
-        addLang(lang);
+    /** @param {Element | undefined} $root */
+    init($root) {
+        if ($root && $root !== this.$.root) {
+            this.$.root = $root
+        }
+        this._updateElements();
+        settings._initCategory();
+        settings._initGeneral();
+        settings._initCache();
     }
-    hasLanguages();
-    
-    const form_category = /** @type {Element} */ (root.querySelector("#form-category"));
-    form_category.addEventListener("submit", handleFormSubmit);
-    form_category.addEventListener("click", handleFormClick);
-    form_category.addEventListener("keydown", handleFormKeydown);
+
+    _initCategory() {
+        const options = this.$.root.querySelectorAll("#lang-list option");
+        for (let i = 0; i < options.length; i++) {
+            const opt = /** @type {HTMLInputElement} */ (options[i]);
+            this.lang_map.set(/** @type {string} */ (opt.getAttribute("lang-code")), opt.value)
+        }
+
+        for (const lang of this.data.category.languages) {
+            this._addLang(lang);
+        }
+        this._hasLanguages();
+
+        // add events
+        const form_category = /** @type {Element} */ (this.$.root.querySelector("#form-category"));
+        form_category.addEventListener("submit", (evt) => {
+            evt.preventDefault();
+            const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
+            this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
+            this.data.category.show_all = /** @type {string} */ (f_data.get("all-languages"));
+        });
+
+        form_category.addEventListener("click", (event) => {
+            const elem = /** @type {HTMLButtonElement} */ (event.target); 
+            if (elem.nodeName === "BUTTON") {
+              if (elem.classList.contains("add-lang")) {
+                this._addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
+              } else if (elem.classList.contains("remove-lang")) {
+                  const li = /** @type {Element} */ (elem.closest("li"));
+                  li.remove();
+              }
+            }
+        });
+
+        form_category.addEventListener("keydown", (event) => {
+            const elem = /** @type {HTMLInputElement} */ (event.target); 
+            if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
+                this._addLangFromInput(elem);
+            }
+        });
+    }
 
     /** @param {string} lang */
-    function addLang(lang) {
-      const ul = /** @type {Element} */ (document.querySelector(".enabled-languages"));
-      const tmpl = /** @type {HTMLTemplateElement} */ (ul.querySelector("template"));
-      const new_elem = /** @type {Element} */ (tmpl.content.firstElementChild?.cloneNode(true));
+    _addLang(lang) {
+        if (!this.$.lang) { return; }
+      const new_elem = /** @type {Element} */ (this.$.lang.tmpl.content.firstElementChild?.cloneNode(true));
       const input = /** @type {HTMLInputElement} */ (new_elem.querySelector("input"));
       const p = /** @type {HTMLParagraphElement} */ (new_elem.querySelector("p"));
-      p.textContent = lang_map.get(lang) || "";
-      input.setAttribute("value", lang)
-      ul.append(new_elem);
+      const text = this.lang_map.get(lang);
+      if (text) {
+          p.textContent =  text;
+          input.setAttribute("value", lang)
+          this.$.lang.list.append(new_elem);
+      }
     }
 
-    function hasLanguages() {
-        const msg_elem = /** @type {Element} */ (root.querySelector(".js-languages-msg"));
-        if (root.querySelectorAll(".enabled-languages > li").length > 0) {
+    _hasLanguages() {
+        if (!this.$.root || !this.$.lang) { return; }
+        const msg_elem = /** @type {Element} */ (this.$.root.querySelector(".js-languages-msg"));
+        if (this.$.lang.list.querySelectorAll(":scope > li").length > 0) {
             msg_elem.classList.add("hidden")
         } else {
             msg_elem.classList.remove("hidden")
         }
     }
 
-    /** @param {Event} event */
-    function handleFormKeydown(event) {
-        const elem = /** @type {HTMLInputElement} */ (event.target); 
-        if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
-            addLangFromInput(elem);
-        }
-    }
-
     /** @param {HTMLInputElement} input */
-    function addLangFromInput(input) {
+    _addLangFromInput(input) {
         const lang_value = input.value;
         if (lang_value) {
             const opt = document.querySelector(`option[value=${lang_value}]`)
             if (opt && !document.querySelector(`input[value=${lang_value}]`)) { 
-              addLang(/** @type {string} */ (opt.getAttribute("lang-code")));
+              this._addLang(/** @type {string} */ (opt.getAttribute("lang-code")));
               input.value = "";
-              hasLanguages();
+              this._hasLanguages();
             }
         }
     }
-    
-    /** @param {Event} event */
-    function handleFormClick(event) {
-        const elem = /** @type {HTMLButtonElement} */ (event.target); 
-        if (elem.nodeName === "BUTTON") {
-          if (elem.classList.contains("add-lang")) {
-            addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
-          } else if (elem.classList.contains("remove-lang")) {
-              const li = /** @type {Element} */ (elem.closest("li"));
-              li.remove();
-          }
-        }
-    }
-   
-    /** @param {Event} event */
-    function handleFormSubmit(event) {
-        event.preventDefault();
-        const elem = /** @type {HTMLFormElement} */ (event.target);
-        const f_data = new FormData(elem);
-        let curr = settings.get().category;
-        curr.languages = /** @type {string[]} */ (f_data.getAll("lang"));
-        curr.show_all = /** @type {string} */ (f_data.get("all-languages"));
-        settings.setKey("category", curr);
-    }
 }
+
+export const settings = new Settings();
