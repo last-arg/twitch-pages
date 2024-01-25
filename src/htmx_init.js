@@ -1,9 +1,9 @@
 import { current_pathname } from './global';
 import { settings } from './main';
-import { games, API_URL, categoryUrl, twitchCatImageSrc } from './common'
+import { games, API_URL, categoryUrl, twitchCatImageSrc, streams } from './common'
 import { mainContent, config } from 'config';
 import { Twitch } from './twitch';
-import { add_images, followed_streams, profile_images } from './streams';
+import { add_images, profile_images } from './streams';
 
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
@@ -159,7 +159,7 @@ export function initHtmx() {
               .replace(":item_json", item_json)
               .replace(":item_id", user_id)
               .replace("#user_img", profile_img_url);
-            if (followed_streams.get().some((stream) => stream.user_id === user_id)) {
+            if (streams.isFollowed(user_id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
@@ -208,7 +208,7 @@ export function initHtmx() {
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
           .replace(":item_json", item_json)
           .replaceAll(":item_id", item.id);
-        if (followed_streams.get().some((stream) => stream.user_id === item.id)) {
+        if (streams.isFollowed(item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
 

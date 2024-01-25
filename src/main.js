@@ -1,6 +1,6 @@
-import { games } from './common';
+import { games, streams } from './common';
 import { current_pathname } from './global';
-import { unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
+import { live_users, addLiveUser, initProfileImages, updateLiveUsers, renderUserLiveness } from './streams';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -46,9 +46,9 @@ function gameAndStreamFollow(t) {
             const following = (btn.getAttribute("data-is-followed") || "false") === "true";
             if (item_untyped.user_id) {
                 if (following) {
-                    unfollowStream(item_untyped.user_id);
+                    streams.unfollow(item_untyped.user_id);
                 } else {
-                    followStream(/** @type {StreamLocal} */ item_untyped);
+                    streams.follow(/** @type {StreamLocal} */ item_untyped);
                 }
             } else {
                 if (following) {
@@ -216,12 +216,12 @@ class Settings extends EventTarget {
             if (t.classList.contains("js-clear-games")) {
                 games.clear();
             } else if (t.classList.contains("js-clear-streams")) {
-                clearStreams();
+                streams.clear();
             } else if (t.classList.contains("js-clear-profiles")) {
                 clearProfiles();
             } else if (t.classList.contains("js-clear-all")) {
                 games.clear();
-                clearStreams();
+                streams.clear();
                 clearProfiles();
             }
         })

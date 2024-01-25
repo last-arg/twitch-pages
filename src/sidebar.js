@@ -1,6 +1,6 @@
-import { games, renderGames, renderStreams } from "./common";
+import { games, renderGames, renderStreams, streams } from "./common";
 import { Search } from "./search";
-import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
+import { stream_tmpl, streams_list, streams_scrollbox } from "./streams";
 import { atom } from 'nanostores'
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
@@ -40,7 +40,7 @@ export function renderSidebarItems(state) {
         renderGames(game_tmpl, games_list, games.items);
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
-        renderStreams(stream_tmpl, streams_list, followed_streams.get());
+        renderStreams(stream_tmpl, streams_list, streams.items);
         sidebarShadows(streams_scrollbox);
     }
 }

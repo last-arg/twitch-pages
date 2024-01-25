@@ -1,6 +1,6 @@
-import { strCompareField, categoryUrl } from "./common";
+import { strCompareField, categoryUrl, streams } from "./common";
 import { twitch } from "./twitch"
-import { renderSidebarItems, sb_state } from "./sidebar";
+import { sb_state } from "./sidebar";
 import { action, atom, map } from 'nanostores'
 import { persistentAtom, persistentMap } from '@nanostores/persistent' 
 
@@ -10,78 +10,96 @@ import { persistentAtom, persistentMap } from '@nanostores/persistent'
 @typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
 */
 
+export class Streams extends EventTarget {
+    /** @type {StreamLocal[]} */
+    items = []
+    constructor() {
+        super();
+        this.localStorageKey = "followed_streams";
+        this._readStorage();
+
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
+    }
+
+    _readStorage() {
+        const raw = window.localStorage.getItem(this.localStorageKey)
+        if (raw) {
+            this.items = JSON.parse(raw);
+        }
+    }
+
+    _save() {
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+        live_count.set(getLiveCount());
+        this.dispatchEvent(new CustomEvent('games:save'));
+    }
+
+    /**
+        @param {StreamLocal} data
+    */
+    follow(data) {
+        if (!this.isFollowed(data.user_id)) {
+            this.items.push(data);
+            this.items.sort(sortStreams);
+            if (!live_users.get()[data.user_id]) {
+                addLiveUser(data.user_id);
+            }
+            if (!profile_images.get()["images"][data.user_id]) {
+                add_images.set([data.user_id]);
+            }
+        }
+        this._save();
+    };
+
+
+    /**
+        @param {string} user_id
+    */
+    unfollow(user_id) {
+        const curr = this.items;
+        let i = 0
+        for (; i < curr.length; i++) {
+            if (curr[i].user_id === user_id) {
+                break;
+            }
+        }
+        if (curr.length === i) { return; }
+
+        const remove_id = curr.splice(i, 1)[0].user_id;
+        this.dispatchEvent(new CustomEvent('games:remove', {detail: {id: remove_id}}));
+        this._save();
+    };    
+
+    /** @param {string} input_id */
+    isFollowed(input_id) {
+        return this.items.some(({user_id}) => input_id === user_id);
+    }
+
+    clear() {
+        this.items = [];
+        this._save();
+    }
+
+    sort() {
+        this.items.sort(sortStreams);
+    }
+
+    /**
+      @returns {string[]}
+    */
+    getIds() {
+        return this.items.map(({user_id}) => user_id);
+    }
+}
+
 export const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
 const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
 export const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
 export const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
-
-/** @type {string | undefined} */
-let removed_stream = undefined;
-/** @type {import("nanostores").WritableAtom<StreamLocal[]>} */
-export const followed_streams = persistentAtom("followed_streams", [], {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
-followed_streams.listen(function(_) {
-    if (sb_state.get() === "streams") {
-        renderSidebarItems("streams");
-    }
-    if (removed_stream) {
-        const btns = document.body.querySelectorAll(`[data-item-id='${removed_stream}']`);
-        for (let i = 0; i < btns.length; i++) {
-            btns[i].setAttribute("data-is-followed", "false");
-        }
-        removed_stream = undefined;
-    }
-    live_count.set(getLiveCount());
-});
-
-export const clearStreams = action(followed_streams, "clearStreams", (store) => {
-    store.set([]);
-})
-
-/**
-@type {(data: StreamLocal) => void}
-*/
-export const followStream = action(followed_streams, 'followStream', async (store, /** @type {StreamLocal} */ data) => {
-    if (!isStreamFollowed(data.user_id)) {
-        const curr = store.get();
-        curr.push(data);
-        // TODO: copying is wasteful, do it better
-        store.set([...curr.sort(sortStreams)]);
-        if (!live_users.get()[data.user_id]) {
-            addLiveUser(data.user_id);
-        }
-        if (!profile_images.get()["images"][data.user_id]) {
-            add_images.set([data.user_id]);
-        }
-    }
-});
-
-/**
-@type {(user_id: string) => void}
-*/
-export const unfollowStream = action(followed_streams, 'unfollowStream', async (store, /** @type {string} */ user_id) => {
-    const curr = store.get();
-    let i = 0
-    for (; i < curr.length; i++) {
-        if (curr[i].user_id === user_id) {
-            break;
-        }
-    }
-    if (curr.length === i) {
-        return;
-    }
-    removed_stream = curr.splice(i, 1)[0].user_id;
-    // TODO: copying is wasteful, do it better
-    store.set([...curr]);
-});
-
-
-/** @param {string} input_id */
-export function isStreamFollowed(input_id) {
-    return followed_streams.get().some(({user_id}) => input_id === user_id);
-}
 
 /** @type {string[]} */
 let live_removes = [];
@@ -105,7 +123,7 @@ live_users.listen(function() {
     console.log("live_adds", live_adds)
     renderLiveAdd(live_adds);
     live_adds.length = 0;
-    followed_streams.set([...followed_streams.get().sort(sortStreams)]);
+    streams.sort();
 })
 
 /** 
@@ -246,7 +264,7 @@ function getLiveCount() {
     let result = 0;
     const users = live_users.get();
     for (const key in users) {
-        if (isStreamFollowed(key)) {
+        if (streams.isFollowed(key)) {
             result += 1;
         }
     }
@@ -310,17 +328,19 @@ export async function updateLiveUsers() {
         live_user_update = window.setTimeout(updateLiveUsers, diff + 1000);
         return;
     }
-    console.log("update now")
-    const curr_ids = followed_streams.get().map(({user_id}) => user_id);
-    for (const id of Object.keys(live_users.get())) {
-        if (!curr_ids.includes(id)) {
-            curr_ids.push(id);
+    if (streams) {
+        const curr_ids = streams.getIds();
+        console.log(streams.getIds());
+        for (const id of Object.keys(live_users.get())) {
+            if (!curr_ids.includes(id)) {
+                curr_ids.push(id);
+            }
         }
+        const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
+        console.log("curr_ids", curr_ids)
+        console.log("new_live_streams", new_live_streams)
+        updateLiveStreams(curr_ids, new_live_streams);
     }
-    const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
-    console.log("curr_ids", curr_ids)
-    console.log("new_live_streams", new_live_streams)
-    updateLiveStreams(curr_ids, new_live_streams);
     live_last_update.set(now)
     live_user_update = window.setTimeout(updateLiveUsers, live_check_ms + 1000);
 }
@@ -342,9 +362,10 @@ export const profile_images = persistentMap("profile_images:", {
     decode: JSON.parse,
 });
 
-export const clearProfiles = action(followed_streams, "clearProfiles", (store) => {
-    store.set([]);
-})
+export const clearProfiles = () => {};
+// export const clearProfiles = action(followed_streams, "clearProfiles", (store) => {
+//     store.set([]);
+// })
 
 /** @type {import("nanostores/map").MapStore<string[]>} */
 export const add_images = map([]);
@@ -393,7 +414,7 @@ export function initProfileImages() {
     if (check_time < now) {
 
         for (const id in imgs.images) {
-            if (imgs.images[id].last_access > check_time && !isFollowedStream(id)) {
+            if (imgs.images[id].last_access > check_time && !streams.isFollowed(id)) {
                 delete imgs.images[id];
             }
         }
@@ -401,15 +422,5 @@ export function initProfileImages() {
         imgs.last_update = now;
         profile_images.set(imgs);
     }
-    add_images.set(followed_streams.get().map(({user_id}) => user_id));
-}
-
-/** @param {string} id */
-function isFollowedStream(id) {
-    for (const stream of followed_streams.get()) {
-        if (stream.user_id == id) {
-            return true;
-        }
-    }
-    return false;
+    add_images.set(streams.getIds());
 }
