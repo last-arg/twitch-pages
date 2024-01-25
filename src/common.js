@@ -81,7 +81,19 @@ live.addEventListener("live:add", function(e) {
         }
     }
 })
-// live.init();
+
+live.addEventListener("live:count", function(e) {
+    const count = /** @type {any} */ (e).detail.count;
+    const stream_count = /** @type {Element} */ (document.querySelector(".streams-count"));
+    if (count === 0) {
+        stream_count.classList.add("hidden")
+    } else {
+        stream_count.textContent = count.toString();
+        stream_count.classList.remove("hidden")
+    }
+});
+live.dispatchEvent(new CustomEvent('live:count', {detail: {count: live.count}}));
+
 
 /** 
 @param {string} id

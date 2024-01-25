@@ -1,6 +1,6 @@
 import { strCompareField, streams, live } from "./common";
 import { twitch } from "./twitch"
-import { atom, map } from 'nanostores'
+import { map } from 'nanostores'
 import { persistentMap } from '@nanostores/persistent' 
 
 /**
@@ -33,7 +33,6 @@ export class Streams extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        live_count.set(live.count());
         this.dispatchEvent(new CustomEvent('games:save'));
     }
 
@@ -95,6 +94,7 @@ export class Streams extends EventTarget {
     }
 }
 
+// TODO: move these if possible
 export const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
 const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
 export const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
@@ -106,22 +106,20 @@ export class LiveStreams extends EventTarget {
     users = {}
     last_update = 0;
     timeout = 0;
+    count = 0;
 
     constructor() {
         super();
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
         this._readStorage();
+        this.updateLiveCount();
 
         // handle edits in another window
         window.addEventListener("storage", () => {
             this._readStorage();
             this._save();
         }, false);
-    }
-
-    init() {
-        
     }
 
     updateDiff() {
@@ -140,7 +138,6 @@ export class LiveStreams extends EventTarget {
     }
 
     _save() {
-        console.log("_save", this.users.length)
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
         window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
         this.dispatchEvent(new CustomEvent('live:save'));
@@ -173,13 +170,17 @@ export class LiveStreams extends EventTarget {
     /** 
     @returns {number}
     */
-    count() {
+    updateLiveCount() {
         let result = 0;
         const users = this.users;
         for (const key in users) {
             if (streams.isFollowed(key)) {
                 result += 1;
             }
+        }
+        if (this.count !== result) {
+            this.count = result;
+            this.dispatchEvent(new CustomEvent('live:count', {detail: {count: this.count}}));
         }
         return result;
     }
@@ -226,6 +227,11 @@ export class LiveStreams extends EventTarget {
             this.dispatchEvent(new CustomEvent('live:add', {detail: {ids: adds}}));
         }
 
+        const diff = removes.length + adds.length;
+        if (diff !== 0) {
+            this.count = this.updateLiveCount();
+        }
+
         this._save();
     }
 
@@ -233,7 +239,7 @@ export class LiveStreams extends EventTarget {
         const diff = this.updateDiff();
         clearTimeout(this.timeout);
         if (diff > 0) {
-            this.timeout = window.setTimeout(this.updateLiveUsers, diff + 1000);
+            this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
             return;
         }
         if (streams) {
@@ -246,7 +252,7 @@ export class LiveStreams extends EventTarget {
             const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
             live.updateLiveStreams(curr_ids, new_live_streams);
         }
-        this.timeout = window.setTimeout(this.updateLiveUsers, live_check_ms + 1000);
+        this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
     }
 }
 
@@ -260,18 +266,6 @@ function sortStreams(a, b) {
     const b_cmp = streams.isFollowed(b["user_id"]) ? 1e6 : 0;
     return cmp + a_cmp + b_cmp;
 }
-
-const live_count = atom(0);
-live_count.subscribe(function(count) {
-    console.log("change live count", count);
-    const stream_count = /** @type {Element} */ (document.querySelector(".streams-count"));
-    if (count === 0) {
-        stream_count.classList.add("hidden")
-    } else {
-        stream_count.textContent = count.toString();
-        stream_count.classList.remove("hidden")
-    }
-});
 
 /** 
 @typedef {{url: string, last_access: number}} ProfileImage
