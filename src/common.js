@@ -1,6 +1,29 @@
 import { config } from "config";
-import { isGameFollowed } from "./games";
+import { Games } from "./games";
 import { isStreamFollowed, live_users, profile_images } from "./streams";
+import { renderSidebarItems } from "./sidebar";
+
+export const games = new Games();
+
+games.addEventListener("games:remove", function(e) {
+    const id = /** @type {any} */ (e).detail.id;
+    const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].setAttribute("data-is-followed", "false");
+    }
+}); 
+
+games.addEventListener("games:add", function(e) {
+    const id = /** @type {any} */ (e).detail.id;
+    const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].setAttribute("data-is-followed", "true");
+    }
+}); 
+
+games.addEventListener("games:save", function() {
+    renderSidebarItems("games");
+});
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
@@ -49,7 +72,7 @@ export function renderGames(base_elem, target, data) {
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
         const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
         btn.setAttribute("data-item-id", game.id)
-        btn.setAttribute("data-is-followed", isGameFollowed(game.id).toString())
+        btn.setAttribute("data-is-followed", games.isFollowed(game.id).toString())
         const encoded_game = encodeURIComponent(JSON.stringify(game));
         btn.setAttribute("data-item", encoded_game);
         const span = /** @type {Element} */ (btn.querySelector("span"));

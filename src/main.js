@@ -1,4 +1,4 @@
-import { clearGames, followGame, unfollowGame} from './games';
+import { games } from './common';
 import { current_pathname, settings } from './global';
 import { unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
 import { twitch } from './twitch';
@@ -52,9 +52,9 @@ function gameAndStreamFollow(t) {
                 }
             } else {
                 if (following) {
-                    unfollowGame(item_untyped.id);
+                    games.unfollow(item_untyped.id);
                 } else {
-                    followGame(/** @type {Game} */ item_untyped);
+                    games.follow(/** @type {Game} */ item_untyped);
                 }
             }
             btn.setAttribute("data-is-followed", (!following).toString())
@@ -170,13 +170,13 @@ function initCacheSettings(root) {
     root.querySelector(".js-cache-list")?.addEventListener("click", (e) => {
         const t = /** @type {Element} root */ (e.target);
         if (t.classList.contains("js-clear-games")) {
-            clearGames();
+            games.clear();
         } else if (t.classList.contains("js-clear-streams")) {
             clearStreams();
         } else if (t.classList.contains("js-clear-profiles")) {
             clearProfiles();
         } else if (t.classList.contains("js-clear-all")) {
-            clearGames();
+            games.clear();
             clearStreams();
             clearProfiles();
         }

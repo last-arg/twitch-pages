@@ -1,5 +1,4 @@
-import { renderGames, renderStreams } from "./common";
-import { followed_games, games_list, games_scrollbox, game_tmpl } from "./games";
+import { games, renderGames, renderStreams } from "./common";
 import { Search } from "./search";
 import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
 import { atom } from 'nanostores'
@@ -16,6 +15,13 @@ const search_scrollbox = /** @type {HTMLElement} */ (search_list.parentElement);
 // @ts-ignore
 const search_item_tmpl = search_list.nextElementSibling.content.firstElementChild;
 
+const games_list = /** @type {Element} */ (document.querySelector(".js-games-list"))
+// @ts-ignore
+const game_tmpl = /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild);
+const games_scrollbox = /** @type {HTMLElement} */ (games_list.parentElement);
+
+
+
 export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
 sb_state.listen(function(state) {
@@ -31,7 +37,7 @@ export function renderSidebarItems(state) {
         renderGames(search_item_tmpl, search_list, game_search.items);
         sidebarShadows(search_scrollbox);
     } else if (state === "games") {
-        renderGames(game_tmpl, games_list, followed_games.get());
+        renderGames(game_tmpl, games_list, games.items);
         sidebarShadows(games_scrollbox);
     } else if (state === "streams") {
         renderStreams(stream_tmpl, streams_list, followed_streams.get());
