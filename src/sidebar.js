@@ -1,13 +1,34 @@
 import { renderGames, renderStreams } from "./common";
 import { followed_games, games_list, games_scrollbox, game_tmpl } from "./games";
-import { search_items, search_item_tmpl, search_list, search_scrollbox } from "./search";
+import { search_item_tmpl, search_list, search_scrollbox, Search } from "./search";
 import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
 import { atom } from 'nanostores'
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
 // @ts-ignore
-  const htmx = /** @type {import("htmx.org")} */ (window.htmx);
+const htmx = /** @type {import("htmx.org")} */ (window.htmx);
+
+const form_search = /** @type {HTMLFormElement} */ (document.querySelector("form"));
+const input_search = /** @type {Element} */(form_search.querySelector("#game_name"));
+
+export const game_search = new Search();
+form_search.addEventListener("input", function(e) {
+    e.preventDefault();
+    game_search.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
+});
+
+input_search.addEventListener("focus", function(e) {
+    sb_state.set("search");
+    game_search.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
+});
+
+
+input_search.addEventListener("blur", function(e) {
+    if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
+        sb_state.set("closed")
+    }
+});
 
 export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
@@ -21,7 +42,7 @@ sb_state.listen(function(state) {
 // TODO: don't re-render sidebar items every time sidebar is opened
 export function renderSidebarItems(state) {
     if (state === "search") {
-        renderGames(search_item_tmpl, search_list, search_items);
+        renderGames(search_item_tmpl, search_list, game_search.items);
         sidebarShadows(search_scrollbox);
     } else if (state === "games") {
         renderGames(game_tmpl, games_list, followed_games.get());

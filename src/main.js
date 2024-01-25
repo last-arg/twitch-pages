@@ -1,6 +1,5 @@
 import { clearGames, followGame, unfollowGame} from './games';
 import { current_pathname, settings } from './global';
-import { search_value } from './search';
 import { unfollowStream, followStream, live_users, addLiveUser, initProfileImages, updateLiveUsers, clearStreams, clearProfiles, renderUserLiveness } from './streams';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
@@ -77,25 +76,6 @@ document.addEventListener("click", function(/** {Event} */e) {
         sb_state.set(new_state);
     } else if (btn?.classList.contains("btn-close")) {
         sb_state.set("closed");
-    }
-});
-
-const form_search = /** @type {HTMLFormElement} */ (document.querySelector("form"));
-const input_search = /** @type {Element} */(form_search.querySelector("#game_name"));
-
-form_search.addEventListener("input", function(e) {
-    e.preventDefault();
-    search_value.set(/** @type {HTMLInputElement} */ (e.target).value);
-});
-
-input_search.addEventListener("focus", function(e) {
-    sb_state.set("search");
-    search_value.set(/** @type {HTMLInputElement} */ (e.target).value);
-});
-
-input_search.addEventListener("blur", function(e) {
-    if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
-        sb_state.set("closed")
     }
 });
 
