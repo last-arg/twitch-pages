@@ -1,27 +1,59 @@
 import { twitch } from './twitch'
-import { renderSidebarItems } from './sidebar';
+import { renderSidebarItems, sb_state } from './sidebar';
 
 /**
  * @typedef {import("./common").Game} Game
  */
 
- // TODO: maybe move search_scrollbox and search_item_tmpl - not used here
-export const search_list = /** @type {Element} */ (document.querySelector(".js-search-list"));
-export const search_scrollbox = /** @type {HTMLElement} */ (search_list.parentElement);
-// @ts-ignore
-export const search_item_tmpl = search_list.nextElementSibling.content.firstElementChild;
-
 export class Search {
-    static feedback_elem = /** @type {Element} */ (document.querySelector(".search-feedback"));
-    static search_list = /** @type {Element} */ (document.querySelector(".js-search-list"));
-    static search_scrollbox = /** @type {HTMLElement} */ (this.search_list.parentElement);
-    // @ts-ignore
-    static search_item_tmpl = this.search_list.nextElementSibling.content.firstElementChild;
 
     constructor() {
+        const form_search = /** @type {HTMLFormElement} */ (document.querySelector("form"));
+        this.$ = {
+            feedback_elem: /** @type {Element} */ (document.querySelector(".search-feedback")),
+            search_list: /** @type {Element} */ (document.querySelector(".js-search-list")),
+            form_search: form_search,
+            input_search: /** @type {Element} */(form_search.querySelector("#game_name")),
+
+            clearFeedback() {
+                this.feedback_elem.textContent = "";
+            },
+            showEnterName() {
+                this.feedback_elem.textContent = "Enter game name to search";
+                this.search_list.innerHTML = "";
+            },
+            showNoGames() {
+                this.feedback_elem.textContent = "Found no games";
+                this.search_list.innerHTML = "";
+            },
+            showSearching() {
+                this.feedback_elem.textContent = "Searching...";
+            }
+        }
+
         /** @type {Game[]} */
         this.items = [];
         this.search_timeout = 0;
+        this._bindEvents();
+    }
+
+    _bindEvents() {
+        this.$.form_search.addEventListener("input", (e) => {
+            e.preventDefault();
+            this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
+        });
+
+        this.$.input_search.addEventListener("focus", (e) => {
+            sb_state.set("search");
+            this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
+        });
+
+
+        this.$.input_search.addEventListener("blur", (e) => {
+            if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
+                sb_state.set("closed")
+            }
+        });
     }
 
     /**
@@ -32,43 +64,42 @@ export class Search {
         clearTimeout(this.search_timeout)
         val = val.trim();
         if (val.length === 0) {
-            Search.feedback_elem.textContent = "Enter game name to search";
-            Search.search_list.innerHTML = "";
+            this.$.showEnterName();
             return;
         }
 
-        Search.feedback_elem.textContent = "Searching...";
+        this.$.showSearching();
         this.search_timeout = window.setTimeout(async () => {
             const results = /** @type {Game[]} */ (await twitch.fetchSearch(val));
             if (results.length === 0) {
-                Search.feedback_elem.textContent = "Found no games";
-                Search.search_list.innerHTML = "";
+                this.$.showNoGames();
                 return;
             }
-            Search.feedback_elem.textContent = "";
-            if (!isSameArray(this.items, results)) {
+            this.$.clearFeedback();
+            if (!this.isSameItems(results)) {
                 this.items = results;
                 renderSidebarItems("search");
             }
         }, 400);
     }
+
+    /**
+      @param {Game[]} new_arr
+      @returns boolean
+    */
+    isSameItems(new_arr) {
+        const old_arr = this.items;
+        if (old_arr.length === new_arr.length) {
+            for (let i = 0; i < old_arr.length; i++) {
+                const old = old_arr[i];
+                const item = new_arr[i];
+                if (old.id !== item.id) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }
 
-/**
-  @param {Game[]} old_arr
-  @param {Game[]} new_arr
-  @returns boolean
-*/
-function isSameArray(old_arr, new_arr) {
-    if (old_arr.length === new_arr.length) {
-        for (let i = 0; i < old_arr.length; i++) {
-            const old = old_arr[i];
-            const item = new_arr[i];
-            if (old.id !== item.id) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
-}

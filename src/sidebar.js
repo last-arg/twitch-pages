@@ -1,6 +1,6 @@
 import { renderGames, renderStreams } from "./common";
 import { followed_games, games_list, games_scrollbox, game_tmpl } from "./games";
-import { search_item_tmpl, search_list, search_scrollbox, Search } from "./search";
+import { Search } from "./search";
 import { stream_tmpl, streams_list, streams_scrollbox, followed_streams } from "./streams";
 import { atom } from 'nanostores'
 
@@ -9,26 +9,12 @@ import { atom } from 'nanostores'
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
 
-const form_search = /** @type {HTMLFormElement} */ (document.querySelector("form"));
-const input_search = /** @type {Element} */(form_search.querySelector("#game_name"));
+const game_search = new Search();
 
-export const game_search = new Search();
-form_search.addEventListener("input", function(e) {
-    e.preventDefault();
-    game_search.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
-});
-
-input_search.addEventListener("focus", function(e) {
-    sb_state.set("search");
-    game_search.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
-});
-
-
-input_search.addEventListener("blur", function(e) {
-    if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
-        sb_state.set("closed")
-    }
-});
+const search_list = /** @type {Element} */ (document.querySelector(".js-search-list"));
+const search_scrollbox = /** @type {HTMLElement} */ (search_list.parentElement);
+// @ts-ignore
+const search_item_tmpl = search_list.nextElementSibling.content.firstElementChild;
 
 export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
