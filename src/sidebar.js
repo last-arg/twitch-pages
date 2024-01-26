@@ -45,6 +45,27 @@ export class Sidebar {
           htmx.ajax("get", get, {source: link_box});
         }
       });
+
+      // Add/remove shadows when scrolling
+      const scrollContainers = document.querySelectorAll('.scroll-container');
+      for (let i = 0; i < scrollContainers.length; i++) {
+        const scrollbox = scrollContainers[i].querySelector('.scrollbox');
+        if (!scrollbox) {
+          continue;
+        }
+        let scrolling = false;
+        scrollbox.addEventListener("scroll", (/** @type {Event} */ event) => {
+          const scrollbox = /** @type {HTMLElement} */ (event.target);
+
+          if (!scrolling) {
+            window.requestAnimationFrame(function() {
+              sidebarShadows(scrollbox);
+              scrolling = false;
+            });
+            scrolling = true;
+          }
+        }, {passive: true});
+      }
   }
 
   /** @param {SidebarState} new_state */
@@ -71,28 +92,6 @@ export function renderSidebarItems(state) {
         renderStreams(stream_tmpl, streams_list, streams.items);
         sidebarShadows(streams_scrollbox);
     }
-}
-
-export function initSidebarScroll() {
-  const scrollContainers = document.querySelectorAll('.scroll-container');
-  for (let i = 0; i < scrollContainers.length; i++) {
-    const scrollbox = scrollContainers[i].querySelector('.scrollbox');
-    if (!scrollbox) {
-      continue;
-    }
-    let scrolling = false;
-    scrollbox.addEventListener("scroll", (/** @type {Event} */ event) => {
-      const scrollbox = /** @type {HTMLElement} */ (event.target);
-
-      if (!scrolling) {
-        window.requestAnimationFrame(function() {
-          sidebarShadows(scrollbox);
-          scrolling = false;
-        });
-        scrolling = true;
-      }
-    }, {passive: true});
-  }
 }
 
 /**

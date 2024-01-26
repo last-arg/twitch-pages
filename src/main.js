@@ -1,6 +1,5 @@
 import { games, live, sidebar, streams, user_images, state } from './common';
 import { twitch } from './twitch';
-import { initSidebarScroll } from './sidebar';
 import { initHtmx } from "./htmx_init";
 import { settings_default } from 'config';
 
@@ -110,8 +109,6 @@ async function startup() {
     await twitch.fetchToken();
     initHtmx();
     document.body.addEventListener("mousedown", handlePathChange)
-    initSidebarScroll();
-    live.updateLiveUsers();
 };
 window.addEventListener("DOMContentLoaded", startup);
 

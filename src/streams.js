@@ -200,6 +200,7 @@ export class LiveStreams extends EventTarget {
         this.streams = streams;
         this._readStorage();
         this.updateLiveCount();
+        this.updateLiveUsers();
 
         // handle edits in another window
         window.addEventListener("storage", () => {
@@ -331,16 +332,14 @@ export class LiveStreams extends EventTarget {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
             return;
         }
-        if (streams) {
-            const curr_ids = this.streams.getIds();
-            for (const id of Object.keys(live.users)) {
-                if (!curr_ids.includes(id)) {
-                    curr_ids.push(id);
-                }
+        const curr_ids = this.streams.getIds();
+        for (const id of Object.keys(this.users)) {
+            if (!curr_ids.includes(id)) {
+                curr_ids.push(id);
             }
-            const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
-            live.updateLiveStreams(curr_ids, new_live_streams);
         }
+        const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
+        this.updateLiveStreams(curr_ids, new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
     }
 }
