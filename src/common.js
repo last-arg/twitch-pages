@@ -2,7 +2,6 @@ import { config } from "config";
 import { Games } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
-import { state } from "./global";
 
 export const sidebar = new Sidebar();
 export const games = new Games();

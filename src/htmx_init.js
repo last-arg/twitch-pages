@@ -122,7 +122,7 @@ export function initHtmx() {
           .replace(":item_json", game_obj_str)
           .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
 
-        if (games.isFollowed(item)) {
+        if (games.isFollowed(item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
 
@@ -207,6 +207,7 @@ export function initHtmx() {
           .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
           .replace(":item_json", item_json)
           .replaceAll(":item_id", item.id);
+
         if (streams.isFollowed(item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
