@@ -18,7 +18,6 @@ const games_list = /** @type {Element} */ (document.querySelector(".js-games-lis
 const game_tmpl = /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild);
 const games_scrollbox = /** @type {HTMLElement} */ (games_list.parentElement);
 
-// TODO: move these if possible
 const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
 const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
 const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
@@ -30,16 +29,45 @@ export class Sidebar {
   state = "closed"
 
   constructor() {
-    
+    this.$ = {
+      /** @type {Element} */
+      sidebar_nav: document.querySelector(".sidebar-nav"),
+      showSidebar(state) {
+          this.sidebar_nav.querySelector("#game_name[aria-expanded=true] , .menu-item[aria-expanded=true]")?.setAttribute("aria-expanded", "false");
+          if (state !== "closed") {
+              const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
+              this.sidebar_nav.querySelector(sel)?.setAttribute("aria-expanded", "true");
+              if (state !== "search") {
+                  renderSidebarItems(state);
+              }
+          }
+      },
+    };
+
+    this._bindEvents();
+  }
+
+  _bindEvents() {
+      // Use event delegation to handle adding/removing items form sidebar lists
+      this.$.sidebar_nav.addEventListener("click", function(e) {
+        e.preventDefault();
+        const link_box = /** @type {Element} */ (e.target).closest(".link-box");
+        if (link_box) {
+          const get = link_box.getAttribute("hx-get");
+          if (!get) { return; }
+          htmx.ajax("get", get, {source: link_box});
+        }
+      });
   }
 
   /** @param {SidebarState} */
   setState(new_state) {
+    console.log(this.state, new_state)
     if (this.state === new_state) {
       return;
     }
     this.state = new_state
-    sidebar_state_change(this.state);
+    this.$.showSidebar(this.state);
   }
 }
 /**
@@ -56,33 +84,6 @@ export function renderSidebarItems(state) {
     } else if (state === "streams") {
         renderStreams(stream_tmpl, streams_list, streams.items);
         sidebarShadows(streams_scrollbox);
-    }
-}
-
-export const sidebar_nav = /** @type {Element} */ (document.querySelector(".sidebar-nav"));
-
-// Use event delegation to handle adding/removing items form sidebar lists
-sidebar_nav.addEventListener("click", function(e) {
-  e.preventDefault();
-  const link_box = /** @type {Element} */ (e.target).closest(".link-box");
-  if (link_box) {
-    const get = link_box.getAttribute("hx-get");
-    if (!get) { return; }
-    htmx.ajax("get", get, {source: link_box});
-  }
-});
-
-/**
-  @param {SidebarState} state
-*/
-export function sidebar_state_change(state) {
-    sidebar_nav.querySelector("#game_name[aria-expanded=true] , .menu-item[aria-expanded=true]")?.setAttribute("aria-expanded", "false");
-    if (state !== "closed") {
-        const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
-        sidebar_nav.querySelector(sel)?.setAttribute("aria-expanded", "true");
-        if (state !== "search") {
-            renderSidebarItems(state);
-        }
     }
 }
 
