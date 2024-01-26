@@ -1,22 +1,9 @@
-import { games, renderGames, renderStreams, streams } from "./common";
-import { Search } from "./search";
+import { games, renderStreams, streams, game_search } from "./common";
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
-
-const game_search = new Search();
-
-const search_list = /** @type {Element} */ (document.querySelector(".js-search-list"));
-const search_scrollbox = /** @type {HTMLElement} */ (search_list.parentElement);
-// @ts-ignore
-const search_item_tmpl = search_list.nextElementSibling.content.firstElementChild;
-
-const games_list = /** @type {Element} */ (document.querySelector(".js-games-list"))
-// @ts-ignore
-const game_tmpl = /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild);
-const games_scrollbox = /** @type {HTMLElement} */ (games_list.parentElement);
 
 const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
 const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
@@ -75,11 +62,11 @@ export class Sidebar {
 // TODO: don't re-render sidebar items every time sidebar is opened
 export function renderSidebarItems(state) {
     if (state === "search") {
-        renderGames(search_item_tmpl, search_list, game_search.items);
-        sidebarShadows(search_scrollbox);
+        game_search.render()
+        sidebarShadows(game_search.$.search_scrollbox);
     } else if (state === "games") {
-        renderGames(game_tmpl, games_list, games.items);
-        sidebarShadows(games_scrollbox);
+        games.render();
+        sidebarShadows(games.$.games_scrollbox);
     } else if (state === "streams") {
         renderStreams(stream_tmpl, streams_list, streams.items);
         sidebarShadows(streams_scrollbox);

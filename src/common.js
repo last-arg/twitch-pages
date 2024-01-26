@@ -1,5 +1,4 @@
-import { config } from "config";
-import { Games } from "./games";
+import { Games, SearchGames } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
 
@@ -15,6 +14,7 @@ export const state = {
 export const sidebar = new Sidebar();
 export const games = new Games();
 export const streams = new Streams();
+export const game_search = new SearchGames(games);
 
 games.addEventListener("games:save", function() {
     renderSidebarItems("games");
@@ -52,38 +52,6 @@ export const API_URL = "https://api.twitch.tv"
 */
 export function twitchCatImageSrc(url_template, width, height) {
     return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
-}
-
-/**
-@param {Element} base_elem
-@param {Element} target
-@param {Game[]} data
-*/
-export function renderGames(base_elem, target, data) {
-    const frag = document.createDocumentFragment();
-    for (const game of data) {
-        const new_item = /** @type {Element} */ (base_elem.cloneNode(true));
-        new_item.id = "game-id-" + game.id;
-        const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
-        p.textContent = decodeURIComponent(game.name);
-        const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
-        const href = categoryUrl(game.name); 
-        link.setAttribute("href", href)
-        link.setAttribute("hx-push-url", href)
-        const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
-        img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
-        const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
-        btn.setAttribute("data-item-id", game.id)
-        btn.setAttribute("data-is-followed", games.isFollowed(game.id).toString())
-        const encoded_game = encodeURIComponent(JSON.stringify(game));
-        btn.setAttribute("data-item", encoded_game);
-        const span = /** @type {Element} */ (btn.querySelector("span"));
-        span.textContent = "Unfollow";
-        const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
-        external_link.href = "https://www.twitch.tv" + href;
-        frag.append(new_item);
-    }
-    Idiomorph.morph(target, frag, {morphStyle:'innerHTML'})
 }
 
 /**
