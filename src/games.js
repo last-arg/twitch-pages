@@ -144,6 +144,7 @@ export class SearchGames {
         /** @type {Game[]} */
         this.items = [];
         this.search_timeout = 0;
+        this.input_value = "";
         this._bindEvents();
     }
 
@@ -173,11 +174,14 @@ export class SearchGames {
     searchValue(val) {
         clearTimeout(this.search_timeout)
         val = val.trim();
-        if (val.length === 0) {
+        if (val === this.input_value) {
+            return;
+        } else if (val.length === 0) {
             this.$.showEnterName();
             return;
         }
 
+        this.input_value = val;
         this.$.showSearching();
         this.search_timeout = window.setTimeout(async () => {
             const results = /** @type {Game[]} */ (await twitch.fetchSearch(val));
