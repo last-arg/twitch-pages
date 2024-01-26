@@ -99,12 +99,6 @@ function sortStreams(a, b) {
     return cmp + a_cmp + b_cmp;
 }
 
-// TODO: move these if possible
-export const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
-const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
-export const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
-export const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
-
 const live_check_ms = 300000; // 5 minutes
 export class LiveStreams extends EventTarget {
     /** @type {Record<string, string | undefined>} */

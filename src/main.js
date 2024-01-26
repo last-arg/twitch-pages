@@ -1,5 +1,5 @@
 import { games, live, renderUserLiveness, streams, user_images } from './common';
-import { current_pathname } from './global';
+import { state } from './global';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -153,7 +153,7 @@ function initFilter(root) {
 function handlePathChange(e) {
     const target = /** @type {Element} e */ (e.target);
     const hx_link = target.closest("a[hx-push-url]");
-    current_pathname.set(hx_link?.getAttribute("hx-push-url") || null);
+    state.setPath(hx_link?.getAttribute("hx-push-url") || null);
 }
 
 class Settings extends EventTarget {

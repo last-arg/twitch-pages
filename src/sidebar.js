@@ -1,6 +1,5 @@
 import { games, renderGames, renderStreams, streams } from "./common";
 import { Search } from "./search";
-import { stream_tmpl, streams_list, streams_scrollbox } from "./streams";
 import { atom } from 'nanostores'
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
@@ -20,7 +19,11 @@ const games_list = /** @type {Element} */ (document.querySelector(".js-games-lis
 const game_tmpl = /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild);
 const games_scrollbox = /** @type {HTMLElement} */ (games_list.parentElement);
 
-
+// TODO: move these if possible
+const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
+const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
+const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
+const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
 
 export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
