@@ -1,8 +1,9 @@
 import { config } from "config";
 import { Games } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
-import { renderSidebarItems, sb_state } from "./sidebar";
+import { renderSidebarItems, Sidebar } from "./sidebar";
 
+export const sidebar = new Sidebar();
 export const games = new Games();
 
 games.addEventListener("games:remove", function(e) {

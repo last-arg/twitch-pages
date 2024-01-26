@@ -1,5 +1,6 @@
 import { twitch } from './twitch'
-import { renderSidebarItems, sb_state } from './sidebar';
+import { renderSidebarItems } from './sidebar';
+import { sidebar } from './common';
 
 /**
  * @typedef {import("./common").Game} Game
@@ -44,14 +45,14 @@ export class Search {
         });
 
         this.$.input_search.addEventListener("focus", (e) => {
-            sb_state.set("search");
+            sidebar.setState("search")
             this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
         });
 
 
         this.$.input_search.addEventListener("blur", (e) => {
             if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
-                sb_state.set("closed")
+                sidebar.setState("closed")
             }
         });
     }

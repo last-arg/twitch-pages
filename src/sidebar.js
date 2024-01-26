@@ -1,6 +1,5 @@
 import { games, renderGames, renderStreams, streams } from "./common";
 import { Search } from "./search";
-import { atom } from 'nanostores'
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
@@ -25,12 +24,24 @@ const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementCh
 const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
 const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
 
-export const sb_state = atom(/** @type {SidebarState} */ ("closed"));
 
-sb_state.listen(function(state) {
-  sidebar_state_change(state)
-});
+export class Sidebar {
+  /** @type {SidebarState} */
+  state = "closed"
 
+  constructor() {
+    
+  }
+
+  /** @param {SidebarState} */
+  setState(new_state) {
+    if (this.state === new_state) {
+      return;
+    }
+    this.state = new_state
+    sidebar_state_change(this.state);
+  }
+}
 /**
   @param {SidebarState} state
 */

@@ -1,7 +1,7 @@
-import { games, live, renderUserLiveness, streams, user_images } from './common';
+import { games, live, renderUserLiveness, sidebar, streams, user_images } from './common';
 import { state } from './global';
 import { twitch } from './twitch';
-import { initSidebarScroll, sb_state } from './sidebar';
+import { initSidebarScroll } from './sidebar';
 import { initHtmx } from "./htmx_init";
 import { settings_default } from 'config';
 
@@ -72,9 +72,9 @@ document.addEventListener("click", function(/** {Event} */e) {
         if (is_expanded === "true") {
             new_state = "closed"
         }
-        sb_state.set(new_state);
+        sidebar.setState(new_state);
     } else if (btn?.classList.contains("btn-close")) {
-        sb_state.set("closed");
+        sidebar.setState("closed");
     }
 });
 
