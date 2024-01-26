@@ -17,10 +17,8 @@
     "clean-build": "rm -rf _site/ && rm -rf public/{css,js}"
   },
   "dependencies": {
-    "@nanostores/persistent": "^0.9.1",
     "htmx.org": "^1.9.10",
     "idiomorph": "^0.3.0",
-    "nanostores": "^0.9.5",
     "open-props": "^1.6.17"
   },
   "devDependencies": {
