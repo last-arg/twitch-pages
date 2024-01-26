@@ -157,7 +157,7 @@ export function initHtmx() {
               .replace(":item_json", item_json)
               .replace(":item_id", user_id)
               .replace("#user_img", profile_img_url);
-            if (streams.isFollowed(user_id)) {
+            if (streams.store.hasId(user_id)) {
                html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
             }
             result += html;
@@ -207,7 +207,7 @@ export function initHtmx() {
           .replace(":item_json", item_json)
           .replaceAll(":item_id", item.id);
 
-        if (streams.isFollowed(item.id)) {
+        if (streams.store.hasId(item.id)) {
            result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
         }
 

@@ -8,12 +8,14 @@ import { twitch } from "./twitch"
 */
 
 export class Streams extends EventTarget {
-    /** @type {StreamLocal[]} */
-    items = []
-    constructor() {
+    /**
+      @param {StreamsStore} streams_store
+    */
+    constructor(streams_store) {
         super();
         const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
         const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
+        this.store = streams_store;
 
         this.$ = {
             streams_list: streams_list,
@@ -28,90 +30,32 @@ export class Streams extends EventTarget {
                 }
             }
         };
-        this.localStorageKey = "followed_streams";
-        this._readStorage();
-
-        // handle edits in another window
-        window.addEventListener("storage", () => {
-            this._readStorage();
-            this._save();
-        }, false);
-    }
-
-    _readStorage() {
-        const raw = window.localStorage.getItem(this.localStorageKey)
-        if (raw) {
-            this.items = JSON.parse(raw);
-        }
-    }
-
-    _save() {
-        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.dispatchEvent(new CustomEvent('streams:save'));
     }
 
     /**
         @param {StreamLocal} data
     */
     follow(data) {
-        if (!this.isFollowed(data.user_id)) {
-            this.items.push(data);
-            this.sort();
+        if (this.store.add(data)) {
             live.addUser(data.user_id);
             user_images.add([data.user_id])
         }
     };
 
-
     /**
         @param {string} user_id
     */
     unfollow(user_id) {
-        const curr = this.items;
-        let i = 0
-        for (; i < curr.length; i++) {
-            if (curr[i].user_id === user_id) {
-                break;
-            }
+        const id = this.store.remove(user_id);
+        if (id) {
+            this.$.removeStream(id);
+            live.updateLiveCount();
         }
-        if (curr.length === i) { return; }
-
-        const remove_id = curr.splice(i, 1)[0].user_id;
-        this.$.removeStream(remove_id);
-        live.updateLiveCount();
-        this._save();
     };    
-
-    /** @param {string} input_id */
-    isFollowed(input_id) {
-        return this.items.some(({user_id}) => input_id === user_id);
-    }
-
-    clear() {
-        this.items = [];
-        this._save();
-    }
-
-    sort() {
-        this.items.sort((a, b) => {
-            const cmp = strCompareField("user_name")(a, b);
-            const a_cmp = live.store.hasUser(a["user_id"]) ? -1e6 : 0;
-            const b_cmp = live.store.hasUser(b["user_id"]) ? 1e6 : 0;
-            return cmp + a_cmp + b_cmp;
-        });
-        this._save();
-    }
-
-    /**
-      @returns {string[]}
-    */
-    getIds() {
-        return this.items.map(({user_id}) => user_id);
-    }
 
     renderCards() {
         const frag = document.createDocumentFragment();
-        for (const stream of this.items) {
+        for (const stream of this.store.items) {
             const new_item = /** @type {Element} */ (this.$.stream_tmpl.cloneNode(true));
             new_item.id = "stream-id-" + stream.user_id;
             const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
@@ -125,7 +69,7 @@ export class Streams extends EventTarget {
             img.src = img_obj ? img_obj.url : "#" + stream.user_id;
             const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
             btn.setAttribute("data-item-id", stream.user_id)
-            btn.setAttribute("data-is-followed", streams.isFollowed(stream.user_id).toString())
+            btn.setAttribute("data-is-followed", this.store.hasId(stream.user_id).toString())
             const encoded_game = encodeURIComponent(JSON.stringify(stream));
             btn.setAttribute("data-item", encoded_game);
             const span = /** @type {Element} */ (btn.querySelector("span"));
@@ -153,6 +97,91 @@ export class Streams extends EventTarget {
     }
 }
 
+export class StreamsStore {
+    /** @type {StreamLocal[]} */
+    items = []
+    constructor() {
+        this.localStorageKey = "followed_streams";
+        this._readStorage();
+
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
+    }
+
+    _readStorage() {
+        const raw = window.localStorage.getItem(this.localStorageKey)
+        if (raw) {
+            this.items = JSON.parse(raw);
+        }
+    }
+
+    _save() {
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+    }
+
+    /**
+        @param {StreamLocal} data
+        @return {boolean}
+    */
+    add(data) {
+        if (!this.hasId(data.user_id)) {
+            this.items.push(data);
+            this.sort();
+            return true;
+        }
+        return false
+    };
+
+    /**
+      @param {string} look_id
+      @returns {boolean}
+    */
+    hasId(look_id) {
+        return this.items.some(({user_id}) => look_id === user_id);
+    }
+
+    /**
+      @param {string} user_id
+      @returns {string | undefined}
+    */
+    remove(user_id) {
+        const curr = this.items;
+        let i = 0
+        for (; i < curr.length; i++) {
+            if (curr[i].user_id === user_id) {
+                break;
+            }
+        }
+        if (curr.length === i) { return; }
+        return curr.splice(i, 1)[0].user_id;
+    }
+
+    clear() {
+        this.items = [];
+        this._save();
+    }
+
+    sort() {
+        this.items.sort((a, b) => {
+            const cmp = strCompareField("user_name")(a, b);
+            const a_cmp = live.store.hasUser(a["user_id"]) ? -1e6 : 0;
+            const b_cmp = live.store.hasUser(b["user_id"]) ? 1e6 : 0;
+            return cmp + a_cmp + b_cmp;
+        });
+        this._save();
+    }
+
+    /**
+      @returns {string[]}
+    */
+    getIds() {
+        return this.items.map(({user_id}) => user_id);
+    }
+}
+
 /** 
 @param {StreamLocal} a
 @param {StreamLocal} b
@@ -164,10 +193,10 @@ export class LiveStreams extends EventTarget {
     count = 0;
 
     /**
-        @param {Streams} streams 
         @param {LiveStreamsStore} live_store 
+        @param {StreamsStore} streams_store 
     */
-    constructor(streams, live_store) {
+    constructor(live_store, streams_store) {
         super();
         const _this = this;
         this.$ = {
@@ -248,7 +277,7 @@ export class LiveStreams extends EventTarget {
         }
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
-        this.streams = streams;
+        this.streams_store = streams_store;
         this.store = live_store;
         this.updateLiveCount();
         this.updateLiveUsers();
@@ -279,7 +308,7 @@ export class LiveStreams extends EventTarget {
         let result = 0;
         const users = this.store.users;
         for (const key in users) {
-            if (this.streams.isFollowed(key)) {
+            if (this.streams_store.hasId(key)) {
                 result += 1;
             }
         }
@@ -325,7 +354,7 @@ export class LiveStreams extends EventTarget {
         }
 
         if (updates.length > 0) {
-            this.streams.sort();
+            this.streams_store.sort();
             this.$.updateLiveStreams(updates)
         }
 
@@ -348,7 +377,7 @@ export class LiveStreams extends EventTarget {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
             return;
         }
-        const curr_ids = this.streams.getIds();
+        const curr_ids = this.streams_store.getIds();
         for (const id of Object.keys(this.store.users)) {
             if (!curr_ids.includes(id)) {
                 curr_ids.push(id);
@@ -510,7 +539,7 @@ export class UserImages extends EventTarget {
         const now = Date.now();
         if (check_time < now) {
             for (const id in data.images) {
-                if (data.images[id].last_access > check_time && !streams.isFollowed(id)) {
+                if (data.images[id].last_access > check_time && !streams.store.hasId(id)) {
                     delete data.images[id];
                 }
             }

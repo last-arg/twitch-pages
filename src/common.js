@@ -1,5 +1,5 @@
 import { Games, SearchGames } from "./games";
-import { LiveStreams, LiveStreamsStore, Streams, UserImages } from "./streams";
+import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
 
 export const state = {
@@ -13,7 +13,8 @@ export const state = {
 
 export const sidebar = new Sidebar();
 export const games = new Games();
-export const streams = new Streams();
+const streams_store = new StreamsStore();
+export const streams = new Streams(streams_store);
 export const game_search = new SearchGames(games);
 
 games.addEventListener("games:save", function() {
@@ -25,8 +26,8 @@ streams.addEventListener("streams:save", function() {
 });
 
 const live_store = new LiveStreamsStore();
-export const live = new LiveStreams(streams, live_store);
-export const user_images = new UserImages(streams.items.map(({user_id}) => user_id));
+export const live = new LiveStreams(live_store, streams_store);
+export const user_images = new UserImages(streams_store.getIds());
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal

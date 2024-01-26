@@ -210,12 +210,12 @@ class Settings extends EventTarget {
             if (t.classList.contains("js-clear-games")) {
                 games.clear();
             } else if (t.classList.contains("js-clear-streams")) {
-                streams.clear();
+                streams.store.clear();
             } else if (t.classList.contains("js-clear-profiles")) {
                 user_images.clear();
             } else if (t.classList.contains("js-clear-all")) {
                 games.clear();
-                streams.clear();
+                streams.store.clear();
                 user_images.clear();
             }
         })
