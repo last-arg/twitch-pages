@@ -267,7 +267,11 @@ export class UserImages extends EventTarget {
     /** @type {ProfileLocalStorage} */
     data = {images: {}, last_update: 0};
 
-    constructor() {
+    /**
+      @param {string[]} ids
+    */
+    
+    constructor(ids) {
         super();
         this.$ = {
             /** @param {import("./twitch").UserTwitch[]} profiles */
@@ -282,6 +286,7 @@ export class UserImages extends EventTarget {
         }
         this.localStorageKey = "user_images";
         this._readStorage();
+        this.add(ids);
         this.clean();
 
         // handle edits in another window

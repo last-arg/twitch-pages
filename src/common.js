@@ -3,7 +3,6 @@ import { Games } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, sb_state } from "./sidebar";
 
-export const user_images = new UserImages();
 export const games = new Games();
 
 games.addEventListener("games:remove", function(e) {
@@ -120,7 +119,7 @@ export function renderUserLiveness(id, card) {
     card.classList.remove("hidden")
 }
 
-
+export const user_images = new UserImages(streams.items.map(({user_id}) => user_id));
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
