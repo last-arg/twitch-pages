@@ -50,7 +50,7 @@ export class Streams extends EventTarget {
     follow(data) {
         if (!this.isFollowed(data.user_id)) {
             this.items.push(data);
-            this.items.sort(sortStreams);
+            this.sort();
             live.addUser(data.user_id);
             user_images.add([data.user_id])
         }
@@ -88,7 +88,12 @@ export class Streams extends EventTarget {
     }
 
     sort() {
-        this.items.sort(sortStreams);
+        this.items.sort((a, b) => {
+            const cmp = strCompareField("user_name")(a, b);
+            const a_cmp = live.hasUser(a["user_id"]) ? -1e6 : 0;
+            const b_cmp = live.hasUser(b["user_id"]) ? 1e6 : 0;
+            return cmp + a_cmp + b_cmp;
+        });
     }
 
     /**
@@ -103,12 +108,6 @@ export class Streams extends EventTarget {
 @param {StreamLocal} a
 @param {StreamLocal} b
 */
-function sortStreams(a, b) {
-    const cmp = strCompareField("user_name")(a, b);
-    const a_cmp = streams.isFollowed(a["user_id"]) ? -1e6 : 0;
-    const b_cmp = streams.isFollowed(b["user_id"]) ? 1e6 : 0;
-    return cmp + a_cmp + b_cmp;
-}
 
 const live_check_ms = 300000; // 5 minutes
 export class LiveStreams extends EventTarget {
@@ -118,7 +117,8 @@ export class LiveStreams extends EventTarget {
     timeout = 0;
     count = 0;
 
-    constructor() {
+    /** @param {Streams} streams */
+    constructor(streams) {
         super();
         this.$ = {
             /** @param {number} count */
@@ -198,6 +198,7 @@ export class LiveStreams extends EventTarget {
         }
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
+        this.streams = streams;
         this._readStorage();
         this.updateLiveCount();
 
@@ -262,7 +263,7 @@ export class LiveStreams extends EventTarget {
         let result = 0;
         const users = this.users;
         for (const key in users) {
-            if (streams.isFollowed(key)) {
+            if (this.streams.isFollowed(key)) {
                 result += 1;
             }
         }
@@ -331,7 +332,7 @@ export class LiveStreams extends EventTarget {
             return;
         }
         if (streams) {
-            const curr_ids = streams.getIds();
+            const curr_ids = this.streams.getIds();
             for (const id of Object.keys(live.users)) {
                 if (!curr_ids.includes(id)) {
                     curr_ids.push(id);

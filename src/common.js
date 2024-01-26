@@ -15,7 +15,7 @@ streams.addEventListener("streams:save", function() {
     renderSidebarItems("streams");
 });
 
-export const live = new LiveStreams();
+export const live = new LiveStreams(streams);
 export const user_images = new UserImages(streams.items.map(({user_id}) => user_id));
 
 /**
