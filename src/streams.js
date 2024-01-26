@@ -54,7 +54,6 @@ export class Streams extends EventTarget {
             live.addUser(data.user_id);
             user_images.add([data.user_id])
         }
-        this._save();
     };
 
 
@@ -94,6 +93,7 @@ export class Streams extends EventTarget {
             const b_cmp = live.hasUser(b["user_id"]) ? 1e6 : 0;
             return cmp + a_cmp + b_cmp;
         });
+        this._save();
     }
 
     /**
@@ -309,6 +309,7 @@ export class LiveStreams extends EventTarget {
         }
 
         if (updates.length > 0) {
+            this.streams.sort();
             this.$.updateLiveStreams(updates)
         }
 
