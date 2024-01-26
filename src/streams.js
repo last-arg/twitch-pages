@@ -88,8 +88,8 @@ export class Streams extends EventTarget {
     sort() {
         this.items.sort((a, b) => {
             const cmp = strCompareField("user_name")(a, b);
-            const a_cmp = live.hasUser(a["user_id"]) ? -1e6 : 0;
-            const b_cmp = live.hasUser(b["user_id"]) ? 1e6 : 0;
+            const a_cmp = live.store.hasUser(a["user_id"]) ? -1e6 : 0;
+            const b_cmp = live.store.hasUser(b["user_id"]) ? 1e6 : 0;
             return cmp + a_cmp + b_cmp;
         });
         this._save();
@@ -110,15 +110,16 @@ export class Streams extends EventTarget {
 
 const live_check_ms = 300000; // 5 minutes
 export class LiveStreams extends EventTarget {
-    /** @type {Record<string, string | undefined>} */
-    users = {}
-    last_update = 0;
     timeout = 0;
     count = 0;
 
-    /** @param {Streams} streams */
-    constructor(streams) {
+    /**
+        @param {Streams} streams 
+        @param {LiveStreamsStore} live_store 
+    */
+    constructor(streams, live_store) {
         super();
+        const _this = this;
         this.$ = {
             /** @param {number} count */
             displayLiveCount(count) {
@@ -138,7 +139,7 @@ export class LiveStreams extends EventTarget {
                         const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
                         if (card) {
                             const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
-                            p.textContent = live.users[id] || "";
+                            p.textContent = _this.store.users[id] || "";
                             card.classList.remove("hidden")
                         }
                     }
@@ -152,7 +153,7 @@ export class LiveStreams extends EventTarget {
 
             /** @param {string[]} ids */
             updateLiveStreams(ids) {
-                const live_streams = live.users;
+                const live_streams = _this.store.users;
                 for (const id of ids) {
                     const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] p`);
                     cards.forEach(node => node.textContent = live_streams[id] || "")
@@ -187,7 +188,7 @@ export class LiveStreams extends EventTarget {
             */
             renderUserLiveness(id, card) {
                 const a = /** @type {HTMLAnchorElement} */ (card.querySelector("a"));
-                const game = /** @type {string} */ (live.users[id]);
+                const game = /** @type {string} */ (_this.store.users[id]);
                 a.textContent = game;
                 const href = categoryUrl(game);
                 a.href = href;
@@ -198,59 +199,24 @@ export class LiveStreams extends EventTarget {
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
         this.streams = streams;
-        this._readStorage();
+        this.store = live_store;
         this.updateLiveCount();
         this.updateLiveUsers();
-
-        // handle edits in another window
-        window.addEventListener("storage", () => {
-            this._readStorage();
-            this._save();
-        }, false);
     }
 
     updateDiff() {
-        return this.last_update - Date.now() + live_check_ms;
-    }
-
-    _readStorage() {
-        let raw = window.localStorage.getItem(this.localStorageKey)
-        if (raw) {
-            this.users = JSON.parse(raw);
-        }
-        raw = window.localStorage.getItem(this.localKeyLastUpdate)
-        if (raw) {
-            this.last_update = Number(raw);
-        }
-    }
-
-    _save() {
-        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
-        window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
-        this.dispatchEvent(new CustomEvent('live:save'));
-    }
-
-    /** 
-    @param {string} name
-    */
-    hasUser(name) {
-        for (const user_name in this.users) {
-            if (user_name == name) {
-                return true;
-            }
-        }
-        return false;
+        return this.store.last_update - Date.now() + live_check_ms;
     }
 
     /**
     @type {(user_id: string) => Promise<void>}
     */
     async addUser(user_id) {
-        if (!this.users[user_id]) {
+        if (!this.store.users[user_id]) {
             const stream = (await twitch.fetchStreams([user_id]))
             if (stream.length > 0) {
-                this.users[user_id] = stream[0].game_name;
-                this._save();
+                this.store.users[user_id] = stream[0].game_name;
+                this.store._save();
             }
         }
         this.updateLiveCount()
@@ -261,7 +227,7 @@ export class LiveStreams extends EventTarget {
     */
     updateLiveCount() {
         let result = 0;
-        const users = this.users;
+        const users = this.store.users;
         for (const key in users) {
             if (this.streams.isFollowed(key)) {
                 result += 1;
@@ -282,19 +248,19 @@ export class LiveStreams extends EventTarget {
         const updates = [];
         const adds = [];
         for (const stream of streams) {
-            if (this.users[stream.user_id])  {
+            if (this.store.users[stream.user_id])  {
                 updates.push(stream.user_id)
             } else {
                 adds.push(stream.user_id)
             }
-            this.users[stream.user_id] = stream.game_name;
+            this.store.users[stream.user_id] = stream.game_name;
         }
 
         const removes = []
         for (const id of curr_ids) {
             if (!streams.some(({user_id}) => user_id === id)) {
                 removes.push(id);
-                delete this.users[id];
+                delete this.store.users[id];
             }
         }
 
@@ -322,7 +288,7 @@ export class LiveStreams extends EventTarget {
             this.count = this.updateLiveCount();
         }
 
-        this._save();
+        this.store._save();
     }
 
     async updateLiveUsers() {
@@ -333,7 +299,7 @@ export class LiveStreams extends EventTarget {
             return;
         }
         const curr_ids = this.streams.getIds();
-        for (const id of Object.keys(this.users)) {
+        for (const id of Object.keys(this.store.users)) {
             if (!curr_ids.includes(id)) {
                 curr_ids.push(id);
             }
@@ -341,6 +307,55 @@ export class LiveStreams extends EventTarget {
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
         this.updateLiveStreams(curr_ids, new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
+    }
+}
+
+export class LiveStreamsStore extends EventTarget {
+    /** @type {Record<string, string | undefined>} */
+    users = {}
+    last_update = 0;
+    
+    constructor() {
+        super();
+        this.localStorageKey = "live_users";
+        this.localKeyLastUpdate = "live_last_update";
+        this.streams = streams;
+        this._readStorage();
+
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
+    }
+
+    _readStorage() {
+        let raw = window.localStorage.getItem(this.localStorageKey)
+        if (raw) {
+            this.users = JSON.parse(raw);
+        }
+        raw = window.localStorage.getItem(this.localKeyLastUpdate)
+        if (raw) {
+            this.last_update = Number(raw);
+        }
+    }
+
+    _save() {
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
+        window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
+        this.dispatchEvent(new CustomEvent('save'));
+    }
+
+    /** 
+    @param {string} name
+    */
+    hasUser(name) {
+        for (const user_name in this.users) {
+            if (user_name == name) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

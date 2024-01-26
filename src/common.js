@@ -1,5 +1,5 @@
 import { Games, SearchGames } from "./games";
-import { LiveStreams, Streams, UserImages } from "./streams";
+import { LiveStreams, LiveStreamsStore, Streams, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
 
 export const state = {
@@ -24,7 +24,8 @@ streams.addEventListener("streams:save", function() {
     renderSidebarItems("streams");
 });
 
-export const live = new LiveStreams(streams);
+const live_store = new LiveStreamsStore();
+export const live = new LiveStreams(streams, live_store);
 export const user_images = new UserImages(streams.items.map(({user_id}) => user_id));
 
 /**
@@ -82,7 +83,7 @@ export function renderStreams(base_elem, target, data) {
         span.textContent = "Unfollow";
         const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
         external_link.href = "https://www.twitch.tv" + href;
-        const lu = live.users;
+        const lu = live.store.users;
         const card = /** @type {Element} */ (new_item.querySelector(".js-card-live"));
         card.setAttribute("data-stream-id", stream.user_id);
         if (lu[stream.user_id]) {

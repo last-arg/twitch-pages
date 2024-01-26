@@ -14,7 +14,7 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
     if (elem.classList.contains("user-heading-box")) {
         const elem_card = /** @type {Element} */ (elem.querySelector(".js-card-live"));
         const stream_id = /** @type {string} */ (elem_card.getAttribute("data-stream-id"));
-        const game = live.users[stream_id];
+        const game = live.store.users[stream_id];
         if (game) {
             live.$.renderUserLiveness(stream_id, elem_card);
         } else {
