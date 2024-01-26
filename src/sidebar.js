@@ -1,15 +1,9 @@
-import { games, renderStreams, streams, game_search } from "./common";
+import { games, streams, game_search } from "./common";
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
-
-const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
-const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
-const stream_tmpl = /** @type {Element} */ (tmp_elem.content.firstElementChild);
-const streams_scrollbox = /** @type {HTMLElement} */ (streams_list.parentElement);
-
 
 export class Sidebar {
   /** @type {SidebarState} */
@@ -89,14 +83,15 @@ export function renderSidebarItems(state) {
         games.render();
         sidebarShadows(games.$.games_scrollbox);
     } else if (state === "streams") {
-        renderStreams(stream_tmpl, streams_list, streams.items);
-        sidebarShadows(streams_scrollbox);
+        streams.render();
+        sidebarShadows(streams.$.streams_scrollbox);
     }
 }
 
 /**
   @param {HTMLElement} scrollbox
 */
+// TODO: make into custom element?
 export function sidebarShadows(scrollbox) {
     const scroll_container = scrollbox.closest('.scroll-container');
     if (scroll_container === null) {

@@ -12,7 +12,14 @@ export class Streams extends EventTarget {
     items = []
     constructor() {
         super();
+        const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
+        const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
+
         this.$ = {
+            streams_list: streams_list,
+            stream_tmpl:  /** @type {Element} */ (tmp_elem.content.firstElementChild),
+            streams_scrollbox:  /** @type {HTMLElement} */ (streams_list.parentElement),
+
             /** @param {string} id */
             removeStream(id) {
                 const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
@@ -100,6 +107,49 @@ export class Streams extends EventTarget {
     */
     getIds() {
         return this.items.map(({user_id}) => user_id);
+    }
+
+    renderCards() {
+        const frag = document.createDocumentFragment();
+        for (const stream of this.items) {
+            const new_item = /** @type {Element} */ (this.$.stream_tmpl.cloneNode(true));
+            new_item.id = "stream-id-" + stream.user_id;
+            const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
+            p.textContent = decodeURIComponent(stream.user_name);
+            const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
+            const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
+            link.setAttribute("href", href)
+            link.setAttribute("hx-push-url", href)
+            const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
+            const img_obj  = user_images.data.images[stream.user_id];
+            img.src = img_obj ? img_obj.url : "#" + stream.user_id;
+            const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
+            btn.setAttribute("data-item-id", stream.user_id)
+            btn.setAttribute("data-is-followed", streams.isFollowed(stream.user_id).toString())
+            const encoded_game = encodeURIComponent(JSON.stringify(stream));
+            btn.setAttribute("data-item", encoded_game);
+            const span = /** @type {Element} */ (btn.querySelector("span"));
+            span.textContent = "Unfollow";
+            const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
+            external_link.href = "https://www.twitch.tv" + href;
+            const lu = live.store.users;
+            const card = /** @type {Element} */ (new_item.querySelector(".js-card-live"));
+            card.setAttribute("data-stream-id", stream.user_id);
+            if (lu[stream.user_id]) {
+                card.classList.remove("hidden");
+                const card_p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
+                card_p.textContent = lu[stream.user_id] || "";
+            } else {
+                card.classList.add("hidden");
+            }
+            frag.append(new_item);
+        }
+        return frag;
+    }
+
+    render() {
+        const frag = this.renderCards();
+        Idiomorph.morph(this.$.streams_list, frag, {morphStyle:'innerHTML'})
     }
 }
 
