@@ -1,4 +1,4 @@
-import { games, live, renderUserLiveness, sidebar, streams, user_images } from './common';
+import { games, live, sidebar, streams, user_images } from './common';
 import { state } from './global';
 import { twitch } from './twitch';
 import { initSidebarScroll } from './sidebar';
@@ -18,7 +18,7 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
         const stream_id = /** @type {string} */ (elem_card.getAttribute("data-stream-id"));
         const game = live.users[stream_id];
         if (game) {
-            renderUserLiveness(stream_id, elem_card);
+            live.$.renderUserLiveness(stream_id, elem_card);
         } else {
             live.addUser(stream_id);
         }

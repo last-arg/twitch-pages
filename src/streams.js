@@ -1,4 +1,5 @@
-import { strCompareField, streams, live, user_images } from "./common";
+import { strCompareField, streams, live, user_images, categoryUrl } from "./common";
+import { state } from "./global";
 import { twitch } from "./twitch"
 
 /**
@@ -6,6 +7,9 @@ import { twitch } from "./twitch"
 
 @typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
 */
+
+// TODO: adding new streams does not update live count
+// TODO: cat page does not render followed symbol
 
 export class Streams extends EventTarget {
     /** @type {StreamLocal[]} */
@@ -109,6 +113,83 @@ export class LiveStreams extends EventTarget {
 
     constructor() {
         super();
+        this.$ = {
+            /** @param {number} count */
+            displayLiveCount(count) {
+                const stream_count = /** @type {Element} */ (document.querySelector(".streams-count"));
+                if (count === 0) {
+                    stream_count.classList.add("hidden")
+                } else {
+                    stream_count.textContent = count.toString();
+                    stream_count.classList.remove("hidden")
+                }
+            },
+
+            /** @param {string[]} ids */
+            displayLiveStreams(ids) {
+                console.log("add", ids)
+                if (state.path === "streams") {
+                    for (const id of ids) {
+                        const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
+                        if (card) {
+                            const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
+                            p.textContent = live.users[id] || "";
+                            card.classList.remove("hidden")
+                        }
+                    }
+                }
+                if (document.location.pathname.endsWith("/videos")) {
+                    for (const id of ids) {
+                        this.renderLiveStreamPageUser(id);
+                    }
+                }
+            },
+
+            /** @param {string[]} ids */
+            updateLiveStreams(ids) {
+                const live_streams = live.users;
+                for (const id of ids) {
+                    const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] p`);
+                    cards.forEach(node => node.textContent = live_streams[id] || "")
+                    if (document.location.pathname.endsWith("/videos")) {
+                        this.renderLiveStreamPageUser(id);
+                    }
+                }
+            },
+
+            /** @param {string[]} ids */
+            removeLiveStreams(ids) {
+                const sel_start = `.js-card-live[data-stream-id="`;
+                const middle = ids.join(`"],${sel_start}`);
+                const selector = `${sel_start}${middle}"]`;
+
+                document.querySelectorAll(selector).forEach(node => node.classList.add("hidden"));
+            },
+
+            /** 
+            @param {string} id
+            */
+            renderLiveStreamPageUser(id) {
+                const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
+                if (card) {
+                    this.renderUserLiveness(id, card)
+                }
+            },
+
+            /** 
+            @param {string} id
+            @param {Element} card
+            */
+            renderUserLiveness(id, card) {
+                const a = /** @type {HTMLAnchorElement} */ (card.querySelector("a"));
+                const game = /** @type {string} */ (live.users[id]);
+                a.textContent = game;
+                const href = categoryUrl(game);
+                a.href = href;
+                a.setAttribute("hx-push-url", href);
+                card.classList.remove("hidden")
+            }
+        }
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
         this._readStorage();
@@ -179,7 +260,7 @@ export class LiveStreams extends EventTarget {
         }
         if (this.count !== result) {
             this.count = result;
-            this.dispatchEvent(new CustomEvent('live:count', {detail: {count: this.count}}));
+            this.$.displayLiveCount(this.count);
         }
         return result;
     }
@@ -215,15 +296,15 @@ export class LiveStreams extends EventTarget {
         }
 
         if (removes.length > 0) {
-            this.dispatchEvent(new CustomEvent('live:remove', {detail: {ids: removes}}));
+            this.$.removeLiveStreams(removes)
         }
 
         if (updates.length > 0) {
-            this.dispatchEvent(new CustomEvent('live:update', {detail: {ids: updates}}));
+            this.$.updateLiveStreams(updates)
         }
 
         if (adds.length > 0) {
-            this.dispatchEvent(new CustomEvent('live:add', {detail: {ids: adds}}));
+            this.$.displayLiveStreams(adds)
         }
 
         const diff = removes.length + adds.length;

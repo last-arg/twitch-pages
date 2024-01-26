@@ -2,6 +2,7 @@ import { config } from "config";
 import { Games } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
+import { state } from "./global";
 
 export const sidebar = new Sidebar();
 export const games = new Games();
@@ -41,85 +42,6 @@ streams.addEventListener("games:save", function() {
 });
 
 export const live = new LiveStreams();
-
-live.addEventListener("live:remove", function(e) {
-    const ids = /** @type {any} */ (e).detail.ids;
-    const sel_start = `.js-card-live[data-stream-id="`;
-    const middle = ids.join(`"],${sel_start}`);
-    const selector = `${sel_start}${middle}"]`;
-
-    document.querySelectorAll(selector).forEach(node => node.classList.add("hidden"));
-}); 
-
-live.addEventListener("live:update", function(e) {
-    const ids = /** @type {any} */ (e).detail.ids;
-    const live_streams = live.users;
-    for (const id of ids) {
-        const cards = document.querySelectorAll(`.js-card-live[data-stream-id="${id}"] p`);
-        cards.forEach(node => node.textContent = live_streams[id] || "")
-        if (document.location.pathname.endsWith("/videos")) {
-            renderLiveStreamPageUser(id);
-        }
-    }
-}); 
-
-live.addEventListener("live:add", function(e) {
-    const ids = /** @type {any} */ (e).detail.ids;
-    console.log("add", ids)
-    if (sb_state.get() === "streams") {
-        for (const id of ids) {
-            const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
-            if (card) {
-                const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
-                p.textContent = live.users[id] || "";
-                card.classList.remove("hidden")
-            }
-        }
-    }
-    if (document.location.pathname.endsWith("/videos")) {
-        for (const id of ids) {
-            renderLiveStreamPageUser(id);
-        }
-    }
-})
-
-live.addEventListener("live:count", function(e) {
-    const count = /** @type {any} */ (e).detail.count;
-    const stream_count = /** @type {Element} */ (document.querySelector(".streams-count"));
-    if (count === 0) {
-        stream_count.classList.add("hidden")
-    } else {
-        stream_count.textContent = count.toString();
-        stream_count.classList.remove("hidden")
-    }
-});
-live.dispatchEvent(new CustomEvent('live:count', {detail: {count: live.count}}));
-
-
-/** 
-@param {string} id
-*/
-function renderLiveStreamPageUser(id) {
-    const card = document.querySelector(`#user-header .js-card-live[data-stream-id="${id}"]`);
-    if (card) {
-        renderUserLiveness(id, card)
-    }
-}
-
-/** 
-@param {string} id
-@param {Element} card
-*/
-export function renderUserLiveness(id, card) {
-    const a = /** @type {HTMLAnchorElement} */ (card.querySelector("a"));
-    const game = /** @type {string} */ (live.users[id]);
-    a.textContent = game;
-    const href = categoryUrl(game);
-    a.href = href;
-    a.setAttribute("hx-push-url", href);
-    card.classList.remove("hidden")
-}
-
 export const user_images = new UserImages(streams.items.map(({user_id}) => user_id));
 
 /**
