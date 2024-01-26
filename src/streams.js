@@ -1,5 +1,4 @@
-import { strCompareField, streams, live, user_images, categoryUrl } from "./common";
-import { state } from "./global";
+import { strCompareField, streams, live, user_images, categoryUrl, state } from "./common";
 import { twitch } from "./twitch"
 
 /**

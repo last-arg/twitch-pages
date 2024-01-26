@@ -3,6 +3,15 @@ import { Games } from "./games";
 import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, Sidebar } from "./sidebar";
 
+export const state = {
+    /** @type {string | null} */
+    path: document.location.pathname,   
+    /** @param {string | null} path */
+    setPath(path) {
+        this.path = path;
+    }
+}
+
 export const sidebar = new Sidebar();
 export const games = new Games();
 export const streams = new Streams();
