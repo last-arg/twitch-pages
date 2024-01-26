@@ -398,7 +398,6 @@ export class LiveStreamsStore extends EventTarget {
         super();
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
-        this.streams = streams;
         this._readStorage();
 
         // handle edits in another window
