@@ -62,7 +62,6 @@ export class Sidebar {
 
   /** @param {SidebarState} new_state */
   setState(new_state) {
-    console.log(this.state, new_state)
     if (this.state === new_state) {
       return;
     }

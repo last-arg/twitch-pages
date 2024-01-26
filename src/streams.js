@@ -13,6 +13,15 @@ export class Streams extends EventTarget {
     items = []
     constructor() {
         super();
+        this.$ = {
+            /** @param {string} id */
+            removeStream(id) {
+                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].setAttribute("data-is-followed", "false");
+                }
+            }
+        };
         this.localStorageKey = "followed_streams";
         this._readStorage();
 
@@ -32,7 +41,7 @@ export class Streams extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.dispatchEvent(new CustomEvent('games:save'));
+        this.dispatchEvent(new CustomEvent('streams:save'));
     }
 
     /**
@@ -63,7 +72,7 @@ export class Streams extends EventTarget {
         if (curr.length === i) { return; }
 
         const remove_id = curr.splice(i, 1)[0].user_id;
-        this.dispatchEvent(new CustomEvent('games:remove', {detail: {id: remove_id}}));
+        this.$.removeStream(remove_id);
         live.updateLiveCount();
         this._save();
     };    
@@ -125,7 +134,6 @@ export class LiveStreams extends EventTarget {
 
             /** @param {string[]} ids */
             displayLiveStreams(ids) {
-                console.log("add", ids)
                 if (state.path === "streams") {
                     for (const id of ids) {
                         const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);

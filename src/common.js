@@ -5,38 +5,13 @@ import { renderSidebarItems, Sidebar } from "./sidebar";
 
 export const sidebar = new Sidebar();
 export const games = new Games();
-
-games.addEventListener("games:remove", function(e) {
-    const id = /** @type {any} */ (e).detail.id;
-    const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].setAttribute("data-is-followed", "false");
-    }
-}); 
-
-games.addEventListener("games:add", function(e) {
-    const id = /** @type {any} */ (e).detail.id;
-    const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].setAttribute("data-is-followed", "true");
-    }
-}); 
+export const streams = new Streams();
 
 games.addEventListener("games:save", function() {
     renderSidebarItems("games");
 });
 
-export const streams = new Streams();
-
-streams.addEventListener("games:remove", function(e) {
-    const id = /** @type {any} */ (e).detail.id;
-    const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-    for (let i = 0; i < btns.length; i++) {
-        btns[i].setAttribute("data-is-followed", "false");
-    }
-}); 
-
-streams.addEventListener("games:save", function() {
+streams.addEventListener("streams:save", function() {
     renderSidebarItems("streams");
 });
 

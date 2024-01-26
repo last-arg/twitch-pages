@@ -10,6 +10,23 @@ export class Games extends EventTarget {
 
     constructor() {
         super();
+        this.$ = {
+            /** @param {string} id */
+            removeGame(id) {
+                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].setAttribute("data-is-followed", "false");
+                }
+            },
+
+            /** @param {string} id */
+            addGame(id) {
+                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].setAttribute("data-is-followed", "true");
+                }
+            },
+        }
         this.localStorageKey = "followed_games"
         this._readStorage();
 
@@ -57,7 +74,7 @@ export class Games extends EventTarget {
         if (i >= curr.length) { return; }
 
         const remove_game = curr.splice(i, 1)[0].id
-        this.dispatchEvent(new CustomEvent('games:remove', {detail: {id: remove_game}}));
+        this.$.removeGame(remove_game)
         this._save();
     }
 
@@ -70,7 +87,7 @@ export class Games extends EventTarget {
         this.items.push(game);
         this.items.sort(strCompareField("name"))
 
-        this.dispatchEvent(new CustomEvent('games:remove', {detail: {id: game.id}}));
+        this.$.removeGame(game.id)
         this._save();
     }
 }
