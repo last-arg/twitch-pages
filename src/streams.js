@@ -8,9 +8,6 @@ import { twitch } from "./twitch"
 @typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
 */
 
-// TODO: adding new streams does not update live count
-// TODO: cat page does not render followed symbol
-
 export class Streams extends EventTarget {
     /** @type {StreamLocal[]} */
     items = []
@@ -67,6 +64,7 @@ export class Streams extends EventTarget {
 
         const remove_id = curr.splice(i, 1)[0].user_id;
         this.dispatchEvent(new CustomEvent('games:remove', {detail: {id: remove_id}}));
+        live.updateLiveCount();
         this._save();
     };    
 
@@ -242,9 +240,11 @@ export class LiveStreams extends EventTarget {
         if (!this.users[user_id]) {
             const stream = (await twitch.fetchStreams([user_id]))
             if (stream.length > 0) {
+                this.users[user_id] = stream[0].game_name;
                 this._save();
             }
         }
+        this.updateLiveCount()
     };
 
     /** 
