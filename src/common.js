@@ -1,8 +1,9 @@
 import { config } from "config";
 import { Games } from "./games";
-import { LiveStreams, Streams, profile_images } from "./streams";
+import { LiveStreams, Streams, UserImages } from "./streams";
 import { renderSidebarItems, sb_state } from "./sidebar";
 
+export const user_images = new UserImages();
 export const games = new Games();
 
 games.addEventListener("games:remove", function(e) {
@@ -120,6 +121,7 @@ export function renderUserLiveness(id, card) {
 }
 
 
+
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
 @typedef {"archive" | "upload" | "highlight"} VideoType
@@ -196,7 +198,7 @@ export function renderStreams(base_elem, target, data) {
         link.setAttribute("href", href)
         link.setAttribute("hx-push-url", href)
         const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
-        const img_obj  = profile_images.get()["images"][stream.user_id];
+        const img_obj  = user_images.data.images[stream.user_id];
         img.src = img_obj ? img_obj.url : "#" + stream.user_id;
         const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
         btn.setAttribute("data-item-id", stream.user_id)

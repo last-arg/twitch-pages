@@ -1,9 +1,8 @@
+import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images } from './common'
 import { current_pathname } from './global';
 import { settings } from './main';
-import { games, API_URL, categoryUrl, twitchCatImageSrc, streams } from './common'
 import { mainContent, config } from 'config';
 import { Twitch } from './twitch';
-import { add_images, profile_images } from './streams';
 
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
@@ -131,7 +130,7 @@ export function initHtmx() {
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);
         let result = "";
-        const imgs = profile_images.get()["images"]
+        const imgs = user_images.data.images;
         let user_ids = [];
         for (const item of json.data) {
             const user_id = item.user_id;
@@ -166,7 +165,7 @@ export function initHtmx() {
         }
 
         if (user_ids.length > 0) {
-          add_images.set(user_ids);
+          user_images.add(user_ids);
         }
         
         const cursor = json.pagination.cursor;

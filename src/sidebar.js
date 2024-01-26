@@ -54,7 +54,7 @@ sidebar_nav.addEventListener("click", function(e) {
   if (link_box) {
     const get = link_box.getAttribute("hx-get");
     if (!get) { return; }
-    console.log(htmx.ajax("get", get, {source: link_box}));
+    htmx.ajax("get", get, {source: link_box});
   }
 });
 

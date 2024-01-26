@@ -1,6 +1,5 @@
-import { games, live, renderUserLiveness, streams } from './common';
+import { games, live, renderUserLiveness, streams, user_images } from './common';
 import { current_pathname } from './global';
-import { clearProfiles, initProfileImages } from './streams';
 import { twitch } from './twitch';
 import { initSidebarScroll, sb_state } from './sidebar';
 import { initHtmx } from "./htmx_init";
@@ -114,7 +113,6 @@ async function startup() {
     document.body.addEventListener("mousedown", handlePathChange)
     initSidebarScroll();
     live.updateLiveUsers();
-    initProfileImages();
 };
 window.addEventListener("DOMContentLoaded", startup);
 
@@ -218,11 +216,11 @@ class Settings extends EventTarget {
             } else if (t.classList.contains("js-clear-streams")) {
                 streams.clear();
             } else if (t.classList.contains("js-clear-profiles")) {
-                clearProfiles();
+                user_images.clear();
             } else if (t.classList.contains("js-clear-all")) {
                 games.clear();
                 streams.clear();
-                clearProfiles();
+                user_images.clear();
             }
         })
     }

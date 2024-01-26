@@ -1,7 +1,5 @@
-import { strCompareField, streams, live } from "./common";
+import { strCompareField, streams, live, user_images } from "./common";
 import { twitch } from "./twitch"
-import { map } from 'nanostores'
-import { persistentMap } from '@nanostores/persistent' 
 
 /**
 @typedef {import("./common").StreamTwitch} StreamTwitch
@@ -43,12 +41,8 @@ export class Streams extends EventTarget {
         if (!this.isFollowed(data.user_id)) {
             this.items.push(data);
             this.items.sort(sortStreams);
-            if (!live.users[data.user_id]) {
-                live.addUser(data.user_id);
-            }
-            if (!profile_images.get()["images"][data.user_id]) {
-                add_images.set([data.user_id]);
-            }
+            live.addUser(data.user_id);
+            user_images.add([data.user_id])
         }
         this._save();
     };
@@ -92,6 +86,17 @@ export class Streams extends EventTarget {
     getIds() {
         return this.items.map(({user_id}) => user_id);
     }
+}
+
+/** 
+@param {StreamLocal} a
+@param {StreamLocal} b
+*/
+function sortStreams(a, b) {
+    const cmp = strCompareField("user_name")(a, b);
+    const a_cmp = streams.isFollowed(a["user_id"]) ? -1e6 : 0;
+    const b_cmp = streams.isFollowed(b["user_id"]) ? 1e6 : 0;
+    return cmp + a_cmp + b_cmp;
 }
 
 // TODO: move these if possible
@@ -256,16 +261,6 @@ export class LiveStreams extends EventTarget {
     }
 }
 
-/** 
-@param {StreamLocal} a
-@param {StreamLocal} b
-*/
-function sortStreams(a, b) {
-    const cmp = strCompareField("user_name")(a, b);
-    const a_cmp = streams.isFollowed(a["user_id"]) ? -1e6 : 0;
-    const b_cmp = streams.isFollowed(b["user_id"]) ? 1e6 : 0;
-    return cmp + a_cmp + b_cmp;
-}
 
 /** 
 @typedef {{url: string, last_access: number}} ProfileImage
@@ -274,75 +269,101 @@ function sortStreams(a, b) {
 
 @typedef {{images: ProfileImages, last_update: number}} ProfileLocalStorage
 */
+export class UserImages extends EventTarget {
+    /** @type {ProfileLocalStorage} */
+    data = {images: {}, last_update: 0};
 
-/** @type {import("nanostores/map").MapStore<ProfileLocalStorage>} */
-export const profile_images = persistentMap("profile_images:", {
-    images : {},
-    last_update: 0,
-}, {
-    encode: JSON.stringify,
-    decode: JSON.parse,
-});
+    constructor() {
+        super();
+        this.$ = {
+            /** @param {import("./twitch").UserTwitch[]} profiles */
+            displayImages(profiles) {
+                for (const p of profiles) {
+                    const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[src="#${p.id}"]`));
+                    if (img) {
+                        img.src = p.profile_image_url;
+                    }
+                }
+            }
+        }
+        this.localStorageKey = "user_images";
+        this._readStorage();
+        this.clean();
 
-export const clearProfiles = () => {};
-// export const clearProfiles = action(followed_streams, "clearProfiles", (store) => {
-//     store.set([]);
-// })
-
-/** @type {import("nanostores/map").MapStore<string[]>} */
-export const add_images = map([]);
-add_images.listen(async function(user_ids) {
-    if (user_ids.length === 0) {
-        return;
+        // handle edits in another window
+        window.addEventListener("storage", () => {
+            this._readStorage();
+            this._save();
+        }, false);
     }
 
-    const imgs = profile_images.get()["images"];
-    // Filter and updated current profile/user ids
-    const curr_ids = Object.keys(imgs);
-    const filtered_ids = [];
-    const now = Date.now();
-    for (const id of user_ids) {
-        if (curr_ids.includes(id)) {
-            imgs[id].last_access = now;
-        } else {
-            filtered_ids.push(id);
+    _readStorage() {
+        const raw = window.localStorage.getItem(this.localStorageKey)
+        if (raw) {
+            this.data = JSON.parse(raw);
         }
     }
-    add_images.get().length = 0;
-    if (filtered_ids.length > 0) {
-        const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
-        if (new_profiles.length === 0) {
+
+    /**
+      @param {string[]} ids
+    */
+    
+    async add(ids) {
+        if (ids.length === 0) {
             return;
         }
-        for (const p of new_profiles) {
-            imgs[p.id] = { url: p.profile_image_url, last_access: now };
 
-            // Update UI
-            const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[src="#${p.id}"]`));
-            if (img) {
-                img.src = p.profile_image_url;
-            }
-        }
-    }
-
-    profile_images.setKey("images", imgs);
-}) 
-
-const a_day = 24 * 60 * 60 * 1000;
-export function initProfileImages() {
-    const imgs = profile_images.get();
-    const check_time = imgs["last_update"] + a_day;
-    const now = Date.now();
-    if (check_time < now) {
-
-        for (const id in imgs.images) {
-            if (imgs.images[id].last_access > check_time && !streams.isFollowed(id)) {
-                delete imgs.images[id];
+        const imgs = this.data.images;
+        // Filter and updated current profile/user ids
+        const curr_ids = Object.keys(imgs);
+        const filtered_ids = [];
+        const now = Date.now();
+        for (const id of ids) {
+            if (curr_ids.includes(id)) {
+                imgs[id].last_access = now;
+            } else {
+                filtered_ids.push(id);
             }
         }
 
-        imgs.last_update = now;
-        profile_images.set(imgs);
+        if (filtered_ids.length > 0) {
+            const new_profiles = await twitch.fetchNewProfiles(filtered_ids);
+            if (new_profiles.length === 0) {
+                return;
+            }
+            for (const p of new_profiles) {
+                imgs[p.id] = { url: p.profile_image_url, last_access: now };
+            }
+            this.$.displayImages(new_profiles)
+        }
+
+        this.data.images = imgs;
+        this._save();
     }
-    add_images.set(streams.getIds());
+
+    _save() {
+        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
+    }
+
+    clear() {
+        this.data.images = {};
+        this._save();
+    }
+
+    clean() {
+        const a_day = 24 * 60 * 60 * 1000;
+        const data = this.data;
+        const check_time = data["last_update"] + a_day;
+        const now = Date.now();
+        if (check_time < now) {
+            for (const id in data.images) {
+                if (data.images[id].last_access > check_time && !streams.isFollowed(id)) {
+                    delete data.images[id];
+                }
+            }
+
+            data.last_update = now;
+            this.data = data;
+        }
+    }
 }
