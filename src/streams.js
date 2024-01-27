@@ -1,4 +1,5 @@
 import { strCompareField, categoryUrl } from "./common";
+import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
 
 /**
@@ -23,7 +24,7 @@ export class Streams {
         this.$ = {
             streams_list: streams_list,
             stream_tmpl:  /** @type {Element} */ (tmp_elem.content.firstElementChild),
-            scroll_container:  /** @type {HTMLElement} */ (streams_list.closest("scroll-container")),
+            scroll_container:  /** @type {ScrollContainer} */ (streams_list.closest("scroll-container")),
 
             /** @param {string} id */
             removeStream(id) {
@@ -97,6 +98,7 @@ export class Streams {
     render() {
         const frag = this.renderCards();
         Idiomorph.morph(this.$.streams_list, frag, {morphStyle:'innerHTML'})
+        this.$.scroll_container.render();
     }
 }
 

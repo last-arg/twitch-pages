@@ -55,21 +55,15 @@ export class Sidebar {
     const state = this.state;
     if (state === "search") {
         game_search.render()
-        const scroll_container = /** @type {ScrollContainer} */ (game_search.$.scroll_container);
-        scroll_container.render();
     } else if (state === "games") {
         games.render();
-        const scroll_container = /** @type {ScrollContainer} */ (games.$.scroll_container);
-        scroll_container.render();
     } else if (state === "streams") {
         streams.render();
-        const scroll_container = /** @type {ScrollContainer} */ (streams.$.scroll_container);
-        scroll_container.render();
     }
   }
 }
 
-class ScrollContainer extends HTMLElement {
+export class ScrollContainer extends HTMLElement {
   constructor() {
     super();
     const _this = this;

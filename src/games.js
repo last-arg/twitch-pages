@@ -4,6 +4,7 @@ import { config } from 'config';
 
 /**
  * @typedef {import("./common").Game} Game
+ * @typedef {import("./sidebar").ScrollContainer} ScrollContainer
  */
 
 export class Games {
@@ -16,7 +17,7 @@ export class Games {
             games_list: games_list,
             // @ts-ignore
             game_tmpl: /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild),
-            scroll_container: /** @type {HTMLElement} */ (games_list.closest("scroll-container")),
+            scroll_container: /** @type {ScrollContainer} */ (games_list.closest("scroll-container")),
 
             /** @param {string} id */
             removeGame(id) {
@@ -100,6 +101,7 @@ export class Games {
     render() {
         const frag = renderGameCards(this.$.game_tmpl, this.items, (id) => this.isFollowed(id));
         Idiomorph.morph(this.$.games_list, frag, {morphStyle:'innerHTML'})
+        this.$.scroll_container.render();
     }
     
 }
@@ -118,7 +120,7 @@ export class SearchGames {
             input_search: /** @type {Element} */(form_search.querySelector("#game_name")),
 
             search_list: search_list,
-            scroll_container: /** @type {HTMLElement} */ (search_list.closest("scroll-container")),
+            scroll_container: /** @type {ScrollContainer} */ (search_list.closest("scroll-container")),
             // @ts-ignore
             search_item_tmpl: search_list.nextElementSibling.content.firstElementChild,
 
@@ -216,6 +218,7 @@ export class SearchGames {
     render() {
         const frag = renderGameCards(this.$.search_item_tmpl, this.items, (id) => this.games.isFollowed(id));
         Idiomorph.morph(this.$.search_list, frag, {morphStyle:'innerHTML'})
+        this.$.scroll_container.render();
     }
 }
 
