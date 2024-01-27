@@ -1,6 +1,5 @@
 import { strCompareField, sidebar, categoryUrl, twitchCatImageSrc } from './common';
 import { twitch } from './twitch'
-import { renderSidebarItems } from './sidebar';
 import { config } from 'config';
 
 /**
@@ -190,7 +189,7 @@ export class SearchGames {
             this.$.clearFeedback();
             if (!this.isSameItems(results)) {
                 this.items = results;
-                renderSidebarItems("search");
+                sidebar.render();
             }
         }, 400);
     }

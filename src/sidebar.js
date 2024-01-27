@@ -10,6 +10,7 @@ export class Sidebar {
   state = "closed"
 
   constructor() {
+    const _this = this;
     this.$ = {
       sidebar_nav: /** @type {Element} */ (document.querySelector(".sidebar-nav")),
       /** @param {SidebarState} state */
@@ -19,7 +20,7 @@ export class Sidebar {
               const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
               this.sidebar_nav.querySelector(sel)?.setAttribute("aria-expanded", "true");
               if (state !== "search") {
-                  renderSidebarItems(state);
+                  _this.render();
               }
           }
       },
@@ -70,12 +71,9 @@ export class Sidebar {
     this.state = new_state
     this.$.showSidebar(this.state);
   }
-}
-/**
-  @param {SidebarState} state
-*/
-// TODO: don't re-render sidebar items every time sidebar is opened
-export function renderSidebarItems(state) {
+
+  render() {
+    const state = this.state;
     if (state === "search") {
         game_search.render()
         sidebarShadows(game_search.$.search_scrollbox);
@@ -86,6 +84,7 @@ export function renderSidebarItems(state) {
         streams.render();
         sidebarShadows(streams.$.streams_scrollbox);
     }
+  }
 }
 
 /**
