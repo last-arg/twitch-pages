@@ -1,4 +1,4 @@
-import { strCompareField, categoryUrl, state } from "./common";
+import { strCompareField, categoryUrl } from "./common";
 import { twitch } from "./twitch"
 
 /**
@@ -224,16 +224,6 @@ export class LiveStreams {
 
             /** @param {string[]} ids */
             displayLiveStreams(ids) {
-                if (state.path === "streams") {
-                    for (const id of ids) {
-                        const card = document.querySelector(`.js-streams-list .js-card-live[data-stream-id="${id}"]`);
-                        if (card) {
-                            const p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
-                            p.textContent = _this.store.users[id] || "";
-                            card.classList.remove("hidden")
-                        }
-                    }
-                }
                 if (document.location.pathname.endsWith("/videos")) {
                     for (const id of ids) {
                         this.renderLiveStreamPageUser(id);
