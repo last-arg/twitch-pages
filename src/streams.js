@@ -343,7 +343,7 @@ export class LiveStreams {
             }
         }
 
-        this.last_update = Date.now();
+        this.store.last_update = Date.now();
 
         if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
             return;
