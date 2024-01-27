@@ -349,12 +349,13 @@ export class LiveStreams extends EventTarget {
             return;
         }
 
+        this.streams_store.sort();
+
         if (removes.length > 0) {
             this.$.removeLiveStreams(removes)
         }
 
         if (updates.length > 0) {
-            this.streams_store.sort();
             this.$.updateLiveStreams(updates)
         }
 
