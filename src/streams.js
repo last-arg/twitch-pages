@@ -395,6 +395,7 @@ export class LiveStreams {
             }
         }
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
+        console.log("new_live_streams", new_live_streams);
         this.updateLiveStreams(curr_ids, new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
     }
