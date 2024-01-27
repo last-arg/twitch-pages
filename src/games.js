@@ -16,7 +16,7 @@ export class Games {
             games_list: games_list,
             // @ts-ignore
             game_tmpl: /** @type {Element} */ (games_list?.firstElementChild.content.firstElementChild),
-            games_scrollbox: /** @type {HTMLElement} */ (games_list.parentElement),
+            scroll_container: /** @type {HTMLElement} */ (games_list.closest("scroll-container")),
 
             /** @param {string} id */
             removeGame(id) {
@@ -118,7 +118,7 @@ export class SearchGames {
             input_search: /** @type {Element} */(form_search.querySelector("#game_name")),
 
             search_list: search_list,
-            search_scrollbox: /** @type {HTMLElement} */ (search_list.parentElement),
+            scroll_container: /** @type {HTMLElement} */ (search_list.closest("scroll-container")),
             // @ts-ignore
             search_item_tmpl: search_list.nextElementSibling.content.firstElementChild,
 

@@ -40,27 +40,6 @@ export class Sidebar {
           htmx.ajax("get", get, {source: link_box});
         }
       });
-
-      // Add/remove shadows when scrolling
-      const scrollContainers = document.querySelectorAll('.scroll-container');
-      for (let i = 0; i < scrollContainers.length; i++) {
-        const scrollbox = scrollContainers[i].querySelector('.scrollbox');
-        if (!scrollbox) {
-          continue;
-        }
-        let scrolling = false;
-        scrollbox.addEventListener("scroll", (/** @type {Event} */ event) => {
-          const scrollbox = /** @type {HTMLElement} */ (event.target);
-
-          if (!scrolling) {
-            window.requestAnimationFrame(function() {
-              sidebarShadows(scrollbox);
-              scrolling = false;
-            });
-            scrolling = true;
-          }
-        }, {passive: true});
-      }
   }
 
   /** @param {SidebarState} new_state */
@@ -76,41 +55,76 @@ export class Sidebar {
     const state = this.state;
     if (state === "search") {
         game_search.render()
-        sidebarShadows(game_search.$.search_scrollbox);
+        const scroll_container = /** @type {ScrollContainer} */ (game_search.$.scroll_container);
+        scroll_container.render();
     } else if (state === "games") {
         games.render();
-        sidebarShadows(games.$.games_scrollbox);
+        const scroll_container = /** @type {ScrollContainer} */ (games.$.scroll_container);
+        scroll_container.render();
     } else if (state === "streams") {
         streams.render();
-        sidebarShadows(streams.$.streams_scrollbox);
+        const scroll_container = /** @type {ScrollContainer} */ (streams.$.scroll_container);
+        scroll_container.render();
     }
   }
 }
 
-/**
-  @param {HTMLElement} scrollbox
-*/
-// TODO: make into custom element?
-export function sidebarShadows(scrollbox) {
-    const scroll_container = scrollbox.closest('.scroll-container');
-    if (scroll_container === null) {
-      return;
-    }
-    const has_top_shadow = scrollbox.scrollTop > 0;  
-    // NOTE: '- 2' is if rounding is a bit off
-    const max_scroll = scrollbox.scrollHeight - scrollbox.offsetHeight - 2;
-    const has_bottom_shadow = scrollbox.scrollTop < max_scroll;
-    let shadow_type = undefined;
-    if (has_top_shadow && has_bottom_shadow) {
-      shadow_type = "both";
-    } else if (has_top_shadow) {
-      shadow_type = "top";
-    } else if (has_bottom_shadow) {
-      shadow_type = "bottom";
-    }
-    if (shadow_type) {
-      scroll_container.setAttribute("data-scroll-shadow", shadow_type);
-    } else {
-      scroll_container.removeAttribute("data-scroll-shadow");
-    }
+class ScrollContainer extends HTMLElement {
+  constructor() {
+    super();
+    const _this = this;
+    this.$ = {
+      scrolling: false,
+      handleScroll() {
+        if (!this.scrolling) {
+          window.requestAnimationFrame(() => {
+            _this.render();
+            this.scrolling = false;
+          });
+          this.scrolling = true;
+        }
+      } 
+    };
+  }
+
+  connectedCallback() {
+      // Add/remove shadows when scrolling
+        const scrollbox = this.querySelector('.scrollbox');
+        if (!scrollbox) {
+          console.error("Could not find '.scrollbar' inside <scroll-container>");
+          return;
+        }
+        scrollbox.addEventListener("scroll", this.$.handleScroll, {passive: true});
+        this.addEventListener("update", () => console.log("update"))
+  }
+
+  disconnectedCallback() {
+    this.querySelector(".scrollbox")?.removeEventListener("scroll", this.$.handleScroll);
+  }
+
+  render() {
+      const scrollbox = /** @type {HTMLElement} */ (this.querySelector(".scrollbox"));
+      if (scrollbox === null) {
+        return;
+      }
+      const has_top_shadow = scrollbox.scrollTop > 0;  
+      // NOTE: '- 2' is if rounding is a bit off
+      const max_scroll = scrollbox.scrollHeight - scrollbox.offsetHeight - 2;
+      const has_bottom_shadow = scrollbox.scrollTop < max_scroll;
+      let shadow_type = undefined;
+      if (has_top_shadow && has_bottom_shadow) {
+        shadow_type = "both";
+      } else if (has_top_shadow) {
+        shadow_type = "top";
+      } else if (has_bottom_shadow) {
+        shadow_type = "bottom";
+      }
+      if (shadow_type) {
+        this.setAttribute("data-scroll-shadow", shadow_type);
+      } else {
+        this.removeAttribute("data-scroll-shadow");
+      }
+  }
 }
+
+customElements.define("scroll-container", ScrollContainer)

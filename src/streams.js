@@ -23,7 +23,7 @@ export class Streams {
         this.$ = {
             streams_list: streams_list,
             stream_tmpl:  /** @type {Element} */ (tmp_elem.content.firstElementChild),
-            streams_scrollbox:  /** @type {HTMLElement} */ (streams_list.parentElement),
+            scroll_container:  /** @type {HTMLElement} */ (streams_list.closest("scroll-container")),
 
             /** @param {string} id */
             removeStream(id) {
