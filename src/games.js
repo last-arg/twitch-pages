@@ -7,12 +7,11 @@ import { config } from 'config';
  * @typedef {import("./common").Game} Game
  */
 
-export class Games extends EventTarget {
+export class Games {
     /** @type {Game[]} */
     items = [];
 
     constructor() {
-        super();
         const games_list = /** @type {Element} */ (document.querySelector(".js-games-list"));
         this.$ = {
             games_list: games_list,
@@ -52,7 +51,6 @@ export class Games extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.dispatchEvent(new CustomEvent('games:save'));
     }
 
     clear() {

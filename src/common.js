@@ -1,6 +1,6 @@
 import { Games, SearchGames } from "./games";
 import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from "./streams";
-import { renderSidebarItems, Sidebar } from "./sidebar";
+import { Sidebar } from "./sidebar";
 
 export const state = {
     /** @type {string | null} */
@@ -11,23 +11,17 @@ export const state = {
     }
 }
 
-export const sidebar = new Sidebar();
-export const games = new Games();
-const streams_store = new StreamsStore();
-export const streams = new Streams(streams_store);
-export const game_search = new SearchGames(games);
-
-games.addEventListener("games:save", function() {
-    renderSidebarItems("games");
-});
-
-streams.addEventListener("streams:save", function() {
-    renderSidebarItems("streams");
-});
-
 const live_store = new LiveStreamsStore();
-export const live = new LiveStreams(live_store, streams_store);
-export const user_images = new UserImages(streams_store.getIds());
+const streams_store = new StreamsStore(live_store);
+export const user_images = new UserImages(streams_store);
+
+export const games = new Games();
+// NOTE: StreamsStore also contains LiveStreamsStore
+export const live = new LiveStreams(streams_store);
+export const streams = new Streams(streams_store, live, user_images);
+
+export const game_search = new SearchGames(games);
+export const sidebar = new Sidebar();
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal

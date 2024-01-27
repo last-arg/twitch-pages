@@ -1,4 +1,4 @@
-import { strCompareField, streams, live, user_images, categoryUrl, state } from "./common";
+import { strCompareField, categoryUrl, state } from "./common";
 import { twitch } from "./twitch"
 
 /**
@@ -7,15 +7,18 @@ import { twitch } from "./twitch"
 @typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
 */
 
-export class Streams extends EventTarget {
+export class Streams {
     /**
       @param {StreamsStore} streams_store
+      @param {LiveStreams} live
+      @param {UserImages} user_images
     */
-    constructor(streams_store) {
-        super();
+    constructor(streams_store, live, user_images) {
         const streams_list = /** @type {Element} */ (document.querySelector(".js-streams-list"));
         const tmp_elem = /** @type {HTMLTemplateElement} */ (streams_list.firstElementChild);
         this.store = streams_store;
+        this.live = live;
+        this.user_images = user_images;
 
         this.$ = {
             streams_list: streams_list,
@@ -37,8 +40,8 @@ export class Streams extends EventTarget {
     */
     follow(data) {
         if (this.store.add(data)) {
-            live.addUser(data.user_id);
-            user_images.add([data.user_id])
+            this.live.addUser(data.user_id);
+            this.user_images.add([data.user_id])
         }
     };
 
@@ -49,7 +52,7 @@ export class Streams extends EventTarget {
         const id = this.store.remove(user_id);
         if (id) {
             this.$.removeStream(id);
-            live.updateLiveCount();
+            this.live.updateLiveCount();
         }
     };    
 
@@ -65,8 +68,8 @@ export class Streams extends EventTarget {
             link.setAttribute("href", href)
             link.setAttribute("hx-push-url", href)
             const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
-            const img_obj  = user_images.data.images[stream.user_id];
-            img.src = img_obj ? img_obj.url : "#" + stream.user_id;
+            const url  = this.user_images.getUrl(stream.user_id);
+            img.src = url ? url : "#" + stream.user_id;
             const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
             btn.setAttribute("data-item-id", stream.user_id)
             btn.setAttribute("data-is-followed", this.store.hasId(stream.user_id).toString())
@@ -76,13 +79,13 @@ export class Streams extends EventTarget {
             span.textContent = "Unfollow";
             const external_link = /** @type {HTMLLinkElement} */ (new_item.querySelector("[href='#external_link']"));
             external_link.href = "https://www.twitch.tv" + href;
-            const lu = live.store.users;
             const card = /** @type {Element} */ (new_item.querySelector(".js-card-live"));
             card.setAttribute("data-stream-id", stream.user_id);
-            if (lu[stream.user_id]) {
+            const game_name = this.live.store.getGameName(stream.user_id);
+            if (game_name) {
                 card.classList.remove("hidden");
                 const card_p = /** @type {HTMLParagraphElement} */ (card.querySelector("p"));
-                card_p.textContent = lu[stream.user_id] || "";
+                card_p.textContent = game_name;
             } else {
                 card.classList.add("hidden");
             }
@@ -100,9 +103,15 @@ export class Streams extends EventTarget {
 export class StreamsStore {
     /** @type {StreamLocal[]} */
     items = []
-    constructor() {
+
+    /**
+      @param {LiveStreamsStore} live_store
+    */
+    constructor(live_store) {
         this.localStorageKey = "followed_streams";
         this._readStorage();
+        this.live_store = live_store;
+        this._bindEvents();
 
         // handle edits in another window
         window.addEventListener("storage", () => {
@@ -116,6 +125,10 @@ export class StreamsStore {
         if (raw) {
             this.items = JSON.parse(raw);
         }
+    }
+
+    _bindEvents() {
+        this.live_store.addEventListener("save", () => this.sort())
     }
 
     _save() {
@@ -167,8 +180,8 @@ export class StreamsStore {
     sort() {
         this.items.sort((a, b) => {
             const cmp = strCompareField("user_name")(a, b);
-            const a_cmp = live.store.hasUser(a["user_id"]) ? -1e6 : 0;
-            const b_cmp = live.store.hasUser(b["user_id"]) ? 1e6 : 0;
+            const a_cmp = this.live_store.hasUser(a["user_id"]) ? -1e6 : 0;
+            const b_cmp = this.live_store.hasUser(b["user_id"]) ? 1e6 : 0;
             return cmp + a_cmp + b_cmp;
         });
         this._save();
@@ -188,16 +201,14 @@ export class StreamsStore {
 */
 
 const live_check_ms = 300000; // 5 minutes
-export class LiveStreams extends EventTarget {
+export class LiveStreams {
     timeout = 0;
     count = 0;
 
     /**
-        @param {LiveStreamsStore} live_store 
         @param {StreamsStore} streams_store 
     */
-    constructor(live_store, streams_store) {
-        super();
+    constructor(streams_store) {
         const _this = this;
         this.$ = {
             /** @param {number} count */
@@ -278,7 +289,7 @@ export class LiveStreams extends EventTarget {
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
-        this.store = live_store;
+        this.store = this.streams_store.live_store;
         this.updateLiveCount();
         this.updateLiveUsers();
     }
@@ -291,11 +302,10 @@ export class LiveStreams extends EventTarget {
     @type {(user_id: string) => Promise<void>}
     */
     async addUser(user_id) {
-        if (!this.store.users[user_id]) {
+        if (!this.store.hasUser(user_id)) {
             const stream = (await twitch.fetchStreams([user_id]))
             if (stream.length > 0) {
-                this.store.users[user_id] = stream[0].game_name;
-                this.store._save();
+                this.store.add(user_id, stream[0].game_name)
             }
         }
         this.updateLiveCount()
@@ -425,6 +435,16 @@ export class LiveStreamsStore extends EventTarget {
         this.dispatchEvent(new CustomEvent('save'));
     }
 
+    /**
+      @param {string} id
+      @param {string} gameName
+      @returns 
+    */
+    add(id, gameName) {
+        this.users[id] = gameName;
+        this._save();
+    }
+
     /** 
     @param {string} name
     */
@@ -436,6 +456,14 @@ export class LiveStreamsStore extends EventTarget {
         }
         return false;
     }
+
+    /**
+      @param {string} id
+      @returns {string | undefined}
+    */
+    getGameName(id) {
+        return this.users[id];
+    }
 }
 
 
@@ -446,16 +474,15 @@ export class LiveStreamsStore extends EventTarget {
 
 @typedef {{images: ProfileImages, last_update: number}} ProfileLocalStorage
 */
-export class UserImages extends EventTarget {
+export class UserImages {
     /** @type {ProfileLocalStorage} */
     data = {images: {}, last_update: 0};
 
     /**
-      @param {string[]} ids
+      @param {StreamsStore} streams_store
     */
     
-    constructor(ids) {
-        super();
+    constructor(streams_store) {
         this.$ = {
             /** @param {import("./twitch").UserTwitch[]} profiles */
             displayImages(profiles) {
@@ -469,7 +496,8 @@ export class UserImages extends EventTarget {
         }
         this.localStorageKey = "user_images";
         this._readStorage();
-        this.add(ids);
+        this.streams_store = streams_store;
+        this.add(this.streams_store.getIds());
         this.clean();
 
         // handle edits in another window
@@ -523,6 +551,14 @@ export class UserImages extends EventTarget {
         this._save();
     }
 
+    /**
+      @param {string} id
+      @returns {string | undefined}
+    */
+    getUrl(id) {
+        return this.data.images[id]?.url;
+    }
+
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
     }
@@ -539,7 +575,7 @@ export class UserImages extends EventTarget {
         const now = Date.now();
         if (check_time < now) {
             for (const id in data.images) {
-                if (data.images[id].last_access > check_time && !streams.store.hasId(id)) {
+                if (data.images[id].last_access > check_time && !this.streams_store.hasId(id)) {
                     delete data.images[id];
                 }
             }
