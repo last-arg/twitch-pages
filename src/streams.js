@@ -170,8 +170,10 @@ export class StreamsStore {
                 break;
             }
         }
-        if (curr.length === i) { return; }
-        return curr.splice(i, 1)[0].user_id;
+        if (i >= curr.length) { return; }
+        const del_id = this.items.splice(i, 1)[0].user_id;
+        this._save();
+        return del_id;
     }
 
     clear() {
