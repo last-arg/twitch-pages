@@ -74,3 +74,48 @@ export function categoryUrl(cat, is_twitch = false) {
     result += "/directory/category/" + encodeURIComponent(cat);
     return result; 
 }
+
+class FormFilter extends HTMLElement {
+    constructor() {
+        super();
+        const _this = this;
+        this.$ = {
+            form: /** @type {HTMLFormElement} */ (this.querySelector(".search-form")),
+            /**
+              @param {Event} e
+            */
+            handleSubmit(e) { e.preventDefault(); },
+            resetFilter() {
+                _this.css_sheet.deleteRule(0)
+            },
+            /** @param {Event} evt */
+            handleInput(evt) {
+                if (_this.css_sheet.cssRules.length > 0) {
+                    _this.css_sheet.deleteRule(0)
+                }
+                // @ts-ignore
+                const value = /** @type {string} */ (evt.target.value).trim();
+                if (value.length > 0) {
+                    _this.css_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
+                }
+            },
+        }
+        const style = document.createElement('style');
+        this.insertAdjacentElement('afterend', style);
+        this.css_sheet = /** @type {CSSStyleSheet} */ (style.sheet);
+    }
+
+    connectedCallback() {
+        this.$.form.addEventListener("input", this.$.handleInput);
+        this.$.form.addEventListener("submit", this.$.handleSubmit);
+        this.$.form.addEventListener("reset", this.$.resetFilter);
+    }
+
+    disconnectedCallback() {
+        this.$.form.removeEventListener("input", this.$.handleInput);
+        this.$.form.removeEventListener("submit", this.$.handleSubmit);
+        this.$.form.removeEventListener("reset", this.$.resetFilter);
+    }
+}
+
+customElements.define("form-filter", FormFilter)

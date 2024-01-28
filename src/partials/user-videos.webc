@@ -33,7 +33,7 @@ permalink: "public/partials/user-videos.html"
             <filter-option @name="highlight"></filter-option>
           </fieldset>
         </div>
-        <form-filter webc:nokeep></form-filter>
+        <form-filter></form-filter>
       </div>
     </div>
     <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list">

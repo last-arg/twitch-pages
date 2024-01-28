@@ -1,15 +1,18 @@
-<form webc:keep class="search-form" oninput="filterItems(event.target.value)" onsubmit="event.preventDefault()" onreset="resetFilter()">
+<form class="search-form">
   <label class="sr-only" for="search">Search title</label>
   <input type="search" id="search" placeholder="Filter title" value="">
   <button type="reset">Reset</button>
 </form>
 <style>
+form-filter {
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
 .search-form {
   display: flex;
   align-self: start;
   justify-content: end;
-  flex-shrink: 1;
-  flex-grow: 1;
 }
 
 .search-form input {

@@ -13,6 +13,7 @@ module.exports = function(eleventyConfig) {
 	if (is_prod) {
 		eleventyConfig.addPlugin(purgeCssPlugin)
 	} else {
+		// TODO: dev css building not working
 		eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
 	}
 	eleventyConfig.addPlugin(pluginWebc, {

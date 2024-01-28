@@ -21,10 +21,7 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
             live.addUser(stream_id);
         }
     } else if (elem.id === "page-user") {
-        initFilter(elem);
         initUserVideoTypeFilter(elem);
-    } else if (elem.id === "page-category") {
-        initFilter(elem);
     } else if (elem.id === "page-settings") {
         document.title = "Settings | Twitch Pages";
         settings.init(elem)
@@ -111,39 +108,6 @@ async function startup() {
     document.body.addEventListener("mousedown", handlePathChange)
 };
 window.addEventListener("DOMContentLoaded", startup);
-
-/** @type {CSSStyleSheet | null} */
-let g_sheet = null;
-
-/** @param {string} value */
-function pageFilter(value) {
-    if (g_sheet === null) return;
-    if (g_sheet.cssRules.length > 0) {
-        g_sheet.deleteRule(0)
-    }
-    value = value.trim();
-    if (value.length > 0) {
-        g_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
-    }
-}
-
-function resetFilter() {
-    if (g_sheet === null) return;
-    g_sheet.deleteRule(0)
-}
-
-// TODO: use hx-on:* instead?
-// @ts-ignore
-window.filterItems = pageFilter;
-// @ts-ignore
-window.resetFilter = resetFilter;
-
-
-/** @param {Element} root */
-function initFilter(root) {
-    const search_form = /** @type {Element} */ (root.querySelector(".search-form"));
-    g_sheet = /** @type {HTMLStyleElement} */ (search_form.insertAdjacentElement('afterend', document.createElement('style'))).sheet;
-}
 
 /** @param {Event} e */
 function handlePathChange(e) {
