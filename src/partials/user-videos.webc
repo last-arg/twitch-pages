@@ -25,14 +25,14 @@ permalink: "public/partials/user-videos.html"
     <h3>Videos</h3>
     <div class="fluid-mt-2xs">
       <div class="flex flex-wrap fluid-gap-s">
-        <div>
+        <filter-video>
           <fieldset class="filter-video-type">
             <legend class="sr-only">Filter based on video type</legend>
             <filter-option @name="archive"></filter-option>
             <filter-option @name="upload"></filter-option>
             <filter-option @name="highlight"></filter-option>
           </fieldset>
-        </div>
+        </filter-video>
         <form-filter></form-filter>
       </div>
     </div>

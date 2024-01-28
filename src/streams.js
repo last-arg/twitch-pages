@@ -314,7 +314,7 @@ export class LiveStreams {
     updateLiveCount() {
         let result = 0;
         const users = this.store.users;
-        console.log("before updateLiveCount:", result)
+        console.log("before updateLiveCount:", this.count)
         for (const key in users) {
             if (this.streams_store.hasId(key)) {
                 result += 1;

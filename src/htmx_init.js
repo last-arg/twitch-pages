@@ -1,5 +1,4 @@
-import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images, state } from './common'
-import { settings } from './main';
+import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images, state, settings } from './common'
 import { mainContent, config } from 'config';
 import { Twitch } from './twitch';
 
