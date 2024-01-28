@@ -311,11 +311,13 @@ export class LiveStreams {
     updateLiveCount() {
         let result = 0;
         const users = this.store.users;
+        console.log("before updateLiveCount:", result)
         for (const key in users) {
             if (this.streams_store.hasId(key)) {
                 result += 1;
             }
         }
+        console.log("after updateLiveCount:", result)
         if (this.count !== result) {
             this.count = result;
             this.$.displayLiveCount(this.count);
