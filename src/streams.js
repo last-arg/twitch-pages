@@ -28,10 +28,12 @@ export class Streams {
 
             /** @param {string} id */
             removeStream(id) {
+                this.streams_list.querySelector("#stream-id-" + id)?.remove();
                 const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
                 for (let i = 0; i < btns.length; i++) {
                     btns[i].setAttribute("data-is-followed", "false");
                 }
+                this.scroll_container.render();
             }
         };
     }
@@ -44,6 +46,7 @@ export class Streams {
             this.live.addUser(data.user_id);
             this.user_images.add([data.user_id])
         }
+        this.render();
     };
 
     /**
@@ -385,11 +388,6 @@ export class LiveStreams {
             return;
         }
         const curr_ids = this.streams_store.getIds();
-        for (const id of Object.keys(this.store.users)) {
-            if (!curr_ids.includes(id)) {
-                curr_ids.push(id);
-            }
-        }
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
         console.log("new_live_streams", new_live_streams);
         this.updateLiveStreams(curr_ids, new_live_streams);
