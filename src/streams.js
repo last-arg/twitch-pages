@@ -333,6 +333,8 @@ export class LiveStreams {
         @param {StreamTwitch[]} streams
     */
     updateLiveStreams(curr_ids, streams) {
+        console.log("curr_ids", curr_ids);
+        console.log("new_streams", streams);
         const updates = [];
         const adds = [];
         for (const stream of streams) {
@@ -346,13 +348,17 @@ export class LiveStreams {
 
         const removes = []
         for (const id of curr_ids) {
-            if (!streams.some(({user_id}) => user_id === id)) {
+            if (!adds.includes(id) && !updates.includes(id)) {
                 removes.push(id);
                 delete this.store.users[id];
             }
         }
 
         this.store.last_update = Date.now();
+
+        console.log("adds", adds)
+        console.log("updates", updates)
+        console.log("removes", removes)
 
         if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
             return;
@@ -381,7 +387,7 @@ export class LiveStreams {
     }
 
     async updateLiveUsers() {
-        const diff = this.updateDiff();
+        const diff = -1 || this.updateDiff();
         clearTimeout(this.timeout);
         if (diff > 0) {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
@@ -389,7 +395,6 @@ export class LiveStreams {
         }
         const curr_ids = this.streams_store.getIds();
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
-        console.log("new_live_streams", new_live_streams);
         this.updateLiveStreams(curr_ids, new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
     }
