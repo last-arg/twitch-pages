@@ -347,7 +347,7 @@ export class LiveStreams {
         }
 
         const removes = []
-        for (const id of curr_ids) {
+        for (const id of Object.keys(this.store.users)) {
             if (!adds.includes(id) && !updates.includes(id)) {
                 removes.push(id);
                 delete this.store.users[id];
@@ -387,7 +387,7 @@ export class LiveStreams {
     }
 
     async updateLiveUsers() {
-        const diff = -1 || this.updateDiff();
+        const diff = this.updateDiff();
         clearTimeout(this.timeout);
         if (diff > 0) {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
