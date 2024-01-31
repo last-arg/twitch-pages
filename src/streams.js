@@ -287,8 +287,8 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
-        this.updateLiveCount();
-        this.updateLiveUsers();
+        // this.updateLiveCount();
+        document.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
     }
 
     updateDiff() {
@@ -333,6 +333,7 @@ export class LiveStreams {
         @param {StreamTwitch[]} streams
     */
     updateLiveStreams(curr_ids, streams) {
+        console.log("users", this.store.users);
         console.log("curr_ids", curr_ids);
         console.log("new_streams", streams);
         const updates = [];

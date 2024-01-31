@@ -30,27 +30,27 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
 */
 function gameAndStreamFollow(t) {
     const btn = t.closest(".button-follow");
-    if (btn) {
-        const item_raw = btn.getAttribute("data-item");
-        if (item_raw) {
-            const item_untyped = JSON.parse(decodeURIComponent(item_raw));
-            const following = (btn.getAttribute("data-is-followed") || "false") === "true";
-            if (item_untyped.user_id) {
-                if (following) {
-                    streams.unfollow(item_untyped.user_id);
-                } else {
-                    streams.follow(/** @type {StreamLocal} */ item_untyped);
-                }
-            } else {
-                if (following) {
-                    games.unfollow(item_untyped.id);
-                } else {
-                    games.follow(/** @type {Game} */ item_untyped);
-                }
-            }
-            btn.setAttribute("data-is-followed", (!following).toString())
+    if (!btn) { return; }
+
+    const item_raw = btn.getAttribute("data-item");
+    if (!item_raw) { return; }
+
+    const item_untyped = JSON.parse(decodeURIComponent(item_raw));
+    const following = (btn.getAttribute("data-is-followed") || "false") === "true";
+    if (item_untyped.user_id) {
+        if (following) {
+            streams.unfollow(item_untyped.user_id);
+        } else {
+            streams.follow(/** @type {StreamLocal} */ item_untyped);
+        }
+    } else {
+        if (following) {
+            games.unfollow(item_untyped.id);
+        } else {
+            games.follow(/** @type {Game} */ item_untyped);
         }
     }
+    btn.setAttribute("data-is-followed", (!following).toString())
 }
 
 document.addEventListener("click", function(/** {Event} */e) {

@@ -144,7 +144,6 @@ class Settings extends EventTarget {
             }
         })
     }
-
     
     _initGeneral() {
         const general = settings.data.general;
