@@ -287,7 +287,6 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
-        // this.updateLiveCount();
         document.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
     }
 
@@ -391,6 +390,7 @@ export class LiveStreams {
         const diff = this.updateDiff();
         clearTimeout(this.timeout);
         if (diff > 0) {
+            this.updateLiveCount()
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
             return;
         }
