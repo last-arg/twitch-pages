@@ -1,7 +1,8 @@
 const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
-const lightningCSS = require("@11tyrocks/eleventy-plugin-lightningcss");
 const purgeCssPlugin = require("eleventy-plugin-purgecss");
+const { bundle, browserslistToTargets } =  require("lightningcss");
+const fs = require("node:fs");
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
@@ -9,12 +10,20 @@ const purgeCssPlugin = require("eleventy-plugin-purgecss");
  */
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
+	console.log("ELEVENTY_PRODUCTION", process.env.ELEVENTY_PRODUCTION);
+
+	eleventyConfig.on('eleventy.after', async (_) => {
+		// TODO: if css has changed
+		let { code } = bundle({
+		  filename: 'src/css/main.css',
+		  minify: is_prod,
+		  targets: browserslistToTargets([">= 0.25% and not dead"]),
+		});
+		fs.writeFileSync("_site/css/main.css", code);
+	});
 
 	if (is_prod) {
 		eleventyConfig.addPlugin(purgeCssPlugin)
-	} else {
-		// TODO: dev css building not working
-		eleventyConfig.addPlugin(lightningCSS, { minify: is_prod });
 	}
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
@@ -38,6 +47,10 @@ module.exports = function(eleventyConfig) {
       }
       return content
     })
+
+	eleventyConfig.setServerOptions({
+		domDiff: false
+	});
 
 	return {
 		dir: {
