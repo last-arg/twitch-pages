@@ -287,7 +287,7 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
-        document.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
+        setTimeout(() => this.updateLiveUsers(), 1000);
     }
 
     updateDiff() {
