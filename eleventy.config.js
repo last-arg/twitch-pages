@@ -19,7 +19,11 @@ module.exports = function(eleventyConfig) {
 		  minify: is_prod,
 		  targets: browserslistToTargets([">= 0.25% and not dead"]),
 		});
-		fs.writeFileSync("_site/css/main.css", code);
+		const css_dir = "_site/css/";
+		if (!fs.existsSync(css_dir)){
+		    fs.mkdirSync(css_dir);
+		}
+		fs.writeFileSync(css_dir + "main.css", code);
 	});
 
 	if (is_prod) {
