@@ -14,15 +14,16 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.on('eleventy.after', async (_) => {
 		// TODO: if css has changed
 		let { code } = bundle({
-		  filename: 'src/css/main.css',
+		  filename: './src/css/main.css',
 		  minify: is_prod,
 		  targets: browserslistToTargets([">= 0.25% and not dead"]),
 		});
 		const css_dir = "_site/css/";
+		let file = css_dir + "main.css";
 		if (!fs.existsSync(css_dir)){
 		    fs.mkdirSync(css_dir);
 		}
-		let file = css_dir + "main.css";
+
 		if (is_prod) {
 			const result = await new PurgeCSS().purge({
 			  // Content files referencing CSS classes
