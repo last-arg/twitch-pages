@@ -1,6 +1,6 @@
 const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
-const {PurgeCSS} = require("purgecss");
+const { PurgeCSS } = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
 const fs = require("node:fs");
 
@@ -28,7 +28,6 @@ module.exports = function(eleventyConfig) {
 			const result = await new PurgeCSS().purge({
 			  // Content files referencing CSS classes
 			  content: ["./_site/**/*.html"],
-			  // content: ["./src/**/*.webc"],
 			  keyframes: true,
 			  variables: true,
 			  safelist: [":where"],
