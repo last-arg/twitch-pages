@@ -1,6 +1,6 @@
 const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
-const purgeCssPlugin = require("eleventy-plugin-purgecss");
+const {PurgeCSS} = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
 const fs = require("node:fs");
 
@@ -10,7 +10,6 @@ const fs = require("node:fs");
  */
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
-	console.log("ELEVENTY_PRODUCTION", process.env.ELEVENTY_PRODUCTION);
 
 	eleventyConfig.on('eleventy.after', async (_) => {
 		// TODO: if css has changed
@@ -23,12 +22,26 @@ module.exports = function(eleventyConfig) {
 		if (!fs.existsSync(css_dir)){
 		    fs.mkdirSync(css_dir);
 		}
-		fs.writeFileSync(css_dir + "main.css", code);
+		let file = css_dir + "main.css";
+		if (is_prod) {
+			const result = await new PurgeCSS().purge({
+			  // Content files referencing CSS classes
+			  content: ["./_site/**/*.html"],
+			  // content: ["./src/**/*.webc"],
+			  keyframes: true,
+			  variables: true,
+			  safelist: [":where"],
+			  // CSS files to be purged in-place
+			  // css: ["./_site/css/main.css"],
+			  css: [{ name: file, raw: code.toString() }],
+			});
+			if (result.length) {
+				code = result[0].css;
+			}
+		}
+		fs.writeFileSync(file, code);
 	});
 
-	if (is_prod) {
-		eleventyConfig.addPlugin(purgeCssPlugin)
-	}
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
 	});
