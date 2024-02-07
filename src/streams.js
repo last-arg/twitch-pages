@@ -20,6 +20,7 @@ export class Streams {
         this.store = streams_store;
         this.live = live;
         this.user_images = user_images;
+        this.store.addEventListener("save", () => this.render());
 
         this.$ = {
             streams_list: streams_list,
@@ -36,6 +37,7 @@ export class Streams {
                 this.scroll_container.render();
             }
         };
+        this.render();
     }
 
     /**
@@ -105,7 +107,7 @@ export class Streams {
     }
 }
 
-export class StreamsStore {
+export class StreamsStore extends EventTarget {
     /** @type {StreamLocal[]} */
     items = []
 
@@ -113,6 +115,7 @@ export class StreamsStore {
       @param {LiveStreamsStore} live_store
     */
     constructor(live_store) {
+        super()
         this.localStorageKey = "followed_streams";
         this._readStorage();
         this.live_store = live_store;
@@ -138,6 +141,7 @@ export class StreamsStore {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+        this.dispatchEvent(new CustomEvent('save'));
     }
 
     /**

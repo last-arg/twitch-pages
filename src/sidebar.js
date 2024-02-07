@@ -10,7 +10,6 @@ export class Sidebar {
   state = "closed"
 
   constructor() {
-    const _this = this;
     this.$ = {
       sidebar_nav: /** @type {Element} */ (document.querySelector(".sidebar-nav")),
       /** @param {SidebarState} state */
@@ -19,8 +18,10 @@ export class Sidebar {
           if (state !== "closed") {
               const sel = state === "search" ? "#game_name[aria-expanded=false]" : `.menu-item[data-menu-item=${state}]`;
               this.sidebar_nav.querySelector(sel)?.setAttribute("aria-expanded", "true");
-              if (state !== "search") {
-                  _this.render();
+              if (state === "games") {
+                  games.render();
+              } else if (state === "streams") {
+                  streams.render();
               }
           }
       },
@@ -49,17 +50,6 @@ export class Sidebar {
     }
     this.state = new_state
     this.$.showSidebar(this.state);
-  }
-
-  render() {
-    const state = this.state;
-    if (state === "search") {
-        game_search.render()
-    } else if (state === "games") {
-        games.render();
-    } else if (state === "streams") {
-        streams.render();
-    }
   }
 }
 

@@ -37,6 +37,7 @@ export class Games {
         }
         this.localStorageKey = "followed_games"
         this._readStorage();
+        this.render();
 
         // handle edits in another window
         window.addEventListener("storage", () => {
@@ -143,6 +144,7 @@ export class SearchGames {
         /** @type {Game[]} */
         this.items = [];
         this.search_timeout = 0;
+        // TODO: get input value
         this.input_value = "";
         this._bindEvents();
     }
@@ -191,7 +193,7 @@ export class SearchGames {
             this.$.clearFeedback();
             if (!this.isSameItems(results)) {
                 this.items = results;
-                sidebar.render();
+                this.render();
             }
         }, 400);
     }

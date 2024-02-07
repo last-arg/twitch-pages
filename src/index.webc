@@ -2,6 +2,7 @@
 layout: "base.webc"
 title: "Home | Twitch Pages"
 ---
+<head-style webc:nokeep></head-style>
 <a class="skip-content" href="#main">skip to content</a>
 <h1 class="sr-only">Twich Pages</h1>
 <div id="app">
@@ -95,3 +96,9 @@ title: "Home | Twitch Pages"
   </main>
 </div>
 <div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>
+<style>
+/* END */ 
+.hello {
+  background: blue;
+}
+</style>
