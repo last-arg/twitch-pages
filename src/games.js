@@ -118,7 +118,7 @@ export class SearchGames {
         this.$ = {
             feedback_elem: /** @type {Element} */ (document.querySelector(".search-feedback")),
             form_search: form_search,
-            input_search: /** @type {Element} */(form_search.querySelector("#game_name")),
+            input_search: /** @type {HTMLInputElement} */(form_search.querySelector("#game_name")),
 
             search_list: search_list,
             scroll_container: /** @type {ScrollContainer} */ (search_list.closest("scroll-container")),
@@ -144,8 +144,7 @@ export class SearchGames {
         /** @type {Game[]} */
         this.items = [];
         this.search_timeout = 0;
-        // TODO: get input value
-        this.input_value = "";
+        this.input_value = this.$.input_search.value || "";
         this._bindEvents();
     }
 

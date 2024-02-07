@@ -1,4 +1,4 @@
-import { games, streams, game_search } from "./common";
+import { games, streams } from "./common";
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
