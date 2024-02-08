@@ -2,7 +2,6 @@
 layout: "base.webc"
 title: "Home | Twitch Pages"
 ---
-<head-style webc:nokeep></head-style>
 <a class="skip-content" href="#main">skip to content</a>
 <h1 class="sr-only">Twich Pages</h1>
 <div id="app" hx-ext="preload">
