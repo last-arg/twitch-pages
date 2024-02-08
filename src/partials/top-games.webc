@@ -12,6 +12,7 @@ permalink: "public/partials/top-games.html"
           <div class="img-wrapper">
             <a class="game-img-link" href="#game_url" hx-push-url="#game_url"
               :hx-get="$data.global.paths.category.html" hx-target="#main"
+              preload
             >
               <img class="game-img" src="#game_img_url" alt=""
                 :width="$data.global.config.image.category.width * 2" 
@@ -31,6 +32,7 @@ permalink: "public/partials/top-games.html"
           </div>
           <a class="game-link" href="#game_url" hx-push-url="#game_url"
             :hx-get="$data.global.paths.category.html" hx-target="#main"
+            preload
           >
             <p>:game_name_text</p>
           </a>

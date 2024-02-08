@@ -3,6 +3,7 @@
     hx-target="#main"
     :hx-get="`/public/partials/${name}.html`"
     :data-card="name"
+    preload
   >
     <img webc:if="name === 'user-videos'" src="" alt=""
       :width="$data.global.config.image.user.width" 

@@ -5,18 +5,18 @@ title: "Home | Twitch Pages"
 <head-style webc:nokeep></head-style>
 <a class="skip-content" href="#main">skip to content</a>
 <h1 class="sr-only">Twich Pages</h1>
-<div id="app">
+<div id="app" hx-ext="preload">
   <header class="fixed z-1">
     <div class="wrapper flex flex-wrap align-stretch fluid-gap-s relative">
       <nav aria-label="Main">
         <ul class="flex fluid-gap-s" role="list">
           <li>
             <a href="/" class="menu-item" hx-push-url="/" hx-get="/public/partials/top-games.html"
-              hx-target="#main">Home</a>
+              hx-target="#main" preload>Home</a>
           </li>
           <li>
             <a href="/settings" class="menu-item" hx-get="/public/partials/settings.html" hx-target="#main"
-              hx-push-url="/settings">Settings</a>
+              hx-push-url="/settings" preload>Settings</a>
           </li>
         </ul>
       </nav>
@@ -96,9 +96,3 @@ title: "Home | Twitch Pages"
   </main>
 </div>
 <div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>
-<style>
-/* END */ 
-.hello {
-  background: blue;
-}
-</style>

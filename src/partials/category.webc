@@ -40,6 +40,7 @@ permalink: "public/partials/category.html"
             <div class="user-info">
               <a class="user-info-img-link" aria-hidden="true" href="#video_url"
                 hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
+                preload
               >
                 <img class="block w-14" src="#user_img" alt="" 
                   :width="$data.global.config.image.user.width" 
@@ -49,6 +50,7 @@ permalink: "public/partials/category.html"
                 <div class="flex items-center">
                   <a class="user-info-link" href="#video_url" hx-push-url="#video_url" 
                     :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
+                    preload
                   >:user_name</a>
                   <span class="user-info-follow">
                     <button-follow @name="stream"></button-follow>
