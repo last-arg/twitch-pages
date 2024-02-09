@@ -139,7 +139,7 @@ export function initHtmx() {
             }
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
-            const title = item.title.replaceAll('"', "&quot;");
+            const title = encodeHtml(item.title);
             const item_json = encodeURIComponent(JSON.stringify({
                user_id: user_id,
                user_login: item.user_login,
@@ -228,7 +228,7 @@ export function initHtmx() {
             counts[item.type] += 1;
             const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             const date = new Date(item.published_at)
-            const title = item.title.replaceAll('"', "&quot;");
+            const title = encodeHtml(item.title);
             result += tmpl.innerHTML
               .replaceAll(":video_title", title)
               .replace(":video_type", item.type)
@@ -274,6 +274,16 @@ export function initHtmx() {
   htmx.config.useTemplateFragments = true;
 
   htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
+}
+
+let tmp_elem = document.createElement("p");
+/**
+@param {string} str
+@returns {string}
+*/
+function encodeHtml(str) {
+  tmp_elem.textContent = str;
+  return tmp_elem.innerHTML;  
 }
 
 /**
