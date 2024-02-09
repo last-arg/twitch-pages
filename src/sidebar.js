@@ -57,7 +57,17 @@ export class ScrollContainer extends HTMLElement {
   constructor() {
     super();
     const _this = this;
+    const scrollbox = /** @type {HTMLElement} */ (this.querySelector(".scrollbox"));
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const toggle_class = entry.target.classList.contains("top") ? "has-top" : "has-bottom";
+        this.classList.toggle(toggle_class, !entry.isIntersecting)
+      }
+    }, { root: scrollbox });
+
     this.$ = {
+      observer: observer,
+      scrollbox: scrollbox,
       scrolling: false,
       handleScroll() {
         if (!this.scrolling) {
@@ -72,25 +82,18 @@ export class ScrollContainer extends HTMLElement {
   }
 
   connectedCallback() {
-      // Add/remove shadows when scrolling
-        const scrollbox = this.querySelector('.scrollbox');
-        if (!scrollbox) {
-          console.error("Could not find '.scrollbar' inside <scroll-container>");
-          return;
+        const elems = this.$.scrollbox.querySelectorAll(".intersection");
+        for (let i = 0; i < elems.length; i++) {
+          this.$.observer.observe(elems[i]);
         }
-        scrollbox.addEventListener("scroll", this.$.handleScroll, {passive: true});
-        this.addEventListener("update", () => console.log("update"))
   }
 
   disconnectedCallback() {
-    this.querySelector(".scrollbox")?.removeEventListener("scroll", this.$.handleScroll);
+    this.$.observer.disconnect();
   }
 
   render() {
-      const scrollbox = /** @type {HTMLElement} */ (this.querySelector(".scrollbox"));
-      if (scrollbox === null) {
-        return;
-      }
+      const scrollbox = this.$.scrollbox;
       const has_top_shadow = scrollbox.scrollTop > 0;  
       // NOTE: '- 2' is if rounding is a bit off
       const max_scroll = scrollbox.scrollHeight - scrollbox.offsetHeight - 2;

@@ -1,6 +1,9 @@
 <div webc:root class="scroll-container">
   <div class="scrollbox">
+    <div class="intersection top"></div>
     <slot></slot>
+    <!-- NOTE: make sure IntersectionObserver works -->
+    <div class="intersection" style="height: 1px"></div>
   </div>
 </div>
 <style>
@@ -33,10 +36,8 @@
   --dir: to bottom;
 }
 
-.scroll-container[data-scroll-shadow=top]::before,
-.scroll-container[data-scroll-shadow=bottom]::after,
-.scroll-container[data-scroll-shadow=both]::before,
-.scroll-container[data-scroll-shadow=both]::after {
+.scroll-container.has-top::before,
+.scroll-container.has-bottom::after {
   display: block;
 }
 
