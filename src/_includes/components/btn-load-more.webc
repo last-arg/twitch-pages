@@ -8,7 +8,6 @@
   hx-trigger="click"
   aria-disabled="true"
   :hx-template="hx_template"
-  preload
 >
   <span>Load more games</span>
 </button>
