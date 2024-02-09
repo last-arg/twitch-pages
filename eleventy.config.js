@@ -30,7 +30,10 @@ module.exports = function(eleventyConfig) {
 			  content: ["./_site/**/*.html"],
 			  keyframes: true,
 			  variables: true,
-			  safelist: [":where"],
+				safelist: {
+					standard: [ /^\:[-a-z]+$/ ],
+					greedy: [/\:(before|after)/ ],
+				},
 			  // CSS files to be purged in-place
 			  // css: ["./_site/css/main.css"],
 			  css: [{ name: file, raw: code.toString() }],
