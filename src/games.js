@@ -52,6 +52,7 @@ export class Games {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+        this.render();
     }
 
     clear() {
