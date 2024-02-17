@@ -291,7 +291,8 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
-        setTimeout(() => this.updateLiveUsers(), 1000);
+        window.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
+        this.store.addEventListener("save", () => this.updateLiveCount())
     }
 
     updateDiff() {
@@ -308,7 +309,6 @@ export class LiveStreams {
                 this.store.add(user_id, stream[0].game_name)
             }
         }
-        this.updateLiveCount()
     };
 
     /** 
@@ -382,11 +382,6 @@ export class LiveStreams {
             this.$.displayLiveStreams(adds)
         }
 
-        const diff = removes.length + adds.length;
-        if (diff !== 0) {
-            this.count = this.updateLiveCount();
-        }
-
         this.store._save();
     }
 
@@ -394,7 +389,6 @@ export class LiveStreams {
         const diff = this.updateDiff();
         clearTimeout(this.timeout);
         if (diff > 0) {
-            this.updateLiveCount()
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
             return;
         }
