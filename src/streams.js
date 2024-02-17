@@ -291,6 +291,7 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
+        this.updateLiveCount()
         window.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
         this.store.addEventListener("save", () => this.updateLiveCount())
     }
