@@ -10,6 +10,7 @@ const fs = require("node:fs");
  */
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
+	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 
 	eleventyConfig.on('eleventy.after', async (_) => {
 		// TODO: if css has changed
@@ -52,10 +53,12 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
-	// TODO: find better solution for building css with lightningcss
 	eleventyConfig.ignores.add(is_prod ? "src/css/*.css" : "src/css/_*.css");
 	eleventyConfig.addPassthroughCopy("public");
-	eleventyConfig.addPassthroughCopy("favicon.svg");
+	eleventyConfig.addPassthroughCopy({
+		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
+		"./node_modules/upup/dist/upup.sw.min.js": "upup.sw.min.js",
+	});
 
     eleventyConfig.addTransform ('html-minifier', content => {
       if (is_prod && this.page?.fileSlug === "html") {

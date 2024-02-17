@@ -19,7 +19,8 @@
   "dependencies": {
     "htmx.org": "^1.9.10",
     "idiomorph": "^0.3.0",
-    "open-props": "^1.6.17"
+    "open-props": "^1.6.17",
+    "upup": "^1.1.0"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1",

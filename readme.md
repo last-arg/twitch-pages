@@ -7,13 +7,16 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-- use Cache API to store some stuff
+[ ] favicon
+[ ] When firefox restores page it show previously live streams (and count).
+  Althought it seems to make a request, the request returns old data. Last update
+  time is set to Date.now().
+  The page content is old as well. Maybe htmx history plays role in it? htmx history
+  doesn't seem to play a role in this. Seems to be browser thing.
+[ ] use Cache API to store some stuff?
   - user header
   - category header
-- service worker
-  - libs:
-    - https://github.com/veiss-com/sw-tools
-    - https://github.com/americanexpress/one-service-worker
+[ ] auto update service worker version
 
 ## Resources
 
