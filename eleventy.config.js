@@ -62,6 +62,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
 		"./node_modules/upup/dist/upup.sw.min.js": "upup.sw.min.js",
+		"static": "/",
 	});
 
     eleventyConfig.addTransform ('html-minifier', content => {
