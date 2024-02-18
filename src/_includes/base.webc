@@ -16,18 +16,19 @@
   <script webc:keep webc:if="this.isProd()" src="/upup.min.js"></script>
   <script webc:keep webc:if="this.isProd()">
   UpUp.start({
-    "cache-version": "v2",
+    // TODO: automate updating version increment
+    "cache-version": "v3",
     "assets": [
       "/css/main.css", 
       // "/index.html",
       "/public/assets/icons.svg",
       "/public/js/third-party.js",
       "/public/js/main.js",
-      // "/public/partials/category.html",
-      // "/public/partials/not-found.html",
-      // "/public/partials/settings.html",
-      // "/public/partials/top-games.html",
-      // "/public/partials/user-videos.html",
+      "/public/partials/category.html",
+      "/public/partials/not-found.html",
+      "/public/partials/settings.html",
+      "/public/partials/top-games.html",
+      "/public/partials/user-videos.html",
     ],
   });
   </script>

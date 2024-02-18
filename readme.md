@@ -17,6 +17,14 @@ Pages:
   - user header
   - category header
 [ ] auto update service worker version
+[ ] Service worker
+  - There seemed to be a problem with slow loading when using my default firefox
+  profile. Worked fast in another profile and brave. It seems to have been caused
+  by privacy setting strict. After changing it to standard and back to strict
+  it seems to be working fast now. Don't know why it wasnt fast.
+[ ] Maybe instead of service worker use more aggressive caching. Could do it
+anyway (doesn't matter if use service worker or not). 
+  [ ] See about eleventy and cache busting.
 
 ## Resources
 

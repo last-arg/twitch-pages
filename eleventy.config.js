@@ -3,6 +3,7 @@ const htmlMinifier = require ('html-minifier')
 const { PurgeCSS } = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
 const fs = require("node:fs");
+const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
@@ -11,6 +12,9 @@ const fs = require("node:fs");
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
+	eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
+		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
+	});
 
 	eleventyConfig.on('eleventy.after', async (_) => {
 		// TODO: if css has changed
