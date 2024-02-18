@@ -14,8 +14,15 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 	eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
 		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
+		enableLogging: true,
 	});
 
+	eleventyConfig.addPassthroughCopy("public");
+
+	// Use unpurge css file to hash
+	// TODO?: maybe try to do purging sooner?
+    // eleventyConfig.addTransform ('css-purge', content => {});
+	eleventyConfig.addPassthroughCopy("src/css/main.css");
 	eleventyConfig.on('eleventy.after', async (_) => {
 		// TODO: if css has changed
 		let { code } = bundle({
@@ -57,7 +64,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
-	eleventyConfig.ignores.add(is_prod ? "src/css/*.css" : "src/css/_*.css");
+	eleventyConfig.ignores.add("src/css/_*.css");
 	eleventyConfig.addPassthroughCopy("public");
 	eleventyConfig.addPassthroughCopy({
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
