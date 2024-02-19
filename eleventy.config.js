@@ -59,7 +59,7 @@ module.exports = function(eleventyConfig) {
 				function(content) {
 					if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
 						// run after the file is created
-						setTimeout(() => bundleCss(is_prod), 100);
+						setTimeout(() => bundleCss(is_prod), 1);
 					}
 					return content;
 				}
