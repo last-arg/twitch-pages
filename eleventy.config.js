@@ -2,6 +2,7 @@ const pluginWebc = require("@11ty/eleventy-plugin-webc");
 const htmlMinifier = require ('html-minifier')
 const { PurgeCSS } = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
+const esbuild = require("esbuild");
 const fs = require("node:fs");
 const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 
@@ -16,6 +17,24 @@ module.exports = function(eleventyConfig) {
 		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
 		// enableLogging: true,
 	});
+
+	eleventyConfig.on('eleventy.before', async () => {
+		await esbuild.build({
+		  entryPoints: ["src/main.js", "src/third-party.js"],
+		  outdir: "_site/public/js/",
+		  minify: is_prod,
+		  bundle: true,
+		  sourcemap: false,
+		})
+
+		await esbuild.build({
+		  entryPoints: ["src/config.prod.js"],
+		  outdir: "src/js/",
+		  minify: false,
+		  sourcemap: false,
+		  format: "cjs",
+		})
+	})
 
 	eleventyConfig.addPassthroughCopy("public");
 
@@ -35,6 +54,8 @@ module.exports = function(eleventyConfig) {
 	});
 
 	eleventyConfig.setUseGitIgnore(false);
+	eleventyConfig.addWatchTarget("src/*.js")
+	eleventyConfig.watchIgnores.add("src/js/*.js");
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	eleventyConfig.ignores.add("src/css/_*.css");
