@@ -1,7 +1,7 @@
 import { defineConfig, escapeSelector } from "unocss";
 
 const config = defineConfig({
-  cli: {entry: {  patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css"} },
+  // cli: {entry: { patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css"} },
   preflights: undefined,
   rules: [
     [/^stack\-?(\d*)(.*)$/, ruleStack, {layer: "component"}],
@@ -13,8 +13,8 @@ const config = defineConfig({
   ],
 });
 
-function dirToWords(dir: string) {
-  let result: string[] = [];
+function dirToWords(dir) {
+  let result = [];
   if (dir === "t") {
     result.push("top");
   } else if (dir === "r") {
@@ -31,7 +31,7 @@ function dirToWords(dir: string) {
   return result;
 }
 
-function ruleClamp([selector, nr]: RegExpMatchArray) {
+function ruleClamp([selector, nr]) {
   const classSelector = "." + escapeSelector(selector)
   
   return `
@@ -44,7 +44,7 @@ ${classSelector} {
   `;
 }
 
-function fluidSpace([selector, attr, dir, variable]: RegExpMatchArray) {
+function fluidSpace([selector, attr, dir, variable]) {
   const classSelector = "." + escapeSelector(selector)
   let property = "";
   if (attr === "m") {
@@ -73,7 +73,7 @@ ${classSelector} { ${property}: var(${css_attr}); }
     `;
 }
 
-function fluidGap([selector, space]: RegExpMatchArray) {
+function fluidGap([selector, space]) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--space-" + space;
   return `
@@ -81,7 +81,7 @@ ${classSelector} { gap: var(${css_attr}); }
     `;
 }
 
-function ruleStack([selector, nr, unit_or_fluid]: RegExpMatchArray) {
+function ruleStack([selector, nr, unit_or_fluid]) {
   const classSelector = "." + escapeSelector(selector)
   const css_attr = "--stack-space"
 
@@ -106,7 +106,7 @@ ${classSelector} > * + * { margin-top: var(${css_attr}, 1em); }
   return `/* Failed to generate stack rule from ${selector} */`
 }
 
-async function ruleLayoutGrid([selector, min_width]: RegExpMatchArray, ctx: any) {
+async function ruleLayoutGrid([selector, min_width], ctx) {
   const generator = ctx.generator;
   const classSelector = "." + escapeSelector(selector)
   if (min_width === '') {

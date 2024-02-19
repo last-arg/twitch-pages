@@ -105,6 +105,9 @@ module.exports = function(eleventyConfig) {
 };
 
 async function bundleCss(is_prod) {
+	const unocss_cli = await import("@unocss/cli");
+	await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css" });
+
 	// TODO: if css has changed
 	let { code } = bundle({
 	  filename: './src/css/main.css',
