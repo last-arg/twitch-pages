@@ -59,7 +59,7 @@ module.exports = function(eleventyConfig) {
 				function(content) {
 					if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
 						// run after the file is created
-						setTimeout(() => bundleCss(is_prod), 1);
+						setTimeout(() => buildCss(is_prod), 1);
 					}
 					return content;
 				}
@@ -104,7 +104,7 @@ module.exports = function(eleventyConfig) {
 	};
 };
 
-async function bundleCss(is_prod) {
+async function buildCss(is_prod) {
 	const unocss_cli = await import("@unocss/cli");
 	await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css" });
 
