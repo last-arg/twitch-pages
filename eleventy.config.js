@@ -14,51 +14,24 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 	eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
 		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
-		enableLogging: true,
+		// enableLogging: true,
 	});
 
 	eleventyConfig.addPassthroughCopy("public");
 
-	// Use unpurge css file to hash
-	// TODO?: maybe try to do purging sooner?
-    // eleventyConfig.addTransform ('css-purge', content => {});
-	eleventyConfig.addPassthroughCopy("src/css/main.css");
-	eleventyConfig.on('eleventy.after', async (_) => {
-		// TODO: if css has changed
-		let { code } = bundle({
-		  filename: './src/css/main.css',
-		  minify: is_prod,
-		  targets: browserslistToTargets([">= 0.25% and not dead"]),
-		});
-		const css_dir = "_site/css/";
-		let file = css_dir + "main.css";
-		if (!fs.existsSync(css_dir)){
-		    fs.mkdirSync(css_dir);
-		}
-
-		if (is_prod) {
-			const result = await new PurgeCSS().purge({
-			  // Content files referencing CSS classes
-			  content: ["./_site/**/*.html"],
-			  keyframes: true,
-			  variables: true,
-				safelist: {
-					standard: [ /^\:[-a-z]+$/ ],
-					greedy: [/\:(before|after)/ ],
-				},
-			  // CSS files to be purged in-place
-			  // css: ["./_site/css/main.css"],
-			  css: [{ name: file, raw: code.toString() }],
-			});
-			if (result.length) {
-				code = result[0].css;
-			}
-		}
-		fs.writeFileSync(file, code);
-	});
-
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
+		bundlePluginOptions: {
+			transforms: [
+				function(content) {
+					if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
+						// run after the file is created
+						setTimeout(() => bundleCss(is_prod), 100);
+					}
+					return content;
+				}
+			]
+		},
 	});
 
 	eleventyConfig.setUseGitIgnore(false);
@@ -84,7 +57,8 @@ module.exports = function(eleventyConfig) {
     })
 
 	eleventyConfig.setServerOptions({
-		domDiff: false
+		domDiff: false,
+		// watch: []
 	});
 
 	return {
@@ -94,3 +68,37 @@ module.exports = function(eleventyConfig) {
 		}
 	};
 };
+
+async function bundleCss(is_prod) {
+	// TODO: if css has changed
+	let { code } = bundle({
+	  filename: './src/css/main.css',
+	  minify: is_prod,
+	  targets: browserslistToTargets([">= 0.25% and not dead"]),
+	});
+	const css_dir = "_site/css/";
+	let file = css_dir + "main.css";
+	if (!fs.existsSync(css_dir)){
+	    fs.mkdirSync(css_dir);
+	}
+
+	if (is_prod) {
+		const result = await new PurgeCSS().purge({
+		  // Content files referencing CSS classes
+		  content: ["./_site/**/*.html"],
+		  keyframes: true,
+		  variables: true,
+			safelist: {
+				standard: [ /^\:[-a-z]+$/ ],
+				greedy: [/\:(before|after)/ ],
+			},
+		  // CSS files to be purged in-place
+		  // css: ["./_site/css/main.css"],
+		  css: [{ name: file, raw: code.toString() }],
+		});
+		if (result.length) {
+			code = result[0].css;
+		}
+	}
+	fs.writeFileSync(file, code);
+}
