@@ -5,6 +5,8 @@ const { bundle, browserslistToTargets } =  require("lightningcss");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
 const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
+const svgo = require("svgo");
+const svgo_config = require("./svg.config");
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
@@ -36,8 +38,20 @@ module.exports = function(eleventyConfig) {
 		})
 	})
 
-	eleventyConfig.addPassthroughCopy("public");
-
+	if (is_prod) {
+		eleventyConfig.on('eleventy.after', async () => {
+			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
+			const {data} = svgo.optimize(input, svgo_config);
+			const dir = "_site/public/assets";
+			if (!fs.existsSync(dir)) {
+			  fs.mkdirSync(dir)
+			}
+			fs.writeFileSync(`${dir}/icons.svg`, data);
+		});
+	} else {
+		eleventyConfig.addPassthroughCopy({ "src/assets": "public/assets" });
+	}
+	
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
 		bundlePluginOptions: {
@@ -59,7 +73,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	eleventyConfig.ignores.add("src/css/_*.css");
-	eleventyConfig.addPassthroughCopy("public");
+
 	eleventyConfig.addPassthroughCopy({
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
 		"./node_modules/upup/dist/upup.sw.min.js": "upup.sw.min.js",
