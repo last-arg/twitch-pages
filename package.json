@@ -4,7 +4,7 @@
   "description": "Twitch alternative pages",
   "scripts": {
     "dev": "netlify dev",
-    "build": "rm -rf _site/ && NODE_ENV=production eleventy"
+    "build": "NODE_ENV=production eleventy"
   },
   "dependencies": {
     "htmx.org": "^1.9.10",

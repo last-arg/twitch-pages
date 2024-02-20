@@ -8,12 +8,18 @@ const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 const svgo = require("svgo");
 const svgo_config = require("./svg.config");
 
+const output_dir = "_site";
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
  * @returns {ReturnType<import("@11ty/eleventy/src/defaultConfig")>}
  */
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
+
+	if (is_prod) {
+		fs.rmSync(output_dir, { recursive: true, force: true });
+	}
+
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 	eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
 		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
@@ -23,7 +29,7 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.on('eleventy.before', async () => {
 		await esbuild.build({
 		  entryPoints: ["src/main.js", "src/third-party.js"],
-		  outdir: "_site/public/js/",
+		  outdir: `${output_dir}/public/js/`,
 		  minify: is_prod,
 		  bundle: true,
 		  sourcemap: false,
@@ -42,7 +48,7 @@ module.exports = function(eleventyConfig) {
 		eleventyConfig.on('eleventy.after', async () => {
 			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
 			const {data} = svgo.optimize(input, svgo_config);
-			const dir = "_site/public/assets";
+			const dir = `${output_dir}/public/assets`;
 			if (!fs.existsSync(dir)) {
 			  fs.mkdirSync(dir)
 			}
@@ -99,7 +105,7 @@ module.exports = function(eleventyConfig) {
 	return {
 		dir: {
 			input: "src",
-			output: "_site",
+			output: output_dir,
 		}
 	};
 };
@@ -114,7 +120,7 @@ async function buildCss(is_prod) {
 	  minify: is_prod,
 	  targets: browserslistToTargets([">= 0.25% and not dead"]),
 	});
-	const css_dir = "_site/css/";
+	const css_dir = `${output_dir}/css/`;
 	let file = css_dir + "main.css";
 	if (!fs.existsSync(css_dir)){
 	    fs.mkdirSync(css_dir);
@@ -123,7 +129,7 @@ async function buildCss(is_prod) {
 	if (is_prod) {
 		const result = await new PurgeCSS().purge({
 		  // Content files referencing CSS classes
-		  content: ["./_site/**/*.html"],
+		  content: [`./${output_dir}/**/*.html`],
 		  keyframes: true,
 		  variables: true,
 			safelist: {
@@ -131,7 +137,7 @@ async function buildCss(is_prod) {
 				greedy: [/\:(before|after)/ ],
 			},
 		  // CSS files to be purged in-place
-		  // css: ["./_site/css/main.css"],
+		  // css: [`./${output_dir}/css/main.css`],
 		  css: [{ name: file, raw: code.toString() }],
 		});
 		if (result.length) {
