@@ -6,6 +6,7 @@ _site
 src/js/
 src/css/_components.css
 src/css/_utilities_generated.css
+src/_data/manifest.json
 
 # Bun
 bun.lockb
