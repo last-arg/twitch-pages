@@ -82,7 +82,7 @@ class Settings extends EventTarget {
     */
 
     data = {
-        /** @type {{show_all: string, languages: string[]}} */
+        /** @type {{show_all: string|null, languages: string[]}} */
         category: { show_all: 'on', languages: [] },
         general: {
           "top-games-count": settings_default.top_games_count,
@@ -113,6 +113,7 @@ class Settings extends EventTarget {
             this._readStorage();
             this._save();
         }, false);
+        this._readStorage();
         this.lang_map = new Map();
     }
 
@@ -155,7 +156,7 @@ class Settings extends EventTarget {
                 if (input.type === "number") {
                     input.value = value;
                 } else if (input.type === "checkbox") {
-                    input.checked = value === "on";
+                    input.checked = value;
                 }
             }
         }
@@ -167,6 +168,7 @@ class Settings extends EventTarget {
             // @ts-ignore
             (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
             this.data["general"] = new_settings;
+            this._save()
         });
     }
 
@@ -190,6 +192,9 @@ class Settings extends EventTarget {
     }
 
     _initCategory() {
+        this.data.category.languages
+        const input_all_langs = /** @type {HTMLInputElement} */ (document.querySelector("input[name=all-languages]"));
+        input_all_langs.checked = this.data.category.show_all;
         const options = this.$.root.querySelectorAll("#lang-list option");
         for (let i = 0; i < options.length; i++) {
             const opt = /** @type {HTMLInputElement} */ (options[i]);
@@ -207,7 +212,9 @@ class Settings extends EventTarget {
             evt.preventDefault();
             const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
             this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
-            this.data.category.show_all = /** @type {string} */ (f_data.get("all-languages"));
+            console.log(f_data.get("all-languages"));
+            this.data.category.show_all = /** @type {string|null} */ (f_data.get("all-languages"));
+            this._save();
         });
 
         form_category.addEventListener("click", (event) => {
