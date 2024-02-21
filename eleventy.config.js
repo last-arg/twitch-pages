@@ -134,10 +134,11 @@ async function buildCss(is_prod) {
 		  content: [`./${output_dir}/**/*.html`],
 		  keyframes: true,
 		  variables: true,
-			safelist: {
-				standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
-				greedy: [/\:(before|after)/ ],
-			},
+		  safelist: {
+		  	standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
+		  	greedy: [/\:(before|after)/ ],
+		  	keyframes: ["fade-in", "fade-out"],
+		  },
 		  // CSS files to be purged in-place
 		  // css: [`./${output_dir}/css/main.css`],
 		  css: [{ name: file, raw: code.toString() }],

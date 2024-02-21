@@ -16,6 +16,6 @@
 
 .simple-fade-in {
   animation: var(--animation-fade-out) forwards, var(--animation-fade-in) forwards; 
-  animation-delay: 0, 20ms;
+  animation-delay: 0s, 20ms;
   animation-duration: 0s, 380ms;
 }
