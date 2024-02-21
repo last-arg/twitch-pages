@@ -7,8 +7,8 @@
 	<title @raw="title"></title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
-  <script defer webc:keep src="/public/js/third-party.js"></script>
-  <script defer webc:keep src="/public/js/main.js"></script>
+  <script defer webc:keep :src="hash('/public/js/third-party.js')"></script>
+  <script defer webc:keep :src="hash('/public/js/main.js')"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/">
 </head>
 <body>
@@ -17,6 +17,7 @@
   <script webc:keep webc:if="this.isProd()">
   UpUp.start({
     // TODO: automate updating version increment
+    // TODO: have to generate this script with webc
     "cache-version": "v3",
     "assets": [
       "/css/main.css", 

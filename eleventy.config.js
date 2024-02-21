@@ -4,8 +4,13 @@ const { PurgeCSS } = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
+const path = require("node:path");
 const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 const svgo = require("svgo");
+const manifestPlugin = require('esbuild-plugin-manifest')
+const manifest = require('./src/_data/manifest.json');
+
+// TODO: manifest file with esbuild - https://github.com/woodcox/11ty-solid-base/blob/main/config/build/esbuild.js
 
 const output_dir = "_site";
 /**
@@ -27,14 +32,41 @@ module.exports = function(eleventyConfig) {
 		});
 	}
 
+	// Use this filter only if the asset is processed by esbuild and is in _data/manifest.json. Use {{ 'myurl' | hash }}
+	eleventyConfig.addFilter("hash", (url) => {
+		const urlbase = path.basename(url);
+		const [basePart, ...paramPart] = urlbase.split(".");
+		const urldir = path.dirname(url);
+		let hashedBasename = manifest[basePart];
+		return `${urldir}/${hashedBasename}`;
+	});
+
 	eleventyConfig.on('eleventy.before', async () => {
-		// Could hash files with esbuild - https://esbuild.github.io/api/#asset-names
+		// TODO: use esbuild.context instead? - https://github.com/woodcox/11ty-solid-base/blob/main/config/build/esbuild.js
 		await esbuild.build({
 		  entryPoints: ["src/main.js", "src/third-party.js"],
+		  entryNames: is_prod ? "[name]-[hash]" : "[name]",
 		  outdir: `${output_dir}/public/js/`,
 		  minify: is_prod,
 		  bundle: true,
 		  sourcemap: false,
+		  metafile: true,
+		  plugins: [
+	  	    manifestPlugin({
+		      // NOTE: Save to src/_data. This is always relative to `outdir`.
+		      filename: '../../../src/_data/manifest.json',
+		      shortNames: true,
+		      extensionless: 'input',
+		      // Generate manifest.json - https://github.com/pellebjerkestrand/pokesite/blob/main/source/build/build-client.js
+		      generate: (entries) =>
+		        Object.fromEntries(
+		          Object.entries(entries).map(([from, to]) => [
+		            from,
+		            `${path.basename(to)}`,
+		          ])
+		        ),
+		      })
+		  ]
 		})
 
 		await esbuild.build({

@@ -20,6 +20,7 @@
     "@unocss/cli": "^0.58.5",
     "eleventy-auto-cache-buster": "^0.3.0",
     "esbuild": "^0.20.1",
+    "esbuild-plugin-manifest": "^1.0.3",
     "html-minifier": "^4.0.0",
     "lightningcss": "^1.23.0",
     "netlify-cli": "^17.16.4",
