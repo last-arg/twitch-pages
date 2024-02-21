@@ -7,5 +7,8 @@ src/js/
 src/css/_components.css
 src/css/_utilities_generated.css
 
+# Bun
+bun.lockb
+
 # Local Netlify folder
 .netlify
