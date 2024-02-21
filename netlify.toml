@@ -27,7 +27,7 @@
 
 [dev]
   autoLaunch = false
-  command = "eleventy --config=eleventy.config.js --port 8080 --serve"
+  command = "eleventy --config=eleventy.config.js --port 8080 --serve --incremental"
   port = 8888
   targetPort = 8080
 

@@ -6,7 +6,6 @@ const esbuild = require("esbuild");
 const fs = require("node:fs");
 const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 const svgo = require("svgo");
-const svgo_config = require("./svg.config");
 
 const output_dir = "_site";
 /**
@@ -21,12 +20,15 @@ module.exports = function(eleventyConfig) {
 	}
 
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
-	eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
-		globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
-		// enableLogging: true,
-	});
+	if (is_prod) {
+		eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
+			globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
+			// enableLogging: true,
+		});
+	}
 
 	eleventyConfig.on('eleventy.before', async () => {
+		// Could hash files with esbuild - https://esbuild.github.io/api/#asset-names
 		await esbuild.build({
 		  entryPoints: ["src/main.js", "src/third-party.js"],
 		  outdir: `${output_dir}/public/js/`,
@@ -47,7 +49,7 @@ module.exports = function(eleventyConfig) {
 	if (is_prod) {
 		eleventyConfig.on('eleventy.after', async () => {
 			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
-			const {data} = svgo.optimize(input, svgo_config);
+			const {data} = svgo.optimize(input, require("./svg.config"));
 			const dir = `${output_dir}/public/assets`;
 			if (!fs.existsSync(dir)) {
 			  fs.mkdirSync(dir)
@@ -82,7 +84,7 @@ module.exports = function(eleventyConfig) {
 
 	eleventyConfig.addPassthroughCopy({
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
-		"./node_modules/upup/dist/upup.sw.min.js": "upup.sw.min.js",
+		"./node_modules/upup/dist/upup.sw.min.js": "/upup.sw.min.js",
 		"static": "/",
 	});
 
