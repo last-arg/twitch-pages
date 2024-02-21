@@ -135,7 +135,7 @@ async function buildCss(is_prod) {
 		  keyframes: true,
 		  variables: true,
 			safelist: {
-				standard: [ /^\:[-a-z]+$/ ],
+				standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
 				greedy: [/\:(before|after)/ ],
 			},
 		  // CSS files to be purged in-place
