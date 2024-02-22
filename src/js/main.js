@@ -1,7 +1,8 @@
-import { games, live, sidebar, streams, settings, state } from './common';
-import { twitch } from './twitch';
+import { games, live, sidebar, streams, settings, state } from "./common";
+import { twitch } from "./twitch";
 import { initHtmx } from "./htmx_init";
 
+console.log("js 2")
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
 @typedef {import("./common").Game} Game

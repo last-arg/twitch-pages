@@ -52,12 +52,12 @@ export default function(eleventyConfig) {
 					const r = await esbuild.build({
     				  stdin: {
     				  	  contents: content,
-    				  	  resolveDir: './src',
+    				  	  resolveDir: './src/js',
     				  	  sourcefile: this.page.url,
     				  },
 					  minify: is_prod,
 					  bundle: true,
-					  sourcemap: false,
+					  sourcemap: !is_prod,
 					  write: false,
 					})
 					const out = r.outputFiles[0];
@@ -87,8 +87,7 @@ export default function(eleventyConfig) {
 	});
 
 	eleventyConfig.setUseGitIgnore(false);
-	eleventyConfig.addWatchTarget("src/*.js")
-	eleventyConfig.watchIgnores.add("src/js/*.js");
+	eleventyConfig.addWatchTarget("src/js/")
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	eleventyConfig.ignores.add("src/css/_*.css");

@@ -1,6 +1,6 @@
 import { strCompareField, sidebar, categoryUrl, twitchCatImageSrc } from './common';
 import { twitch } from './twitch'
-import { config } from 'config';
+import { config } from './config.prod';
 
 /**
  * @typedef {import("./common").Game} Game

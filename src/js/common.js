@@ -1,7 +1,7 @@
 import { Games, SearchGames } from "./games";
 import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from "./streams";
 import { Sidebar } from "./sidebar";
-import { settings_default } from 'config';
+import { settings_default } from './config.prod';
 
 export const state = {
     /** @type {string | null} */

@@ -6,9 +6,7 @@
   <div class="action-box">
     <a href="#twitch_link" rel="external">
       <span class="sr-only">Go to twitch page</span>
-      <svg aria-hidden="true" focusable="false">
-        <use href="/public/assets/icons.svg#external-link"></use>
-      </svg>
+      <svg-icon name="external-link"></svg-icon>
     </a>
   </div>
   <div class="action-box">
