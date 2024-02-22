@@ -1,0 +1,3 @@
+<svg aria-hidden="true" focusable="false">
+  <use :href="'/public/assets/icons.svg#' + name"></use>
+</svg>

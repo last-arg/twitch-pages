@@ -1,13 +1,11 @@
 <div webc:root="override" class="sidebar-header cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
   <h2>
-    <svg aria-hidden="true" focusable="false">
-      <use :href="'/public/assets/icons.svg#' + icon"></use>
-    </svg>
+    <svg-icon :name="icon"></svg-icon>
     <span webc:nokeep @text="sb_title"></span>
   </h2>
   <button type="button" class="btn-close">
     <span class="sr-only">Close sidebar</span>
-    <svg aria-hidden="true" focusable="false"><use href="/public/assets/icons.svg#close"></use></svg>
+    <svg-icon name="close"></svg-icon>
   </button>
 </div>
 <style>

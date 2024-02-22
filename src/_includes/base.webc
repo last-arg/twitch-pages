@@ -6,7 +6,7 @@
 	<meta name="description" content="">
 	<title @raw="title"></title>
   <!-- TODO: add favicon -->
-  <link webc:keep rel="stylesheet" type="text/css" href="css/main.css">
+  <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
   <script webc:bucket="vendor" src="../third-party.js"></script>
   <script defer webc:keep :src="getBundleFileUrl('js', 'vendor')"></script>
   <script src="../main.js"></script>

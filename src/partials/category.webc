@@ -32,9 +32,7 @@ permalink: "public/partials/category.html"
               </div>
               <div class="stream-title">
                 <p>:title</p>
-                <svg aria-hidden="true" focusable="false">
-                  <use href="/public/assets/icons.svg#external-link"></use>
-                </svg>
+                <svg-icon name="external-link"></svg-icon>
               </div>
             </a>
             <div class="user-info">
@@ -58,9 +56,7 @@ permalink: "public/partials/category.html"
                 </div>
                 <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">
                   Twitch videos
-                  <svg aria-hidden="true" focusable="false">
-                    <use href="/public/assets/icons.svg#external-link"></use>
-                  </svg>
+                  <svg-icon name="external-link"></svg-icon>
                 </a>
               </div>
             </div>

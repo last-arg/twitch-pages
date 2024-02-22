@@ -27,9 +27,7 @@ title: "Home | Twitch Pages"
               <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false">
               <!-- TODO: see if I can make this <button> into <menu-button> -->
               <button class="menu-item" data-menu-item="search" type="button">
-                <svg aria-hidden="true" focusable="false">
-                  <use href="/public/assets/icons.svg#looking-class"></use>
-                </svg>
+                <svg-icon name="looking-class"></svg-icon>
                 <span class="sr-only">Search for games</span>
               </button>
               <!-- search sidebar -->

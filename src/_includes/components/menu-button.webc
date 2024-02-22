@@ -1,6 +1,6 @@
 <button webc:root="override" class="menu-item" :data-menu-item="name" aria-expanded="false">
   <span webc:if="name === 'streams'" class="streams-count hidden">0</span>
-  <svg aria-hidden="true" focusable="false"><use :href="'/public/assets/icons.svg#' + icon"></use></svg>
+  <svg-icon :name="icon"></svg-icon>
   <span class="sr-only" @text="name"></span>
 </button>
 <style>

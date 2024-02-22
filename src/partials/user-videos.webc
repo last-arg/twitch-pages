@@ -46,9 +46,7 @@ permalink: "public/partials/user-videos.html"
                 :height="$data.global.config.image.video.height"
               >
               <span class="video-info video-type" title=":video_type_title">
-                <svg aria-hidden="true" focusable="false">
-                  <use href="/public/assets/icons.svg#:video_icon"></use>
-                </svg>
+                <svg-icon name=":video_icon"></svg-icon>
                 <span class="sr-only">:video_type</span>
               </span>
               <div class="video-info video-duration">
@@ -58,9 +56,7 @@ permalink: "public/partials/user-videos.html"
             </div>
             <div class="video-title">
               <p>:video_title</p>
-              <svg aria-hidden="true" focusable="false">
-                <use href="/public/assets/icons.svg#external-link"></use>
-              </svg>
+              <svg-icon name="external-link"></svg-icon>
             </div>
           </a>
         </li>

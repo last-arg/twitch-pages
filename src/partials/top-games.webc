@@ -21,9 +21,7 @@ permalink: "public/partials/top-games.html"
             <div class="game-action" data-pos="left">
               <a class="external-link" href="#game_external_url" rel="external">
                 <span class="sr-only">Got to game's Twitch page</span>
-                <svg aria-hidden="true" focusable="false">
-                  <use href="/public/assets/icons.svg#external-link"></use>
-                </svg>
+                <svg-icon name="external-link"></svg-icon>
               </a>
             </div>
             <div class="game-action" data-pos="right">
