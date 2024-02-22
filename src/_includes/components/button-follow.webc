@@ -6,11 +6,7 @@ if (this.obj) {
 </script>
 <button webc:keep type="button" class="button-follow" :data-for="name" data-is-followed="false" 
   data-item-id=":item_id" data-item=":item_json">
-  <!-- TODO: implement this with <svg-icon>-->
-  <svg aria-hidden="true" focusable="false">
-    <use href="/public/assets/icons.svg#star-empty"></use>
-    <use href="/public/assets/icons.svg#star-full"></use>
-  </svg>
+  <svg-icon name="['star-empty', 'start-full']"></svg-icon>
   <span class="sr-only">Follow/Unfollow</span>
 </button>
 <style>

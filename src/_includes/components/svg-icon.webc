@@ -1,3 +1,4 @@
 <svg aria-hidden="true" focusable="false">
-  <use :href="'/public/assets/icons.svg#' + name"></use>
+  <use webc:if="typeof name === 'string'" :href="'/public/assets/icons.svg#' + name"></use>
+  <use webc:if="Array.isArray(name)" webc:for="icon_name of name" :href="'/public/assets/icons.svg#' + icon_name"></use>
 </svg>
