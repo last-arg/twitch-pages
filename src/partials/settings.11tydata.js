@@ -1,4 +1,4 @@
-module.exports.language_codes = {
+export const language_codes = {
     "aa": "Afar",
     "ab": "Abkhazian",
     "ae": "Avestan",

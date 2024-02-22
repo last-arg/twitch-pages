@@ -1,5 +1,5 @@
-const config = require("../js/config.prod");
-module.exports = {
-  paths: config.mainContent,
-  config: config.config,
+import {config, mainContent} from "../config.prod.js";
+export default {
+  paths: mainContent,
+  config: config,
 }

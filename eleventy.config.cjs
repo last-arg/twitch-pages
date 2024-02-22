@@ -19,6 +19,14 @@ const output_dir = "_site";
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 
+	// const s = (async function() {
+	// const result = await new Image("src/assets/icons.svg", {
+	// 	widths: ["auto"],
+	// 	formats: ["svg"],
+	// });
+	// console.log(result)
+	// }())
+
 	if (is_prod) {
 		fs.rmSync(output_dir, { recursive: true, force: true });
 	}
@@ -56,6 +64,7 @@ module.exports = function(eleventyConfig) {
 	}
 	
 	eleventyConfig.addPlugin(bundlerPlugin, {
+		bundles: ["svg"],
 		transforms: [
 			async function(content) {
 				if (this.type === "js") {
