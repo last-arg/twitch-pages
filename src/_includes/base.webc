@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<title @raw="title"></title>
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
-  <script defer webc:keep :src="hash('/public/js/third-party.js')"></script>
-  <script defer webc:keep :src="hash('/public/js/main.js')"></script>
+  <!-- TODO: add favicon -->
+  <link webc:keep rel="stylesheet" type="text/css" href="css/main.css">
+  <script webc:bucket="vendor" src="../third-party.js"></script>
+  <script defer webc:keep :src="getBundleFileUrl('js', 'vendor')"></script>
+  <script src="../main.js"></script>
+  <script defer webc:keep :src="getBundleFileUrl('js')"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/">
 </head>
 <body>

@@ -5,7 +5,7 @@
     :data-card="name"
     preload
   >
-    <img webc:if="name === 'user-videos'" src="" alt=""
+    <img webc:if="name === 'user-videos'" src="#placeholder" alt=""
       :width="$data.global.config.image.user.width" 
       :height="$data.global.config.image.user.height" />
     <img webc:else alt=""
