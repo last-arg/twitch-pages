@@ -1,19 +1,20 @@
-const pluginWebc = require("@11ty/eleventy-plugin-webc");
-const htmlMinifier = require ('html-minifier')
-const { PurgeCSS } = require("purgecss");
-const { bundle, browserslistToTargets } =  require("lightningcss");
-const esbuild = require("esbuild");
-const fs = require("node:fs");
-const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
-const svgo = require("svgo");
-const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
+import fs from "node:fs";
+import pluginWebc from "@11ty/eleventy-plugin-webc";
+import htmlMinifier from 'html-minifier';
+import { PurgeCSS } from "purgecss";
+import { bundle, browserslistToTargets } from "lightningcss";
+import esbuild from "esbuild";
+import eleventyAutoCacheBuster from "eleventy-auto-cache-buster";
+import svgo from "svgo";
+import bundlerPlugin from "@11ty/eleventy-plugin-bundle";
+import * as unocss_cli from "@unocss/cli";
 
 const output_dir = "_site";
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
  * @returns {ReturnType<import("@11ty/eleventy/src/defaultConfig")>}
  */
-module.exports = function(eleventyConfig) {
+export default function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 
 	if (is_prod) {
@@ -125,7 +126,6 @@ module.exports = function(eleventyConfig) {
 };
 
 async function buildCss(is_prod) {
-	const unocss_cli = await import("@unocss/cli");
 	await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css" });
 
 	// TODO: if css has changed
