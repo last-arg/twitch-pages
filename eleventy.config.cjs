@@ -4,12 +4,9 @@ const { PurgeCSS } = require("purgecss");
 const { bundle, browserslistToTargets } =  require("lightningcss");
 const esbuild = require("esbuild");
 const fs = require("node:fs");
-const path = require("node:path");
 const eleventyAutoCacheBuster = require("eleventy-auto-cache-buster");
 const svgo = require("svgo");
 const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
-
-// TODO: manifest file with esbuild - https://github.com/woodcox/11ty-solid-base/blob/main/config/build/esbuild.js
 
 const output_dir = "_site";
 /**
@@ -19,14 +16,6 @@ const output_dir = "_site";
 module.exports = function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 
-	// const s = (async function() {
-	// const result = await new Image("src/assets/icons.svg", {
-	// 	widths: ["auto"],
-	// 	formats: ["svg"],
-	// });
-	// console.log(result)
-	// }())
-
 	if (is_prod) {
 		fs.rmSync(output_dir, { recursive: true, force: true });
 	}
@@ -34,20 +23,10 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 	if (is_prod) {
 		eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
-			globstring: "**/*.{css,js,png,jpg,jpeg,gif,mp4,ico,svg}",
+			globstring: "**/*.{css,svg}",
 			// enableLogging: true,
 		});
 	}
-
-	eleventyConfig.on('eleventy.before', async () => {
-		await esbuild.build({
-		  entryPoints: ["src/config.prod.js"],
-		  outdir: "src/js/",
-		  minify: false,
-		  sourcemap: false,
-		  format: "cjs",
-		})
-	})
 
 	if (is_prod) {
 		eleventyConfig.on('eleventy.after', async () => {
@@ -119,16 +98,18 @@ module.exports = function(eleventyConfig) {
 		"static": "/",
 	});
 
-    eleventyConfig.addTransform ('html-minifier', content => {
-      if (is_prod && this.page?.fileSlug === "html") {
-        return htmlMinifier.minify (content, {
-          useShortDoctype: true,
-          removeComments: true,
-          collapseWhitespace: true,
-        })
-      }
-      return content
-    })
+	if (is_prod) {
+	    eleventyConfig.addTransform ('html-minifier', content => {
+	      if (this.page?.fileSlug === "html") {
+	        return htmlMinifier.minify(content, {
+	          useShortDoctype: true,
+	          removeComments: true,
+	          collapseWhitespace: true,
+	        })
+	      }
+	      return content
+	    })
+    }
 
 	eleventyConfig.setServerOptions({
 		domDiff: false,
