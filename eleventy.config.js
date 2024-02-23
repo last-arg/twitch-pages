@@ -30,6 +30,12 @@ export default function(eleventyConfig) {
 		});
 	}
 
+	if (is_prod) {
+		eleventyConfig.on('eleventy.after', function() {
+			setupServiceWorkerScript();
+		})
+	}
+
 	eleventyConfig.addTemplateFormats("svg");
 	eleventyConfig.addExtension("svg", {
 		outputFileExtension: "svg",
