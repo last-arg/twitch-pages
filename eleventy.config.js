@@ -32,6 +32,7 @@ export default function(eleventyConfig) {
 
 	if (is_prod) {
 		eleventyConfig.on('eleventy.after', async () => {
+			// svgo
 			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
 			const {data} = svgo.optimize(input, svgo_config);
 			const dir = `${output_dir}/public/assets`;
@@ -39,6 +40,8 @@ export default function(eleventyConfig) {
 			  fs.mkdirSync(dir)
 			}
 			fs.writeFileSync(`${dir}/icons.svg`, data);
+
+			setupServiceWorkerScript()
 		});
 	} else {
 		eleventyConfig.addPassthroughCopy({ "src/assets": "public/assets" });
@@ -152,4 +155,30 @@ async function buildCss(is_prod) {
 		}
 	}
 	fs.writeFileSync(file, code);
+}
+
+function setupServiceWorkerScript() { 
+	const assets = [
+      "/css/main.css", 
+      "/public/assets/icons.svg",
+      "/public/partials/category.html",
+      "/public/partials/not-found.html",
+      "/public/partials/settings.html",
+      "/public/partials/top-games.html",
+      "/public/partials/user-videos.html",
+    ];
+	const files = fs.readdirSync(`${output_dir}/bundle`);
+	for (const f of files) {assets.push(f)}
+
+    // TODO: automate updating cache-version
+	let out = `
+	  UpUp.start({
+	    "cache-version": "v5",
+	    "assets": ${JSON.stringify(assets)},
+	  });
+	` 
+	const filename = `${output_dir}/index.html`;
+	const input = fs.readFileSync(filename, "utf-8");
+	out = input.replace("[SERVICE_WORKER_SCRIPT]", out);
+	fs.writeFileSync(filename, out);
 }
