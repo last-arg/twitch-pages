@@ -7,6 +7,7 @@ import esbuild from "esbuild";
 import eleventyAutoCacheBuster from "eleventy-auto-cache-buster";
 import svgo from "svgo";
 import bundlerPlugin from "@11ty/eleventy-plugin-bundle";
+import svgo_config from "./svg.config.js"
 import * as unocss_cli from "@unocss/cli";
 
 const output_dir = "_site";
@@ -32,7 +33,7 @@ export default function(eleventyConfig) {
 	if (is_prod) {
 		eleventyConfig.on('eleventy.after', async () => {
 			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
-			const {data} = svgo.optimize(input, require("./svg.config"));
+			const {data} = svgo.optimize(input, svgo_config);
 			const dir = `${output_dir}/public/assets`;
 			if (!fs.existsSync(dir)) {
 			  fs.mkdirSync(dir)
@@ -91,8 +92,8 @@ export default function(eleventyConfig) {
 	});
 
 	if (is_prod) {
-	    eleventyConfig.addTransform ('html-minifier', content => {
-	      if (this.page?.fileSlug === "html") {
+	    eleventyConfig.addTransform('html-minifier', function(content) {
+	      if (this.page?.outputFileExtension === "html") {
 	        return htmlMinifier.minify(content, {
 	          useShortDoctype: true,
 	          removeComments: true,
