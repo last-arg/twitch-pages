@@ -30,25 +30,18 @@ export default function(eleventyConfig) {
 		});
 	}
 
+	eleventyConfig.addTemplateFormats("svg");
 	if (is_prod) {
-		eleventyConfig.on('eleventy.after', async () => {
-			// svgo
-			const input = fs.readFileSync("./src/assets/icons.svg", "utf-8");
-			const {data} = svgo.optimize(input, svgo_config);
-			const dir = `${output_dir}/public/assets`;
-			if (!fs.existsSync(dir)) {
-			  fs.mkdirSync(dir)
-			}
-			fs.writeFileSync(`${dir}/icons.svg`, data);
-
-			setupServiceWorkerScript()
+		eleventyConfig.addExtension("svg", {
+			outputFileExtension: "svg",
+		    compile: function(inputContent) {
+			  const {data} = svgo.optimize(inputContent, svgo_config);
+		      return async (_) => { return data };
+		    }
 		});
-	} else {
-		eleventyConfig.addPassthroughCopy({ "src/assets": "public/assets" });
 	}
-	
+
 	eleventyConfig.addPlugin(bundlerPlugin, {
-		bundles: ["svg"],
 		transforms: [
 			async function(content) {
 				if (this.type === "js") {

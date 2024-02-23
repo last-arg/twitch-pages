@@ -8,7 +8,7 @@ layout: css.webc
   let result = "";
   const s = "template";
   for (const c of this.collections.all) {
-    if (c.template.fileSlug.parsed.ext === ".css") {
+    if (c.template.fileSlug.parsed.ext !== ".webc") {
       continue;
     }
     const path = c.template.fileSlug.inputPath
