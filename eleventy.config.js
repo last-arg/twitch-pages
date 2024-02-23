@@ -170,13 +170,10 @@ function setupServiceWorkerScript() {
 	const files = fs.readdirSync(`${output_dir}/bundle`);
 	for (const f of files) {assets.push(f)}
 
-    // TODO: automate updating cache-version
-	let out = `
-	  UpUp.start({
-	    "cache-version": "v5",
-	    "assets": ${JSON.stringify(assets)},
-	  });
-	` 
+	// To get hash version would have to get hash for all files. Concat those
+	// hashes into version? Hash or shorten concated value into shorter value?
+    const cache_version = Date.now().toString(); 
+	let out = `UpUp.start({"cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
 	const filename = `${output_dir}/index.html`;
 	const input = fs.readFileSync(filename, "utf-8");
 	out = input.replace("[SERVICE_WORKER_SCRIPT]", out);
