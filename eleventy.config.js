@@ -64,6 +64,9 @@ export default function(eleventyConfig) {
 					if (out) {
 						return out.text
 					}
+				} else if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
+					// run after the file is created
+					setTimeout(() => buildCss(is_prod), 1);
 				}
 			
 				return content;
@@ -73,21 +76,10 @@ export default function(eleventyConfig) {
 
 	eleventyConfig.addPlugin(pluginWebc, {
 		components: ["./src/_includes/components/**/*.webc"],
-		bundlePluginOptions: {
-			transforms: [
-				function(content) {
-					if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
-						// run after the file is created
-						setTimeout(() => buildCss(is_prod), 1);
-					}
-					return content;
-				}
-			]
-		},
 	});
 
 	eleventyConfig.setUseGitIgnore(false);
-	eleventyConfig.addWatchTarget("src/js/")
+	eleventyConfig.addWatchTarget("src/js/*")
 	eleventyConfig.watchIgnores.add("src/css/_components.css");
 	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
 	eleventyConfig.ignores.add("src/css/_*.css");
