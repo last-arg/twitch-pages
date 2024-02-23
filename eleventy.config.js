@@ -31,15 +31,16 @@ export default function(eleventyConfig) {
 	}
 
 	eleventyConfig.addTemplateFormats("svg");
-	if (is_prod) {
-		eleventyConfig.addExtension("svg", {
-			outputFileExtension: "svg",
-		    compile: function(inputContent) {
-			  const {data} = svgo.optimize(inputContent, svgo_config);
-		      return async (_) => { return data };
-		    }
-		});
-	}
+	eleventyConfig.addExtension("svg", {
+		outputFileExtension: "svg",
+	    compile: function(inputContent) {
+	      if (is_prod) {
+			  const result = svgo.optimize(inputContent, svgo_config);
+			  inputContent = result.data;
+	      }
+	      return () => { return inputContent };
+	    }
+	});
 
 	eleventyConfig.addPlugin(bundlerPlugin, {
 		transforms: [
