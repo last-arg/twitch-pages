@@ -2,7 +2,7 @@
 permalink: "src/css/_components.css"
 permalinkBypassOutputDir: true
 eleventyExcludeFromCollections: true
-layout: "css"
+layout: css.webc
 ---
 <script webc:type="js">
   let result = "";

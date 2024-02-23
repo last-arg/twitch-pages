@@ -1,4 +1,9 @@
-<svg aria-hidden="true" focusable="false">
-  <use webc:if="typeof name === 'string'" :href="'/public/assets/icons.svg#' + name"></use>
-  <use webc:if="Array.isArray(name)" webc:for="icon_name of name" :href="'/public/assets/icons.svg#' + icon_name"></use>
-</svg>
+<script webc:type="js">
+  let result = `<svg aria-hidden="true" focusable="false">`;
+  const icons = this.name.split(" ").map(val => val.trim()).filter(val => val.length > 0);
+  for (const icon of icons) {
+    result += `<use href="/public/assets/icons.svg#${icon}"></use>`
+  }
+  result += "</svg>";
+  result;
+</script>

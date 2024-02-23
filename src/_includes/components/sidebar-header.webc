@@ -1,11 +1,11 @@
 <div webc:root="override" class="sidebar-header cluster" style="--cluster-justify-content: space-between; --cluster-align-items: stretch;">
   <h2>
-    <svg-icon :name="icon"></svg-icon>
+    <svg-icon :@name="icon"></svg-icon>
     <span webc:nokeep @text="sb_title"></span>
   </h2>
   <button type="button" class="btn-close">
     <span class="sr-only">Close sidebar</span>
-    <svg-icon name="close"></svg-icon>
+    <svg-icon @name="close"></svg-icon>
   </button>
 </div>
 <style>
