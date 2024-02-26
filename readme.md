@@ -16,7 +16,6 @@ Pages:
 [ ] use Cache API to store some stuff?
   - user header
   - category header
-[ ] auto update service worker version
 
 ## Resources
 

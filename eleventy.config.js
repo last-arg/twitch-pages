@@ -17,23 +17,30 @@ const output_dir = "_site";
  */
 export default function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
+	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 
 	if (is_prod) {
 		fs.rmSync(output_dir, { recursive: true, force: true });
-	}
 
-	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
-	if (is_prod) {
 		eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
 			globstring: "**/*.{css,svg}",
 			// enableLogging: true,
 		});
-	}
 
-	if (is_prod) {
 		eleventyConfig.on('eleventy.after', function() {
 			setupServiceWorkerScript();
 		})
+
+	    eleventyConfig.addTransform('html-minifier', function(content) {
+	      if (this.page?.outputFileExtension === "html") {
+	        return htmlMinifier.minify(content, {
+	          useShortDoctype: true,
+	          removeComments: true,
+	          collapseWhitespace: true,
+	        })
+	      }
+	      return content
+	    })
 	}
 
 	eleventyConfig.addTemplateFormats("svg");
@@ -93,19 +100,6 @@ export default function(eleventyConfig) {
 		"./node_modules/upup/dist/upup.sw.min.js": "/upup.sw.min.js",
 		"static": "/",
 	});
-
-	if (is_prod) {
-	    eleventyConfig.addTransform('html-minifier', function(content) {
-	      if (this.page?.outputFileExtension === "html") {
-	        return htmlMinifier.minify(content, {
-	          useShortDoctype: true,
-	          removeComments: true,
-	          collapseWhitespace: true,
-	        })
-	      }
-	      return content
-	    })
-    }
 
 	eleventyConfig.setServerOptions({
 		domDiff: false,
