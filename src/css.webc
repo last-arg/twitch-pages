@@ -1,6 +1,5 @@
 ---
-permalink: "src/css/_components.css"
-permalinkBypassOutputDir: true
+permalink: "css/_components.css"
 eleventyExcludeFromCollections: true
 layout: css.webc
 ---

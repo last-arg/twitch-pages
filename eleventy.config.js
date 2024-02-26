@@ -11,6 +11,8 @@ import svgo_config from "./svg.config.js"
 import * as unocss_cli from "@unocss/cli";
 
 const output_dir = "_site";
+const tmp_dir = `${output_dir}/tmp`
+
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
  * @returns {ReturnType<import("@11ty/eleventy/src/defaultConfig")>}
@@ -26,9 +28,11 @@ export default function(eleventyConfig) {
 			globstring: "**/*.{css,svg}",
 			// enableLogging: true,
 		});
-
+		
 		eleventyConfig.on('eleventy.after', function() {
+			buildCssProd(is_prod);
 			setupServiceWorkerScript();
+			cleanUp();
 		})
 
 	    eleventyConfig.addTransform('html-minifier', function(content) {
@@ -43,6 +47,10 @@ export default function(eleventyConfig) {
 	    })
 	}
 
+	eleventyConfig.on('eleventy.before', async function() {
+		await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: `${output_dir}/css/_utilities_generated.css` });
+	})
+
 	eleventyConfig.addTemplateFormats("svg");
 	eleventyConfig.addExtension("svg", {
 		outputFileExtension: "svg",
@@ -55,6 +63,18 @@ export default function(eleventyConfig) {
 	    }
 	});
 
+	eleventyConfig.addPassthroughCopy({
+		"./node_modules/open-props/open-props.min.css": "./css/open-props/open-props.min.css",
+		"./node_modules/open-props/colors-hsl.min.css": "./css/open-props/colors-hsl.min.css",
+	});
+	eleventyConfig.addTemplateFormats("css");
+	eleventyConfig.addExtension("css", {
+		outputFileExtension: "css",
+	    compile: function(inputContent) {
+	      return () => { return inputContent };
+	    }
+	});
+	
 	eleventyConfig.addPlugin(bundlerPlugin, {
 		transforms: [
 			async function(content) {
@@ -75,9 +95,6 @@ export default function(eleventyConfig) {
 					if (out) {
 						return out.text
 					}
-				} else if (this.type === 'css' && this.page?.outputPath.endsWith("_components.css")) {
-					// run after the file is created
-					setTimeout(() => buildCss(is_prod), 1);
 				}
 			
 				return content;
@@ -91,9 +108,6 @@ export default function(eleventyConfig) {
 
 	eleventyConfig.setUseGitIgnore(false);
 	eleventyConfig.addWatchTarget("src/js/*")
-	eleventyConfig.watchIgnores.add("src/css/_components.css");
-	eleventyConfig.watchIgnores.add("src/css/_utilities_generated.css");
-	eleventyConfig.ignores.add("src/css/_*.css");
 
 	eleventyConfig.addPassthroughCopy({
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
@@ -101,9 +115,15 @@ export default function(eleventyConfig) {
 		"static": "/",
 	});
 
+	// TODO: livereload does not seem to work well
+	// - probably eleventy bug
+	// - reload seems to work the first time only
 	eleventyConfig.setServerOptions({
 		domDiff: false,
-		// watch: []
+		watch: [
+			`${output_dir}/**/*.css`, 
+			// `${output_dir}/**/*.js`
+		]
 	});
 
 	return {
@@ -114,41 +134,54 @@ export default function(eleventyConfig) {
 	};
 };
 
-async function buildCss(is_prod) {
-	await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: "src/css/_utilities_generated.css" });
+function tmpDir() {
+	if (!fs.existsSync(tmp_dir)){
+	    fs.mkdirSync(tmp_dir);
+	}
+	return tmp_dir;
+}
 
+function cleanUp() {
+	fs.rm(tmpDir(), {recursive: true}, function(err) { if (err) throw err; })
+}
+
+async function buildCssProd(is_prod) {
 	// TODO: if css has changed
 	let { code } = bundle({
-	  filename: './src/css/main.css',
+	  filename: `./${output_dir}/css/main.css`,
 	  minify: is_prod,
 	  targets: browserslistToTargets([">= 0.25% and not dead"]),
 	});
-	const css_dir = `${output_dir}/css/`;
+	const css_dir = `${output_dir}/css_prod/`;
 	let file = css_dir + "main.css";
 	if (!fs.existsSync(css_dir)){
 	    fs.mkdirSync(css_dir);
 	}
 
-	if (is_prod) {
-		const result = await new PurgeCSS().purge({
-		  // Content files referencing CSS classes
-		  content: [`./${output_dir}/**/*.html`],
-		  keyframes: true,
-		  variables: true,
-		  safelist: {
-		  	standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
-		  	greedy: [/\:(before|after)/ ],
-		  	keyframes: ["fade-in", "fade-out"],
-		  },
-		  // CSS files to be purged in-place
-		  // css: [`./${output_dir}/css/main.css`],
-		  css: [{ name: file, raw: code.toString() }],
-		});
-		if (result.length) {
-			code = result[0].css;
-		}
+	const result = await new PurgeCSS().purge({
+	  // Content files referencing CSS classes
+	  content: [`./${output_dir}/**/*.html`],
+	  keyframes: true,
+	  variables: true,
+	  safelist: {
+	  	standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
+	  	greedy: [/\:(before|after)/ ],
+	  	keyframes: ["fade-in", "fade-out"],
+	  },
+	  // CSS files to be purged in-place
+	  // css: [`./${output_dir}/css/main.css`],
+	  css: [{ name: file, raw: code.toString() }],
+	});
+
+	if (result.length > 0) {
+		code = result[0].css;
 	}
+
 	fs.writeFileSync(file, code);
+	tmpDir();
+	const old_dir = `${output_dir}/css/`;
+    fs.rename(old_dir, `${output_dir}/tmp/css/`, function(err) { if (err) throw err; });
+    fs.rename(css_dir, old_dir, function(err) { if (err) throw err; });
 }
 
 function setupServiceWorkerScript() { 

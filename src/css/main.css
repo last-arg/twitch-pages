@@ -1,6 +1,8 @@
-@import "../../node_modules/open-props/open-props.min.css";
-@import "../../node_modules/open-props/colors-hsl.min.css";
+/* NOTE: 'open-props' files are copied during build process. */
+@import "./open-props/open-props.min.css";
+@import "./open-props/colors-hsl.min.css";
 @import "./_base.css";
 @import "./_blocks.css";
+/* NOTE: Generated during build process */
 @import "./_components.css";
 @import "./_utilities.css";
