@@ -145,13 +145,16 @@ export class SearchGames {
         /** @type {Game[]} */
         this.items = [];
         this.search_timeout = 0;
-        this.input_value = this.$.input_search.value || "";
+        this.input_value = "";
         this._bindEvents();
     }
 
     _bindEvents() {
-        this.$.form_search.addEventListener("input", (e) => {
+        this.$.form_search.addEventListener("submit", (e) => {
             e.preventDefault();
+        });
+
+        this.$.form_search.addEventListener("input", (e) => {
             this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
         });
 
