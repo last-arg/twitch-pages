@@ -29,8 +29,8 @@ export default function(eleventyConfig) {
 			// enableLogging: true,
 		});
 		
-		eleventyConfig.on('eleventy.after', function() {
-			buildCssProd(is_prod);
+		eleventyConfig.on('eleventy.after', async function() {
+			await buildCssProd(is_prod);
 			setupServiceWorkerScript();
 			cleanUp();
 		})
