@@ -292,7 +292,7 @@ export class LiveStreams {
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
         this.updateLiveCount()
-        window.addEventListener("DOMContentLoaded", () => this.updateLiveUsers());
+        window.setTimeout(() => this.updateLiveUsers(), 1);
         this.store.addEventListener("save", () => this.updateLiveCount())
     }
 
