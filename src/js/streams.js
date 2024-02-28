@@ -20,7 +20,7 @@ export class Streams {
         this.store = streams_store;
         this.live = live;
         this.user_images = user_images;
-        this.store.addEventListener("save", () => this.render());
+        this.store.addEventListener("save", this);
 
         this.$ = {
             streams_list: streams_list,
@@ -38,6 +38,15 @@ export class Streams {
             }
         };
         this.render();
+    }
+
+    /**
+      @param {Event} ev
+    */
+    handleEvent(ev) {
+        if (ev.type === "save") {
+            this.render();
+        }
     }
 
     /**
@@ -119,13 +128,22 @@ export class StreamsStore extends EventTarget {
         this.localStorageKey = "followed_streams";
         this._readStorage();
         this.live_store = live_store;
-        this._bindEvents();
+        this.live_store.addEventListener("save", this)
 
         // handle edits in another window
-        window.addEventListener("storage", () => {
+        window.addEventListener("storage", this, false);
+    }
+
+    /**
+      @param {Event} ev 
+    */
+    handleEvent(ev) {
+        if (ev.type === "storage") {
             this._readStorage();
             this._save();
-        }, false);
+        } else if ("save") {
+            this.sort();
+        }
     }
 
     _readStorage() {
@@ -133,10 +151,6 @@ export class StreamsStore extends EventTarget {
         if (raw) {
             this.items = JSON.parse(raw);
         }
-    }
-
-    _bindEvents() {
-        this.live_store.addEventListener("save", () => this.sort())
     }
 
     _save() {
@@ -291,9 +305,18 @@ export class LiveStreams {
         this.localKeyLastUpdate = "live_last_update";
         this.streams_store = streams_store;
         this.store = this.streams_store.live_store;
-        this.updateLiveCount()
+        // This seems to help avoiding firefox restored page being wrong
         window.setTimeout(() => this.updateLiveUsers(), 1);
-        this.store.addEventListener("save", () => this.updateLiveCount())
+        this.store.addEventListener("save", this);
+    }
+
+    /**
+      @param {Event} ev
+    */
+    handleEvent(ev) {
+        if (ev.type === "save") {
+            this.updateLiveCount()
+        }
     }
 
     updateDiff() {
@@ -309,6 +332,8 @@ export class LiveStreams {
             if (stream.length > 0) {
                 this.store.add(user_id, stream[0].game_name)
             }
+        } else {
+            this.updateLiveCount()
         }
     };
 
@@ -318,13 +343,11 @@ export class LiveStreams {
     updateLiveCount() {
         let result = 0;
         const users = this.store.users;
-        console.log("before updateLiveCount:", this.count)
         for (const key in users) {
             if (this.streams_store.hasId(key)) {
                 result += 1;
             }
         }
-        console.log("after updateLiveCount:", result)
         if (this.count !== result) {
             this.count = result;
             this.$.displayLiveCount(this.count);
@@ -333,13 +356,9 @@ export class LiveStreams {
     }
 
     /**
-        @param {string[]} curr_ids
         @param {StreamTwitch[]} streams
     */
-    updateLiveStreams(curr_ids, streams) {
-        console.log("users", this.store.users);
-        console.log("curr_ids", curr_ids);
-        console.log("new_streams", streams);
+    updateLiveStreams(streams) {
         const updates = [];
         const adds = [];
         for (const stream of streams) {
@@ -360,10 +379,6 @@ export class LiveStreams {
         }
 
         this.store.last_update = Date.now();
-
-        console.log("adds", adds)
-        console.log("updates", updates)
-        console.log("removes", removes)
 
         if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
             return;
@@ -391,11 +406,12 @@ export class LiveStreams {
         clearTimeout(this.timeout);
         if (diff > 0) {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
+            this.updateLiveCount();
             return;
         }
         const curr_ids = this.streams_store.getIds();
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
-        this.updateLiveStreams(curr_ids, new_live_streams);
+        this.updateLiveStreams(new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
     }
 }
@@ -412,11 +428,19 @@ export class LiveStreamsStore extends EventTarget {
         this._readStorage();
 
         // handle edits in another window
-        window.addEventListener("storage", () => {
+        window.addEventListener("storage", this, false);
+    }
+
+    /**
+      @param {Event} ev 
+    */
+    handleEvent(ev) {
+        if (ev.type === "storage") {
             this._readStorage();
             this._save();
-        }, false);
+        }
     }
+    
 
     _readStorage() {
         let raw = window.localStorage.getItem(this.localStorageKey)
@@ -501,12 +525,19 @@ export class UserImages {
         this.clean();
 
         // handle edits in another window
-        window.addEventListener("storage", () => {
-            this._readStorage();
-            this._save();
-        }, false);
+        window.addEventListener("storage", this, false);
     }
 
+    /**
+      @param {Event} ev 
+    */
+    handleEvent(ev) {
+        if (ev.type === "storage") {
+            this._readStorage();
+            this._save();
+        }
+    }
+    
     _readStorage() {
         const raw = window.localStorage.getItem(this.localStorageKey)
         if (raw) {
