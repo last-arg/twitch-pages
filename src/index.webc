@@ -91,5 +91,6 @@ title: "Home | Twitch Pages"
   <main class="wrapper" id="main" tabindex="-1">
     Loading...
   </main>
+hello 7
 </div>
 <div class="sr-only" id="aria-feedback" role="status" aria-live="polite"></div>

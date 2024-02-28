@@ -1,0 +1,9 @@
+name = "twitch-pages"
+compatibility-date = "2024-02-23"
+# compatibility_flags = ['nodejs_compat']
+workers_dev = false
+
+[dev]
+port = 8888
+
+

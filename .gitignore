@@ -7,6 +7,9 @@ src/css/_components.css
 src/css/_utilities_generated.css
 src/_data/manifest.json
 
+# Wrangler
+.dev.vars
+
 # Bun
 bun.lockb
 

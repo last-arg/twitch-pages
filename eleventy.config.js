@@ -45,6 +45,12 @@ export default function(eleventyConfig) {
 	      }
 	      return content
 	    })
+	} else {
+		// eleventyConfig.on('eleventy.after', async function() {
+		// 	// This reloads page when using 'wrangler pages dev'
+		// 	const time = new Date(); 
+		// 	fs.utimes("./functions/reload.js", time, time, function() {});
+		// })
 	}
 
 	eleventyConfig.on('eleventy.before', async function() {
@@ -120,6 +126,7 @@ export default function(eleventyConfig) {
 	// - reload seems to work the first time only
 	eleventyConfig.setServerOptions({
 		domDiff: false,
+		// liveReload: false,
 		watch: [
 			`${output_dir}/**/*.css`, 
 			// `${output_dir}/**/*.js`

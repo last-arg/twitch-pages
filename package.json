@@ -3,11 +3,11 @@
   "version": "1.0.1",
   "description": "Twitch alternative pages",
   "scripts": {
-    "dev": "netlify dev -o",
-    "build": "NODE_ENV=production eleventy",
-    "watch": "eleventy --watch --incremental",
-    "serve": "parcel --no-hmr --public-url / _site/index.html",
-    "start": "run-p watch serve"
+    "dev": "eleventy --watch --incremental",
+    "dev-wrangler": "wrangler pages dev --local --proxy 8080 --port 8888 --live-reload -- npm run dev",
+    "dev-wrangler-1": "wrangler pages dev ./_site/ --local --port 8888",
+    "dev-netlify": "netlify dev -o",
+    "build": "NODE_ENV=production eleventy"
   },
   "dependencies": {
     "htmx.org": "^1.9.10",
@@ -19,6 +19,7 @@
     "@11ty/eleventy": "^3.0.0-alpha.5",
     "@11ty/eleventy-plugin-bundle": "^1.0.5",
     "@11ty/eleventy-plugin-webc": "^0.11.2",
+    "@cloudflare/workers-types": "^4.20240222.0",
     "@netlify/functions": "^2.5.1",
     "@types/node": "^20.11.5",
     "@unocss/cli": "^0.58.5",
@@ -29,7 +30,8 @@
     "netlify-cli": "^17.16.4",
     "purgecss": "^5.0.0",
     "svgo": "^3.2.0",
-    "unocss": "^0.58.5"
+    "unocss": "^0.58.5",
+    "wrangler": "^2.21.0"
   },
   "type": "module",
   "browserslist": [
