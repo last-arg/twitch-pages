@@ -35,11 +35,10 @@ export class Sidebar {
       this.$.sidebar_nav.addEventListener("click", function(e) {
         e.preventDefault();
         const link_box = /** @type {Element} */ (e.target).closest(".link-box");
-        if (link_box) {
-          const get = link_box.getAttribute("hx-get");
-          if (!get) { return; }
-          htmx.ajax("get", get, {source: link_box});
-        }
+        if (!link_box) { return }
+        const get = link_box.getAttribute("hx-get");
+        if (!get) { return; }
+        htmx.ajax("get", get, {source: link_box});
       });
   }
 

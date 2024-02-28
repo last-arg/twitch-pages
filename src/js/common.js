@@ -109,14 +109,21 @@ class Settings extends EventTarget {
     constructor() {
         super();
         this.localStorageKey = "settings"
-        window.addEventListener("storage", () => {
-            this._readStorage();
-            this._save();
-        }, false);
+        window.addEventListener("storage", this, false);
         this._readStorage();
         this.lang_map = new Map();
     }
 
+    /**
+      @param {Event} ev
+    */
+    handleEvent(ev) {
+        if (ev.type === "storage") {
+            this._readStorage();
+            this._save();
+        }
+    }
+    
     _readStorage() {
         const raw = window.localStorage.getItem(this.localStorageKey);
         if (raw) {
@@ -280,43 +287,49 @@ export const settings = new Settings();
 class FormFilter extends HTMLElement {
     constructor() {
         super();
-        const _this = this;
         this.$ = {
             form: /** @type {HTMLFormElement} */ (this.querySelector(".search-form")),
-            /**
-              @param {Event} e
-            */
-            handleSubmit(e) { e.preventDefault(); },
-            resetFilter() {
-                _this.css_sheet.deleteRule(0)
-            },
-            /** @param {Event} evt */
-            handleInput(evt) {
-                if (_this.css_sheet.cssRules.length > 0) {
-                    _this.css_sheet.deleteRule(0)
-                }
-                // @ts-ignore
-                const value = /** @type {string} */ (evt.target.value).trim();
-                if (value.length > 0) {
-                    _this.css_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
-                }
-            },
         }
         const style = document.createElement('style');
         this.insertAdjacentElement('afterend', style);
         this.css_sheet = /** @type {CSSStyleSheet} */ (style.sheet);
     }
 
+    /** @param {Event} ev */
+    handleEvent(ev) {
+        switch (ev.type) {
+        case "submit": {
+            ev.preventDefault();
+            break;
+        }
+        case "reset": {
+            this.css_sheet.deleteRule(0)
+            break;
+        }
+        case "input": {
+            if (this.css_sheet.cssRules.length > 0) {
+                this.css_sheet.deleteRule(0)
+            }
+            // @ts-ignore
+            const value = /** @type {string} */ (ev.target.value).trim();
+            if (value.length > 0) {
+                this.css_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
+            }
+            break;
+        }
+        }
+    }
+
     connectedCallback() {
-        this.$.form.addEventListener("input", this.$.handleInput);
-        this.$.form.addEventListener("submit", this.$.handleSubmit);
-        this.$.form.addEventListener("reset", this.$.resetFilter);
+        this.$.form.addEventListener("input", this);
+        this.$.form.addEventListener("submit", this);
+        this.$.form.addEventListener("reset", this);
     }
 
     disconnectedCallback() {
-        this.$.form.removeEventListener("input", this.$.handleInput);
-        this.$.form.removeEventListener("submit", this.$.handleSubmit);
-        this.$.form.removeEventListener("reset", this.$.resetFilter);
+        this.$.form.removeEventListener("input", this);
+        this.$.form.removeEventListener("submit", this);
+        this.$.form.removeEventListener("reset", this);
     }
 }
 
@@ -325,20 +338,20 @@ customElements.define("form-filter", FormFilter)
 class VideoFilter extends HTMLElement {
     constructor() {
         super();
-        const _this = this
         this.$ = {
             output_list: /** @type {HTMLUListElement} */ (document.querySelector(".output-list")),
-            /** @param {Event} e */
-            handleClick(e) {
-                const elem = /** @type {HTMLInputElement} */ (e.target);
-                if (elem.nodeName === "INPUT") {
-                    if (elem.checked) {
-                        _this.$.output_list.classList.remove(`no-${elem.value}s`);
-                    } else {
-                        _this.$.output_list.classList.add(`no-${elem.value}s`);
-                    }
-                }
-            },
+        }
+    }
+
+    /** @param {Event} ev */
+    handleEvent(ev) {
+        const elem = /** @type {HTMLInputElement} */ (ev.target);
+        if (elem.nodeName === "INPUT") {
+            if (elem.checked) {
+                this.$.output_list.classList.remove(`no-${elem.value}s`);
+            } else {
+                this.$.output_list.classList.add(`no-${elem.value}s`);
+            }
         }
     }
 
@@ -356,11 +369,11 @@ class VideoFilter extends HTMLElement {
             }
         }
 
-        this.addEventListener("click", this.$.handleClick);
+        this.addEventListener("click", this);
     }
 
     disconnectedCallback() {
-        this.removeEventListener("click", this.$.handleClick);
+        this.removeEventListener("click", this);
     }
 }
 

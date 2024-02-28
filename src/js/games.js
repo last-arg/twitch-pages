@@ -40,10 +40,15 @@ export class Games {
         this.render();
 
         // handle edits in another window
-        window.addEventListener("storage", () => {
+        window.addEventListener("storage", this, false);
+    }
+
+    /** @param {Event} ev */
+    handleEvent(ev) {
+        if (ev.type === "storage") {
             this._readStorage();
             this._save();
-        }, false);
+        }
     }
 
     _readStorage() {
@@ -149,26 +154,36 @@ export class SearchGames {
         this._bindEvents();
     }
 
-    _bindEvents() {
-        this.$.form_search.addEventListener("submit", (e) => {
-            e.preventDefault();
-        });
-
-        this.$.form_search.addEventListener("input", (e) => {
-            this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
-        });
-
-        this.$.input_search.addEventListener("focus", (e) => {
+    /** @param {Event} ev */
+    handleEvent(ev) {
+        switch (ev.type) {
+        case "submit": {
+            ev.preventDefault();
+            break;
+        }
+        case "input": {
+            this.searchValue(/** @type {HTMLInputElement} */ (ev.target).value);
+            break;
+        }
+        case "focus": {
             sidebar.setState("search")
-            this.searchValue(/** @type {HTMLInputElement} */ (e.target).value);
-        });
-
-
-        this.$.input_search.addEventListener("blur", (e) => {
-            if (/** @type {HTMLInputElement} */ (e.target).value.length === 0) {
+            this.searchValue(/** @type {HTMLInputElement} */ (ev.target).value);
+            break;
+        }
+        case "blur": {
+            if (/** @type {HTMLInputElement} */ (ev.target).value.length === 0) {
                 sidebar.setState("closed")
             }
-        });
+            break;
+        }
+        }
+    }
+
+    _bindEvents() {
+        this.$.form_search.addEventListener("submit", this);
+        this.$.form_search.addEventListener("input", this);
+        this.$.input_search.addEventListener("focus", this);
+        this.$.input_search.addEventListener("blur", this);
     }
 
     /**
