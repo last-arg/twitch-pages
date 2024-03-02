@@ -16,6 +16,7 @@ Pages:
 [ ] use Cache API to store some stuff?
   - user header
   - category header
+[ ] Maybe use event 'visibilitychange' when making requests?
 
 ## Resources
 
