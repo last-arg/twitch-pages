@@ -5,9 +5,13 @@ import { Twitch } from './twitch';
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
 
+window.addEventListener("htmx:historyRestore", function(/** @type {Event} */ e) {
+    console.log("history restore", e.detail)
+})
+
 export function initHtmx() {
-  htmx.config.refreshOnHistoryMiss = true;
-  htmx.config.historyCacheSize = 0;
+  // TODO: enable later
+  // htmx.config.refreshOnHistoryMiss = true;
   htmx.defineExtension("twitch-api", {
     /**
     @param {string} name
@@ -354,7 +358,7 @@ function getVideoImageSrc(url, width, height) {
 
 /**
 @param {string} newPath
-@returns {import("config").UrlResolve}
+@returns {import("./config.prod.js").UrlResolve}
 */
 function getUrlObject(newPath) {
   if (newPath === "/") return mainContent["top-games"]

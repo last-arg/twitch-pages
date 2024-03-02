@@ -17,6 +17,8 @@ Pages:
   - user header
   - category header
 [ ] Maybe use event 'visibilitychange' when making requests?
+[ ] try to hash css file's name not url's param
+[ ] format js
 
 ## Resources
 
