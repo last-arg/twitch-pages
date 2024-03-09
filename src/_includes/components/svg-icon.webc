@@ -2,7 +2,7 @@
   let result = `<svg aria-hidden="true" focusable="false">`;
   const icons = this.name.split(" ").map(val => val.trim()).filter(val => val.length > 0);
   for (const icon of icons) {
-    result += `<use href="/assets/icons.svg#${icon}"></use>`
+    result += `<use :href="hashFile('/assets/icons.svg') + '#${icon}'"></use>`
   }
   result += "</svg>";
   result;

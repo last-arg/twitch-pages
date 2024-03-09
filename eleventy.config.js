@@ -17,13 +17,14 @@ const output_dir = "_site";
 const tmp_dir = `${output_dir}/tmp`
 // A cache to store the hashed file names
 const hashCache = {};
+let is_prod = false;
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
  * @returns {ReturnType<import("@11ty/eleventy/src/defaultConfig")>}
  */
 export default function(eleventyConfig) {
-	const is_prod = process.env.NODE_ENV === "production";
+	is_prod = process.env.NODE_ENV === "production";
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 
 	// A cache buster if a file changes
@@ -36,36 +37,7 @@ export default function(eleventyConfig) {
 	});
 
 	// A filter to dynamically hash asset file contents
-	eleventyConfig.addFilter("hashFile", async (filePath)  => {
-		if (!is_prod) {
-			return filePath;
-		}
-		// If we've already hashed this file, return the hash
-		if(hashCache[filePath]) {
-		  return hashCache[filePath];
-		}
-
-		// Get the absolute path to the file inside of src/site
-		const absolutePath = path.join(__dirname, 'src', filePath);
-
-		// Digest the file
-		const fileBuffer = fs.readFileSync(absolutePath);
-		const hash = crypto.createHash('md5').update(fileBuffer).digest('hex').slice(0, 8);
-		const relativePath = filePath.slice(0, path.basename(filePath).length * -1)
-		const digestFileName = `${relativePath}${hash}-${path.basename(filePath)}`;
-
-		// See if the digest file exists in the output folder _site
-		const digestFilePath = path.join(__dirname, output_dir, digestFileName);
-		hashCache[filePath] = digestFileName;
-		if(!fs.existsSync(digestFilePath)) {
-		  if(!fs.existsSync(path.dirname(digestFilePath))) {
-		    fs.mkdirSync(path.dirname(digestFilePath), { recursive: true });
-		  }
-		  fs.copyFileSync(absolutePath, digestFilePath);
-		}
-		// Return the hashFile file name
-		return digestFileName;
-	})
+	eleventyConfig.addFilter("hashFile", hashFile)
 
 	if (is_prod) {
 		fs.rmSync(output_dir, { recursive: true, force: true });
@@ -107,7 +79,16 @@ export default function(eleventyConfig) {
 			  inputContent = result.data;
 	      }
 	      return () => { return inputContent };
-	    }
+	    },
+		compileOptions: {
+			permalink: function(contents, inputPath) {
+				const index = inputPath.indexOf("/assets");
+				if (index !== -1) {
+					return hashFile(inputPath.slice(index));
+				}
+				return inputPath;
+			}
+		}
 	});
 
 	eleventyConfig.addPassthroughCopy({
@@ -262,4 +243,35 @@ function setupServiceWorkerScript() {
 	const input = fs.readFileSync(filename, "utf-8");
 	out = input.replace("[SERVICE_WORKER_SCRIPT]", out);
 	fs.writeFileSync(filename, out);
+}
+
+function hashFile(filePath) {
+	if (!is_prod) {
+		return filePath;
+	}
+	// If we've already hashed this file, return the hash
+	if(hashCache[filePath]) {
+	  return hashCache[filePath];
+	}
+
+	// Get the absolute path to the file inside of src/site
+	const absolutePath = path.join(__dirname, 'src', filePath);
+
+	// Digest the file
+	const fileBuffer = fs.readFileSync(absolutePath);
+	const hash = crypto.createHash('md5').update(fileBuffer).digest('hex').slice(0, 8);
+	const relativePath = filePath.slice(0, path.basename(filePath).length * -1)
+	const digestFileName = `${relativePath}${hash}-${path.basename(filePath)}`;
+
+	// See if the digest file exists in the output folder _site
+	const digestFilePath = path.join(__dirname, output_dir, digestFileName);
+	hashCache[filePath] = digestFileName;
+	if(!fs.existsSync(digestFilePath)) {
+	  if(!fs.existsSync(path.dirname(digestFilePath))) {
+	    fs.mkdirSync(path.dirname(digestFilePath), { recursive: true });
+	  }
+	  fs.copyFileSync(absolutePath, digestFilePath);
+	}
+	// Return the hashFile file name
+	return digestFileName;
 }
