@@ -1,11 +1,18 @@
+/
+  cache-control: no-cache
+
 /index.html
   cache-control: no-cache
 
-/public/*
+/bundle/*.js
   cache-control: max-age=31536000
   cache-control: immutable
 
-/css/main.css
+/css/*.css
+  cache-control: max-age=31536000
+  cache-control: immutable
+
+/assets/*.svg
   cache-control: max-age=31536000
   cache-control: immutable
 
