@@ -218,13 +218,13 @@ async function buildCssProd(is_prod) {
 
 function setupServiceWorkerScript() { 
 	const assets = [
-      "/public/assets/icons.svg",
       "/public/partials/category.html",
       "/public/partials/not-found.html",
       "/public/partials/settings.html",
       "/public/partials/top-games.html",
       "/public/partials/user-videos.html",
     ];
+    // TODO: move js, svg, css into same directory?
     { // add js files
 		const files = fs.readdirSync(`${output_dir}/bundle`);
 		for (const f of files) {assets.push(f)}
@@ -233,7 +233,10 @@ function setupServiceWorkerScript() {
 		const files = fs.readdirSync(`${output_dir}/css`);
 		for (const f of files) {assets.push(f)}
 	}
-
+    { // add svg files
+		const files = fs.readdirSync(`${output_dir}/assets`);
+		for (const f of files) {assets.push(f)}
+	}
 
 	// To get hash version would have to get hash for all files. Concat those
 	// hashes into version? Hash or shorten concated value into shorter value?
