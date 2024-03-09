@@ -4,14 +4,19 @@ import htmlMinifier from 'html-minifier';
 import { PurgeCSS } from "purgecss";
 import { bundle, browserslistToTargets } from "lightningcss";
 import esbuild from "esbuild";
-import eleventyAutoCacheBuster from "eleventy-auto-cache-buster";
 import svgo from "svgo";
 import bundlerPlugin from "@11ty/eleventy-plugin-bundle";
 import svgo_config from "./svg.config.js"
 import * as unocss_cli from "@unocss/cli";
+import path from "path";
+import crypto from "crypto";
+
+const __dirname = import.meta.dirname;
 
 const output_dir = "_site";
 const tmp_dir = `${output_dir}/tmp`
+// A cache to store the hashed file names
+const hashCache = {};
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
@@ -21,14 +26,50 @@ export default function(eleventyConfig) {
 	const is_prod = process.env.NODE_ENV === "production";
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 
+	// A cache buster if a file changes
+	const prefixLength ="./src".length
+	eleventyConfig.on('eleventy.beforeWatch', async (changedFiles) => {
+		for(const file of changedFiles) {
+		  const relativePath = file.slice(prefixLength)
+		  delete hashCache[relativePath]
+		}
+	});
+
+	// A filter to dynamically hash asset file contents
+	eleventyConfig.addFilter("hashFile", async (filePath)  => {
+		if (!is_prod) {
+			return filePath;
+		}
+		// If we've already hashed this file, return the hash
+		if(hashCache[filePath]) {
+		  return hashCache[filePath];
+		}
+
+		// Get the absolute path to the file inside of src/site
+		const absolutePath = path.join(__dirname, 'src', filePath);
+
+		// Digest the file
+		const fileBuffer = fs.readFileSync(absolutePath);
+		const hash = crypto.createHash('md5').update(fileBuffer).digest('hex').slice(0, 8);
+		const relativePath = filePath.slice(0, path.basename(filePath).length * -1)
+		const digestFileName = `${relativePath}${hash}-${path.basename(filePath)}`;
+
+		// See if the digest file exists in the output folder _site
+		const digestFilePath = path.join(__dirname, output_dir, digestFileName);
+		hashCache[filePath] = digestFileName;
+		if(!fs.existsSync(digestFilePath)) {
+		  if(!fs.existsSync(path.dirname(digestFilePath))) {
+		    fs.mkdirSync(path.dirname(digestFilePath), { recursive: true });
+		  }
+		  fs.copyFileSync(absolutePath, digestFilePath);
+		}
+		// Return the hashFile file name
+		return digestFileName;
+	})
+
 	if (is_prod) {
 		fs.rmSync(output_dir, { recursive: true, force: true });
 
-		eleventyConfig.addPlugin(eleventyAutoCacheBuster, {
-			globstring: "**/*.{css,svg}",
-			// enableLogging: true,
-		});
-		
 		eleventyConfig.on('eleventy.after', async function() {
 			await buildCssProd(is_prod);
 			setupServiceWorkerScript();
@@ -153,14 +194,17 @@ function cleanUp() {
 }
 
 async function buildCssProd(is_prod) {
+	const file_key = "/css/main.css";
+	const file_path = hashCache[file_key] || file_key
+	const input_file = `./${output_dir}${file_path}`;
 	// TODO: if css has changed
 	let { code } = bundle({
-	  filename: `./${output_dir}/css/main.css`,
+	  filename: input_file,
 	  minify: is_prod,
 	  targets: browserslistToTargets([">= 0.25% and not dead"]),
 	});
 	const css_dir = `${output_dir}/css_prod/`;
-	let file = css_dir + "main.css";
+	let file = css_dir + path.basename(input_file);
 	if (!fs.existsSync(css_dir)){
 	    fs.mkdirSync(css_dir);
 	}
@@ -193,7 +237,6 @@ async function buildCssProd(is_prod) {
 
 function setupServiceWorkerScript() { 
 	const assets = [
-      "/css/main.css", 
       "/public/assets/icons.svg",
       "/public/partials/category.html",
       "/public/partials/not-found.html",
@@ -201,8 +244,15 @@ function setupServiceWorkerScript() {
       "/public/partials/top-games.html",
       "/public/partials/user-videos.html",
     ];
-	const files = fs.readdirSync(`${output_dir}/bundle`);
-	for (const f of files) {assets.push(f)}
+    { // add js files
+		const files = fs.readdirSync(`${output_dir}/bundle`);
+		for (const f of files) {assets.push(f)}
+	}
+    { // add css files
+		const files = fs.readdirSync(`${output_dir}/css`);
+		for (const f of files) {assets.push(f)}
+	}
+
 
 	// To get hash version would have to get hash for all files. Concat those
 	// hashes into version? Hash or shorten concated value into shorter value?

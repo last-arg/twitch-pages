@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title @raw="title"></title>
   <!-- TODO: add favicon -->
-  <link webc:keep rel="stylesheet" type="text/css" href="/css/main.css">
+  <link webc:keep rel="stylesheet" type="text/css" :href="hashFile('/css/main.css')">
   <script webc:bucket="vendor" src="../js/third-party.js"></script>
   <script defer webc:keep :src="getBundleFileUrl('js', 'vendor')"></script>
   <script src="../js/main.js"></script>
