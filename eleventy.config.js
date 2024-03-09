@@ -14,6 +14,7 @@ import crypto from "crypto";
 const __dirname = import.meta.dirname;
 
 const output_dir = "_site";
+const assets_output = `${output_dir}/assets`;
 const tmp_dir = `${output_dir}/tmp`
 // A cache to store the hashed file names
 const hashCache = {};
@@ -104,6 +105,7 @@ export default function(eleventyConfig) {
 	});
 	
 	eleventyConfig.addPlugin(bundlerPlugin, {
+		toFileDirectory: "assets",
 		transforms: [
 			async function(content) {
 				if (this.type === "js") {
@@ -185,11 +187,11 @@ async function buildCssProd(is_prod) {
 	  targets: browserslistToTargets([">= 0.25% and not dead"]),
 	});
 	const css_dir = `${output_dir}/css_prod/`;
-	let file = css_dir + path.basename(input_file);
 	if (!fs.existsSync(css_dir)){
 	    fs.mkdirSync(css_dir);
 	}
 
+	const file = css_dir + path.basename(input_file);
 	const result = await new PurgeCSS().purge({
 	  // Content files referencing CSS classes
 	  content: [`./${output_dir}/**/*.html`],
@@ -225,17 +227,23 @@ function setupServiceWorkerScript() {
       "/public/partials/user-videos.html",
     ];
     // TODO: move js, svg, css into same directory?
-    { // add js files
-		const files = fs.readdirSync(`${output_dir}/bundle`);
-		for (const f of files) {assets.push(f)}
-	}
     { // add css files
 		const files = fs.readdirSync(`${output_dir}/css`);
-		for (const f of files) {assets.push(f)}
+		for (const f of files) {
+			assets.push(`/css/${f}`);
+		}
 	}
-    { // add svg files
-		const files = fs.readdirSync(`${output_dir}/assets`);
-		for (const f of files) {assets.push(f)}
+    { // add js, svg files
+		const assets_dir = "/assets";
+		const files = fs.readdirSync(assets_output, { recursive: true });
+		for (const f of files) {
+			const path_url = `${assets_dir}/${f}`;
+			const path = `${output_dir}${path_url}`;
+			if (fs.statSync(path).isDirectory()) {
+				continue;
+			}
+			assets.push(path_url)
+		}
 	}
 
 	// To get hash version would have to get hash for all files. Concat those
