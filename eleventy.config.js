@@ -226,7 +226,7 @@ function setupServiceWorkerScript() {
       "/public/partials/top-games.html",
       "/public/partials/user-videos.html",
     ];
-    // TODO: move js, svg, css into same directory?
+    // TODO: move css into bundle directory?
     { // add css files
 		const files = fs.readdirSync(`${output_dir}/css`);
 		for (const f of files) {

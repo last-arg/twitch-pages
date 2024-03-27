@@ -21,8 +21,10 @@ Pages:
   - user header
   - category header
 [ ] Maybe use event 'visibilitychange' when making requests?
-[ ] try to hash css file's name not url's param
 [ ] format js
+[ ] use css @layer to order css (during build process)
+  [ ] could add '@layer components {}' during build process 
+[ ] how to get css just for src/partials/*.webc
 [ ] look if I can use something from here https://github.com/Set-Creative-Studio/cube-boilerplate/tree/main
 
 ## Resources

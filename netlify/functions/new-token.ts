@@ -24,18 +24,13 @@ const handler: Handler = async (event) => {
     return errorReturn(400, `Failed to get twitch client secret environment variable`)
   }
 
-  if (event.queryStringParameters && event.queryStringParameters['new-token'] === '') {
-    console.log("get new token");
-    const new_token = await requestTwitchToken()
+  const new_token = await requestTwitchToken()
 
-    if (new_token === undefined) {
-      return errorReturn(500, "Failed to get new token from twitch");
-    }
-
-    return { statusCode: 200, body: new_token };
+  if (new_token === undefined) {
+    return errorReturn(500, "Failed to get new token from twitch");
   }
 
-  return errorReturn(404, "Unknown API request path");
+  return { statusCode: 200, body: new_token };
 };
 
 const errorReturn = (status: number, errorMsg: string): any => {

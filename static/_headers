@@ -1,8 +1,8 @@
 /
-  cache-control: no-cache
+  cache-control: no-cache, no-store, must-revalidate
 
 /index.html
-  cache-control: no-cache
+  cache-control: no-cache, no-store, must-revalidate
 
 /css/*
   cache-control: max-age=31536000
