@@ -7,7 +7,6 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-[ ] favicon
 [ ] When firefox restores page it shows previously live streams (and count).
   Althought it seems to make a request, the request returns old data. Last update
   time is set to Date.now().

@@ -143,6 +143,7 @@ export default function(eleventyConfig) {
 		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
 		"./node_modules/upup/dist/upup.sw.min.js": "/upup.sw.min.js",
 		"static": "/",
+		"./favicon.svg": "./favicon.svg",
 	});
 
 	// TODO: livereload does not seem to work well
