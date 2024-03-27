@@ -1,11 +1,5 @@
 # netlify.toml
 [[redirects]]
-  force = true
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 301
-
-[[redirects]]
   from = "/directory/category/*"
   to = "/index.html"
   status = 200

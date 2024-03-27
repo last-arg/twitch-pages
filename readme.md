@@ -23,7 +23,8 @@ Pages:
 [ ] Maybe use event 'visibilitychange' when making requests?
 [ ] format js
 [ ] use css @layer to order css (during build process)
-  [ ] could add '@layer components {}' during build process 
+  [ ] can add/append to layers ('@layer components {}'). Do this inside webc files.
+  Because I don't like the order webc uses for CSS.
 [ ] how to get css just for src/partials/*.webc
 [ ] look if I can use something from here https://github.com/Set-Creative-Studio/cube-boilerplate/tree/main
 
