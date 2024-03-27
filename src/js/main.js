@@ -1,4 +1,4 @@
-import { games, live, sidebar, streams, settings, state } from "./common";
+import { games, live, sidebar, streams, settings, state, init_common } from "./common";
 import { twitch } from "./twitch";
 import { initHtmx } from "./htmx_init";
 
@@ -72,6 +72,7 @@ document.addEventListener("click", function(/** {Event} */e) {
 
 async function startup() {
     await twitch.fetchToken();
+    init_common();
     initHtmx();
     document.body.addEventListener("mousedown", handlePathChange)
 };

@@ -12,17 +12,33 @@ export const state = {
     }
 }
 
-const live_store = new LiveStreamsStore();
-const streams_store = new StreamsStore(live_store);
-export const user_images = new UserImages(streams_store);
-
-export const games = new Games();
+/** @type {UserImages} */
+export var user_images;
+/** @type {Games} */
+export var games;
 // NOTE: StreamsStore also contains LiveStreamsStore
-export const live = new LiveStreams(streams_store);
-export const streams = new Streams(streams_store, live, user_images);
+/** @type {LiveStreams} */
+export var live;
+/** @type {Streams} */
+export var streams;
 
-export const game_search = new SearchGames(games);
-export const sidebar = new Sidebar();
+/** @type {SearchGames} */
+export var game_search;
+/** @type {Sidebar} */
+export var sidebar;
+
+export function init_common() {
+    const live_store = new LiveStreamsStore();
+    const streams_store = new StreamsStore(live_store);
+    user_images = new UserImages(streams_store);
+
+    games = new Games();
+    live = new LiveStreams(streams_store);
+    streams = new Streams(streams_store, live, user_images);
+
+    game_search = new SearchGames(games);
+    sidebar = new Sidebar();
+}
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
