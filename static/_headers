@@ -1,7 +1,4 @@
-/
-  cache-control: no-cache, no-store, must-revalidate
-
-/index.html
+/directory/category/*
   cache-control: no-cache, no-store, must-revalidate
 
 /css/*
