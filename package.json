@@ -8,6 +8,7 @@
     "dev-wrangler-1": "wrangler pages dev ./_site/ --local --port 8888",
     "dev-netlify": "netlify dev -o",
     "build": "NODE_ENV=production eleventy",
+    "preview": "wrangler pages dev",
     "deploy": "npm run build && netlify deploy --prod"
   },
   "dependencies": {
@@ -31,7 +32,7 @@
     "purgecss": "^5.0.0",
     "svgo": "^3.2.0",
     "unocss": "^0.58.5",
-    "wrangler": "^2.21.0"
+    "wrangler": "^3.48.0"
   },
   "type": "module",
   "browserslist": [
