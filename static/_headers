@@ -1,6 +1,3 @@
-/directory/category/*
-  cache-control: no-cache, no-store, must-revalidate
-
 /css/*
   cache-control: max-age=31536000
   cache-control: immutable
