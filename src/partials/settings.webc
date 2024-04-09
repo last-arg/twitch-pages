@@ -69,23 +69,6 @@ permalink: "public/partials/settings.html"
     </section>
     -->
     <section>
-      <h3>Cache</h3>
-      <ul class="js-cache-list stack stack-xs" role="list">
-        <li>
-          <button class="js-clear-games" type="button">Clear games cache</button>
-        </li>
-        <li>
-          <button class="js-clear-streams" type="button">Clear streams cache</button>
-        </li>
-        <li>
-          <button class="js-clear-profiles" type="button">Clear profile images cache</button>
-        </li>
-        <li>
-          <button class="js-clear-all" type="button">Clear all caches</button>
-        </li>
-      </ul>
-    </section>
-    <section>
       <h3>Category</h3>
       <form id="form-category" class="stack stack-s">
         <label>
@@ -114,6 +97,23 @@ permalink: "public/partials/settings.html"
         <p class="js-languages-msg hidden">No languages added. Will show all languages.</p>
         <button type="submit">Save category settings</button>
       </form>
+    </section>
+    <section>
+      <h3>Cache</h3>
+      <ul class="js-cache-list stack stack-xs" role="list">
+        <li>
+          <button class="js-clear-games" type="button">Clear games cache</button>
+        </li>
+        <li>
+          <button class="js-clear-streams" type="button">Clear streams cache</button>
+        </li>
+        <li>
+          <button class="js-clear-profiles" type="button">Clear profile images cache</button>
+        </li>
+        <li>
+          <button class="js-clear-all" type="button">Clear all caches</button>
+        </li>
+      </ul>
     </section>
   </div>
 </div>
