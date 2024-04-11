@@ -6,7 +6,7 @@
     "dev": "eleventy --watch --incremental",
     "build": "NODE_ENV=production eleventy",
     "preview": "wrangler pages dev --live-reload",
-    "deploy:cloudflare": "npm run build && wrangler pages deploy"
+    "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
     "htmx.org": "^1.9.10",
