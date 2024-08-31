@@ -14,10 +14,12 @@ const TWITCH_MAX_QUERY_COUNT = 100
 const SEARCH_COUNT = 10
 
 export class Twitch {
+  /** @type {Record<string, string>} */
   static headers = {
     "Authorization": "",
     "Client-id": TWITCH_CLIENT_ID,
-    "Accept": "application/vnd.twitchtv.v5+json",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
   }
 
   /** @type {TokenLocal | null} */
