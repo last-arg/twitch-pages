@@ -359,6 +359,7 @@ export class LiveStreams {
         @param {StreamTwitch[]} streams
     */
     updateLiveStreams(streams) {
+        console.log("update streams", new_live_streams);
         const updates = [];
         const adds = [];
         for (const stream of streams) {
@@ -380,6 +381,7 @@ export class LiveStreams {
 
         this.store.last_update = Date.now();
 
+        console.log(adds, updates, removes);
         if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
             return;
         }
@@ -402,7 +404,9 @@ export class LiveStreams {
     }
 
     async updateLiveUsers() {
+        console.group("updateLiveUsers");
         const diff = this.updateDiff();
+        console.log("diff", diff)
         clearTimeout(this.timeout);
         if (diff > 0) {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);
@@ -413,6 +417,7 @@ export class LiveStreams {
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
         this.updateLiveStreams(new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
+        console.groupEnd();
     }
 }
 
