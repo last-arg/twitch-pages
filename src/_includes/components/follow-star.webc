@@ -16,22 +16,19 @@
 <style>
 follow-star {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: var(--gray-9);
-  line-height: 1;
-  padding: var(--space-3xs) var(--space-2xs);
+  align-items: flex-start;
+  gap: 2px;
   --actions-color: var(--gray-6);
   color: var(--actions-color);
+}
 
+follow-star > * {
+  padding: var(--space-2xs);
+  background: var(--gray-9);
 }
 
 .scroll-container follow-star {
   margin-inline-start: 2px;
-}
-
-follow-star a {
-  color: inherit;
 }
 
 follow-star a:hover,

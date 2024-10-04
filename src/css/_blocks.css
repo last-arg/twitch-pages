@@ -104,17 +104,9 @@ main {
 }
 
 .card-live {
-  line-height: 1.1;
   display: flex;
-  font-size: var(--step--2);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: var(--text3);
-  opacity: .9;
-  padding-inline: var(--space-2xs);
-  padding-bottom: 2px;
+  font-size: calc(var(--step--2) - 1px);
+  color: var(--gray-5);
 }
 
 .card-live span {

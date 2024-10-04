@@ -60,12 +60,11 @@
 }
 
 .link-box[data-card=category] img {
-  height: 4rem;
+  height: 3rem;
   width: auto;
 }
 
 .link-box[data-card=user-videos] img {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
 }
 </style>
