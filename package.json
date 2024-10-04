@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "eleventy --watch --incremental",
     "build": "NODE_ENV=production eleventy",
-    "preview": "wrangler pages dev ./_site",
+    "preview": "wrangler pages dev --live-reload",
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
