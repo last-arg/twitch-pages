@@ -359,7 +359,7 @@ export class LiveStreams {
         @param {StreamTwitch[]} streams
     */
     updateLiveStreams(streams) {
-        console.log("update streams", new_live_streams);
+        console.log("update streams", streams);
         const updates = [];
         const adds = [];
         for (const stream of streams) {
