@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "eleventy --watch --incremental",
     "build": "NODE_ENV=production eleventy",
-    "preview": "wrangler pages dev --live-reload",
+    "preview": "wrangler pages dev ./_site",
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
@@ -27,7 +27,7 @@
     "purgecss": "^6.0.0",
     "svgo": "^3.2.0",
     "unocss": "^0.59.0",
-    "wrangler": "^3.49.0"
+    "wrangler": "^3.80.0"
   },
   "type": "module",
   "browserslist": [
