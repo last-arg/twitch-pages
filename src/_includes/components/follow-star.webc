@@ -23,10 +23,19 @@ follow-star {
 }
 
 follow-star > * {
-  padding: var(--space-2xs);
-  --border: 2px solid var(--surface2);
+  --border: 1px solid var(--surface2);
   border-bottom: var(--border);
   border-left: var(--border);
+}
+
+follow-star a,
+follow-star .button-follow {
+  padding: var(--space-2xs);
+}
+
+follow-star svg {
+  width: .8em;
+  height: .8em;
 }
 
 follow-star a:hover,
