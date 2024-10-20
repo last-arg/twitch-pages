@@ -7,12 +7,8 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-[ ] use Cache API to store some stuff?
-  - user header
-  - category header
-[ ] Maybe use event 'visibilitychange' when making requests?
 [ ] format js
-[ ] use css @layer to order css (during build process)
+[ ] use @layer to order css (during build process)
   [ ] can add/append to layers ('@layer components {}'). Do this inside webc files.
   Because I don't like the order webc uses for CSS.
 [ ] how to get css just for src/partials/*.webc
