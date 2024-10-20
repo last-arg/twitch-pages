@@ -359,7 +359,6 @@ export class LiveStreams {
         @param {StreamTwitch[]} streams
     */
     updateLiveStreams(streams) {
-        console.log("update streams", streams);
         const updates = [];
         const adds = [];
         for (const stream of streams) {
@@ -381,7 +380,6 @@ export class LiveStreams {
 
         this.store.last_update = Date.now();
 
-        console.log(adds, updates, removes);
         if (removes.length === 0 && adds.length === 0 && updates.length === 0) {
             return;
         }
@@ -404,9 +402,7 @@ export class LiveStreams {
     }
 
     async updateLiveUsers() {
-        console.group("updateLiveUsers");
         const diff = this.updateDiff();
-        console.log("diff", diff)
         clearTimeout(this.timeout);
         if (diff > 0) {
             this.timeout = window.setTimeout(() => this.updateLiveUsers(), diff + 1000);

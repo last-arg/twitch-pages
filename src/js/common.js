@@ -235,7 +235,6 @@ class Settings extends EventTarget {
             evt.preventDefault();
             const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
             this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
-            console.log(f_data.get("all-languages"));
             this.data.category.show_all = /** @type {string|null} */ (f_data.get("all-languages"));
             this._save();
         });

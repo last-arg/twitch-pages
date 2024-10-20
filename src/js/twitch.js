@@ -119,7 +119,8 @@ export class Twitch {
   async fetchStreams(user_ids) {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    const r = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
+    const init = /** @type {RequestInit} */ ({cache: "no-store", method: "GET", headers: Twitch.headers});
+    const r = await this.twitchFetch(url, init);
     if (r.status !== 200) {
       console.warn("fetchStreams() status:", r.status);
       return [];

@@ -5,10 +5,6 @@ import { Twitch } from './twitch';
 // @ts-ignore
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
 
-window.addEventListener("htmx:historyRestore", function(/** @type {Event} */ e) {
-    console.log("history restore", e.detail)
-})
-
 export function initHtmx() {
   // TODO: enable later
   // htmx.config.refreshOnHistoryMiss = true;
