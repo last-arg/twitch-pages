@@ -75,7 +75,7 @@ export class Twitch {
   async fetchUsers(ids) {
     if (ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-    let resp = await this.twitchFetch(url, {method: "GET", headers: Twitch.headers});
+    let resp = await this.twitchFetch(url);
     if (resp.status !== 200) {
       console.warn("fetchUsers() status:", resp.status);
       return [];
@@ -85,14 +85,14 @@ export class Twitch {
 
   /**
   @param {string} url
-  @param {RequestInit | undefined} init
   @returns {Promise<Response>}
   */
-  async twitchFetch(url, init) {
-    let resp = await fetch(url, init)
+  async twitchFetch(url) {
+    const opts = /** @type {RequestInit} */ ({cache: "no-store", method: "GET", headers: Twitch.headers});
+    let resp = await fetch(url, opts)
     if (resp.status === 401) {
       await this.fetchToken();
-      resp = await fetch(url, init);
+      resp = await fetch(url, opts);
     }
     return resp;
   }
@@ -103,7 +103,7 @@ export class Twitch {
   */  
   async fetchSearch(input) {
     const url = `https://api.twitch.tv/helix/search/categories?first=${SEARCH_COUNT}&query=${input}`;
-    const resp = await this.twitchFetch(url, { method: "GET", headers: Twitch.headers });
+    const resp = await this.twitchFetch(url);
     if (resp.status !== 200) {
       console.warn("fetchSearch() status:", resp.status);
       return [];
@@ -119,8 +119,7 @@ export class Twitch {
   async fetchStreams(user_ids) {
     if (user_ids.length === 0) return []
     const url = `https://api.twitch.tv/helix/streams?user_id=${user_ids.join("&user_id=")}&first=${TWITCH_MAX_QUERY_COUNT}`;
-    const init = /** @type {RequestInit} */ ({cache: "no-store", method: "GET", headers: Twitch.headers});
-    const r = await this.twitchFetch(url, init);
+    const r = await this.twitchFetch(url);
     if (r.status !== 200) {
       console.warn("fetchStreams() status:", r.status);
       return [];
