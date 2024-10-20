@@ -20,7 +20,6 @@ if (process.env.NODE_ENV === "production") {
 
 export const settings_default = settings_base;
 
-// TODO: try to add cache busting to 'html' field
 /** @type {Record<string, UrlResolve>} */
 export const mainContent = {
   "top-games": {

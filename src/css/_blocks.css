@@ -62,7 +62,6 @@ header {
   position: relative;
 }
 
-/* TODO: redo form[role=search] CSS */
 form[role="search"] {
   font-size: var(--step--1);
   display: flex;

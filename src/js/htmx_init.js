@@ -6,8 +6,7 @@ import { Twitch } from './twitch';
 const htmx = /** @type {import("htmx.org")} */ (window.htmx);
 
 export function initHtmx() {
-  // TODO: enable later
-  // htmx.config.refreshOnHistoryMiss = true;
+  htmx.config.refreshOnHistoryMiss = true;
   htmx.defineExtension("twitch-api", {
     /**
     @param {string} name
