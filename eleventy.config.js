@@ -253,7 +253,7 @@ function setupServiceWorkerScript() {
 	// NOTE: change this if content of some static file changes
 	// TODO: use package.json version?
   const cache_version = "v2"; 
-	let out = `UpUp.start({"cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
+	let out = `UpUp.start({"service-worker-url": "/upup.sw.min.js", "cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
 	const filename = `${output_dir}/index.html`;
 	const input = fs.readFileSync(filename, "utf-8");
 	out = input.replace("[SERVICE_WORKER_SCRIPT]", out);
