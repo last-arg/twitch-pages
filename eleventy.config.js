@@ -221,20 +221,21 @@ async function buildCssProd(is_prod) {
 
 function setupServiceWorkerScript() { 
 	const assets = [
+			"/index.html",
       "/public/partials/category.html",
       "/public/partials/not-found.html",
       "/public/partials/settings.html",
       "/public/partials/top-games.html",
       "/public/partials/user-videos.html",
-    ];
-    // TODO: move css into bundle directory?
-    { // add css files
+  ];
+  // TODO: move css into bundle directory?
+  { // add css files
 		const files = fs.readdirSync(`${output_dir}/css`);
 		for (const f of files) {
 			assets.push(`/css/${f}`);
 		}
 	}
-    { // add js, svg files
+  { // add js, svg files
 		const assets_dir = "/assets";
 		const files = fs.readdirSync(assets_output, { recursive: true });
 		for (const f of files) {
@@ -249,7 +250,9 @@ function setupServiceWorkerScript() {
 
 	// To get hash version would have to get hash for all files. Concat those
 	// hashes into version? Hash or shorten concated value into shorter value?
-    const cache_version = Date.now().toString(); 
+	// NOTE: change this if content of some static file changes
+	// TODO: use package.json version?
+  const cache_version = "v2"; 
 	let out = `UpUp.start({"cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
 	const filename = `${output_dir}/index.html`;
 	const input = fs.readFileSync(filename, "utf-8");
