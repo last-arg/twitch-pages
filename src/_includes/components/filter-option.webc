@@ -16,7 +16,7 @@
 .filter-option input {
   appearance: none;
   margin: 0;
-  /* For iOS < 15 to remove gradient background */
+  /* For iOS that is smaller than version 15 to remove gradient background */
   background-color: white;
   color: currentColor;
   height: 1.68em;

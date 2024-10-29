@@ -27,7 +27,7 @@ if (this.obj) {
 /*
  * Could also use '... use:first-child' or '... use:nth-child(2)' if order
  * is known and won't change. Might be safer choice because svg icon name
- * might change. Although somebody might also change <use> order without
+ * might change. Although somebody might also change 'use' element order without
  * knowing order is important. In both cases a comment might be helpful.
  * 
  * Adding a class probably be the safest bet. Choosing a solution comes
