@@ -9,6 +9,7 @@
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
+    "htmx-ext-preload": "^2.0.1",
     "htmx.org": "^2.0.3",
     "idiomorph": "^0.3.0",
     "open-props": "^1.7.2",
