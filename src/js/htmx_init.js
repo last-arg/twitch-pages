@@ -2,16 +2,13 @@ import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images, s
 import { mainContent, config } from './config.prod';
 import { Twitch } from './twitch';
 
-// @ts-ignore
-const htmx = /** @type {import("htmx.org")} */ (window.htmx);
-
 export function initHtmx() {
+  htmx.config.selfRequestsOnly = false;
   htmx.config.refreshOnHistoryMiss = true;
+  // TODO: fix history storing
+  htmx.config.historyEnabled = false;
+  // @ts-ignore
   htmx.defineExtension("twitch-api", {
-    /**
-    @param {string} name
-    @param {CustomEvent} evt
-    */
     onEvent: (name, evt) => {
       // console.log(name, evt)
       if (name === "htmx:configRequest") {
@@ -51,13 +48,8 @@ export function initHtmx() {
           btn.setAttribute("aria-disabled", "false");
         }
       }
+      return true;
     },
-    /**
-    @param {string} text
-    @param {any} xhr
-    @param {HTMLElement} _elt
-    @returns {string}
-    */
     transformResponse: function(text, xhr, _elt) {
       // console.log(text, xhr, _elt);
       const pathUrl = new URL(xhr.responseURL)
@@ -192,7 +184,7 @@ export function initHtmx() {
         document.title = `${item.display_name} | Twitch Pages`;
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         btn.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
-        htmx.ajax('GET', '/helix/videos', {source:'.btn-load-more'})
+        htmx.ajax('get', '/helix/videos', {source:'.btn-load-more'})
         const item_json = encodeURIComponent(JSON.stringify({
            user_id: item.id,
            user_login: item.login,
@@ -272,9 +264,8 @@ export function initHtmx() {
       return text;
     },
   });
-  htmx.config.useTemplateFragments = true;
 
-  htmx.ajax("GET", getUrlObject(location.pathname).html, "#main")
+  htmx.ajax("get", getUrlObject(location.pathname).html, "#main")
 }
 
 let tmp_elem = document.createElement("p");

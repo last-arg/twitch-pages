@@ -9,7 +9,7 @@
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
-    "htmx.org": "^1.9.11",
+    "htmx.org": "^2.0.3",
     "idiomorph": "^0.3.0",
     "open-props": "^1.7.2",
     "upup": "^1.1.0"
