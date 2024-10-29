@@ -5,8 +5,6 @@ import { Twitch } from './twitch';
 export function initHtmx() {
   htmx.config.selfRequestsOnly = false;
   htmx.config.refreshOnHistoryMiss = true;
-  // TODO: fix history storing
-  htmx.config.historyEnabled = false;
   // @ts-ignore
   htmx.defineExtension("twitch-api", {
     onEvent: (name, evt) => {
