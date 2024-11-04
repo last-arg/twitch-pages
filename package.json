@@ -4,7 +4,7 @@
   "description": "Twitch alternative pages",
   "scripts": {
     "dev": "eleventy --watch --incremental",
-    "build": "NODE_ENV=production eleventy",
+    "build": "rm -rf _site && NODE_ENV=production eleventy",
     "preview": "wrangler pages dev --live-reload",
     "deploy": "npm run build && wrangler pages deploy"
   },
