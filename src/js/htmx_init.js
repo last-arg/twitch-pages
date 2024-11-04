@@ -1,4 +1,4 @@
-import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images, state, settings } from './common'
+import { games, API_URL, categoryUrl, twitchCatImageSrc, streams, user_images, state, settings, getUrlObject } from './common'
 import { mainContent, config } from './config.prod';
 import { Twitch } from './twitch';
 
@@ -21,7 +21,6 @@ export function initHtmx() {
           const path = state.path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["name"] = decodeURIComponent(path_arr[path_arr.length - 1]);
-          state.setPath(null)
         } else if (url.pathname === "/helix/streams") {
           evt.detail.parameters["first"] = settings.data.general["category-count"]
           if (!settings.data.category.show_all) {
@@ -31,7 +30,6 @@ export function initHtmx() {
           const path = state.path || location.pathname;
           const path_arr = path.split("/")
           evt.detail.parameters["login"] = decodeURIComponent(path_arr[1]);
-          state.setPath(null)
         } else if (path === "/helix/videos") {
           evt.detail.parameters["first"] = settings.data.general["user-videos-count"]
         }
@@ -98,7 +96,7 @@ export function initHtmx() {
         }
 
         const item = json.data[0];
-        document.title = `${item.name} | Twitch Pages`;
+        state.update_page_title(item.name);
         const btn_load = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         btn_load.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
         htmx.trigger(btn_load, "click", {})
@@ -179,7 +177,7 @@ export function initHtmx() {
         }
 
         const item = json.data[0];
-        document.title = `${item.display_name} | Twitch Pages`;
+        state.update_page_title(item.display_name);
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         btn.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
         htmx.ajax('get', '/helix/videos', {source:'.btn-load-more'})
@@ -339,34 +337,3 @@ function twitchDateToString(d) {
 function getVideoImageSrc(url, width, height) {
   return url.replace('%{width}', width.toString()).replace('%{height}', height.toString())
 }
-
-/**
-@param {string} newPath
-@returns {import("./config.prod.js").UrlResolve}
-*/
-function getUrlObject(newPath) {
-  if (newPath === "/") return mainContent["top-games"]
-  let contentKey = "not-found"
-  const newDirs = newPath.split("/").filter((path) => path.length > 0)
-  for (const key in mainContent) {
-    const obj = mainContent[key]
-    const dirs = obj.url.split("/").filter((path) => path.length > 0)
-    if (dirs.length !== newDirs.length || dirs.length === 0) continue
-    let isMatch = true
-    for (let i = 0; i < dirs.length; i+=1) {
-      const dir = dirs[i]
-      if (dir[0] === ":") continue
-      if (dir !== newDirs[i]) {
-        isMatch = false
-        break
-      }
-    }
-    if (isMatch) {
-      contentKey = key
-      break
-    }
-  }
-  return mainContent[contentKey]
-}
-
-

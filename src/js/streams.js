@@ -1,4 +1,4 @@
-import { strCompareField, categoryUrl } from "./common";
+import { strCompareField, categoryUrl, state } from "./common";
 import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
 
@@ -245,6 +245,7 @@ export class LiveStreams {
                     stream_count.textContent = count.toString();
                     stream_count.classList.remove("hidden")
                 }
+                state.replace_page_title_count();
             },
 
             /** @param {string[]} ids */

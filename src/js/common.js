@@ -1,15 +1,81 @@
 import { Games, SearchGames } from "./games";
 import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from "./streams";
 import { Sidebar } from "./sidebar";
-import { settings_default } from './config.prod';
+import { mainContent, settings_default } from './config.prod';
 
 export const state = {
-    /** @type {string | null} */
+    /** @type {string} */
     path: document.location.pathname,   
-    /** @param {string | null} path */
-    setPath(path) {
+
+    /** @param {string} path */
+    set_page_path(path) {
+        if (this.path == path) { return }
         this.path = path;
+        this.update_page_title(null);
+    },
+
+    /** @param {string | null} title */
+    update_page_title(title) {
+        let page_title = title;
+        if (title === null) {
+            const url_obj = getUrlObject(this.path);
+            const url = url_obj.url;
+            if (url == "/") {
+                page_title = "Home";
+            } else if (url == "/settings") {
+                page_title = "Settings";
+            } else if (url == "/not-found") {
+                page_title = "Not Found";
+            } else {
+                return;
+            }
+        }
+        let result = "";
+        if (live && live.count > 0) {
+            result = `(${live.count}) `;
+        }
+        result += `${page_title} | Twitch Pages`;
+        document.title = result;
+    },
+
+    replace_page_title_count() {
+        let new_title = "";
+        if (live && live.count > 0) {
+            new_title += `(${live.count}) `;
+        }
+        const index = document.title.indexOf(")", 1) + 1;
+        new_title += document.title.slice(index).trim();
+        document.title = new_title;
+    } 
+}
+
+/**
+@param {string} newPath
+@returns {import("./config.prod.js").UrlResolve}
+*/
+export function getUrlObject(newPath) {
+  if (newPath === "/") return mainContent["top-games"]
+  let contentKey = "not-found"
+  const newDirs = newPath.split("/").filter((path) => path.length > 0)
+  for (const key in mainContent) {
+    const obj = mainContent[key]
+    const dirs = obj.url.split("/").filter((path) => path.length > 0)
+    if (dirs.length !== newDirs.length || dirs.length === 0) continue
+    let isMatch = true
+    for (let i = 0; i < dirs.length; i+=1) {
+      const dir = dirs[i]
+      if (dir[0] === ":") continue
+      if (dir !== newDirs[i]) {
+        isMatch = false
+        break
+      }
     }
+    if (isMatch) {
+      contentKey = key
+      break
+    }
+  }
+  return mainContent[contentKey]
 }
 
 /** @type {UserImages} */

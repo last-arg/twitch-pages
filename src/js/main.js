@@ -8,6 +8,10 @@ import { initHtmx } from "./htmx_init";
 @typedef {import("./sidebar").SidebarState} SidebarState
 */
 
+document.addEventListener("htmx:pushedIntoHistory", (/** @type {Event} */ e) => {
+    state.set_page_path(e.detail.path);
+});
+
 window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
     const elem = /** @type {Element} */ (e.target);
     if (elem.classList.contains("user-heading-box")) {
@@ -20,7 +24,6 @@ window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
             live.addUser(stream_id);
         }
     } else if (elem.id === "page-settings") {
-        document.title = "Settings | Twitch Pages";
         settings.init(elem)
     }
 });
@@ -74,15 +77,6 @@ async function startup() {
     await twitch.fetchToken();
     init_common();
     initHtmx();
-    document.body.addEventListener("mousedown", handlePathChange)
 };
 window.addEventListener("DOMContentLoaded", startup);
-
-/** @param {Event} e */
-function handlePathChange(e) {
-    const target = /** @type {Element} e */ (e.target);
-    const hx_link = target.closest("a[hx-push-url]");
-    state.setPath(hx_link?.getAttribute("hx-push-url") || null);
-}
-
 
