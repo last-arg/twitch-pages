@@ -141,7 +141,7 @@ export class StreamsStore extends EventTarget {
         if (ev.type === "storage") {
             this._readStorage();
             this._save();
-        } else if ("save") {
+        } else if (ev.type === "save") {
             this.sort();
         }
     }
