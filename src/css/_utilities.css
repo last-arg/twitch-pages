@@ -20,3 +20,7 @@
   animation-delay: 0s, 20ms;
   animation-duration: 0s, 380ms;
 }
+
+.mb-3xs {
+  margin-bottom: var(--space-3xs);
+}

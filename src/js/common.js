@@ -231,6 +231,14 @@ class Settings extends EventTarget {
                 games.clear();
                 streams.store.clear();
                 user_images.clear();
+            } else if (t.classList.contains("js-clear-all-and-restore")) {
+                const games_backup = [...games.items];
+                const streams_backup = [...streams.store.items];
+                localStorage.clear();
+                games.items = games_backup;
+                games._save();
+                streams.store.items = streams_backup;
+                streams.store._save();
             }
         })
     }
