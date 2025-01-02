@@ -20,7 +20,6 @@ export class Streams {
         this.store = streams_store;
         this.live = live;
         this.user_images = user_images;
-        this.store.addEventListener("save", this);
 
         this.$ = {
             streams_list: streams_list,
@@ -38,15 +37,6 @@ export class Streams {
             }
         };
         this.render();
-    }
-
-    /**
-      @param {Event} ev
-    */
-    handleEvent(ev) {
-        if (ev.type === "save") {
-            this.render();
-        }
     }
 
     /**
@@ -128,10 +118,13 @@ export class StreamsStore extends EventTarget {
         this.localStorageKey = "followed_streams";
         this._readStorage(null);
         this.live_store = live_store;
-        this.live_store.addEventListener("save", this)
 
         // handle edits in another window
         window.addEventListener("storage", this, false);
+    }
+
+    dispatch_saved() {
+        this.dispatchEvent(new CustomEvent("streams_store:saved"));
     }
 
     /**
@@ -142,9 +135,8 @@ export class StreamsStore extends EventTarget {
             if (ev.key !== null && ev.key == this.localStorageKey) {
                 console.log("StreamsStore: storage happened")
                 this._readStorage(ev.newValue);
+                this.dispatch_saved();
             }
-        } else if (ev.type === "save") {
-            this.sort();
         }
     }
 
@@ -162,7 +154,7 @@ export class StreamsStore extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        // this.dispatchEvent(new CustomEvent('save'));
+        this.dispatch_saved();
     }
 
     /**
@@ -315,17 +307,6 @@ export class LiveStreams {
         this.store = this.streams_store.live_store;
         // This seems to help avoiding firefox restored page being wrong
         window.setTimeout(() => this.updateLiveUsers(), 1);
-        this.store.addEventListener("save", this);
-    }
-
-    /**
-      @param {Event} ev
-    */
-    handleEvent(ev) {
-        if (ev.type === "save") {
-            console.log("LiveStreams: storage happened")
-            this.updateLiveCount()
-        }
     }
 
     updateDiff() {

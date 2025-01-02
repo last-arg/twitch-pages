@@ -104,6 +104,55 @@ export function init_common() {
 
     game_search = new SearchGames(games);
     sidebar = new Sidebar();
+
+    games.addEventListener("games:saved", function() {
+        games.render();
+        // render page /category/<name> game stars
+        // render page / (root) game stars
+        // render search sidebar game stars
+        for (const button_follow of document.querySelectorAll(".button-follow[data-for=game]")) {
+            const game_id = /** @type {string | undefined} */ (button_follow.dataset.itemId);
+            if (game_id === undefined) {
+                console.warn(`Could not find 'data-item-id' attribute in`, button_follow);
+                continue;
+            }
+            const is_followed_raw = /** @type {string | undefined} */ (button_follow.dataset.isFollowed);
+            if (is_followed_raw === undefined) {
+                console.warn(`Could not find 'data-is-followed' attribute in`, button_follow);
+                continue;
+            }
+            const is_followed = is_followed_raw === "true";
+            const has_game = games.items.some((val) => val.id === game_id );
+            if (is_followed !== has_game) {
+                button_follow.dataset.isFollowed = has_game.toString();
+            }
+        }
+    });
+
+    streams_store.addEventListener("streams_store:saved", function() {
+        streams.render();
+        live.updateLiveCount();
+
+        // render /<user>/videos user follow stars
+        // render page /category/<name> user follow stars
+        for (const button_follow of document.querySelectorAll(".button-follow[data-for=stream]")) {
+            const user_id = /** @type {string | undefined} */ (button_follow.dataset.itemId);
+            if (user_id === undefined) {
+                console.warn(`Could not find 'data-item-id' attribute in`, button_follow);
+                continue;
+            }
+            const is_followed_raw = /** @type {string | undefined} */ (button_follow.dataset.isFollowed);
+            if (is_followed_raw === undefined) {
+                console.warn(`Could not find 'data-is-followed' attribute in`, button_follow);
+                continue;
+            }
+            const is_followed = is_followed_raw === "true";
+            const has_stream = streams_store.items.some((val) => val.user_id === user_id );
+            if (is_followed !== has_stream) {
+                button_follow.dataset.isFollowed = has_stream.toString();
+            }
+        }
+    });
 }
 
 /**
@@ -194,7 +243,7 @@ class Settings extends EventTarget {
         super();
         this.localStorageKey = "settings"
         window.addEventListener("storage", this, false);
-        this._readStorage();
+        this._readStorage(null);
         this.lang_map = new Map();
     }
 

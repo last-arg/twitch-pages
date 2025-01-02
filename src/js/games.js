@@ -7,11 +7,12 @@ import { config } from './config.prod';
  * @typedef {import("./sidebar").ScrollContainer} ScrollContainer
  */
 
-export class Games {
+export class Games extends EventTarget {
     /** @type {Game[]} */
     items = [];
 
     constructor() {
+        super();
         const games_list = /** @type {Element} */ (document.querySelector(".js-games-list"));
         this.$ = {
             games_list: games_list,
@@ -43,12 +44,17 @@ export class Games {
         window.addEventListener("storage", this, false);
     }
 
+    dispatch_saved() {
+        this.dispatchEvent(new CustomEvent("games:saved"));
+    }
+
     /** @param {StorageEvent} ev */
     handleEvent(ev) {
         if (ev.type === "storage") {
             if (ev.key !== null && ev.key == this.localStorageKey) {
                 console.log("Games: storage happened")
                 this._readStorage(ev.newValue);
+                this.dispatch_saved();
             }
         }
     }
@@ -67,11 +73,12 @@ export class Games {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+        this.dispatch_saved();
     }
 
     clear() {
         this.items = [];
-        this.render();
+        this._save();
     }
 
     /**

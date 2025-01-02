@@ -53,7 +53,6 @@ function gameAndStreamFollow(t) {
             games.follow(/** @type {Game} */ item_untyped);
         }
     }
-    btn.setAttribute("data-is-followed", (!following).toString())
 }
 
 document.addEventListener("click", function(/** {Event} */e) {
