@@ -163,7 +163,7 @@ class Settings extends EventTarget {
       @typedef {typeof this.data.general} SettingsGeneral
     */
 
-    data = {
+    static data_default = {
         /** @type {{show_all: string|null, languages: string[]}} */
         category: { show_all: 'on', languages: [] },
         general: {
@@ -175,6 +175,8 @@ class Settings extends EventTarget {
           "video-highlights": false,
         }
     }
+
+    data = Settings.data_default;
 
     /** @type {{
             root: Element
@@ -197,25 +199,31 @@ class Settings extends EventTarget {
     }
 
     /**
-      @param {Event} ev
+      @param {StorageEvent} ev
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
-            this._readStorage();
-            this._save();
+            if (ev.key !== null && ev.key == this.localStorageKey) {
+                console.log("Settings: storage happened")
+                this._readStorage(ev.newValue);
+            }
         }
     }
     
-    _readStorage() {
-        const raw = window.localStorage.getItem(this.localStorageKey);
+    /**
+      @param {string | null} new_val
+    */
+    _readStorage(new_val) {
+        const raw = new_val !== null ? new_val : window.localStorage.getItem(this.localStorageKey);
         if (raw) {
             this.data = JSON.parse(raw);
-        }
+        } else {
+            this.data = Settings.data_default;
+        } 
     }
     
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
-        this.dispatchEvent(new CustomEvent('settings:save'));
     }
 
     _initCache() {

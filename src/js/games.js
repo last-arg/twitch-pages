@@ -36,33 +36,42 @@ export class Games {
             },
         }
         this.localStorageKey = "followed_games"
-        this._readStorage();
+        this._readStorage(null);
         this.render();
 
         // handle edits in another window
         window.addEventListener("storage", this, false);
     }
 
-    /** @param {Event} ev */
+    /** @param {StorageEvent} ev */
     handleEvent(ev) {
         if (ev.type === "storage") {
-            this._readStorage();
-            this._save();
+            if (ev.key !== null && ev.key == this.localStorageKey) {
+                console.log("Games: storage happened")
+                this._readStorage(ev.newValue);
+            }
         }
     }
 
-    _readStorage() {
-        this.items = JSON.parse(window.localStorage.getItem(this.localStorageKey) || "[]");
+    /**
+        @param {string | null} new_val
+    */
+    _readStorage(new_val) {
+        const raw = new_val || window.localStorage.getItem(this.localStorageKey);
+        if (raw) {
+            this.items = JSON.parse(raw);
+        } else {
+            this.items = [];
+        }
     }
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.render();
     }
 
     clear() {
         this.items = [];
-        this._save();
+        this.render();
     }
 
     /**

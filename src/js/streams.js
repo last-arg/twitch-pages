@@ -126,7 +126,7 @@ export class StreamsStore extends EventTarget {
     constructor(live_store) {
         super()
         this.localStorageKey = "followed_streams";
-        this._readStorage();
+        this._readStorage(null);
         this.live_store = live_store;
         this.live_store.addEventListener("save", this)
 
@@ -135,27 +135,34 @@ export class StreamsStore extends EventTarget {
     }
 
     /**
-      @param {Event} ev 
+      @param {StorageEvent} ev 
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
-            this._readStorage();
-            this._save();
+            if (ev.key !== null && ev.key == this.localStorageKey) {
+                console.log("StreamsStore: storage happened")
+                this._readStorage(ev.newValue);
+            }
         } else if (ev.type === "save") {
             this.sort();
         }
     }
 
-    _readStorage() {
-        const raw = window.localStorage.getItem(this.localStorageKey)
+    /**
+      @param {string | null} new_val
+    */
+    _readStorage(new_val) {
+        const raw = new_val !== null ? new_val : window.localStorage.getItem(this.localStorageKey);
         if (raw) {
             this.items = JSON.parse(raw);
+        } else {
+            this.items = [];
         }
     }
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.dispatchEvent(new CustomEvent('save'));
+        // this.dispatchEvent(new CustomEvent('save'));
     }
 
     /**
@@ -316,6 +323,7 @@ export class LiveStreams {
     */
     handleEvent(ev) {
         if (ev.type === "save") {
+            console.log("LiveStreams: storage happened")
             this.updateLiveCount()
         }
     }
@@ -427,38 +435,55 @@ export class LiveStreamsStore extends EventTarget {
         super();
         this.localStorageKey = "live_users";
         this.localKeyLastUpdate = "live_last_update";
-        this._readStorage();
+        this._readStorage(this.localStorageKey, null);
+        this._readStorage(this.localKeyLastUpdate, null);
 
         // handle edits in another window
         window.addEventListener("storage", this, false);
     }
 
     /**
-      @param {Event} ev 
+      @param {StorageEvent} ev 
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
-            this._readStorage();
-            this._save();
+            if (ev.key !== null) {
+                if (ev.key == this.localStorageKey) {
+                    console.log("LiveStreamStore: storage happened")
+                    this._readStorage(this.localStorageKey, ev.newValue);
+                } else if (ev.key == this.localKeyLastUpdate) {
+                    console.log("LiveStreamStore last update: storage happened")
+                    this._readStorage(this.localKeyLastUpdate, ev.newValue);
+                }
+            }
         }
     }
     
-
-    _readStorage() {
-        let raw = window.localStorage.getItem(this.localStorageKey)
-        if (raw) {
-            this.users = JSON.parse(raw);
-        }
-        raw = window.localStorage.getItem(this.localKeyLastUpdate)
-        if (raw) {
-            this.last_update = Number(raw);
+    /**
+        @param {string} key
+        @param {string | null} new_val
+    */
+    _readStorage(key, new_val) {
+        if (key === this.localStorageKey) {
+            const raw = new_val || window.localStorage.getItem(key);
+            if (raw) {
+                this.users = JSON.parse(raw);
+            } else {
+                this.users = {};
+            }
+        } else if (key === this.localKeyLastUpdate) {
+            const raw = new_val || window.localStorage.getItem(key);
+            if (raw) {
+                this.last_update = Number(raw);
+            } else {
+                this.last_update = 0;
+            }
         }
     }
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
         window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
-        this.dispatchEvent(new CustomEvent('save'));
     }
 
     /**
@@ -521,7 +546,7 @@ export class UserImages {
             }
         }
         this.localStorageKey = "user_images";
-        this._readStorage();
+        this._readStorage(null);
         this.streams_store = streams_store;
         this.add(this.streams_store.getIds());
         this.clean();
@@ -531,19 +556,26 @@ export class UserImages {
     }
 
     /**
-      @param {Event} ev 
+      @param {StorageEvent} ev 
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
-            this._readStorage();
-            this._save();
+            if (ev.key !== null && ev.key === this.localStorageKey) {
+                console.log("UserImages: storage happened")
+                this._readStorage(ev.newValue);
+            }
         }
     }
     
-    _readStorage() {
-        const raw = window.localStorage.getItem(this.localStorageKey)
+    /**
+        @param {string | null} new_val
+    */
+    _readStorage(new_val) {
+        const raw = new_val || window.localStorage.getItem(this.localStorageKey);
         if (raw) {
             this.data = JSON.parse(raw);
+        } else {
+            this.data = {images: {}, last_update: 0};
         }
     }
 

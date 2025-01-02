@@ -15,6 +15,7 @@ Pages:
 [ ] look if I can use something from here https://github.com/Set-Creative-Studio/cube-boilerplate/tree/main
 - firefox console log: storage quota reached
   some absurd amount of cache space is taken up. Have somekind of leak?
+  might be recursion caused between more than one tab open.
 
 ## Resources
 
