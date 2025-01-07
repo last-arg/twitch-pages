@@ -529,7 +529,6 @@ export class UserImages {
         this.localStorageKey = "user_images";
         this._readStorage(null);
         this.streams_store = streams_store;
-        this.add(this.streams_store.getIds());
         this.clean();
 
         // handle edits in another window
