@@ -209,7 +209,7 @@ export function categoryUrl(cat, is_twitch = false) {
 
 class Settings extends EventTarget {
     /**
-      @typedef {typeof this.data.general} SettingsGeneral
+      @typedef {typeof Settings.data_default} SettingsGeneral
     */
 
     static data_default = {
@@ -241,10 +241,9 @@ class Settings extends EventTarget {
 
     constructor() {
         super();
-        this.localStorageKey = "settings"
-        window.addEventListener("storage", this, false);
+        this.localStorageKey = "settings";
         this._readStorage(null);
-        this.lang_map = new Map();
+        window.addEventListener("storage", this, false);
     }
 
     /**
@@ -253,8 +252,8 @@ class Settings extends EventTarget {
     handleEvent(ev) {
         if (ev.type === "storage") {
             if (ev.key !== null && ev.key == this.localStorageKey) {
-                console.log("Settings: storage happened")
                 this._readStorage(ev.newValue);
+                this.dispatchEvent(new CustomEvent("settings:storage-saved"));
             }
         }
     }
@@ -272,6 +271,7 @@ class Settings extends EventTarget {
     }
     
     _save() {
+        console.log("settings:_saved");
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
     }
 
@@ -349,11 +349,6 @@ class Settings extends EventTarget {
         this.data.category.languages
         const input_all_langs = /** @type {HTMLInputElement} */ (document.querySelector("input[name=all-languages]"));
         input_all_langs.checked = this.data.category.show_all;
-        const options = this.$.root.querySelectorAll("#lang-list option");
-        for (let i = 0; i < options.length; i++) {
-            const opt = /** @type {HTMLInputElement} */ (options[i]);
-            this.lang_map.set(/** @type {string} */ (opt.getAttribute("lang-code")), opt.value)
-        }
 
         for (const lang of this.data.category.languages) {
             this._addLang(lang);
@@ -392,16 +387,18 @@ class Settings extends EventTarget {
 
     /** @param {string} lang */
     _addLang(lang) {
-        if (!this.$.lang) { return; }
+      if (!this.$.lang) { return; }
+      if (this.$.root.querySelector(`[name=lang][value=${lang}]`)) { return; }
+      const opt = /** @type {HTMLInputElement} */ (this.$.root.querySelector(`[lang-code=${lang}]`));
+      if (!opt || !opt.value) { return; }
+
       const new_elem = /** @type {Element} */ (this.$.lang.tmpl.content.firstElementChild?.cloneNode(true));
       const input = /** @type {HTMLInputElement} */ (new_elem.querySelector("input"));
       const p = /** @type {HTMLParagraphElement} */ (new_elem.querySelector("p"));
-      const text = this.lang_map.get(lang);
-      if (text) {
-          p.textContent =  text;
-          input.setAttribute("value", lang)
-          this.$.lang.list.append(new_elem);
-      }
+
+      p.textContent = opt.value;
+      input.setAttribute("value", lang)
+      this.$.lang.list.append(new_elem);
     }
 
     _hasLanguages() {
@@ -428,7 +425,36 @@ class Settings extends EventTarget {
     }
 }
 
-export const settings = new Settings();
+export let settings = new Settings();
+
+// TODO: only add event when on settings page. And remove event when leaving settings page
+settings.addEventListener("settings:storage-saved", function() {
+    if (document.location.pathname === "/settings") {
+        const input_elems = /** @type {Array<HTMLInputElement>} */ (settings.$.root.querySelectorAll("#settings-general input"));
+        for (const elem of input_elems) {
+            if (elem.type === "number") {
+                elem.value = settings.data.general[elem.name];
+            } else if (elem.type === "checkbox") {
+                elem.checked = settings.data.general[elem.name];
+            }
+        }
+        console.log("update settings UI")
+        const checkbox_languages = /** @type {HTMLInputElement} */ (settings.$.root.querySelector("[name=all-languages]"));
+        checkbox_languages.checked = settings.data.category.show_all;
+
+        for (const lang of settings.data.category.languages) {
+            settings._addLang(lang);
+        }
+
+        // remove languages
+        for (const input of settings.$.root.querySelectorAll("[name=lang]")) {
+            const lang_code = input.value;
+            if (!settings.data.category.languages.includes(lang_code)) {
+                input.closest("li")?.remove();
+            } 
+        }
+    }
+});
 
 class FormFilter extends HTMLElement {
     constructor() {
