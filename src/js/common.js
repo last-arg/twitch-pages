@@ -271,7 +271,6 @@ class Settings extends EventTarget {
     }
     
     _save() {
-        console.log("settings:_saved");
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
     }
 
@@ -430,7 +429,6 @@ settings.addEventListener("settings:storage-saved", function() {
                 elem.checked = settings.data.general[elem.name];
             }
         }
-        console.log("update settings UI")
         const checkbox_languages = /** @type {HTMLInputElement} */ (settings.$.root.querySelector("[name=all-languages]"));
         checkbox_languages.checked = settings.data.category.show_all;
 

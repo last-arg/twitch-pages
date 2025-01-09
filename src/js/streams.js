@@ -133,7 +133,6 @@ export class StreamsStore extends EventTarget {
     handleEvent(ev) {
         if (ev.type === "storage") {
             if (ev.key !== null && ev.key == this.localStorageKey) {
-                console.log("StreamsStore: storage happened")
                 this._readStorage(ev.newValue);
                 this.dispatch_saved();
             }
@@ -430,10 +429,8 @@ export class LiveStreamsStore extends EventTarget {
         if (ev.type === "storage") {
             if (ev.key !== null) {
                 if (ev.key == this.localStorageKey) {
-                    console.log("LiveStreamStore: storage happened")
                     this._readStorage(this.localStorageKey, ev.newValue);
                 } else if (ev.key == this.localKeyLastUpdate) {
-                    console.log("LiveStreamStore last update: storage happened")
                     this._readStorage(this.localKeyLastUpdate, ev.newValue);
                 }
             }
@@ -541,7 +538,6 @@ export class UserImages {
     handleEvent(ev) {
         if (ev.type === "storage") {
             if (ev.key !== null && ev.key === this.localStorageKey) {
-                console.log("UserImages: storage happened")
                 this._readStorage(ev.newValue);
             }
         }
