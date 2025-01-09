@@ -133,9 +133,3 @@ main h3 {
   font-weight: var(--font-weight-3);
   font-size: var(--step-2);
 }
-
-.info {
-  padding: var(--space-3xs) var(--space-2xs);
-  border: 1px solid var(--blue-6);
-  background: var(--blue-2);
-}

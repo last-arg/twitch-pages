@@ -113,13 +113,6 @@ permalink: "public/partials/settings.html"
         <li>
           <button class="js-clear-all" type="button">Clear all caches</button>
         </li>
-        <li>
-          <p class="info mb-3xs">
-          Use this if there is firefox cache bug where cache limit reached, althought it hasn't.
-          Don't even know if this will work.
-          </p>
-          <button class="js-clear-all-and-restore" type="button">Clear all caches. Then re-add games and streams</button>
-        </li>
       </ul>
     </section>
   </div>
