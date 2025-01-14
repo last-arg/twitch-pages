@@ -524,6 +524,7 @@ export class UserImages {
             }
         }
         this.localStorageKey = "user_images";
+        this.add(streams_store.getIds());
         this._readStorage(null);
         this.streams_store = streams_store;
         this.clean();
