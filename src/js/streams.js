@@ -74,6 +74,7 @@ export class Streams {
             link.setAttribute("hx-push-url", href)
             const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
             const url  = this.user_images.getUrl(stream.user_id);
+            // TODO: if no image add it?
             img.src = url ? url : "#" + stream.user_id;
             const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
             btn.setAttribute("data-item-id", stream.user_id)
@@ -132,6 +133,7 @@ export class StreamsStore extends EventTarget {
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
+            console.log("storage(StreamsStore)", ev.key);
             if (ev.key !== null && ev.key == this.localStorageKey) {
                 this._readStorage(ev.newValue);
                 this.dispatch_saved();
@@ -427,6 +429,7 @@ export class LiveStreamsStore extends EventTarget {
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
+            console.log("storage(LiveStreamsStore)", ev.key);
             if (ev.key !== null) {
                 if (ev.key == this.localStorageKey) {
                     this._readStorage(this.localStorageKey, ev.newValue);
@@ -538,6 +541,7 @@ export class UserImages {
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
+            console.log("storage(UserImages)", ev.key);
             if (ev.key !== null && ev.key === this.localStorageKey) {
                 this._readStorage(ev.newValue);
             }

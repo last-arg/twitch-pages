@@ -51,6 +51,7 @@ export class Games extends EventTarget {
     /** @param {StorageEvent} ev */
     handleEvent(ev) {
         if (ev.type === "storage") {
+            console.log("storage(Games)", ev.key);
             if (ev.key !== null && ev.key == this.localStorageKey) {
                 console.log("Games: storage happened")
                 this._readStorage(ev.newValue);

@@ -251,6 +251,7 @@ class Settings extends EventTarget {
     */
     handleEvent(ev) {
         if (ev.type === "storage") {
+            console.log("storage(Settings)", ev.key);
             if (ev.key !== null && ev.key == this.localStorageKey) {
                 this._readStorage(ev.newValue);
                 this.dispatchEvent(new CustomEvent("settings:storage-saved"));
