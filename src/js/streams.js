@@ -154,6 +154,7 @@ export class StreamsStore extends EventTarget {
     }
 
     _save() {
+        console.log("save(StreamsStore)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
         this.dispatch_saved();
     }
@@ -463,6 +464,7 @@ export class LiveStreamsStore extends EventTarget {
     }
 
     _save() {
+        console.log("save(LiveStreamsStore)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
         window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
     }
@@ -606,6 +608,7 @@ export class UserImages {
     }
 
     _save() {
+        console.log("save(UserImages)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
     }
 

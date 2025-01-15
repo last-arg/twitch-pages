@@ -272,6 +272,7 @@ class Settings extends EventTarget {
     }
     
     _save() {
+        console.log("save(Settings)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
     }
 

@@ -73,6 +73,7 @@ export class Games extends EventTarget {
     }
 
     _save() {
+        console.log("save(Games)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
         this.dispatch_saved();
     }
