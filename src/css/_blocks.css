@@ -104,6 +104,7 @@ main {
 
 .card-live {
   display: flex;
+  align-items: center;
   font-size: calc(var(--step--2) - 1px);
   color: var(--gray-5);
 }

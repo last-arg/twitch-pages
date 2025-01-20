@@ -36,6 +36,7 @@
   justify-content: center;
   width: 100%;
   position: relative;
+  gap: var(--space-3xs);
 }
 
 .link-title p {
