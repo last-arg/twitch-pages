@@ -45,8 +45,9 @@ export class Streams {
     follow(data) {
         if (this.store.add(data)) {
             this.live.addUser(data.user_id);
+            this.live.updateLiveCount();
             this.user_images.add([data.user_id])
-        }
+            }
         this.render();
     };
 
@@ -320,12 +321,10 @@ export class LiveStreams {
     */
     async addUser(user_id) {
         if (!this.store.hasUser(user_id)) {
-            const stream = (await twitch.fetchStreams([user_id]))
+            const stream = await twitch.fetchStreams([user_id])
             if (stream.length > 0) {
                 this.store.add(user_id, stream[0].game_name)
             }
-        } else {
-            this.updateLiveCount()
         }
     };
 

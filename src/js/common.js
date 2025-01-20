@@ -131,7 +131,6 @@ export function init_common() {
 
     streams_store.addEventListener("streams_store:saved", function() {
         streams.render();
-        live.updateLiveCount();
 
         // render /<user>/videos user follow stars
         // render page /category/<name> user follow stars
