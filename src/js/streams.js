@@ -390,6 +390,7 @@ export class LiveStreams {
         }
 
         this.store._save();
+        this.updateLiveCount();
     }
 
     async updateLiveUsers() {
@@ -404,7 +405,6 @@ export class LiveStreams {
         const new_live_streams = await twitch.fetchLiveUsers(curr_ids);
         this.updateLiveStreams(new_live_streams);
         this.timeout = window.setTimeout(() => this.updateLiveUsers(), live_check_ms + 1000);
-        console.groupEnd();
     }
 }
 
