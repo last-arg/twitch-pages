@@ -34,6 +34,15 @@ export class Streams {
                     btns[i].setAttribute("data-is-followed", "false");
                 }
                 this.scroll_container.render();
+            },
+
+            /** @param {string} id */
+            addStream(id) {
+                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
+                console.log("add btns", btns)
+                for (let i = 0; i < btns.length; i++) {
+                    btns[i].setAttribute("data-is-followed", "true");
+                }
             }
         };
         this.render();
@@ -47,6 +56,7 @@ export class Streams {
             this.live.addUser(data.user_id);
             this.live.updateLiveCount();
             this.user_images.add([data.user_id])
+            this.$.addStream(data.user_id);
         }
         this.render();
     };
@@ -157,7 +167,6 @@ export class StreamsStore extends EventTarget {
     _save() {
         console.log("save(StreamsStore)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        this.dispatch_saved();
     }
 
     /**
@@ -165,12 +174,12 @@ export class StreamsStore extends EventTarget {
         @return {boolean}
     */
     add(data) {
-        if (!this.hasId(data.user_id)) {
-            this.items.push(data);
-            this.sort();
-            return true;
+        if (this.hasId(data.user_id)) {
+            return false;
         }
-        return false
+        this.items.push(data);
+        this.sort();
+        return true;
     };
 
     /**

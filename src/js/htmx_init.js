@@ -193,7 +193,7 @@ export function initHtmx() {
             tmpl_info_img_link.setAttribute("hx-push-url", video_url);
             tmpl_info_img.src = profile_img_url;
 
-            tmpl_follow.setAttribute("data-item-id", item.id);
+            tmpl_follow.setAttribute("data-item-id", item.user_id);
             tmpl_follow.setAttribute("data-item", item_json);
             tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(user_id).toString());
 
