@@ -47,7 +47,7 @@ export class Streams {
             this.live.addUser(data.user_id);
             this.live.updateLiveCount();
             this.user_images.add([data.user_id])
-            }
+        }
         this.render();
     };
 

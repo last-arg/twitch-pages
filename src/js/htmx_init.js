@@ -52,7 +52,7 @@ export function initHtmx() {
       const path = pathUrl.pathname;
 
       const attr = /** @type {string} */ (_elt.getAttribute("hx-template"));
-      const tmpl = document.querySelector(attr);
+      const tmpl = /** @type {HTMLTemplateElement} */ (document.querySelector(attr));
       if (!tmpl) {
         console.warn("Htmx extension 'twitch-api' could not find attribute 'hx-template' in element ", _elt);
         return text;
@@ -61,22 +61,36 @@ export function initHtmx() {
       if (path === "/helix/games/top") {
         const json = JSON.parse(text);
         let result = "";
+        
+        const tmpl_img_link = /** @type {HTMLLinkElement} */
+          (tmpl.content.querySelector(".game-img-link"));
+        const tmpl_img = /** @type {HTMLImageElement} */
+          (tmpl.content.querySelector(".game-img"));
+        const tmpl_link = /** @type {HTMLLinkElement} */
+          (tmpl.content.querySelector(".game-link"));
+        const tmpl_name = /** @type {HTMLParagraphElement} */
+          (tmpl_link.querySelector("p"));
+        const tmpl_external = /** @type {HTMLLinkElement} */
+          (tmpl.content.querySelector(".external-link"));
+        const tmpl_follow = /** @type {HTMLButtonElement} */
+          (tmpl.content.querySelector(".button-follow"));
+
         for (const item of json.data) {
             const game_url = categoryUrl(item.name)
-            const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
-            const game_obj_str = encodeURIComponent(JSON.stringify(item));
-            let html = tmpl.innerHTML
-              .replaceAll("#game_url", game_url)
-              .replace(":game_name_text", item.name)
-              .replace("#game_external_url", categoryUrl(item.name, true))
-              .replace("#game_img_url", img_url)
-              .replace(":item_id", item.id)
-              .replace(":item_json", game_obj_str)
-            if (games.isFollowed(item)) {
-               html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
-            }
-            result += html;
+            tmpl_link.href = game_url;
+            tmpl_link.setAttribute("hx-push-url", game_url);
+            tmpl_img_link.href = game_url;
+            tmpl_img_link.setAttribute("hx-push-url", game_url);
+            tmpl_name.textContent = item.name;
+            tmpl_external.href = categoryUrl(item.name, true);
+            tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
+            tmpl_follow.setAttribute("data-item-id", item.id);
+            tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
+            tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
+
+            result += tmpl.innerHTML;
         }
+
         const cursor = json.pagination.cursor;
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
