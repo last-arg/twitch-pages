@@ -114,20 +114,24 @@ export function initHtmx() {
         const btn_load = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         btn_load.setAttribute("hx-vals", JSON.stringify({game_id: item.id}));
         htmx.trigger(btn_load, "click", {})
-        const img_url = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-        const game_obj_str = encodeURIComponent(JSON.stringify(item));
-        let result = tmpl.innerHTML
-          .replaceAll(":game_name", item.name)
-          .replace(":item_id", item.id)
-          .replace("#game_img_url", img_url)
-          .replace(":item_json", game_obj_str)
-          .replace("#twitch_link", "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name));
 
-        if (games.isFollowed(item.id)) {
-           result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
-        }
+        const tmpl_heading = /** @type {HTMLHeadingElement} */
+          (tmpl.content.querySelector("h2"));
+        const tmpl_img = /** @type {HTMLImageElement} */
+          (tmpl.content.querySelector("img"));
+        const tmpl_external = /** @type {HTMLLinkElement} */
+          (tmpl.content.querySelector(".action-box > a"));
+        const tmpl_follow = /** @type {HTMLButtonElement} */
+          (tmpl.content.querySelector(".button-follow"));
 
-        return result;
+        tmpl_heading.textContent = item.name;
+        tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+        tmpl_external.href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name);
+        tmpl_follow.setAttribute("data-item-id", item.id);
+        tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
+        tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
+
+        return tmpl.innerHTML;
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);
         let result = "";
