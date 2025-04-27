@@ -10,7 +10,7 @@ permalink: "public/partials/top-games.html"
       <li class="simple-fade-in">
         <div class="game">
           <div class="img-wrapper">
-            <a class="game-img-link" href="#game_url" hx-push-url="#game_url"
+            <a class="game-img-link" href="#" hx-push-url="#"
               :hx-get="$data.global.paths.category.html" hx-target="#main"
               preload
             >
@@ -19,7 +19,7 @@ permalink: "public/partials/top-games.html"
                 :height="$data.global.config.image.category.height * 2">
             </a>
             <div class="game-action" data-pos="left">
-              <a class="external-link" href="#game_external_url" rel="external">
+              <a class="external-link" href="#" rel="external">
                 <span class="sr-only">Got to game's Twitch page</span>
                 <svg-icon name="external-link"></svg-icon>
               </a>
@@ -28,7 +28,7 @@ permalink: "public/partials/top-games.html"
               <button-follow @name="game" @obj="item"></button-follow>
             </div>
           </div>
-          <a class="game-link" href="#game_url" hx-push-url="#game_url"
+          <a class="game-link" href="#" hx-push-url="#"
             :hx-get="$data.global.paths.category.html" hx-target="#main"
             preload
           >
