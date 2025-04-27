@@ -9,26 +9,26 @@
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
-    "htmx-ext-preload": "^2.0.1",
-    "htmx.org": "^2.0.3",
-    "idiomorph": "^0.3.0",
-    "open-props": "^1.7.2",
+    "htmx-ext-preload": "^2.1.1",
+    "htmx.org": "2.0.4",
+    "idiomorph": "^0.7.3",
+    "open-props": "^1.7.15",
     "upup": "^1.1.0"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0-alpha.5",
-    "@11ty/eleventy-plugin-bundle": "^1.0.5",
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-bundle": "^3.0.6",
     "@11ty/eleventy-plugin-webc": "^0.11.2",
-    "@cloudflare/workers-types": "^4.20240405.0",
-    "@types/node": "^20.12.7",
-    "@unocss/cli": "^0.59.0",
-    "esbuild": "^0.20.2",
+    "@cloudflare/workers-types": "^4.20250427.0",
+    "@types/node": "^20.17.31",
+    "@unocss/cli": "^66.1.0-beta.12",
+    "esbuild": "^0.25.3",
     "html-minifier": "^4.0.0",
-    "lightningcss": "^1.28.2",
-    "purgecss": "^6.0.0",
-    "svgo": "^3.2.0",
-    "unocss": "^0.59.0",
-    "wrangler": "^3.99.0"
+    "lightningcss": "^1.29.3",
+    "purgecss": "^7.0.2",
+    "svgo": "^3.3.2",
+    "unocss": "^66.1.0-beta.12",
+    "wrangler": "^4.13.2"
   },
   "type": "module",
   "browserslist": [
