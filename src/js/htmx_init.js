@@ -247,7 +247,7 @@ export function initHtmx() {
            user_name: item.display_name,
         }));
 
-        tmpl_live.setAttribute("data-stream_id", item.id);
+        tmpl_live.setAttribute("data-stream-id", item.id);
         tmpl_heading.textContent = item.display_name;
         tmpl_img.src = item.profile_image_url;
         tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
