@@ -9,13 +9,13 @@ permalink: "public/partials/user-videos.html"
       <template id="user-header-template">
         <div class="user-heading-box">
           <heading-link @name="stream">
-            <img slot="heading-img" class="w-14" src="#user_profile_image_url" alt=""
+            <img slot="heading-img" class="w-14" alt=""
               :width="$data.global.config.image.user.width" :height="$data.global.config.image.user.height">
-            :user_display_name
+            <!-- user_display_name -->
           </heading-link>
           <div class="js-card-live user-live hidden" data-stream-id=":item_id">
             <span>LIVE</span>
-            <a href="#game_url" hx-target="#main" :hx-get="$data.global.paths.category.html" hx-push-url="#game_url" preload></a>
+            <a href="#" hx-push-url="#" hx-target="#main" :hx-get="$data.global.paths.category.html" preload></a>
           </div>
         </div>
       </template>

@@ -225,6 +225,17 @@ export function initHtmx() {
           `;
         }
 
+        const tmpl_live = /** @type {HTMLDivElement} */
+          (tmpl.content.querySelector(".js-card-live"));
+        const tmpl_external = /** @type {HTMLLinkElement} */
+          (tmpl.content.querySelector("a[rel=external]"));
+        const tmpl_follow = /** @type {HTMLButtonElement} */
+          (tmpl.content.querySelector(".button-follow"));
+        const tmpl_img = /** @type {HTMLImageElement} */
+          (tmpl.content.querySelector("img"));
+        const tmpl_heading = /** @type {HTMLHeadingElement} */
+          (tmpl.content.querySelector("h2"));
+
         const item = json.data[0];
         state.update_page_title(item.display_name);
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
@@ -235,20 +246,18 @@ export function initHtmx() {
            user_login: item.login,
            user_name: item.display_name,
         }));
-        let result = "";
-        result += tmpl.innerHTML
-          .replaceAll(":user_login", item.login)
-          .replaceAll(":user_display_name", item.display_name)
-          .replaceAll("#user_profile_image_url", item.profile_image_url)
-          .replace("#twitch_link", `https://www.twitch.tv/${item.login}/videos`)
-          .replace(":item_json", item_json)
-          .replaceAll(":item_id", item.id);
 
-        if (streams.store.hasId(item.id)) {
-           result = result.replace('data-is-followed="false"', 'data-is-followed="true"');
-        }
+        tmpl_live.setAttribute("data-stream_id", item.id);
+        tmpl_heading.textContent = item.display_name;
+        tmpl_img.src = item.profile_image_url;
+        tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
 
-        return result;
+        tmpl_follow.setAttribute("data-item-id", item.id);
+        tmpl_follow.setAttribute("data-item", item_json);
+        tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
+        
+
+        return tmpl.innerHTML;
       } else if (path === "/helix/videos") {
         /** @type {Record<string, string>} */
         const VIDEO_ICONS = {
