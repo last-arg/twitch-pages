@@ -11,7 +11,7 @@ permalink: "public/partials/category.html"
           <img slot="heading-img" class="w-10" alt=""
             :width="$data.global.config.image.category.width" 
             :height="$data.global.config.image.category.height">
-          :game_name
+          <!-- game_name -->
         </heading-link>
       </template>
     </div>
@@ -23,20 +23,20 @@ permalink: "public/partials/category.html"
       <template webc:keep webc:type="11ty" id="category-streams-template">
         <li class="simple-fade-in" data-title=":title_encoded">
           <div class="user">
-            <a class="user-link" href="https://twitch.tv/:user_login" title=":title" rel="external">
+            <a class="user-link" href="#" title="" rel="external">
               <div class="relative">
                 <img alt="" 
                   :width="$data.global.config.image.video.width" 
                   :height="$data.global.config.image.video.height">
-                <p class="user-count">:viewer_count viewers</p>
+                <p class="user-count">0 viewers</p>
               </div>
               <div class="stream-title">
-                <p>:title</p>
+                <p><!-- category/game title --></p>
                 <svg-icon name="external-link"></svg-icon>
               </div>
             </a>
             <div class="user-info">
-              <a class="user-info-img-link" aria-hidden="true" href="#video_url"
+              <a class="user-info-img-link" aria-hidden="true" href="#"
                 hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
                 preload
               >
@@ -46,7 +46,7 @@ permalink: "public/partials/category.html"
               </a>
               <div class="fluid-ml-2xs flex flex-col justify-between">
                 <div class="flex items-center">
-                  <a class="user-info-link" href="#video_url" hx-push-url="#video_url" 
+                  <a class="user-info-link" href="#" hx-push-url="#" 
                     :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
                     preload
                   >:user_name</a>
@@ -54,7 +54,7 @@ permalink: "public/partials/category.html"
                     <button-follow @name="stream"></button-follow>
                   </span>
                 </div>
-                <a class="external-video" href="https://www.twitch.tv/:user_login/videos" rel="external">
+                <a class="external-video" href="#" rel="external">
                   Twitch videos
                   <svg-icon name="external-link"></svg-icon>
                 </a>
