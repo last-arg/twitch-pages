@@ -135,6 +135,31 @@ export function initHtmx() {
       } else if (path === "/helix/streams") {
         const json = JSON.parse(text);
         let result = "";
+
+        const tmpl_list_item = /** @type {HTMLLIElement} */
+          (tmpl.content.querySelector("li"));
+        const tmpl_user_link = /** @type {HTMLLinkElement} */
+          (tmpl_list_item.querySelector(".user-link"));
+        const tmpl_user_img = /** @type {HTMLImageElement} */
+          (tmpl_user_link.querySelector("img"));
+        const tmpl_user_count = /** @type {HTMLParagraphElement} */
+          (tmpl_user_link.querySelector(".user-count"));
+        const tmpl_user_title = /** @type {HTMLParagraphElement} */
+          (tmpl_user_link.querySelector(".stream-title p"));
+
+        const tmpl_user_info = /** @type {HTMLDivElement} */
+          (tmpl.content.querySelector(".user-info"));
+        const tmpl_external = /** @type {HTMLLinkElement} */
+          (tmpl_user_info.querySelector(".external-video"));
+        const tmpl_follow = /** @type {HTMLButtonElement} */
+          (tmpl_user_info.querySelector(".button-follow"));
+        const tmpl_info_link = /** @type {HTMLLinkElement} */
+          (tmpl_user_info.querySelector(".user-info-link"));
+        const tmpl_info_img_link = /** @type {HTMLLinkElement} */
+          (tmpl_user_info.querySelector(".user-info-img-link"));
+        const tmpl_info_img = /** @type {HTMLImageElement} */
+          (tmpl_info_img_link.querySelector("img"));
+
         const imgs = user_images.data.images;
         let user_ids = [];
         for (const item of json.data) {
@@ -152,21 +177,27 @@ export function initHtmx() {
                user_login: item.user_login,
                user_name: item.user_name,
             }));
-            let html = tmpl.innerHTML
-              .replaceAll("#video_url", video_url)
-              .replaceAll(":user_login", item.user_login)
-              .replaceAll(":user_name", item.user_name)
-              .replace(":title_encoded", encodeURIComponent(item.title))
-              .replaceAll(":title", title)
-              .replace(":viewer_count", item.viewer_count)
-              .replace("#video_img_url", img_url)
-              .replace(":item_json", item_json)
-              .replace(":item_id", user_id)
-              .replace("#user_img", profile_img_url);
-            if (streams.store.hasId(user_id)) {
-               html = html.replace('data-is-followed="false"', 'data-is-followed="true"');
-            }
-            result += html;
+            tmpl_list_item.setAttribute("data-title", encodeURIComponent(item.title));
+            tmpl_user_link.href = "https://twitch.tv/" + item.user_login;
+            tmpl_user_link.title = title;
+            tmpl_user_img.src = img_url;
+            tmpl_user_title.textContent = title;
+            tmpl_user_count.textContent = item.viewer_count;
+
+            tmpl_external.href = `https://www.twitch.tv/${item.user_login}/videos`;
+            tmpl_info_link.textContent = item.user_name;
+            tmpl_info_link.href = video_url;
+            tmpl_info_link.setAttribute("hx-push-url", video_url);
+
+            tmpl_info_img_link.href = video_url;
+            tmpl_info_img_link.setAttribute("hx-push-url", video_url);
+            tmpl_info_img.src = profile_img_url;
+
+            tmpl_follow.setAttribute("data-item-id", item.id);
+            tmpl_follow.setAttribute("data-item", item_json);
+            tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(user_id).toString());
+
+            result += tmpl.innerHTML;
         }
 
         if (user_ids.length > 0) {

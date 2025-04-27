@@ -25,9 +25,9 @@ permalink: "public/partials/category.html"
           <div class="user">
             <a class="user-link" href="https://twitch.tv/:user_login" title=":title" rel="external">
               <div class="relative">
-                <img src="#video_img_url" alt="" 
+                <img alt="" 
                   :width="$data.global.config.image.video.width" 
-                  :height="$data.global.config.image.video.height" />
+                  :height="$data.global.config.image.video.height">
                 <p class="user-count">:viewer_count viewers</p>
               </div>
               <div class="stream-title">
@@ -40,7 +40,7 @@ permalink: "public/partials/category.html"
                 hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
                 preload
               >
-                <img class="block w-14" src="#user_img" alt="" 
+                <img class="block w-14" alt="" 
                   :width="$data.global.config.image.user.width" 
                   :height="$data.global.config.image.user.height" />
               </a>
