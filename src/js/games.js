@@ -119,7 +119,7 @@ export class Games extends EventTarget {
         this.items.push(game);
         this.items.sort(strCompareField("name"))
 
-        this.$.removeGame(game.id)
+        this.$.addGame(game.id)
         this._save();
     }
 
