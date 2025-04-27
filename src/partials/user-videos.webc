@@ -38,14 +38,14 @@ permalink: "public/partials/user-videos.html"
     </div>
     <ul class="output-list l-grid fluid-mt-m" style="--l-grid-min: 16rem; --l-grid-gap: 1.8rem 1.2rem" role="list">
       <template id="user-video-template">
-        <li class="video simple-fade-in" data-video-type=":video_type" data-title=":encoded_video_title">
-          <a class="video-link" href="#video_url" title=":video_title" rel="external">
+        <li class="video simple-fade-in" data-video-type="" data-title="">
+          <a class="video-link" href="#" title="" rel="external">
             <div class="video-img-wrapper">
-              <img src="#img_url" alt="" 
+              <img alt="" 
                 :width="$data.global.config.image.video.width" 
                 :height="$data.global.config.image.video.height"
               >
-              <span class="video-info video-type" title=":video_type_title">
+              <span class="video-info video-type" title="">
                 <svg-icon @name=":video_icon"></svg-icon>
                 <span class="sr-only">:video_type</span>
               </span>
@@ -55,7 +55,7 @@ permalink: "public/partials/user-videos.html"
               </div>
             </div>
             <div class="video-title">
-              <p>:video_title</p>
+              <p><!-- video_title --></p>
               <svg-icon @name="external-link"></svg-icon>
             </div>
           </a>
