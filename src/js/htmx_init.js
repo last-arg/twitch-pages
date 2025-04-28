@@ -182,7 +182,7 @@ export function initHtmx() {
             tmpl_user_link.title = title;
             tmpl_user_img.src = img_url;
             tmpl_user_title.textContent = title;
-            tmpl_user_count.textContent = item.viewer_count;
+            tmpl_user_count.textContent = item.viewer_count + " viewers";
 
             tmpl_external.href = `https://www.twitch.tv/${item.user_login}/videos`;
             tmpl_info_link.textContent = item.user_name;
