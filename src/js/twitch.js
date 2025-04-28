@@ -41,7 +41,7 @@ export class Twitch {
     const now_seconds = Math.floor(Date.now() / 1000);
     if (!token || token.expires_date < now_seconds) {
       this.is_fetching_token = true;
-      const r = await fetch("/api/new-token");
+      const r = await fetch("/api/new-token", {cache: 'no-store'});
       if (r.status !== 200) {
         console.warn("fetchToken(): Failed to get new twitch token");
         // TODO: handle failed request
