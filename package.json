@@ -5,15 +5,14 @@
   "scripts": {
     "dev": "eleventy --watch --incremental",
     "build": "rm -rf _site && NODE_ENV=production eleventy",
-    "preview": "wrangler pages dev --live-reload",
+    "preview": "wrangler pages dev --live-reload --local-protocol=https",
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
     "htmx-ext-preload": "^2.1.1",
     "htmx.org": "2.0.4",
     "idiomorph": "^0.7.3",
-    "open-props": "^1.7.15",
-    "upup": "^1.1.0"
+    "open-props": "^1.7.15"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

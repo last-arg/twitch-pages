@@ -45,7 +45,6 @@ export default function(eleventyConfig) {
 
 		eleventyConfig.on('eleventy.after', async function() {
 			await buildCssProd(is_prod);
-			setupServiceWorkerScript();
 			cleanUp();
 		})
 
@@ -140,8 +139,6 @@ export default function(eleventyConfig) {
 	eleventyConfig.addWatchTarget("src/js/*")
 
 	eleventyConfig.addPassthroughCopy({
-		"./node_modules/upup/dist/upup.min.js": "./upup.min.js",
-		"./node_modules/upup/dist/upup.sw.min.js": "/upup.sw.min.js",
 		"static": "/",
 		"./favicon.svg": "./favicon.svg",
 	});
@@ -217,47 +214,6 @@ async function buildCssProd(is_prod) {
 	const old_dir = `${output_dir}/css/`;
     fs.rename(old_dir, `${output_dir}/tmp/css/`, function(err) { if (err) throw err; });
     fs.rename(css_dir, old_dir, function(err) { if (err) throw err; });
-}
-
-function setupServiceWorkerScript() { 
-	const assets = [
-			"/index.html",
-      "/public/partials/category.html",
-      "/public/partials/not-found.html",
-      "/public/partials/settings.html",
-      "/public/partials/top-games.html",
-      "/public/partials/user-videos.html",
-  ];
-  // TODO: move css into bundle directory?
-  { // add css files
-		const files = fs.readdirSync(`${output_dir}/css`);
-		for (const f of files) {
-			assets.push(`/css/${f}`);
-		}
-	}
-  { // add js, svg files
-		const assets_dir = "/assets";
-		const files = fs.readdirSync(assets_output, { recursive: true });
-		for (const f of files) {
-			const path_url = `${assets_dir}/${f}`;
-			const path = `${output_dir}${path_url}`;
-			if (fs.statSync(path).isDirectory()) {
-				continue;
-			}
-			assets.push(path_url)
-		}
-	}
-
-	// To get hash version would have to get hash for all files. Concat those
-	// hashes into version? Hash or shorten concated value into shorter value?
-	// NOTE: change this if content of some static file changes
-	// TODO: use package.json version?
-  const cache_version = "v3"; 
-	let out = `UpUp.start({"service-worker-url": "/upup.sw.min.js", "cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
-	const filename = `${output_dir}/index.html`;
-	const input = fs.readFileSync(filename, "utf-8");
-	out = input.replace("[SERVICE_WORKER_SCRIPT]", out);
-	fs.writeFileSync(filename, out);
 }
 
 function hashFile(filePath) {

@@ -15,7 +15,5 @@
 </head>
 <body>
   <div @raw="content" webc:nokeep></div>
-  <script webc:keep webc:if="this.isProd()" src="/upup.min.js"></script>
-  <script webc:keep webc:if="this.isProd()">[SERVICE_WORKER_SCRIPT]</script>
 </body>
 </html>
