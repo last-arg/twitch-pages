@@ -9,7 +9,7 @@ permalink: "public/partials/user-videos.html"
       <template id="user-header-template">
         <div class="user-heading-box">
           <heading-link @name="stream">
-            <img slot="heading-img" class="w-14" alt=""
+            <img src="//:0" slot="heading-img" class="w-14" alt=""
               :width="$data.global.config.image.user.width" :height="$data.global.config.image.user.height">
             <!-- user_display_name -->
           </heading-link>
@@ -41,7 +41,7 @@ permalink: "public/partials/user-videos.html"
         <li class="video simple-fade-in" data-video-type="" data-title="">
           <a class="video-link" href="#" title="" rel="external">
             <div class="video-img-wrapper">
-              <img alt="" 
+              <img src="//:0" alt="" 
                 :width="$data.global.config.image.video.width" 
                 :height="$data.global.config.image.video.height"
               >

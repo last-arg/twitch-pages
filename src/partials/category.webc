@@ -8,7 +8,7 @@ permalink: "public/partials/category.html"
       <placeholder-title name="category"></placeholder-title>
       <template webc:keep webc:type="11ty" id="category-header-template">
         <heading-link @name="game">
-          <img slot="heading-img" class="w-10" alt=""
+          <img src="//:0" slot="heading-img" class="w-10" alt=""
             :width="$data.global.config.image.category.width" 
             :height="$data.global.config.image.category.height">
           <!-- game_name -->
@@ -25,7 +25,7 @@ permalink: "public/partials/category.html"
           <div class="user">
             <a class="user-link" href="#" title="" rel="external">
               <div class="relative">
-                <img alt="" 
+                <img src="//:0" alt="" 
                   :width="$data.global.config.image.video.width" 
                   :height="$data.global.config.image.video.height">
                 <p class="user-count">0 viewers</p>
@@ -37,10 +37,10 @@ permalink: "public/partials/category.html"
             </a>
             <div class="user-info">
               <a class="user-info-img-link" aria-hidden="true" href="#"
-                hx-push-url="#video_url" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
+                hx-push-url="#" :hx-get="$data.global.paths['user-videos'].html" hx-target="#main"
                 preload
               >
-                <img class="block w-14" alt="" 
+                <img src="//:0" class="block w-14" alt="" 
                   :width="$data.global.config.image.user.width" 
                   :height="$data.global.config.image.user.height" />
               </a>

@@ -14,7 +14,7 @@ permalink: "public/partials/top-games.html"
               :hx-get="$data.global.paths.category.html" hx-target="#main"
               preload
             >
-              <img class="game-img" alt=""
+              <img src="//:0" class="game-img" alt=""
                 :width="$data.global.config.image.category.width * 2" 
                 :height="$data.global.config.image.category.height * 2">
             </a>

@@ -1,6 +1,6 @@
 <!-- Valid values for 'name': category, user  -->
 <h2 class="flex w-full max-w-60 bg-white" aria-hidden="true">
-  <img :class="name === 'user' ? 'w-14' : 'w-10'" 
+  <img src="//:0" :class="name === 'user' ? 'w-14' : 'w-10'" 
     :width="$data.global.config.image[name].width" 
     :height="$data.global.config.image[name].height"
   >
