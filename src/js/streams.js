@@ -529,9 +529,10 @@ export class UserImages {
             /** @param {import("./twitch").UserTwitch[]} profiles */
             displayImages(profiles) {
                 for (const p of profiles) {
-                    const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[src="#${p.id}"]`));
+                    const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[data-user-id="${p.id}"]`));
                     if (img) {
                         img.src = p.profile_image_url;
+                        img.removeAttribute("data-user_id");
                     }
                 }
             }

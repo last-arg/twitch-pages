@@ -164,11 +164,6 @@ export function initHtmx() {
         let user_ids = [];
         for (const item of json.data) {
             const user_id = item.user_id;
-            let profile_img_url = imgs[user_id]?.url;
-            if (!profile_img_url) {
-              user_ids.push(user_id);
-              profile_img_url = `#${user_id}`;
-            }
             const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
             const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
             const title = encodeHtml(item.title);
@@ -191,7 +186,15 @@ export function initHtmx() {
 
             tmpl_info_img_link.href = video_url;
             tmpl_info_img_link.setAttribute("hx-push-url", video_url);
-            tmpl_info_img.src = profile_img_url;
+
+            let profile_img_url = imgs[user_id]?.url;
+            if (!profile_img_url) {
+              user_ids.push(user_id);
+              tmpl_info_img.src = "//:0";
+              tmpl_info_img.setAttribute("data-user-id", user_id);
+            } else {
+              tmpl_info_img.src = profile_img_url;
+            }
 
             tmpl_follow.setAttribute("data-item-id", item.user_id);
             tmpl_follow.setAttribute("data-item", item_json);
