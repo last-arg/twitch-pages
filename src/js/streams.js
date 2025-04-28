@@ -532,7 +532,7 @@ export class UserImages {
                     const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[data-user-id="${p.id}"]`));
                     if (img) {
                         img.src = p.profile_image_url;
-                        img.removeAttribute("data-user_id");
+                        img.removeAttribute("data-user-id");
                     }
                 }
             }
