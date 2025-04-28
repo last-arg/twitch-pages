@@ -252,7 +252,7 @@ function setupServiceWorkerScript() {
 	// hashes into version? Hash or shorten concated value into shorter value?
 	// NOTE: change this if content of some static file changes
 	// TODO: use package.json version?
-  const cache_version = "v2"; 
+  const cache_version = "v3"; 
 	let out = `UpUp.start({"service-worker-url": "/upup.sw.min.js", "cache-version": "${cache_version}","assets": ${JSON.stringify(assets)}})` 
 	const filename = `${output_dir}/index.html`;
 	const input = fs.readFileSync(filename, "utf-8");
