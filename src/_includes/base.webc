@@ -12,6 +12,7 @@
   <script defer webc:keep :src="getBundleFileUrl('js')"></script>
   <script webc:bucket="module" src="../js/main_module.js"></script>
   <script defer webc:keep :src="getBundleFileUrl('js', 'module')"></script>
+  <script webc:if="!isProd()" webc:keep type="module" src="/.11ty/reload-client.js"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/">
 	<meta name="description" content="Display some twitch data">
 </head>
