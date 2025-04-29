@@ -28,3 +28,14 @@ export function getUrlObject(newPath) {
   }
   return mainContent[contentKey]
 }
+
+/**
+@param {string} url_template
+@param {number} width
+@param {number} height
+@returns {string}
+*/
+export function twitchCatImageSrc(url_template, width, height) {
+    return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
+}
+
