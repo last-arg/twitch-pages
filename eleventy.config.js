@@ -19,8 +19,6 @@ const tmp_dir = `${output_dir}/tmp`
 // A cache to store the hashed file names
 const hashCache = {};
 let is_prod = false;
-const _site_index = fs.readFileSync(path.join(__dirname, output_dir, "index.html")).toString();
-
 
 /**
  * @param {import("@11ty/eleventy/src/UserConfig")} eleventyConfig
@@ -151,13 +149,14 @@ export default function(eleventyConfig) {
 	// - reload seems to work the first time only
 	eleventyConfig.setServerOptions({
 		domDiff: false,
-		liveReload: true,
+		// liveReload: true,
 		watch: [
 			// `${output_dir}/**/*.css`, 
 			// `${output_dir}/**/*.js`
 		],
 		onRequest: {
 			"/directory/category/*": function(req) {
+				const _site_index = fs.readFileSync(path.join(__dirname, output_dir, "index.html")).toString();
 				return _site_index;
 			}
 		},
