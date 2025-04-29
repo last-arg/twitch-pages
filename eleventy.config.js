@@ -141,6 +141,7 @@ export default function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({
 		"static": "/",
 		"./favicon.svg": "./favicon.svg",
+		"./src/js/main_module.js": "./js/main_module.js",
 	});
 
 	// TODO: livereload does not seem to work well
@@ -148,9 +149,9 @@ export default function(eleventyConfig) {
 	// - reload seems to work the first time only
 	eleventyConfig.setServerOptions({
 		domDiff: false,
-		// liveReload: false,
+		liveReload: true,
 		watch: [
-			`${output_dir}/**/*.css`, 
+			// `${output_dir}/**/*.css`, 
 			// `${output_dir}/**/*.js`
 		]
 	});

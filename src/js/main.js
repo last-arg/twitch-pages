@@ -78,4 +78,3 @@ async function startup() {
     initHtmx();
 };
 window.addEventListener("DOMContentLoaded", startup);
-

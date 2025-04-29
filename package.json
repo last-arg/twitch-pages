@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "eleventy --watch --incremental",
     "build": "rm -rf _site && NODE_ENV=production eleventy",
-    "preview": "wrangler pages dev --live-reload --local-protocol=https",
+    "preview": "wrangler pages dev ./_site --live-reload --local-protocol=https",
     "deploy": "npm run build && wrangler pages deploy"
   },
   "dependencies": {
+    "@starfederation/datastar": "^1.0.0-beta.11",
     "htmx-ext-preload": "^2.1.1",
     "htmx.org": "2.0.4",
     "idiomorph": "^0.7.3",

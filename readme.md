@@ -13,6 +13,7 @@ Pages:
   Because I don't like the order webc uses for CSS.
 [ ] how to get css just for src/partials/*.webc
 [ ] look if I can use something from here https://github.com/Set-Creative-Studio/cube-boilerplate/tree/main
+[ ] Use cache API for partials
 
 ## Resources
 

@@ -10,10 +10,14 @@
   <script defer webc:keep :src="getBundleFileUrl('js', 'vendor')"></script>
   <script src="../js/main.js"></script>
   <script defer webc:keep :src="getBundleFileUrl('js')"></script>
+  <script webc:bucket="module" src="../js/main_module.js"></script>
+  <script defer webc:keep :src="getBundleFileUrl('js', 'module')"></script>
   <link rel="dns-prefetch" href="https://api.twitch.tv/">
 	<meta name="description" content="Display some twitch data">
 </head>
 <body>
   <div @raw="content" webc:nokeep></div>
+  <div data-on-load="console.log('from dom')"></div>
+  <div data-on-click="console.log('from click')">click</div>
 </body>
 </html>
