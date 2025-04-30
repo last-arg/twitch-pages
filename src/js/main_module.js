@@ -14,7 +14,7 @@ import { PluginType } from "../../node_modules/@starfederation/datastar/dist/eng
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
-import { init_common, live } from "./common.js";
+import { games, init_common, live, settings, streams } from "./common.js";
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
@@ -68,9 +68,7 @@ const plugin_twitch = {
 
         ctx.el.setAttribute("aria-disabled", "true");
 
-        // TODO: change first value settings top-games count
-        // settings.data.general["top-games-count"]
-        var url = `${TWITCH_API_URL}/helix/games/top?first=15`;
+        let url = `${TWITCH_API_URL}/helix/games/top?first=${settings.data.general["top-games-count"]}`;
         const req_data_raw = ctx.el.dataset.reqData;
         if (req_data_raw) {
           const req_data = JSON.parse(req_data_raw);
@@ -117,8 +115,7 @@ const plugin_twitch = {
             tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
             tmpl_follow.setAttribute("data-item-id", item.id);
             tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
-            // TODO: game is followed
-            // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
+            tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
              
             frag.appendChild(tmpl_item.cloneNode(true));
         }
@@ -189,8 +186,7 @@ const plugin_twitch = {
         tmpl_external.href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name);
         tmpl_follow.setAttribute("data-item-id", item.id);
         tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
-        // TODO:
-        // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
+        tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
         
         target_el.replaceWith(tmpl_el.content)
       } else if (req_type === "streams") {
@@ -278,8 +274,7 @@ const plugin_twitch = {
              user_name: item.display_name,
           }));
           tmpl_follow.setAttribute("data-item", item_json);
-          // TODO: follow stream
-          // tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
+          tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
            
           info.target.replaceWith(tmpl.content);
       } else if (req_type === "videos") {
@@ -367,9 +362,7 @@ async function fetch_twitch_videos(ctx) {
         return;
     }
 
-    // TODO: change 'first' count
-    // settings.data.general["user-videos-count"]
-    var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=15`;
+    var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${settings.data.general["user-videos-count"]}`;
     if (cursor_opt) {
         url += `&after=${cursor_opt}`;
     }
@@ -494,9 +487,7 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
     const tmpl_el = info.tmpl;
     const target_el = info.target;
 
-    // TODO: change 'first' count
-    // settings.data.general["category-count"]
-    var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=15`;
+    var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=${settings.data.general["category-count"]}`;
     if (cursor_opt) {
       url += `&after=${cursor_opt}`;
     }
@@ -568,8 +559,7 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
 
         tmpl_follow.setAttribute("data-item-id", item.user_id);
         tmpl_follow.setAttribute("data-item", item_json);
-        // TODO: stream is-followed
-        // tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(user_id).toString());
+        tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(user_id).toString());
          
         frag.appendChild(tmpl_list_item.cloneNode(true));
     }
