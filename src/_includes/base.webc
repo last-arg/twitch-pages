@@ -11,10 +11,6 @@
   <script defer webc:keep webc:if="isProd()" type=module @raw="getBundleFileUrl('js', 'vendor')"></script>
   <script defer webc:keep webc:else type=module @raw="getBundle('js', 'vendor')"></script>
 
-  <!-- <script src="../js/main.js"></script> -->
-  <!-- <script defer webc:keep webc:if="isProd()" type=module @raw="getBundleFileUrl('js')"></script> -->
-  <!-- <script defer webc:keep webc:else type=module @raw="getBundle('js')"></script> -->
-
   <script webc:bucket="module" src="../js/main_module.js"></script>
   <!--
     This makes live reload work in eleventy dev server.
