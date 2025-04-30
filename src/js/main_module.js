@@ -1,4 +1,3 @@
-// import * as ds from "./datastar.js";
 import * as ds from "@starfederation/datastar";
 import {
 // DOM
@@ -79,13 +78,15 @@ const plugin_twitch = {
         const res = await fetch(url, { headers: Twitch.headers })
         const json = await res.json();
 
+        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+        if (!btn) {
+            console.error("Failed to find <button> with selector '.btn-load-more'");
+            return;
+        }
+
         const cursor = json.pagination.cursor;
         if (json.data.length == 0) {
-          if (cursor) {
-            // TODO: no more items to load msg
-          } else {
-            // TODO: display no games if no cursor
-          }
+          btn.removeAttribute("data-req-data");
           return;
         }
         
@@ -128,7 +129,6 @@ const plugin_twitch = {
           console.error(`Invalid merge mode '${merge_mode}'`);
         }
 
-        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
           btn.setAttribute("aria-disabled", "false");
           btn.setAttribute("data-req-data", `{"after": "${cursor}"}`);
@@ -365,14 +365,11 @@ async function fetch_twitch_videos(ctx) {
     const res = await fetch(url, { headers: Twitch.headers })
     const json = await res.json();
 
+    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
     const cursor = json.pagination.cursor;
+
     if (json.data.length == 0) {
-      console.log("TODO: handle empty data[]")
-      if (cursor) {
-        // TODO: no more items to load msg
-      } else {
-        // TODO: display no streams msg
-      }
+      btn.removeAttribute("data-req-data")
       return;
     }
 
@@ -440,7 +437,6 @@ async function fetch_twitch_videos(ctx) {
     
     info.target.appendChild(frag);
 
-    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
     if (cursor) {
         btn.setAttribute("aria-disabled", "false");
         btn.setAttribute("data-req-data", JSON.stringify({
@@ -490,13 +486,15 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
     const res = await fetch(url, { headers: Twitch.headers })
     const json = await res.json();
 
+    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+    if (!btn) {
+        console.error("Failed to find <button> with selector '.btn-load-more'");
+        return;
+    }
+
     const cursor = json.pagination.cursor;
     if (json.data.length == 0) {
-      if (cursor) {
-        // TODO: no more items to load msg
-      } else {
-        // TODO: display no streams msg
-      }
+      btn.removeAttribute("data-req-data")
       return;
     }
   
@@ -566,12 +564,6 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
       dispatchEvent(new CustomEvent("user_image:render", {
           detail: user_ids,
       }))
-    }
-
-    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
-    if (!btn) {
-        console.error("Failed to find <button> with selector '.btn-load-more'");
-        return;
     }
 
     if (cursor) {
