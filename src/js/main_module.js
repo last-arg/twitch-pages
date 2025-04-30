@@ -21,6 +21,7 @@ console.log("datastar module4", ds)
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
 */
 
+// TODO: use official plugin ReplaceUrl
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
 const plugin_push_url = {
@@ -42,7 +43,6 @@ const plugin_twitch = {
     type: PluginType.Action,
     name: 'twitch',
     fn: async (ctx, req_type) => {
-      console.log("twitch", req_type);
       if (req_type === "games") {
         const path_arr = location.pathname.split("/");
         console.assert(path_arr.length > 1, "Array can't not be empty");
@@ -78,7 +78,7 @@ const plugin_twitch = {
         }
 
         const item = json.data[0];
-        fetch_twitch_streams(item.id)
+        fetch_twitch_streams(item.id, undefined, undefined, undefined);
         
         const tmpl_heading = /** @type {HTMLHeadingElement} */
           (tmpl_el.content.querySelector("h2"));
@@ -98,13 +98,38 @@ const plugin_twitch = {
         // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
         
         target_el.innerHTML = tmpl_el.innerHTML;
+      } else if (req_type === "streams") {
+          const tmpl_id = ctx.el.dataset.template;
+          const target_id = ctx.el.dataset.target;
+          var game_id = undefined;
+          var cursor = undefined;
+
+          const req_data_raw = ctx.el.dataset.reqData;
+          if (req_data_raw) {
+            const req_data = JSON.parse(req_data_raw);
+            game_id = req_data.game_id;
+            cursor = req_data.cursor;
+          }
+
+          if (!game_id) {
+            console.error(`Failed to find 'game_id' value from 'data-req-data'.`, ctx.el);
+            return;
+          }
+
+          ctx.el.setAttribute("aria-disabled", "true");
+          fetch_twitch_streams(game_id, cursor, tmpl_id, target_id)
       }
     },
 }
 
-/** @param {string} game_id */
-async function fetch_twitch_streams(game_id) {
-    const tmpl_id = "#category-streams-template";
+/**
+@param {string} game_id
+@param {string | undefined} cursor_opt
+@param {string | undefined} tmpl_id_opt
+@param {string | undefined} target_id_opt
+*/
+async function fetch_twitch_streams(game_id, cursor_opt, tmpl_id_opt, target_id_opt) {
+    const tmpl_id = tmpl_id_opt || "#category-streams-template";
     const tmpl_el_opt = document.querySelector(tmpl_id);
     if (!tmpl_el_opt) {
       console.error(`Failed to find <template> with id ${tmpl_id}`)
@@ -112,17 +137,21 @@ async function fetch_twitch_streams(game_id) {
     }
     const tmpl_el = /** @type {HTMLTemplateElement} */ (tmpl_el_opt);
     
-    const output_el_opt = document.querySelector(".output-list");
-    if (!output_el_opt) {
-      console.error("Failed to find <ul> with selector '.output-list'")
+    const target_id = target_id_opt || ".output-list";
+    const target_el_opt = document.querySelector(target_id);
+    if (!target_el_opt) {
+      console.error(`Failed to find <ul> with selector '${target_id}'`)
       return;
     }
     /** @type {Element} */
-    const output_el = output_el_opt;
+    const target_el = target_el_opt;
 
     // TODO: change 'first' count
     // settings.data.general["category-count"]
-    const url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=15`;
+    var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=15`;
+    if (cursor_opt) {
+      url += `&after=${cursor_opt}`;
+    }
     const res = await fetch(url, { headers: Twitch.headers })
     const json = await res.json();
 
@@ -196,12 +225,29 @@ async function fetch_twitch_streams(game_id) {
         frag.appendChild(tmpl_list_item.cloneNode(true));
     }
 
-    output_el.appendChild(frag);
+    target_el.appendChild(frag);
 
     if (user_ids.length > 0) {
       dispatchEvent(new CustomEvent("user_image:render", {
           detail: user_ids,
       }))
+    }
+
+    const cursor = json.pagination.cursor;
+    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+    if (!btn) {
+        console.error("Failed to find <button> with selector '.btn-load-more'");
+        return;
+    }
+
+    if (cursor) {
+        btn.setAttribute("aria-disabled", "false");
+        btn.setAttribute("data-req-data", JSON.stringify({
+          game_id: game_id,
+          cursor: cursor,
+        }));
+    } else {
+        btn.removeAttribute("data-req-data");
     }
 }
 

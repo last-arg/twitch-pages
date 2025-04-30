@@ -31,7 +31,5 @@
 </head>
 <body>
   <div @raw="content" webc:nokeep></div>
-  <div data-on-load="console.log('from dom')"></div>
-  <div data-on-click="console.log('from click')">click</div>
 </body>
 </html>
