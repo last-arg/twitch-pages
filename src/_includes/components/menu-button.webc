@@ -3,7 +3,7 @@
   class="menu-item"
   :data-menu-item="name"
   aria-expanded="false"
-  :data-attr-aria-expanded="`$sidebar === '${name}'`"
+  :data-attr="`{ 'aria-expanded': ($sidebar === '${name}').toString() }`"
   :data-on-click="`$sidebar = $sidebar === '${name}' ? '' : '${name}'`"
 >
   <span webc:if="name === 'streams'" class="streams-count hidden">0</span>
