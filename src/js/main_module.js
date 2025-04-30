@@ -31,8 +31,18 @@ const push_url_event_name = "datastar_plugin:push_url";
 const plugin_push_url = {
     type: PluginType.Action,
     name: 'push_url',
-    fn: (ctx) => {
-        const url = new URL(ctx.el.href);
+    fn: (ctx, path) => {
+        let url = undefined;
+        const input = ctx.el.href;
+        if (input) {
+          url = URL.parse(input, location.origin)
+        }
+
+        if (!url) {
+          console.error(`Failed to resolve url path value '${input}'`, ctx.el);
+          return;
+        }
+
         history.pushState({}, '', url)
         dispatchEvent(new CustomEvent(push_url_event_name, {
           detail: url
@@ -579,17 +589,29 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
 
 /** @param {CustomEvent<URL>} ev */
 async function handle_push_url(ev) {
-  const main = document.querySelector("#main");
-  if (!main) { return; }
-
   console.assert(URL.prototype.isPrototypeOf(ev.detail), "Event.detail has to be URL object");
-  const url_obj = getUrlObject(ev.detail.pathname);
-  const res = await fetch(url_obj.html);
-  const html_raw = await res.text();
-  main.innerHTML = html_raw;
+  change_main(ev.detail.pathname)
 }
 
 window.addEventListener(push_url_event_name, handle_push_url);
+
+/** @param {string} pathname */
+async function change_main(pathname) {
+    const main = document.querySelector("#main");
+    if (!main) {
+      console.error("Missing element with id '#main'");
+      return;
+    }
+
+    const url_obj = getUrlObject(pathname);
+    const res = await fetch(url_obj.html);
+    const html_raw = await res.text();
+    main.innerHTML = html_raw;
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+  change_main(location.pathname);
+})
 
 ds.load(
   // DOM

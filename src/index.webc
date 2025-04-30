@@ -88,7 +88,7 @@ title: "Home | Twitch Pages"
       </nav>
     </div>
   </header>
-  <main class="wrapper" id="main" tabindex="-1" hx-history-elt>
+  <main class="wrapper" id="main" tabindex="-1">
     Loading...
   </main>
 </div>
