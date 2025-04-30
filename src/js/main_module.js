@@ -137,13 +137,6 @@ const plugin_twitch = {
         const target_el = info.target;
 
         var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
-        const req_data_raw = ctx.el.dataset.reqData;
-        if (req_data_raw) {
-          const req_data = JSON.parse(req_data_raw);
-          if (req_data.after) {
-            url += `&after=${req_data.after}`;
-          }
-        }
         const res = await fetch(url, { headers: Twitch.headers })
         const json = await res.json();
 
