@@ -17,7 +17,14 @@ import { config, mainContent } from './config.prod';
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
+
+@typedef {{
+  tmpl: HTMLTemplateElement,
+  target: HTMLElement,
+  merge_mode: "append" | "replace",
+}} Info
 */
+
 
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
@@ -152,7 +159,10 @@ const plugin_twitch = {
         }
 
         const item = json.data[0];
-        fetch_twitch_streams(item.id, undefined, undefined, undefined);
+
+        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
+        const streams_info = el_to_info(btn);
+        fetch_twitch_streams(item.id, undefined, streams_info);
         
         const tmpl_heading = /** @type {HTMLHeadingElement} */
           (tmpl_el.content.querySelector("h2"));
@@ -173,8 +183,10 @@ const plugin_twitch = {
         
         target_el.replaceWith(tmpl_el.content)
       } else if (req_type === "streams") {
-          const tmpl_id = ctx.el.dataset.template;
-          const target_id = ctx.el.dataset.target;
+          const info = el_to_info(ctx.el);
+          if (!info.tmpl) {
+              return;
+          }
           var game_id = undefined;
           var cursor = undefined;
 
@@ -182,7 +194,7 @@ const plugin_twitch = {
           if (req_data_raw) {
             const req_data = JSON.parse(req_data_raw);
             game_id = req_data.game_id;
-            cursor = req_data.cursor;
+            cursor = req_data.after;
           }
 
           if (!game_id) {
@@ -191,7 +203,7 @@ const plugin_twitch = {
           }
 
           ctx.el.setAttribute("aria-disabled", "true");
-          fetch_twitch_streams(game_id, cursor, tmpl_id, target_id)
+          fetch_twitch_streams(game_id, cursor, info)
       } else if (req_type === "users") {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
@@ -221,8 +233,8 @@ const plugin_twitch = {
           }
 
           const item = json.data[0];
-          // TODO: fire fetch for user videos
-          console.log(item);
+
+          fetch_twitch_videos(item.id, undefined, undefined);
 
           const tmpl = info.tmpl;
           const tmpl_live = /** @type {HTMLDivElement} */
@@ -258,11 +270,7 @@ const plugin_twitch = {
 
 /**
 @param {HTMLOrSVGElement} el
-@returns {{
-  tmpl: HTMLTemplateElement,
-  target: HTMLElement,
-  merge_mode: "append" | "replace",
-}}
+@returns {Info}
 */
 function el_to_info(el) {
     let tmpl = undefined;
@@ -316,26 +324,37 @@ function get_merge_mode(raw) {
 /**
 @param {string} game_id
 @param {string | undefined} cursor_opt
-@param {string | undefined} tmpl_id_opt
-@param {string | undefined} target_id_opt
+@param {Info | undefined} info
 */
-async function fetch_twitch_streams(game_id, cursor_opt, tmpl_id_opt, target_id_opt) {
-    const tmpl_id = tmpl_id_opt || "#category-streams-template";
-    const tmpl_el_opt = document.querySelector(tmpl_id);
-    if (!tmpl_el_opt) {
-      console.error(`Failed to find <template> with id ${tmpl_id}`)
-      return;
+async function fetch_twitch_videos(game_id, cursor_opt, info) {
+    if (!info) {
+        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
+        info = el_to_info(btn);
     }
-    const tmpl_el = /** @type {HTMLTemplateElement} */ (tmpl_el_opt);
-    
-    const target_id = target_id_opt || ".output-list";
-    const target_el_opt = document.querySelector(target_id);
-    if (!target_el_opt) {
-      console.error(`Failed to find <ul> with selector '${target_id}'`)
-      return;
+
+    if (!info.tmpl) {
+        return;
     }
-    /** @type {Element} */
-    const target_el = target_el_opt;
+}
+
+
+/**
+@param {string} game_id
+@param {string | undefined} cursor_opt
+@param {Info | undefined} info
+*/
+async function fetch_twitch_streams(game_id, cursor_opt, info) {
+    if (!info) {
+        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
+        info = el_to_info(btn);
+    }
+
+    if (!info.tmpl) {
+        return;
+    }
+
+    const tmpl_el = info.tmpl;
+    const target_el = info.target;
 
     // TODO: change 'first' count
     // settings.data.general["category-count"]
