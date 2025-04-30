@@ -41,27 +41,11 @@ const plugin_twitch = {
     name: 'twitch',
     fn: async (ctx, req_type) => {
       if (req_type === "games/top") {
-        const tmpl_id = /** @type {string} */ (ctx.el.dataset.template);
-        /** @ts-ignore */
-        const tmpl_el = document.querySelector(tmpl_id);
-        if (!tmpl_el) {
-          console.error(`Failed to find <template> with id ${tmpl_id}`)
-          return;
-        }
-
-        const merge_mode = ctx.el.dataset.mergeMode || "append";
-        var target = ctx.el;
-
-        const target_sel = ctx.el.dataset.target;
-        if (target_sel) {
-            const target_new = document.querySelector(target_sel);
-            if (target_new) {
-              /** @ts-ignore */
-              target = target_new;
-            } else {
-              console.warn(`Failed to find element with selector '${target_sel}'`);
-            }
-        }
+        const info = el_to_info(ctx.el);
+        if (!info.tmpl) { return; }
+        const tmpl_el = info.tmpl;
+        const target = info.target;
+        const merge_mode = info.merge_mode;
 
         ctx.el.setAttribute("aria-disabled", "true");
 
@@ -147,21 +131,10 @@ const plugin_twitch = {
           return;
         }
 
-        const tmpl_id = /** @type {string} */ (ctx.el.dataset.template);
-        /** @type {HTMLTemplateElement} */
-        const tmpl_el = document.querySelector(tmpl_id);
-        if (!tmpl_el) {
-          console.error(`Failed to find <template> with id ${tmpl_id}`)
-          return;
-        }
-
-        const target_id = /** @type {string} */ (ctx.el.dataset.target);
-        /** @type {HTMLDivElement} */
-        const target_el = document.querySelector(target_id);
-        if (!target_el) {
-          console.error(`Failed to find html element with selector ${target_id}`)
-          return;
-        }
+        const info = el_to_info(ctx.el);
+        if (!info.tmpl) { return; }
+        const tmpl_el = info.tmpl;
+        const target_el = info.target;
 
         var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
         const req_data_raw = ctx.el.dataset.reqData;
@@ -226,9 +199,70 @@ const plugin_twitch = {
 
           ctx.el.setAttribute("aria-disabled", "true");
           fetch_twitch_streams(game_id, cursor, tmpl_id, target_id)
+      } else if (req_type === "users") {
+          const info = el_to_info(ctx.el);
+          if (!info.tmpl) { return; }
+          console.log(info)
       }
     },
 }
+
+/**
+@param {HTMLOrSVGElement} el
+@returns {{
+  tmpl: HTMLTemplateElement,
+  target: HTMLElement,
+  merge_mode: "append" | "replace",
+}}
+*/
+function el_to_info(el) {
+    let tmpl = undefined;
+    const tmpl_sel = el.dataset.template;
+    if (tmpl_sel) {
+        const tmpl_el = document.querySelector(tmpl_sel);
+        if (tmpl_el) {
+            tmpl = tmpl_el;
+        } else {
+            console.warn(`Failed to find <template> with selector ${tmpl_sel}`)
+        }
+    } else {
+      console.error(`Failed to find data-template in`, el);
+    }
+
+    let target = el;
+    const target_sel = el.dataset.target;
+    if (target_sel) {
+        const target_el = document.querySelector(target_sel);
+        if (target_el) {
+            target = target_el;
+        } else {
+            console.warn(`Failed to find element with selector ${target_sel}`)
+        }
+    } 
+
+    return {
+      tmpl: tmpl,
+      target: target,
+      merge_mode: get_merge_mode(el.dataset.mergeMode),
+    }
+}
+
+/**
+@param {string | undefined} raw
+@returns {'append' | 'replace'}
+*/
+function get_merge_mode(raw) {
+  /** @type {'append' | 'replace' } */
+  let result = "append";
+  if (raw && raw.length > 0 &&
+    raw !== "append" && raw !== "replace"
+  ) {
+    throw `Invalid merge mode value '${raw}'. Valid values: 'append', 'replace'`
+  }
+  result = /** @type {'append' | 'replace' } */(raw);
+
+  return result;
+} 
 
 /**
 @param {string} game_id
