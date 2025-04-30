@@ -275,7 +275,6 @@ function renderGameCards(base_elem, data, isGameFollowed = undefined) {
         const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
         const href = categoryUrl(game.name); 
         link.setAttribute("href", href)
-        link.setAttribute("hx-push-url", href)
         const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);
         const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));

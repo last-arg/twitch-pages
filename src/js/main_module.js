@@ -4,7 +4,7 @@ import {
 // DOM
 Attr, Bind, Class, On, Ref, Show, Text, 
 // Backend
-Indicator, GET, POST, PUT, PATCH, DELETE, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
+Indicator, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
 // Browser
 Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
 // Logic
@@ -281,7 +281,6 @@ const plugin_twitch = {
            
           info.target.replaceWith(tmpl.content);
       } else if (req_type === "videos") {
-        console.log("videso req")
         fetch_twitch_videos(ctx)
       }
     },
@@ -630,7 +629,7 @@ ds.load(
   // DOM
   Attr, Bind, Class, On, Ref, Show, Text, 
   // Backend
-  Indicator, GET, POST, PUT, PATCH, DELETE, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
+  Indicator, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
   // Browser
   Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
   // Logic

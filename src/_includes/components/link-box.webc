@@ -1,9 +1,8 @@
 <div webc:root class="flex-grow">
-  <a class="link-box" href="#" hx-push-url="#"
-    hx-target="#main"
-    :hx-get="`/public/partials/${name}.html`"
+  <a class="link-box"
+    href="#"
+    data-on-click="@push_url()"
     :data-card="name"
-    preload
   >
     <img src="//:0" webc:if="name === 'user-videos'" alt=""
       :width="$data.global.config.image.user.width" 

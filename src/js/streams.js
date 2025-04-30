@@ -82,7 +82,6 @@ export class Streams {
             const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
             const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
             link.setAttribute("href", href)
-            link.setAttribute("hx-push-url", href)
             const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
             const url  = this.user_images.getUrl(stream.user_id);
             // TODO: if no image add it?
