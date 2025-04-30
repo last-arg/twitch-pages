@@ -21,7 +21,6 @@ console.log("datastar module4", ds)
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
 */
 
-// TODO: use official plugin ReplaceUrl
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
 const plugin_push_url = {
