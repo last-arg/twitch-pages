@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@starfederation/datastar": "^1.0.0-beta.11",
-    "htmx-ext-preload": "^2.1.1",
-    "htmx.org": "2.0.4",
     "idiomorph": "^0.7.3",
     "open-props": "^1.7.15"
   },

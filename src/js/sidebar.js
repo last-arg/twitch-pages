@@ -2,9 +2,6 @@ import { games, streams } from "./common";
 
 /** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
 
-// @ts-ignore
-const htmx = /** @type {import("htmx.org")} */ (window.htmx);
-
 export class Sidebar {
   /** @type {SidebarState} */
   state = "closed"
@@ -38,7 +35,9 @@ export class Sidebar {
         if (!link_box) { return }
         const get = link_box.getAttribute("hx-get");
         if (!get) { return; }
-        htmx.ajax("get", get, {source: link_box});
+        // TODO: see how to do it with datastar
+        // might not need it
+        // htmx.ajax("get", get, {source: link_box});
       });
   }
 
