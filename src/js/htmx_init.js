@@ -66,67 +66,8 @@ export function initHtmx() {
       } else if (path === "/helix/users") {
         throw "DONE: /helix/users";
       } else if (path === "/helix/videos") {
-        /** @type {Record<string, string>} */
-        const VIDEO_ICONS = {
-          archive: "video-camera",
-          upload: "video-upload",
-          highlight: "video-reel",
-        }
-
         const json = JSON.parse(text);
 
-        const tmpl_video = /** @type {HTMLLIElement} */
-          (tmpl.content.querySelector(".video"));
-        const tmpl_link = /** @type {HTMLLinkElement} */
-          (tmpl_video.querySelector(".video-link"));
-        const tmpl_img = /** @type {HTMLImageElement} */
-          (tmpl_link.querySelector("img"));
-        const tmpl_title = /** @type {HTMLDivElement} */
-          (tmpl_video.querySelector(".video-title"));
-        const tmpl_title_p = /** @type {HTMLParagraphElement} */
-          (tmpl_title.querySelector("p"));
-        const tmpl_type = /** @type {HTMLSpanElement} */
-          (tmpl_video.querySelector(".video-type"));
-        const tmpl_type_span = /** @type {HTMLSpanElement} */
-          (tmpl_type.querySelector("span"));
-        const tmpl_type_svg_use = /** @type {HTMLLinkElement} */
-          (tmpl_type.querySelector("svg use"));
-        const tmpl_duration = /** @type {HTMLDivElement} */
-          (tmpl_video.querySelector(".video-duration"));
-        const tmpl_duration_str = /** @type {HTMLSpanElement} */
-          (tmpl_duration.querySelector("span"));
-        const tmpl_duration_date = /** @type {HTMLSpanElement} */
-          (tmpl_duration.querySelector("span[title]"));
-
-        
-        let result = "";
-        /** @type {Record<string, number>} */
-        const counts = { archive: 0, upload: 0, highlight: 0 };
-        for (const item of json.data) {
-            counts[item.type] += 1;
-            const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
-            const date = new Date(item.published_at)
-            const title = encodeHtml(item.title);
-
-            tmpl_video.setAttribute("data-video-type", item.type);
-            tmpl_video.setAttribute("data-title", encodeURIComponent(item.title));
-
-            tmpl_link.href = item.url;
-            tmpl_link.title = title;
-            tmpl_img.src = img_url;
-
-            tmpl_title_p.textContent = title;
-            tmpl_type.title = item.type[0].toUpperCase() + item.type.slice(1);
-            tmpl_type_span.textContent = item.type;
-            const icon_url = tmpl_type_svg_use.getAttribute("href")?.replace(":video_icon", VIDEO_ICONS[item.type]) || "#";
-            tmpl_type_svg_use.setAttribute("href", icon_url);
-
-            tmpl_duration_str.textContent = twitchDurationToString(item.duration);
-            tmpl_duration_date.title = date.toString();
-            tmpl_duration_date.textContent = twitchDateToString(date);
-              
-            result += tmpl.innerHTML
-        }
 
         /**
         @param {string} selector

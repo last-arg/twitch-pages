@@ -67,7 +67,12 @@ permalink: "public/partials/user-videos.html"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @req_url="/helix/videos" @req_target=".output-list" @hx_template="#user-video-template"></btn-load-more>
+    <btn-load-more
+      class="block fluid-my-xl"
+      @req_type="videos"
+      @req_target=".output-list"
+      @data_template="#user-video-template"
+    ></btn-load-more>
   </div>
 </div>
 <style>

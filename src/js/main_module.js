@@ -11,7 +11,7 @@ Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Pers
 Fit, SetAll, ToggleAll
 } from "../../node_modules/@starfederation/datastar/dist/plugins/index.js";
 import { PluginType } from "../../node_modules/@starfederation/datastar/dist/engine/types.js";
-import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl } from "./util";
+import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
 
@@ -322,11 +322,11 @@ function get_merge_mode(raw) {
 } 
 
 /**
-@param {string} game_id
+@param {string} user_id
 @param {string | undefined} cursor_opt
 @param {Info | undefined} info
 */
-async function fetch_twitch_videos(game_id, cursor_opt, info) {
+async function fetch_twitch_videos(user_id, cursor_opt, info) {
     if (!info) {
         const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
         info = el_to_info(btn);
@@ -334,6 +334,100 @@ async function fetch_twitch_videos(game_id, cursor_opt, info) {
 
     if (!info.tmpl) {
         return;
+    }
+
+    // TODO: change 'first' count
+    // settings.data.general["user-videos-count"]
+    var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=15`;
+    if (cursor_opt) {
+        url += `&after=${cursor_opt}`;
+    }
+    const res = await fetch(url, { headers: Twitch.headers })
+    const json = await res.json();
+
+    const cursor = json.pagination.cursor;
+    if (json.data.length == 0) {
+      if (cursor) {
+        // TODO: no more items to load msg
+      } else {
+        // TODO: display no streams msg
+      }
+      return;
+    }
+
+    const tmpl_video = /** @type {HTMLLIElement} */
+      (info.tmpl.content.querySelector(".video"));
+    const tmpl_link = /** @type {HTMLLinkElement} */
+      (tmpl_video.querySelector(".video-link"));
+    const tmpl_img = /** @type {HTMLImageElement} */
+      (tmpl_link.querySelector("img"));
+    const tmpl_title = /** @type {HTMLDivElement} */
+      (tmpl_video.querySelector(".video-title"));
+    const tmpl_title_p = /** @type {HTMLParagraphElement} */
+      (tmpl_title.querySelector("p"));
+    const tmpl_type = /** @type {HTMLSpanElement} */
+      (tmpl_video.querySelector(".video-type"));
+    const tmpl_type_span = /** @type {HTMLSpanElement} */
+      (tmpl_type.querySelector("span"));
+    const tmpl_type_svg_use = /** @type {HTMLLinkElement} */
+      (tmpl_type.querySelector("svg use"));
+    const tmpl_duration = /** @type {HTMLDivElement} */
+      (tmpl_video.querySelector(".video-duration"));
+    const tmpl_duration_str = /** @type {HTMLSpanElement} */
+      (tmpl_duration.querySelector("span"));
+    const tmpl_duration_date = /** @type {HTMLSpanElement} */
+      (tmpl_duration.querySelector("span[title]"));
+
+    
+    /** @type {Record<string, string>} */
+    const VIDEO_ICONS = {
+      archive: "video-camera",
+      upload: "video-upload",
+      highlight: "video-reel",
+    }
+
+    let frag = new DocumentFragment();
+
+    /** @type {Record<string, number>} */
+    const counts = { archive: 0, upload: 0, highlight: 0 };
+
+    for (const item of json.data) {
+        counts[item.type] += 1;
+        const img_url = getVideoImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
+        const date = new Date(item.published_at)
+        const title = encodeHtml(item.title);
+
+        tmpl_video.setAttribute("data-video-type", item.type);
+        tmpl_video.setAttribute("data-title", encodeURIComponent(item.title));
+
+        tmpl_link.href = item.url;
+        tmpl_link.title = title;
+        tmpl_img.src = img_url;
+
+        tmpl_title_p.textContent = title;
+        tmpl_type.title = item.type[0].toUpperCase() + item.type.slice(1);
+        tmpl_type_span.textContent = item.type;
+        const icon_url = tmpl_type_svg_use.getAttribute("href")?.replace(":video_icon", VIDEO_ICONS[item.type]) || "#";
+        tmpl_type_svg_use.setAttribute("href", icon_url);
+
+        tmpl_duration_str.textContent = twitchDurationToString(item.duration);
+        tmpl_duration_date.title = date.toString();
+        tmpl_duration_date.textContent = twitchDateToString(date);
+          
+        frag.appendChild(tmpl_video.cloneNode(true));
+    }
+    
+    info.target.appendChild(frag);
+
+    const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+    if (cursor) {
+        btn.setAttribute("aria-disabled", "false");
+        btn.setAttribute("data-req-data", JSON.stringify({
+          user_id: user_id,
+          after: cursor,
+        }));
+    } else {
+        btn.removeAttribute("data-req-data");
     }
 }
 
