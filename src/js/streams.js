@@ -545,17 +545,37 @@ export class UserImages {
 
         // handle edits in another window
         window.addEventListener("storage", this, false);
+        window.addEventListener("user_image:render", this, false);
     }
 
     /**
-      @param {StorageEvent} ev 
+      @param {Event} ev_any
     */
-    handleEvent(ev) {
-        if (ev.type === "storage") {
+    handleEvent(ev_any) {
+        if (ev_any.type === "storage") {
+            const ev = /** @type {StorageEvent} */ (ev_any);
             console.log("storage(UserImages)", ev.key);
             if (ev.key !== null && ev.key === this.localStorageKey) {
                 this._readStorage(ev.newValue);
             }
+        } else if (ev_any.type === "user_image:render") {
+            const ids = /** @type {string[]} */ (ev_any.detail);
+            let to_fetch = [];
+            let to_render = [];
+            for (const id of ids) {
+                const p = this.data.images[id];
+                if (p) {
+                    to_render.push({
+                        id: id,
+                        profile_image_url: p.url,
+                    });
+                } else {
+                    to_fetch.push(id);
+                }
+            }
+
+            this.$.displayImages(to_render);
+            this.add(to_fetch);
         }
     }
     

@@ -39,3 +39,12 @@ export function twitchCatImageSrc(url_template, width, height) {
     return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
 }
 
+const tmp_elem = document.createElement("p");
+/**
+@param {string} str
+@returns {string}
+*/
+export function encodeHtml(str) {
+  tmp_elem.textContent = str;
+  return tmp_elem.innerHTML;  
+}
