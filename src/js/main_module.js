@@ -205,8 +205,7 @@ const plugin_twitch = {
         // TODO:
         // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
         
-        // TODO: change to replace child
-        target_el.innerHTML = tmpl_el.innerHTML;
+        target_el.replaceWith(tmpl_el.content)
       } else if (req_type === "streams") {
           const tmpl_id = ctx.el.dataset.template;
           const target_id = ctx.el.dataset.target;
