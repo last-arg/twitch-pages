@@ -78,8 +78,13 @@ const plugin_twitch = {
         const res = await fetch(url, { headers: Twitch.headers })
         const json = await res.json();
 
+        const cursor = json.pagination.cursor;
         if (json.data.length == 0) {
-          console.error(`Failed to find category/game '${name}'`)
+          if (cursor) {
+            // TODO: no more items to load msg
+          } else {
+            // TODO: display no games if no cursor
+          }
           return;
         }
         
@@ -125,7 +130,6 @@ const plugin_twitch = {
           console.error(`Invalid merge mode '${merge_mode}'`);
         }
 
-        const cursor = json.pagination.cursor;
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
         if (cursor) {
           btn.setAttribute("aria-disabled", "false");
@@ -171,8 +175,14 @@ const plugin_twitch = {
         const json = await res.json();
 
         if (json.data.length == 0) {
-          console.error(`Failed to find category/game '${name}'`)
-          return;
+            // TODO: Category does not exist
+            // return `
+            //   <h2>${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
+            //   <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
+            // `;
+            console.error(`Failed to find category/game '${name}'`)
+            // TODO: hide load more button
+            return;
         }
 
         const item = json.data[0];
@@ -254,13 +264,16 @@ async function fetch_twitch_streams(game_id, cursor_opt, tmpl_id_opt, target_id_
     const res = await fetch(url, { headers: Twitch.headers })
     const json = await res.json();
 
+    const cursor = json.pagination.cursor;
     if (json.data.length == 0) {
-      // TODO: display no streams msg?
-      console.warn("No streams to display")
+      if (cursor) {
+        // TODO: no more items to load msg
+      } else {
+        // TODO: display no streams msg
+      }
       return;
     }
   
-
     const tmpl_list_item = /** @type {HTMLLIElement} */
     (tmpl_el.content.querySelector("li"));
     const tmpl_user_link = /** @type {HTMLLinkElement} */
@@ -332,7 +345,6 @@ async function fetch_twitch_streams(game_id, cursor_opt, tmpl_id_opt, target_id_
       }))
     }
 
-    const cursor = json.pagination.cursor;
     const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
     if (!btn) {
         console.error("Failed to find <button> with selector '.btn-load-more'");
