@@ -1,32 +1,11 @@
-import { games, live, sidebar, streams, settings, state, init_common } from "./common";
+import { games, sidebar, streams, init_common } from "./common";
 import { twitch } from "./twitch";
-import { initHtmx } from "./htmx_init";
 
 /**
 @typedef {import("./streams").StreamLocal} StreamLocal
 @typedef {import("./common").Game} Game
 @typedef {import("./sidebar").SidebarState} SidebarState
 */
-
-document.addEventListener("htmx:pushedIntoHistory", (/** @type {Event} */ e) => {
-    state.set_page_path(e.detail.path);
-});
-
-window.addEventListener("htmx:load", (/** @type {Event} */ e) => {
-    const elem = /** @type {Element} */ (e.target);
-    if (elem.classList.contains("user-heading-box")) {
-        const elem_card = /** @type {Element} */ (elem.querySelector(".js-card-live"));
-        const stream_id = /** @type {string} */ (elem_card.getAttribute("data-stream-id"));
-        const game = live.store.users[stream_id];
-        if (game) {
-            live.$.renderUserLiveness(stream_id, elem_card);
-        } else {
-            live.addUser(stream_id);
-        }
-    } else if (elem.id === "page-settings") {
-        settings.init(elem)
-    }
-});
 
 /**
 @param {HTMLElement} t
@@ -75,6 +54,5 @@ document.addEventListener("click", function(/** {Event} */e) {
 async function startup() {
     await twitch.fetchToken();
     init_common();
-    initHtmx();
 };
 window.addEventListener("DOMContentLoaded", startup);

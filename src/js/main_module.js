@@ -234,7 +234,12 @@ const plugin_twitch = {
 
           const item = json.data[0];
 
-          fetch_twitch_videos(item.id, undefined, undefined);
+          // Start fetching user videos
+          const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
+          btn.setAttribute("data-req-data", JSON.stringify({
+            user_id: item.id,
+          }));
+          btn.click();
 
           const tmpl = info.tmpl;
           const tmpl_live = /** @type {HTMLDivElement} */
@@ -264,6 +269,9 @@ const plugin_twitch = {
           // tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
            
           info.target.replaceWith(tmpl.content);
+      } else if (req_type === "videos") {
+        console.log("videso req")
+        fetch_twitch_videos(ctx)
       }
     },
 }
@@ -322,15 +330,25 @@ function get_merge_mode(raw) {
 } 
 
 /**
-@param {string} user_id
-@param {string | undefined} cursor_opt
-@param {Info | undefined} info
+@param {any} ctx
 */
-async function fetch_twitch_videos(user_id, cursor_opt, info) {
-    if (!info) {
-        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
-        info = el_to_info(btn);
+async function fetch_twitch_videos(ctx) {
+    let user_id = undefined;
+    let cursor_opt = undefined;
+
+    const req_data_raw = ctx.el.dataset.reqData;
+    if (req_data_raw) {
+      const req_data = JSON.parse(req_data_raw);
+      user_id = req_data.user_id;
+      cursor_opt = req_data.after;
     }
+
+    if (!user_id) {
+      console.error(`Failed to find 'user_id' value from 'data-req-data'.`, ctx.el);
+      return;
+    }
+
+    const info = el_to_info(ctx.el);
 
     if (!info.tmpl) {
         return;
@@ -347,6 +365,7 @@ async function fetch_twitch_videos(user_id, cursor_opt, info) {
 
     const cursor = json.pagination.cursor;
     if (json.data.length == 0) {
+      console.log("TODO: handle empty data[]")
       if (cursor) {
         // TODO: no more items to load msg
       } else {

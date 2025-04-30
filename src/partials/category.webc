@@ -67,8 +67,12 @@ permalink: "public/partials/category.html"
         </li>
       </template>
     </ul>
-    <btn-load-more class="block fluid-my-xl" @req_type="streams" @req_target=".output-list" @data_template="#category-streams-template">
-    </btn-load-more>
+    <btn-load-more
+      class="block fluid-my-xl"
+      @req_type="streams"
+      @req_target=".output-list"
+      @data_template="#category-streams-template"
+    ></btn-load-more>
   </div>
 </div>
 <style>
