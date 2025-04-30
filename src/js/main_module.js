@@ -155,13 +155,11 @@ const plugin_twitch = {
         const json = await res.json();
 
         if (json.data.length == 0) {
-            // TODO: Category does not exist
-            // return `
-            //   <h2>${decodeURIComponent(pathArr[pathArr.length - 1])}</h2>
-            //   <div id="feedback" hx-swap-oob="true">Game/Category not found</div>
-            // `;
-            console.error(`Failed to find category/game '${name}'`)
-            // TODO: hide load more button
+            // @ts-ignore
+            document.getElementById("main").innerHTML = `
+              <h2>${decodeURIComponent(name)}</h2>
+              <div id="feedback">Game/Category not found</div>
+            `;
             return;
         }
 
@@ -229,13 +227,11 @@ const plugin_twitch = {
           const json = await res.json();
 
           if (json.data.length == 0) {
-              // TODO: User does not exist
-              // return `
-              //   <h2>${decodeURIComponent(pathArr[1])}</h2>
-              //   <div id="feedback" hx-swap-oob="true">User not found</div>
-              // `;
-              console.error(`Failed to find user '${name}'`)
-              // TODO: hide load more button
+              // @ts-ignore
+              document.getElementById("main").innerHTML = `
+                <h2>${decodeURIComponent(name)}</h2>
+                <div id="feedback">User not found</div>
+              `;
               return;
           }
 
