@@ -4,7 +4,12 @@ permalink: "public/partials/user-videos.html"
 <div id="page-user">
   <div>
     <div id="user-header" class="user-heading-box">
-      <span hx-ext="twitch-api" hx-get="/helix/users" hx-target="#user-header" hx-trigger="load" hx-swap="replace" hx-template="#user-header-template"></span>
+      <span
+        data-on-load="@twitch('users')"
+        data-target="#user-header"
+        data-merge-mode="replace"
+        data-template="#user-header-template"
+      ></span>
       <placeholder-title name="user"></placeholder-title>
       <template id="user-header-template">
         <div class="user-heading-box">

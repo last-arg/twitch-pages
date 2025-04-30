@@ -64,49 +64,7 @@ export function initHtmx() {
       } else if (path === "/helix/games") {
         throw "DONE: /helix/games";
       } else if (path === "/helix/users") {
-        // const content_type: string = xhr.getResponseHeader("content-type");
-        const json = JSON.parse(text);
-        if (xhr.status !== 200 || json.data.length === 0) {
-          const pathArr = location.pathname.split("/")
-          return `
-            <h2>${decodeURIComponent(pathArr[1])}</h2>
-            <div id="feedback" hx-swap-oob="true">User not found</div>
-          `;
-        }
-
-        const tmpl_live = /** @type {HTMLDivElement} */
-          (tmpl.content.querySelector(".js-card-live"));
-        const tmpl_external = /** @type {HTMLLinkElement} */
-          (tmpl.content.querySelector("a[rel=external]"));
-        const tmpl_follow = /** @type {HTMLButtonElement} */
-          (tmpl.content.querySelector(".button-follow"));
-        const tmpl_img = /** @type {HTMLImageElement} */
-          (tmpl.content.querySelector("img"));
-        const tmpl_heading = /** @type {HTMLHeadingElement} */
-          (tmpl.content.querySelector("h2"));
-
-        const item = json.data[0];
-        state.update_page_title(item.display_name);
-        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
-        btn.setAttribute("hx-vals", `{"user_id": "${item.id}"}`);
-        htmx.ajax('get', '/helix/videos', {source:'.btn-load-more'})
-        const item_json = encodeURIComponent(JSON.stringify({
-           user_id: item.id,
-           user_login: item.login,
-           user_name: item.display_name,
-        }));
-
-        tmpl_live.setAttribute("data-stream-id", item.id);
-        tmpl_heading.textContent = item.display_name;
-        tmpl_img.src = item.profile_image_url;
-        tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
-
-        tmpl_follow.setAttribute("data-item-id", item.id);
-        tmpl_follow.setAttribute("data-item", item_json);
-        tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
-        
-
-        return tmpl.innerHTML;
+        throw "DONE: /helix/users";
       } else if (path === "/helix/videos") {
         /** @type {Record<string, string>} */
         const VIDEO_ICONS = {

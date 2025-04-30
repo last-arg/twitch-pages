@@ -196,6 +196,62 @@ const plugin_twitch = {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
           console.log(info)
+
+          const path = location.pathname;
+          const path_arr = path.split("/")
+          if (path_arr.length === 0 && path_arr[1].length === 0) {
+            console.error(`User page has invalid url path '${path}'`);
+            return;
+          }
+          const name = path_arr[1];
+
+          const url = `${TWITCH_API_URL}/helix/users?login=${name}`;
+          const res = await fetch(url, { headers: Twitch.headers })
+          const json = await res.json();
+
+          if (json.data.length == 0) {
+              // TODO: User does not exist
+              // return `
+              //   <h2>${decodeURIComponent(pathArr[1])}</h2>
+              //   <div id="feedback" hx-swap-oob="true">User not found</div>
+              // `;
+              console.error(`Failed to find user '${name}'`)
+              // TODO: hide load more button
+              return;
+          }
+
+          const item = json.data[0];
+          // TODO: fire fetch for user videos
+          console.log(item);
+
+          const tmpl = info.tmpl;
+          const tmpl_live = /** @type {HTMLDivElement} */
+            (tmpl.content.querySelector(".js-card-live"));
+          const tmpl_external = /** @type {HTMLLinkElement} */
+            (tmpl.content.querySelector("a[rel=external]"));
+          const tmpl_follow = /** @type {HTMLButtonElement} */
+            (tmpl.content.querySelector(".button-follow"));
+          const tmpl_img = /** @type {HTMLImageElement} */
+            (tmpl.content.querySelector("img"));
+          const tmpl_heading = /** @type {HTMLHeadingElement} */
+            (tmpl.content.querySelector("h2"));
+
+          tmpl_live.setAttribute("data-stream-id", item.id);
+          tmpl_heading.textContent = item.display_name;
+          tmpl_img.src = item.profile_image_url;
+          tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
+
+          tmpl_follow.setAttribute("data-item-id", item.id);
+          const item_json = encodeURIComponent(JSON.stringify({
+             user_id: item.id,
+             user_login: item.login,
+             user_name: item.display_name,
+          }));
+          tmpl_follow.setAttribute("data-item", item_json);
+          // TODO: follow stream
+          // tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
+           
+          info.target.replaceWith(tmpl.content);
       }
     },
 }
