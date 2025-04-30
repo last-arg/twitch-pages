@@ -111,9 +111,7 @@ const plugin_twitch = {
         for (const item of json.data) {
             const game_url = categoryUrl(item.name)
             tmpl_link.href = game_url;
-            tmpl_link.setAttribute("hx-push-url", game_url);
             tmpl_img_link.href = game_url;
-            tmpl_img_link.setAttribute("hx-push-url", game_url);
             tmpl_name.textContent = item.name;
             tmpl_external.href = categoryUrl(item.name, true);
             tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
@@ -562,10 +560,8 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
         tmpl_external.href = `https://www.twitch.tv/${item.user_login}/videos`;
         tmpl_info_link.textContent = item.user_name;
         tmpl_info_link.href = video_url;
-        tmpl_info_link.setAttribute("hx-push-url", video_url);
 
         tmpl_info_img_link.href = video_url;
-        tmpl_info_img_link.setAttribute("hx-push-url", video_url);
 
         user_ids.push(user_id);
         tmpl_info_img.setAttribute("data-user-id", user_id);

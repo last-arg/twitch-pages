@@ -316,7 +316,6 @@ export class LiveStreams {
                 a.textContent = game;
                 const href = categoryUrl(game);
                 a.href = href;
-                a.setAttribute("hx-push-url", href);
                 card.classList.remove("hidden")
             }
         }

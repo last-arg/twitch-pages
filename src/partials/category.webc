@@ -41,7 +41,7 @@ permalink: "public/partials/category.html"
             <div class="user-info">
               <a class="user-info-img-link" aria-hidden="true" href="#"
                 href="#"
-                data-on-click="@push_url()"
+                data-on-click__prevent="@push_url()"
               >
                 <img src="//:0" class="block w-14" alt="" 
                   :width="$data.global.config.image.user.width" 
@@ -51,7 +51,7 @@ permalink: "public/partials/category.html"
                 <div class="flex items-center">
                   <a class="user-info-link"
                      href="#"
-                     data-on-click="@push_url()"
+                     data-on-click__prevent="@push_url()"
                   >:user_name</a>
                   <span class="user-info-follow">
                     <button-follow @name="stream"></button-follow>
