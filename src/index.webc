@@ -20,16 +20,21 @@ title: "Home | Twitch Pages"
         </ul>
       </nav>
       <nav class="sidebar-nav flex-grow" aria-label="Sidebar">
-        <ul class="flex fluid-gap-s h-full justify-end" role="list">
+        <ul class="flex fluid-gap-s h-full justify-end" role="list"
+          data-signals-sidebar=""
+        >
           <li class="flex-grow">
             <form role="search">
               <label class="sr-only" for="game_name">Search for games</label>
-              <input type="search" id="game_name" name="game_name" placeholder="Search for games" aria-expanded="false">
-              <!-- TODO: see if I can make this <button> into <menu-button> -->
-              <button class="menu-item" data-menu-item="search" type="button">
-                <svg-icon @name="looking-glass"></svg-icon>
-                <span class="sr-only">Search for games</span>
-              </button>
+              <input
+                type="search"
+                id="game_name"
+                name="game_name"
+                placeholder="Search for games"
+                data-on-click="$sidebar = 'search'"
+              >
+              <!-- search button -->
+              <menu-button @name="search" @icon="looking-glass"></menu-button>
               <!-- search sidebar -->
               <sidebar-menu></sidebar-menu>
             </form>

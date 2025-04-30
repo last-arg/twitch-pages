@@ -3,7 +3,11 @@
     <svg-icon :@name="icon"></svg-icon>
     <span webc:nokeep @text="sb_title"></span>
   </h2>
-  <button type="button" class="btn-close">
+  <button
+    type="button"
+    class="btn-close"
+    data-on-click="$sidebar = ''"
+  >
     <span class="sr-only">Close sidebar</span>
     <svg-icon @name="close"></svg-icon>
   </button>

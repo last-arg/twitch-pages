@@ -1,4 +1,11 @@
-<button webc:root="override" class="menu-item" :data-menu-item="name" aria-expanded="false">
+<button
+  webc:root="override"
+  class="menu-item"
+  :data-menu-item="name"
+  aria-expanded="false"
+  :data-attr-aria-expanded="`$sidebar === '${name}'`"
+  :data-on-click="`$sidebar = $sidebar === '${name}' ? '' : '${name}'`"
+>
   <span webc:if="name === 'streams'" class="streams-count hidden">0</span>
   <svg-icon :@name="icon"></svg-icon>
   <span class="sr-only" @text="name"></span>

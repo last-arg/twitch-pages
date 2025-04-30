@@ -39,14 +39,14 @@ header {
 }
 
 .menu-item[aria-expanded=false] + .sidebar-position,
-#game_name[aria-expanded=false] ~ .sidebar-position {
+form:has([aria-expanded=false]) .sidebar-position {
   opacity: 0;
   visibility: hidden;
   --sidebar-x: 100%;
 }
 
 .menu-item[aria-expanded=true] + .sidebar-position,
-#game_name[aria-expanded=true] ~ .sidebar-position {
+form:has([aria-expanded=true]) ~ .sidebar-position {
   opacity: 1;
   visibility: visible;
   --sidebar-x: 0%;
@@ -83,12 +83,11 @@ form[role="search"] input {
   max-width: 14rem;
 }
 
-form[role=search] input[aria-expanded=true],
-form[role=search] input[aria-expanded=true] + .menu-item {
+form[role=search]:has([aria-expanded=true]) #game_name {
   border-bottom-color: var(--surface5);
 }
 
-form[role=search] input[aria-expanded=false] ~ sidebar-menu {
+form[role=search] [aria-expanded=false] ~ sidebar-menu {
   display: none;
 }
 

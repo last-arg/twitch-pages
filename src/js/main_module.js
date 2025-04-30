@@ -12,8 +12,9 @@ Fit, SetAll, ToggleAll
 } from "../../node_modules/@starfederation/datastar/dist/plugins/index.js";
 import { PluginType } from "../../node_modules/@starfederation/datastar/dist/engine/types.js";
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
-import { Twitch } from "./twitch.js";
+import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
+import { init_common } from "./common.js";
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
@@ -621,7 +622,9 @@ async function change_main(pathname) {
     main.innerHTML = html_raw;
 }
 
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", async function() {
+  await twitch.fetchToken();
+  init_common();
   change_main(location.pathname);
 })
 
