@@ -319,12 +319,13 @@ function el_to_info(el) {
 function get_merge_mode(raw) {
   /** @type {'append' | 'replace' } */
   let result = "append";
-  if (raw && raw.length > 0 &&
-    raw !== "append" && raw !== "replace"
-  ) {
-    throw `Invalid merge mode value '${raw}'. Valid values: 'append', 'replace'`
+  if (raw && raw.length > 0) {
+    if (raw !== "append" && raw !== "replace") {
+      throw `Invalid merge mode value '${raw}'. Valid values: 'append', 'replace'`
+    }
+
+    result = /** @type {'append' | 'replace' } */(raw);
   }
-  result = /** @type {'append' | 'replace' } */(raw);
 
   return result;
 } 
