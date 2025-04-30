@@ -30,7 +30,7 @@ permalink: "public/partials/user-videos.html"
     <h3>Videos</h3>
     <div class="fluid-mt-2xs">
       <div class="flex flex-wrap fluid-gap-s">
-        <filter-video>
+        <filter-video data-signals-counts="{archive: 0, upload: 0, highlight: 0}">
           <fieldset class="filter-video-type">
             <legend class="sr-only">Filter based on video type</legend>
             <filter-option @name="archive"></filter-option>

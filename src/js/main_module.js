@@ -17,6 +17,7 @@ import { config, mainContent } from './config.prod';
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
+@typedef {import("@starfederation/datastar/dist/engine/types.js").RuntimeContext} RuntimeContext
 
 @typedef {{
   tmpl: HTMLTemplateElement,
@@ -341,7 +342,7 @@ function get_merge_mode(raw) {
 } 
 
 /**
-@param {any} ctx
+@param {RuntimeContext} ctx
 */
 async function fetch_twitch_videos(ctx) {
     let user_id = undefined;
@@ -459,6 +460,18 @@ async function fetch_twitch_videos(ctx) {
     } else {
         btn.removeAttribute("data-req-data");
     }
+
+    ctx.signals.setValue("archive", video_type_count("archive"));
+    ctx.signals.setValue("upload", video_type_count("upload"));
+    ctx.signals.setValue("highlight", video_type_count("highlight"));
+}
+
+/**
+@param {string} video_type
+@returns {number}
+*/
+function video_type_count(video_type) {
+    return document.querySelectorAll(`[data-video-type=${video_type}]`).length;
 }
 
 
