@@ -1,8 +1,8 @@
 <slot></slot>
 <button type="button" class="btn-frame btn-load-more"
   aria-disabled="true"
-  data-on-click="@twitch('streams')"
-  :data-template="hx_template"
+  :data-on-click="`@twitch('${req_type}')`"
+  :data-template="data_template"
   :data-target="req_target ? req_target : '#output-list'" 
   data-req-data=""
 >

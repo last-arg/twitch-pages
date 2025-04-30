@@ -48,3 +48,17 @@ export function encodeHtml(str) {
   tmp_elem.textContent = str;
   return tmp_elem.innerHTML;  
 }
+
+/**
+@param {string} cat
+@param {boolean} is_twitch
+@return {string}
+*/
+export function categoryUrl(cat, is_twitch = false) {
+    let result = "";
+    if (is_twitch) {
+        result += "https://twitch.tv"
+    }
+    result += "/directory/category/" + encodeURIComponent(cat);
+    return result; 
+}

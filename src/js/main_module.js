@@ -11,11 +11,9 @@ Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Pers
 Fit, SetAll, ToggleAll
 } from "../../node_modules/@starfederation/datastar/dist/plugins/index.js";
 import { PluginType } from "../../node_modules/@starfederation/datastar/dist/engine/types.js";
-import { getUrlObject, twitchCatImageSrc, encodeHtml } from "./util";
+import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl } from "./util";
 import { Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
-
-console.log("datastar module4", ds)
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
@@ -42,7 +40,101 @@ const plugin_twitch = {
     type: PluginType.Action,
     name: 'twitch',
     fn: async (ctx, req_type) => {
-      if (req_type === "games") {
+      if (req_type === "games/top") {
+        const tmpl_id = /** @type {string} */ (ctx.el.dataset.template);
+        /** @ts-ignore */
+        const tmpl_el = document.querySelector(tmpl_id);
+        if (!tmpl_el) {
+          console.error(`Failed to find <template> with id ${tmpl_id}`)
+          return;
+        }
+
+        const merge_mode = ctx.el.dataset.mergeMode || "append";
+        var target = ctx.el;
+
+        const target_sel = ctx.el.dataset.target;
+        if (target_sel) {
+            const target_new = document.querySelector(target_sel);
+            if (target_new) {
+              /** @ts-ignore */
+              target = target_new;
+            } else {
+              console.warn(`Failed to find element with selector '${target_sel}'`);
+            }
+        }
+
+        ctx.el.setAttribute("aria-disabled", "true");
+
+        // TODO: change first value settings top-games count
+        // settings.data.general["top-games-count"]
+        var url = `${TWITCH_API_URL}/helix/games/top?first=15`;
+        const req_data_raw = ctx.el.dataset.reqData;
+        if (req_data_raw) {
+          const req_data = JSON.parse(req_data_raw);
+          if (req_data.after) {
+            url += `&after=${req_data.after}`;
+          }
+        }
+        const res = await fetch(url, { headers: Twitch.headers })
+        const json = await res.json();
+
+        if (json.data.length == 0) {
+          console.error(`Failed to find category/game '${name}'`)
+          return;
+        }
+        
+        const frag = new DocumentFragment();
+
+        const tmpl_item = /** @type {HTMLLIElement} */
+          (tmpl_el.content.querySelector("li"))
+        const tmpl_img_link = /** @type {HTMLLinkElement} */
+          (tmpl_item.querySelector(".game-img-link"));
+        const tmpl_img = /** @type {HTMLImageElement} */
+          (tmpl_item.querySelector(".game-img"));
+        const tmpl_link = /** @type {HTMLLinkElement} */
+          (tmpl_item.querySelector(".game-link"));
+        const tmpl_name = /** @type {HTMLParagraphElement} */
+          (tmpl_link.querySelector("p"));
+        const tmpl_external = /** @type {HTMLLinkElement} */
+          (tmpl_item.querySelector(".external-link"));
+        const tmpl_follow = /** @type {HTMLButtonElement} */
+          (tmpl_item.querySelector(".button-follow"));
+
+        for (const item of json.data) {
+            const game_url = categoryUrl(item.name)
+            tmpl_link.href = game_url;
+            tmpl_link.setAttribute("hx-push-url", game_url);
+            tmpl_img_link.href = game_url;
+            tmpl_img_link.setAttribute("hx-push-url", game_url);
+            tmpl_name.textContent = item.name;
+            tmpl_external.href = categoryUrl(item.name, true);
+            tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
+            tmpl_follow.setAttribute("data-item-id", item.id);
+            tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
+            // TODO: game is followed
+            // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
+             
+            frag.appendChild(tmpl_item.cloneNode(true));
+        }
+
+        if (merge_mode === "append") {
+          target.appendChild(frag);
+        } else if (merge_mode === "replace") {
+          target.replaceWith(frag);
+        } else {
+          console.error(`Invalid merge mode '${merge_mode}'`);
+        }
+
+        const cursor = json.pagination.cursor;
+        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+        if (cursor) {
+          btn.setAttribute("aria-disabled", "false");
+          btn.setAttribute("data-req-data", `{"after": "${cursor}"}`);
+        } else {
+          btn.removeAttribute("data-req-data");
+        }
+
+      } else if (req_type === "games") {
         const path_arr = location.pathname.split("/");
         console.assert(path_arr.length > 1, "Array can't not be empty");
         const name = path_arr[path_arr.length - 1];
@@ -62,12 +154,19 @@ const plugin_twitch = {
         const target_id = /** @type {string} */ (ctx.el.dataset.target);
         /** @type {HTMLDivElement} */
         const target_el = document.querySelector(target_id);
-        if (!tmpl_el) {
+        if (!target_el) {
           console.error(`Failed to find html element with selector ${target_id}`)
           return;
         }
 
-        const url = `${TWITCH_API_URL}/helix/games?name=${name}`;
+        var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
+        const req_data_raw = ctx.el.dataset.reqData;
+        if (req_data_raw) {
+          const req_data = JSON.parse(req_data_raw);
+          if (req_data.after) {
+            url += `&after=${req_data.after}`;
+          }
+        }
         const res = await fetch(url, { headers: Twitch.headers })
         const json = await res.json();
 
@@ -96,6 +195,7 @@ const plugin_twitch = {
         // TODO:
         // tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
         
+        // TODO: change to replace child
         target_el.innerHTML = tmpl_el.innerHTML;
       } else if (req_type === "streams") {
           const tmpl_id = ctx.el.dataset.template;
@@ -243,13 +343,12 @@ async function fetch_twitch_streams(game_id, cursor_opt, tmpl_id_opt, target_id_
         btn.setAttribute("aria-disabled", "false");
         btn.setAttribute("data-req-data", JSON.stringify({
           game_id: game_id,
-          cursor: cursor,
+          after: cursor,
         }));
     } else {
         btn.removeAttribute("data-req-data");
     }
 }
-
 
 /** @param {CustomEvent<URL>} ev */
 async function handle_push_url(ev) {

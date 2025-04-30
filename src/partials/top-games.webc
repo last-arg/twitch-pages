@@ -34,9 +34,13 @@ permalink: "public/partials/top-games.html"
         </div>
       </li>
     </template>
-    <div hx-ext="twitch-api" hx-get="/helix/games/top" hx-trigger="load" hx-swap="outerHTML" hx-template="#top-games-template"></div>
+    <div
+      data-on-load="@twitch('games/top')" 
+      data-template="#top-games-template"
+      data-merge-mode="replace"
+    ></div>
   </ul>
-  <btn-load-more class="block fluid-my-xl" @req_url="/helix/games/top" @hx_template="#top-games-template"></btn-load-more>
+  <btn-load-more class="block fluid-my-xl" @req_type="games/top" @data_template="#top-games-template"></btn-load-more>
 </div>
 <style>
 .game {
