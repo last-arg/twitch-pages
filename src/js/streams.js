@@ -1,4 +1,4 @@
-import { strCompareField, categoryUrl, state } from "./common";
+import { strCompareField, categoryUrl } from "./common";
 import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
 
@@ -255,7 +255,15 @@ export class LiveStreams {
                     stream_count.textContent = count.toString();
                     stream_count.classList.remove("hidden")
                 }
-                state.replace_page_title_count();
+
+                // Replace page title
+                let new_title = "";
+                if (_this.count > 0) {
+                    new_title += `(${_this.count}) `;
+                }
+                const index = document.title.indexOf(")", 1) + 1;
+                new_title += document.title.slice(index).trim();
+                document.title = new_title;
             },
 
             /** @param {string[]} ids */

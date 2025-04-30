@@ -14,7 +14,7 @@ import { PluginType } from "../../node_modules/@starfederation/datastar/dist/eng
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
-import { init_common } from "./common.js";
+import { init_common, live } from "./common.js";
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
@@ -171,6 +171,7 @@ const plugin_twitch = {
         }
 
         const item = json.data[0];
+        change_page_title(item.name);
 
         const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
         const streams_info = el_to_info(btn);
@@ -245,6 +246,8 @@ const plugin_twitch = {
           }
 
           const item = json.data[0];
+
+          change_page_title(item.display_name);
 
           // Start fetching user videos
           const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
@@ -620,7 +623,30 @@ async function change_main(pathname) {
     const res = await fetch(url_obj.html);
     const html_raw = await res.text();
     main.innerHTML = html_raw;
+    change_page_title(undefined);
 }
+
+/** @param {string | undefined} str */
+function change_page_title(str) {
+  let title = "";
+  title += `(${live.count}) `;
+   
+  if (location.pathname === "/") {
+    title += "Home";
+  } else if (location.pathname === "/settings") {
+    title += "Settings";
+  } else if (str === "not-found") {
+    title += "Not Found";
+  } else if (str) {
+    title += str;
+  } else {
+    return;
+  }
+
+  title += " | Twitch Pages"
+  document.title = title;
+}
+
 
 window.addEventListener("DOMContentLoaded", async function() {
   await twitch.fetchToken();
@@ -642,8 +668,3 @@ ds.load(
 );
 
 ds.apply();
-
-
-window.hello = function() {
-  console.log("world")
-}
