@@ -644,3 +644,6 @@ ds.load(
 ds.apply();
 
 
+window.hello = function() {
+  console.log("world")
+}
