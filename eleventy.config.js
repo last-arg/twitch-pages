@@ -158,6 +158,10 @@ export default function(eleventyConfig) {
 			"/directory/category/*": function(req) {
 				const _site_index = fs.readFileSync(path.join(__dirname, output_dir, "index.html")).toString();
 				return _site_index;
+			},
+			"/*/videos": function(req) {
+				const _site_index = fs.readFileSync(path.join(__dirname, output_dir, "index.html")).toString();
+				return _site_index;
 			}
 		},
 	});
