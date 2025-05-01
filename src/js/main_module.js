@@ -26,7 +26,6 @@ import { games, init_common, live, settings, streams } from "./common.js";
 }} Info
 */
 
-
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
 const plugin_push_url = {
@@ -603,7 +602,9 @@ async function change_main(pathname) {
 /** @param {string | undefined} str */
 function change_page_title(str) {
   let title = "";
-  title += `(${live.count}) `;
+  if (live.count > 0) {
+    title += `(${live.count}) `;
+  }
    
   if (location.pathname === "/") {
     title += "Home";
@@ -618,7 +619,7 @@ function change_page_title(str) {
   }
 
   title += " | Twitch Pages"
-  document.title = title;
+  document.title = title.trimStart();
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
