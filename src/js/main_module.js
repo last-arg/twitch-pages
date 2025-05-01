@@ -8,16 +8,16 @@ Indicator, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, Execute
 Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
 // Logic
 Fit, SetAll, ToggleAll
-} from "../../node_modules/@starfederation/datastar/dist/plugins/index.js";
-import { PluginType } from "../../node_modules/@starfederation/datastar/dist/engine/types.js";
+} from "@starfederation/datastar/plugins";
+import { PluginType } from "@starfederation/datastar/types";
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
 import { games, init_common, live, Settings, streams } from "./common.js";
 
 /**
-@typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
-@typedef {import("@starfederation/datastar/dist/engine/types.js").RuntimeContext} RuntimeContext
+@typedef {import("@starfederation/datastar/types").ActionPlugin} ActionPlugin
+@typedef {import("@starfederation/datastar/types").RuntimeContext} RuntimeContext
 
 @typedef {{
   tmpl: HTMLTemplateElement,
