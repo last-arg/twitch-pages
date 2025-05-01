@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "eleventy --watch --incremental",
     "build": "rm -rf _site && NODE_ENV=production eleventy",
+    "server": "eleventy --serve",
     "preview": "wrangler pages dev ./_site --live-reload --local-protocol=https",
     "deploy": "npm run build && wrangler pages deploy"
   },
