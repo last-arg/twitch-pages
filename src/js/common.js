@@ -120,7 +120,7 @@ export function categoryUrl(cat, is_twitch = false) {
     return result; 
 }
 
-class Settings extends EventTarget {
+export class Settings extends EventTarget {
     /**
       @typedef {typeof Settings.data_default} SettingsGeneral
     */
@@ -129,12 +129,12 @@ class Settings extends EventTarget {
         /** @type {{show_all: string|null, languages: string[]}} */
         category: { show_all: 'on', languages: [] },
         general: {
-          "top-games-count": settings_default.top_games_count,
-          "category-count": settings_default.streams_count,
-          "user-videos-count": settings_default.user_videos_count,
-          "video-archives": true,
-          "video-uploads": false,
-          "video-highlights": false,
+          "top_games_count": settings_default.top_games_count,
+          "category_count": settings_default.streams_count,
+          "user_videos_count": settings_default.user_videos_count,
+          "video_archives": true,
+          "video_uploads": false,
+          "video_highlights": false,
         }
     }
 
@@ -221,15 +221,15 @@ class Settings extends EventTarget {
             }
         }
 
-        this.$.root.querySelector("#settings-general")?.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const elem = /** @type {HTMLFormElement} */ (e.target);
-            let new_settings = /** @type {SettingsGeneral} */ ({});
-            // @ts-ignore
-            (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
-            this.data["general"] = new_settings;
-            this._save()
-        });
+        // this.$.root.querySelector("#settings-general")?.addEventListener("submit", (e) => {
+        //     e.preventDefault();
+        //     const elem = /** @type {HTMLFormElement} */ (e.target);
+        //     let new_settings = /** @type {SettingsGeneral} */ ({});
+        //     // @ts-ignore
+        //     (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
+        //     this.data["general"] = new_settings;
+        //     this._save()
+        // });
     }
 
     _updateElements() {
@@ -454,4 +454,4 @@ class VideoFilter extends HTMLElement {
     }
 }
 
-customElements.define("filter-video", VideoFilter)
+// customElements.define("filter-video", VideoFilter)

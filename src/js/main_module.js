@@ -13,7 +13,7 @@ import { PluginType } from "../../node_modules/@starfederation/datastar/dist/eng
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
-import { games, init_common, live, settings, streams } from "./common.js";
+import { games, init_common, live, Settings, streams } from "./common.js";
 
 /**
 @typedef {import("@starfederation/datastar/dist/engine/types.js").ActionPlugin} ActionPlugin
@@ -26,12 +26,18 @@ import { games, init_common, live, settings, streams } from "./common.js";
 }} Info
 */
 
+/** @ts-ignore */
+window.global_store = {
+  /** @ts-ignore */
+  settings_default: Settings.data_default,
+};
+
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
 const plugin_push_url = {
     type: PluginType.Action,
     name: 'push_url',
-    fn: (ctx, path) => {
+    fn: (ctx) => {
         let url = undefined;
         const input = ctx.el.href;
         if (input) {
@@ -66,7 +72,8 @@ const plugin_twitch = {
 
         ctx.el.setAttribute("aria-disabled", "true");
 
-        let url = `${TWITCH_API_URL}/helix/games/top?first=${settings.data.general["top-games-count"]}`;
+        const count = ctx.signals.value("settings.general.top_games_count") || Settings.data_default.general.top_games_count;
+        let url = `${TWITCH_API_URL}/helix/games/top?first=${count}`;
         const req_data_raw = ctx.el.dataset.reqData;
         if (req_data_raw) {
           const req_data = JSON.parse(req_data_raw);
@@ -167,7 +174,7 @@ const plugin_twitch = {
 
         const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
         const streams_info = el_to_info(btn);
-        fetch_twitch_streams(item.id, undefined, streams_info);
+        fetch_twitch_streams(ctx, item.id, undefined, streams_info);
         
         const tmpl_heading = /** @type {HTMLHeadingElement} */
           (tmpl_el.content.querySelector("h2"));
@@ -207,7 +214,7 @@ const plugin_twitch = {
           }
 
           ctx.el.setAttribute("aria-disabled", "true");
-          fetch_twitch_streams(game_id, cursor, info)
+          fetch_twitch_streams(ctx, game_id, cursor, info)
       } else if (req_type === "users") {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
@@ -357,7 +364,8 @@ async function fetch_twitch_videos(ctx) {
         return;
     }
 
-    var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${settings.data.general["user-videos-count"]}`;
+    const count = ctx.signals.value("settings.general.user_videos_count") || Settings.data_default.general.user_videos_count;
+    var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${count}`;
     if (cursor_opt) {
         url += `&after=${cursor_opt}`;
     }
@@ -461,11 +469,13 @@ function video_type_count(video_type) {
 
 
 /**
+@param {RuntimeContext} ctx
 @param {string} game_id
 @param {string | undefined} cursor_opt
 @param {Info | undefined} info
 */
-async function fetch_twitch_streams(game_id, cursor_opt, info) {
+// TODO: clean up fn args
+async function fetch_twitch_streams(ctx, game_id, cursor_opt, info) {
     if (!info) {
         const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
         info = el_to_info(btn);
@@ -478,7 +488,8 @@ async function fetch_twitch_streams(game_id, cursor_opt, info) {
     const tmpl_el = info.tmpl;
     const target_el = info.target;
 
-    var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=${settings.data.general["category-count"]}`;
+    const count = ctx.signals.value("settings.general.category_count") || Settings.data_default.general.category_count;
+    var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=${count}`;
     if (cursor_opt) {
       url += `&after=${cursor_opt}`;
     }

@@ -4,7 +4,10 @@ title: "Home | Twitch Pages"
 ---
 <a class="skip-content" href="#main">skip to content</a>
 <h1 class="sr-only">Twich Pages</h1>
-<div id="app">
+<div id="app"
+  data-signals="{settings: global_store.settings_default}"
+  data-persist="settings.**"
+>
   <header class="fixed z-1">
     <div class="wrapper flex flex-wrap align-stretch fluid-gap-s relative">
       <nav aria-label="Main">
