@@ -364,6 +364,13 @@ async function fetch_twitch_videos(ctx) {
         return;
     }
 
+    // NOTE: so datastar inits/runs element's datastar attributes
+    // Won't init/run attributes if ids are same.
+    // This removes the ids from list. So elements will be initialized again.
+    ctx.removals.delete("check-archive")
+    ctx.removals.delete("check-upload")
+    ctx.removals.delete("check-highlight")
+   
     const count = ctx.signals.value("settings.general.user_videos_count") || Settings.data_default.general.user_videos_count;
     var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${count}`;
     if (cursor_opt) {

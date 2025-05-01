@@ -191,10 +191,11 @@ permalink: "public/partials/user-videos.html"
   place-content: start;
 }
 
-.output-list.no-uploads li[data-video-type=upload],
-.output-list.no-archives li[data-video-type=archive],
-.output-list.no-highlights li[data-video-type=highlight] {
-  display: none;
+/** TODO: could have JS fallback if :has() is not supported */
+:has(#check-archive:not(:checked)) .output-list [data-video-type=archive],
+:has(#check-upload:not(:checked)) .output-list [data-video-type=upload],
+:has(#check-highlight:not(:checked)) .output-list [data-video-type=highlight] {
+ display: none;
 }
 
 .filter-video-type {

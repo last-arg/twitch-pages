@@ -1,7 +1,10 @@
-<label class="filter-option" :for="'check-' + name" :data-signals="`{${name}: 0}`">
-  <input type="checkbox" :id="'check-' + name" :value="name">
+<label class="filter-option" :for="'check-' + name">
+  <input
+    type="checkbox" :id="'check-' + name"
+    :data-attr-checked="`$settings.general.video_${name}s`"
+  >
   <span webc:nokeep @text="name[0].toUpperCase() + name.slice(1) + 's'"></span>
-  (<span :id="name + 's-count'" :data-text="`$${name}`">0</span>)
+  (<span :data-signals="`{${name}: 0}`" :data-text="`$${name}`">0</span>)
 </label>
 <style>
 .filter-option {
