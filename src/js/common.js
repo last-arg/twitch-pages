@@ -97,17 +97,6 @@ export function init_common() {
 export const API_URL = "https://api.twitch.tv"
 
 /**
-@param {string} url_template
-@param {number} width
-@param {number} height
-@returns {string}
-*/
-export function twitchCatImageSrc(url_template, width, height) {
-    return url_template.replace("{width}", width.toString()).replace("{height}", height.toString());
-}
-
-
-/**
 @param {string} name
 @returns {(a: any, b: any) => number}
 */
@@ -263,43 +252,43 @@ class Settings extends EventTarget {
     }
 
     _initCategory() {
-        this.data.category.languages
-        const input_all_langs = /** @type {HTMLInputElement} */ (document.querySelector("input[name=all-languages]"));
-        input_all_langs.checked = this.data.category.show_all;
+        // this.data.category.languages
+        // const input_all_langs = /** @type {HTMLInputElement} */ (document.querySelector("input[name=all-languages]"));
+        // input_all_langs.checked = this.data.category.show_all;
 
-        for (const lang of this.data.category.languages) {
-            this._addLang(lang);
-        }
-        this._hasLanguages();
+        // for (const lang of this.data.category.languages) {
+        //     this._addLang(lang);
+        // }
+        // this._hasLanguages();
 
         // add events
-        const form_category = /** @type {Element} */ (this.$.root.querySelector("#form-category"));
-        form_category.addEventListener("submit", (evt) => {
-            evt.preventDefault();
-            const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
-            this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
-            this.data.category.show_all = /** @type {string|null} */ (f_data.get("all-languages"));
-            this._save();
-        });
+        // const form_category = /** @type {Element} */ (this.$.root.querySelector("#form-category"));
+        // form_category.addEventListener("submit", (evt) => {
+        //     evt.preventDefault();
+        //     const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
+        //     this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
+        //     this.data.category.show_all = /** @type {string|null} */ (f_data.get("all-languages"));
+        //     this._save();
+        // });
 
-        form_category.addEventListener("click", (event) => {
-            const elem = /** @type {HTMLButtonElement} */ (event.target); 
-            if (elem.nodeName === "BUTTON") {
-              if (elem.classList.contains("add-lang")) {
-                this._addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
-              } else if (elem.classList.contains("remove-lang")) {
-                  const li = /** @type {Element} */ (elem.closest("li"));
-                  li.remove();
-              }
-            }
-        });
+        // form_category.addEventListener("click", (event) => {
+        //     const elem = /** @type {HTMLButtonElement} */ (event.target); 
+        //     if (elem.nodeName === "BUTTON") {
+        //       if (elem.classList.contains("add-lang")) {
+        //         this._addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
+        //       } else if (elem.classList.contains("remove-lang")) {
+        //           const li = /** @type {Element} */ (elem.closest("li"));
+        //           li.remove();
+        //       }
+        //     }
+        // });
 
-        form_category.addEventListener("keydown", (event) => {
-            const elem = /** @type {HTMLInputElement} */ (event.target); 
-            if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
-                this._addLangFromInput(elem);
-            }
-        });
+        // form_category.addEventListener("keydown", (event) => {
+        //     const elem = /** @type {HTMLInputElement} */ (event.target); 
+        //     if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
+        //         this._addLangFromInput(elem);
+        //     }
+        // });
     }
 
     /** @param {string} lang */
@@ -346,30 +335,30 @@ export let settings = new Settings();
 
 // TODO: only add event when on settings page. And remove event when leaving settings page
 settings.addEventListener("settings:storage-saved", function() {
-    if (document.location.pathname === "/settings") {
-        const input_elems = /** @type {Array<HTMLInputElement>} */ (settings.$.root.querySelectorAll("#settings-general input"));
-        for (const elem of input_elems) {
-            if (elem.type === "number") {
-                elem.value = settings.data.general[elem.name];
-            } else if (elem.type === "checkbox") {
-                elem.checked = settings.data.general[elem.name];
-            }
-        }
-        const checkbox_languages = /** @type {HTMLInputElement} */ (settings.$.root.querySelector("[name=all-languages]"));
-        checkbox_languages.checked = settings.data.category.show_all;
+    // if (document.location.pathname === "/settings") {
+    //     const input_elems = /** @type {Array<HTMLInputElement>} */ (settings.$.root.querySelectorAll("#settings-general input"));
+    //     for (const elem of input_elems) {
+    //         if (elem.type === "number") {
+    //             elem.value = settings.data.general[elem.name];
+    //         } else if (elem.type === "checkbox") {
+    //             elem.checked = settings.data.general[elem.name];
+    //         }
+    //     }
+    //     const checkbox_languages = /** @type {HTMLInputElement} */ (settings.$.root.querySelector("[name=all-languages]"));
+    //     checkbox_languages.checked = settings.data.category.show_all;
 
-        for (const lang of settings.data.category.languages) {
-            settings._addLang(lang);
-        }
+    //     for (const lang of settings.data.category.languages) {
+    //         settings._addLang(lang);
+    //     }
 
-        // remove languages
-        for (const input of settings.$.root.querySelectorAll("[name=lang]")) {
-            const lang_code = input.value;
-            if (!settings.data.category.languages.includes(lang_code)) {
-                input.closest("li")?.remove();
-            } 
-        }
-    }
+    //     // remove languages
+    //     for (const input of settings.$.root.querySelectorAll("[name=lang]")) {
+    //         const lang_code = input.value;
+    //         if (!settings.data.category.languages.includes(lang_code)) {
+    //             input.closest("li")?.remove();
+    //         } 
+    //     }
+    // }
 });
 
 class FormFilter extends HTMLElement {

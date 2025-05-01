@@ -5,7 +5,11 @@ permalink: "public/partials/settings.html"
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
-  <div class="settings fluid-mt-s flex flex-wrap fluid-gap-s">
+  <div
+    class="settings fluid-mt-s flex flex-wrap fluid-gap-s"
+    data-signals="{ settings: {category: { show_all: true, languages: [] }}}"
+    data-persist="settings.**"
+  >
     <section>
       <h3>General</h3>
       <form id="settings-general" class="form-general stack stack-s">
@@ -70,15 +74,24 @@ permalink: "public/partials/settings.html"
     -->
     <section>
       <h3>Category</h3>
-      <form id="form-category" class="stack stack-s">
+      <form id="form-category" class="stack stack-s"
+        data-on-submit__prevent="console.table($settings)"
+      >
         <label>
-          <input type="checkbox" name="all-languages" checked>
+          <input
+            type="checkbox"
+            name="all-languages"
+            data-bind="settings.category.show_all"
+          >
           Show all languages
         </label>
         <div>
           <label for="pick-lang">Languages to show</label>
           <div class="flex">
-            <input type="text" list="lang-list" id="pick-lang" placeholder="Enter language">
+            <input
+              type="text" list="lang-list" id="pick-lang" placeholder="Enter language"
+              data-si
+            >
             <button type="button" class="add-lang">Add</button>
           </div>
         </div>
@@ -94,9 +107,10 @@ permalink: "public/partials/settings.html"
             </li>
           </template>
         </ul>
-        <p class="js-languages-msg hidden">No languages added. Will show all languages.</p>
+        <p class="js-languages-msg hidden" data-class-hidden="$settings.category.languages.length > 0">No languages added. Will show all languages.</p>
         <button type="submit">Save category settings</button>
       </form>
+      <pre data-text="ctx.signals.JSON()">Replace me</pre>
     </section>
     <section>
       <h3>Cache</h3>
