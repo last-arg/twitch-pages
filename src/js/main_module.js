@@ -51,7 +51,7 @@ const plugin_push_url = {
 
         history.pushState({}, '', url)
         dispatchEvent(new CustomEvent(push_url_event_name, {
-          detail: url
+          detail: {url: url, ctx: ctx}
         }));
     },
 }
@@ -596,8 +596,19 @@ async function fetch_twitch_streams(ctx, game_id, cursor_opt, info) {
 
 /** @param {CustomEvent<URL>} ev */
 async function handle_push_url(ev) {
-  console.assert(URL.prototype.isPrototypeOf(ev.detail), "Event.detail has to be URL object");
-  change_main(ev.detail.pathname)
+  const pathname = ev.detail.url.pathname;
+  const ctx = ev.detail.ctx;
+
+  if (pathname === "/settings") {
+    ctx.removals.delete("top-games-count")
+    ctx.removals.delete("category-count")
+    ctx.removals.delete("user-videos-count")
+    ctx.removals.delete("video-archives")
+    ctx.removals.delete("video-uploads")
+    ctx.removals.delete("video-highlights")
+  }
+
+  change_main(pathname)
 }
 
 window.addEventListener(push_url_event_name, handle_push_url);
