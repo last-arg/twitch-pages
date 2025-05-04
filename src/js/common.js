@@ -132,9 +132,9 @@ export class Settings extends EventTarget {
           "top_games_count": settings_default.top_games_count,
           "category_count": settings_default.streams_count,
           "user_videos_count": settings_default.user_videos_count,
-          "video_archives": true,
-          "video_uploads": false,
-          "video_highlights": false,
+          "show_archives": true,
+          "show_uploads": false,
+          "show_highlights": false,
         }
     }
 

@@ -5,29 +5,46 @@ permalink: "public/partials/settings.html"
   <div>
     <h2 class="main-heading">Settings</h2>
   </div>
-  <div
-    class="settings fluid-mt-s flex flex-wrap fluid-gap-s"
-    data-signals="{ settings: {category: { show_all: true, languages: [] }}}"
-    data-persist="settings.**"
-  >
+  <div class="settings fluid-mt-s flex flex-wrap fluid-gap-s">
+    <pre data-text="ctx.signals.JSON()">Replace me</pre>
     <section>
       <h3>General</h3>
-      <form id="settings-general" class="form-general stack stack-s">
+      <form id="settings-general" class="form-general stack stack-s"
+        onsubmit="event.preventDefault()"
+      >
         <fieldset>
           <legend class="sr-only">Number of items to load with one request</legend>
           <h4 aria-hidden="true">Number of items to load with one request</h4>
           <ul role="list" class="stack stack-xs">
             <li>
               <label for="top-games-count">Top Games:</label>
-              <input type="number" id="top-games-count" name="top-games-count" min="1" max="100" value="5">
+              <input
+                type="number"
+                id="top-games-count"
+                name="top-games-count"
+                min="1" max="100"
+                data-bind="$settings.general.top_games_count"
+              >
             </li>
             <li>
               <label for="category-count">Category/Games:</label>
-              <input type="number" id="category-count" name="category-count" min="1" max="100" value="5">
+              <input
+                type="number"
+                id="category-count"
+                name="category-count"
+                min="1" max="100"
+                data-bind="$settings.general.category_count"
+              >
             </li>
             <li>
               <label for="user-videos-count">User videos:</label>
-              <input type="number" id="user-videos-count" name="user-videos-count" min="1" max="100" value="5">
+              <input
+                type="number"
+                id="user-videos-count"
+                name="user-videos-count"
+                min="1" max="100"
+                data-bind="$settings.general.user_videos_count"
+              >
             </li>
           </ul>
         </fieldset>
@@ -37,27 +54,35 @@ permalink: "public/partials/settings.html"
           <ul role="list" role="list">
             <li>
               <label for="video-archives">
-                <input type="checkbox" id="video-archives" name="video-archives">
+                <input
+                  type="checkbox"
+                  id="video-archives"
+                  name="video-archives"
+                  data-bind="$settings.general.show_archives"
+                >
                 <span>Archives</span>
               </label>
             </li>
             <li>
               <label for="video-uploads">
-                <input type="checkbox" id="video-uploads" name="video-uploads">
+                <input type="checkbox"
+                  id="video-uploads" name="video-uploads"
+                  data-bind="$settings.general.show_uploads"
+                >
                 <span>Uploads</span>
               </label>
             </li>
             <li>
               <label for="video-highlights">
-                <input type="checkbox" id="video-highlights" name="video-highlights">
+                <input type="checkbox" id="video-highlights"
+                  name="video-highlights"
+                  data-bind="$settings.general.show_highlights"
+                >
                 <span>Highlights</span>
               </label>
             </li>
           </ul>
         </fieldset>
-        <div>
-          <button type="submit">Save general settings</button>
-        </div>
       </form>
     </section>
     <!-- TODO: Settings: twitch login -->
@@ -75,7 +100,7 @@ permalink: "public/partials/settings.html"
     <section>
       <h3>Category</h3>
       <form id="form-category" class="stack stack-s"
-        data-on-submit__prevent="console.table($settings)"
+        onsubmit="event.preventDefault()"
       >
         <label>
           <input
@@ -90,7 +115,6 @@ permalink: "public/partials/settings.html"
           <div class="flex">
             <input
               type="text" list="lang-list" id="pick-lang" placeholder="Enter language"
-              data-si
             >
             <button type="button" class="add-lang">Add</button>
           </div>
@@ -108,12 +132,10 @@ permalink: "public/partials/settings.html"
           </template>
         </ul>
         <p class="js-languages-msg hidden" data-class-hidden="$settings.category.languages.length > 0">No languages added. Will show all languages.</p>
-        <button type="submit">Save category settings</button>
       </form>
-      <pre data-text="ctx.signals.JSON()">Replace me</pre>
     </section>
     <section>
-      <h3>Cache</h3>
+      <h3>Actions</h3>
       <ul class="js-cache-list stack stack-xs" role="list">
         <li>
           <button class="js-clear-games" type="button">Clear games cache</button>
@@ -126,6 +148,11 @@ permalink: "public/partials/settings.html"
         </li>
         <li>
           <button class="js-clear-all" type="button">Clear all caches</button>
+        </li>
+        <li>
+          <button type="button"
+            data-on-click="ctx.signals.merge({ settings: global_store.settings_default })"
+          >Reset settings</button>
         </li>
       </ul>
     </section>

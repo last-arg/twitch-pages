@@ -39,6 +39,7 @@ const plugin_push_url = {
     name: 'push_url',
     fn: (ctx) => {
         let url = undefined;
+        /** @ts-ignore */
         const input = ctx.el.href;
         if (input) {
           url = URL.parse(input, location.origin)
@@ -596,7 +597,9 @@ async function fetch_twitch_streams(ctx, game_id, cursor_opt, info) {
 
 /** @param {CustomEvent<URL>} ev */
 async function handle_push_url(ev) {
+  /** @ts-ignore */
   const pathname = ev.detail.url.pathname;
+  /** @ts-ignore */
   const ctx = ev.detail.ctx;
 
   if (pathname === "/settings") {
@@ -611,6 +614,7 @@ async function handle_push_url(ev) {
   change_main(pathname)
 }
 
+/** @ts-ignore */
 window.addEventListener(push_url_event_name, handle_push_url);
 
 /** @param {string} pathname */
