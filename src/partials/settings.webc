@@ -6,7 +6,6 @@ permalink: "public/partials/settings.html"
     <h2 class="main-heading">Settings</h2>
   </div>
   <div class="settings fluid-mt-s flex flex-wrap fluid-gap-s">
-    <pre data-text="ctx.signals.JSON()">Replace me</pre>
     <section>
       <h3>General</h3>
       <form id="settings-general" class="form-general stack stack-s"
@@ -115,23 +114,30 @@ permalink: "public/partials/settings.html"
           <div class="flex">
             <input
               type="text" list="lang-list" id="pick-lang" placeholder="Enter language"
+              data-on-keydown="global_store.addLanguage(ctx, evt)"
             >
-            <button type="button" class="add-lang">Add</button>
+            <button type="button" class="add-lang"
+              data-on-click="global_store.addLanguage(ctx, evt)"
+            >Add</button>
           </div>
         </div>
         <datalist id="lang-list">
           <option webc:for="(code, lang) in $data.language_codes" :lang-code="code" :value="lang">
         </datalist>
-        <ul class="enabled-languages" role="list">
-          <template>
-            <li>
-              <p>English</p>
-              <input type="hidden" name="lang">
-              <button type="button" class="remove-lang">Remove</button>
-            </li>
-          </template>
-        </ul>
-        <p class="js-languages-msg hidden" data-class-hidden="$settings.category.languages.length > 0">No languages added. Will show all languages.</p>
+        <ul class="enabled-languages" role="list"
+          data-on-load="global_store.renderLanguages(ctx)"
+          data-attr-data-on-load="false"
+          data-on-click="global_store.removeLanguage(ctx, evt)"
+          data-on-signal-change-settings.category.languages="global_store.renderLanguages(ctx)"
+        ></ul>
+        <p class="js-languages-msg hidden" data-class-hidden="$settings.category.languages.length &gt; 0">No languages added. Will show all languages.</p>
+        <template id="tmpl-lang">
+          <li>
+            <p>English</p>
+            <input type="hidden" name="lang">
+            <button type="button" class="remove-lang">Remove</button>
+          </li>
+        </template>
       </form>
     </section>
     <section>

@@ -30,6 +30,74 @@ import { games, init_common, live, Settings, streams } from "./common.js";
 window.global_store = {
   /** @ts-ignore */
   settings_default: Settings.data_default,
+  addLanguage: function(ctx, evt) {
+    if (evt.type === "keydown" && evt.key !== "Enter") {
+        return;
+    }
+    const el = /** @type {HTMLInputElement} */ (document.querySelector("#pick-lang"));
+    if (!el) {
+      return;
+    }
+    const value = el.value;
+    if (!value) {
+        return;
+    }
+    const opt = document.querySelector(`option[value=${value}]`)
+    if (!opt) {
+        return;
+    }
+    const lang_code = opt.getAttribute("lang-code")
+    if (!lang_code) {
+      return;
+    }
+
+    const s = ctx.signals.signal("settings.category.languages")
+    if (!s) {
+      return;
+    }
+    if (s.value.includes(lang_code)) {
+      evt.target.value = "";
+      console.warn("Enter valid language")
+      return;
+    }
+    s.value.push(lang_code);
+    s.value = [...s.value];
+  },
+  renderLanguages(ctx) {
+    const langs = ctx.signals.value("settings.category.languages")
+    if (!langs) {
+      return;
+    }
+    const tmpl = document.querySelector("#tmpl-lang");
+    const li = tmpl.content.querySelector("li");
+    const p = li.querySelector("p");
+    const input = li.querySelector("input");
+    const frag = new DocumentFragment();
+    for (const lang of langs) {
+      const option = document.querySelector(`[lang-code=${lang}]`);
+      p.textContent = option.value || lang;
+      input.value = lang;
+      frag.appendChild(li.cloneNode(true))
+    }
+    const ul = document.querySelector(".enabled-languages");
+    ul?.replaceChildren(frag)
+  },
+  removeLanguage(ctx, evt) {
+    const btn = evt.target.closest(".remove-lang");
+    if (!btn) {
+        return;
+    }
+    const li = btn.closest("li");
+    const input = li.querySelector("input")
+    const s = ctx.signals.signal("settings.category.languages")
+    const langs = [...s.value]
+    const idx = langs.indexOf(input.value);
+    if (idx === -1) {
+      return;
+    }
+    langs.splice(idx, 1)
+    s.value = langs;
+  }
 };
 
 const push_url_event_name = "datastar_plugin:push_url";
