@@ -49,13 +49,13 @@ export default function(eleventyConfig) {
 		})
 
 	    eleventyConfig.addTransform('html-minifier', function(content) {
-	      if (this.page?.outputFileExtension === "html") {
-	        return htmlMinifier.minify(content, {
-	          useShortDoctype: true,
-	          removeComments: true,
-	          collapseWhitespace: true,
-	        })
-	      }
+	      // if (this.page?.outputFileExtension === "html") {
+	      //   return htmlMinifier.minify(content, {
+	      //     useShortDoctype: true,
+	      //     removeComments: true,
+	      //     collapseWhitespace: true,
+	      //   })
+	      // }
 	      return content
 	    })
 	} else {

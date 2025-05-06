@@ -13,7 +13,7 @@
     When using getBundleFileUrl() it changes js file name (hash). The HTML still
     contains old hashed file name.
   -->
-  <script defer webc:keep webc:if="isProd()" type=module @raw="getBundleFileUrl('js', 'module')"></script>
+  <script defer webc:keep webc:if="isProd()" type=module :src="getBundleFileUrl('js', 'module')"></script>
   <script defer webc:keep webc:else type=module @raw="getBundle('js', 'module')"></script>
 
   <script webc:if="!isProd()" webc:keep type="module" src="/.11ty/reload-client.js"></script>
