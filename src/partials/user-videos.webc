@@ -20,7 +20,7 @@ permalink: "public/partials/user-videos.html"
           </heading-link>
           <div class="js-card-live user-live hidden" data-stream-id="">
             <span>LIVE</span>
-            <a href="#" hx-push-url="#" hx-target="#main" :hx-get="$data.global.paths.category.html" preload></a>
+            <a href="#" data-on-click__prevent="@push_url()"></a>
           </div>
         </div>
       </template>

@@ -334,6 +334,14 @@ const plugin_twitch = {
             (tmpl.content.querySelector("h2"));
 
           tmpl_live.setAttribute("data-stream-id", item.id);
+          const game = live.store.users[item.id];
+          if (game) {
+            tmpl_live.classList.remove("hidden");
+            const tmpl_link = tmpl_live.querySelector("a");
+            tmpl_link.textContent = game;
+            tmpl_link.href = `/directory/category/${encodeURIComponent(game)}`;
+          }
+
           tmpl_heading.textContent = item.display_name;
           tmpl_img.src = item.profile_image_url;
           tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
