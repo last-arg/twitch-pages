@@ -19,6 +19,11 @@
   <script webc:if="!isProd()" webc:keep type="module" src="/.11ty/reload-client.js"></script>
 
   <link rel="dns-prefetch" href="https://api.twitch.tv/">
+  <link rel="prefetch" href="/public/partials/category.html">
+  <link rel="prefetch" href="/public/partials/user-videos.html">
+  <link rel="prefetch" href="/public/partials/top-games.html">
+  <link rel="prefetch" href="/public/partials/settings.html">
+  <link rel="prefetch" href="/public/partials/not-found.html">
 	<meta name="description" content="Display some twitch data">
 </head>
 <body>
