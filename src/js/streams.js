@@ -40,7 +40,6 @@ export class Streams {
             /** @param {string} id */
             addStream(id) {
                 const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-                console.log("add btns", btns)
                 for (let i = 0; i < btns.length; i++) {
                     btns[i].setAttribute("data-is-followed", "true");
                 }
@@ -52,14 +51,13 @@ export class Streams {
     /**
         @param {StreamLocal} data
     */
-    follow(data) {
+    async follow(data) {
         if (this.store.add(data)) {
-            this.live.addUser(data.user_id);
-            this.live.updateLiveCount();
             this.user_images.add([data.user_id])
             this.$.addStream(data.user_id);
+            await this.live.addUser(data.user_id);
+            this.render();
         }
-        this.render();
     };
 
     /**
@@ -340,6 +338,8 @@ export class LiveStreams {
             const stream = await twitch.fetchStreams([user_id])
             if (stream.length > 0) {
                 this.store.add(user_id, stream[0].game_name)
+                this.streams_store.sort();
+                this.updateLiveCount();
             }
         }
     };
