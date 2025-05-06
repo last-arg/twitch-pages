@@ -7,10 +7,6 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link webc:keep rel="stylesheet" type="text/css" :href="hashFile('/css/main.css')">
 
-  <script webc:bucket="vendor" src="../js/third-party.js"></script>
-  <script defer webc:keep webc:if="isProd()" type=module @raw="getBundleFileUrl('js', 'vendor')"></script>
-  <script defer webc:keep webc:else type=module @raw="getBundle('js', 'vendor')"></script>
-
   <script webc:bucket="module" src="../js/main_module.js"></script>
   <!--
     This makes live reload work in eleventy dev server.

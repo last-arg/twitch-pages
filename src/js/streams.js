@@ -1,6 +1,7 @@
 import { strCompareField, categoryUrl } from "./common";
 import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
+import { Idiomorph } from "idiomorph";
 
 /**
 @typedef {import("./common").StreamTwitch} StreamTwitch

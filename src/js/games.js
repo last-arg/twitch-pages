@@ -2,6 +2,7 @@ import { strCompareField, sidebar, categoryUrl } from './common';
 import { twitchCatImageSrc } from './util';
 import { twitch } from './twitch'
 import { config } from './config.prod';
+import { Idiomorph } from "idiomorph";
 
 /**
  * @typedef {import("./common").Game} Game
