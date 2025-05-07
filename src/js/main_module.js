@@ -241,9 +241,15 @@ const plugin_twitch = {
         const item = json.data[0];
         change_page_title(item.name);
 
-        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
-        const streams_info = el_to_info(btn);
-        fetch_twitch_streams(ctx, item.id, undefined, streams_info);
+        const btn = document.querySelector(".btn-load-more");
+        if (!btn) {
+          console.error("No '.btn-load-more' element")
+          return;
+        }
+
+        // Will start fetching live streams
+        btn.setAttribute("data-req-data", JSON.stringify({ game_id: item.id, }));
+        btn.click();
         
         const tmpl_heading = /** @type {HTMLHeadingElement} */
           (tmpl_el.content.querySelector("h2"));
@@ -263,27 +269,7 @@ const plugin_twitch = {
         
         target_el.replaceWith(tmpl_el.content)
       } else if (req_type === "streams") {
-          const info = el_to_info(ctx.el);
-          if (!info.tmpl) {
-              return;
-          }
-          var game_id = undefined;
-          var cursor = undefined;
-
-          const req_data_raw = ctx.el.dataset.reqData;
-          if (req_data_raw) {
-            const req_data = JSON.parse(req_data_raw);
-            game_id = req_data.game_id;
-            cursor = req_data.after;
-          }
-
-          if (!game_id) {
-            console.error(`Failed to find 'game_id' value from 'data-req-data'.`, ctx.el);
-            return;
-          }
-
-          ctx.el.setAttribute("aria-disabled", "true");
-          fetch_twitch_streams(ctx, game_id, cursor, info)
+          fetch_twitch_streams(ctx, undefined)
       } else if (req_type === "users") {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
@@ -554,20 +540,31 @@ function video_type_count(video_type) {
 
 /**
 @param {RuntimeContext} ctx
-@param {string} game_id
-@param {string | undefined} cursor_opt
-@param {Info | undefined} info
+@param {string | undefined} game_id_opt
 */
-// TODO: clean up fn args
-async function fetch_twitch_streams(ctx, game_id, cursor_opt, info) {
-    if (!info) {
-        const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
-        info = el_to_info(btn);
-    }
-
-    if (!info.tmpl) {
+async function fetch_twitch_streams(ctx, game_id_opt) {
+  console.log(ctx.el)
+    const info = el_to_info(ctx.el);
+    if (!info?.tmpl) {
         return;
     }
+    console.log(info.tmpl)
+    let game_id = game_id_opt;
+    let cursor_opt = undefined;
+
+    const req_data_raw = ctx.el.dataset.reqData;
+    if (req_data_raw) {
+      const req_data = JSON.parse(req_data_raw);
+      game_id = req_data.game_id;
+      cursor_opt = req_data.after;
+    }
+
+    if (!game_id) {
+      console.error(`Failed to find 'game_id' value from 'data-req-data'.`, ctx.el);
+      return;
+    }
+
+    ctx.el.setAttribute("aria-disabled", "true");
 
     const tmpl_el = info.tmpl;
     const target_el = info.target;
