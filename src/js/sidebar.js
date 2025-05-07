@@ -23,22 +23,6 @@ export class Sidebar {
           }
       },
     };
-
-    this._bindEvents();
-  }
-
-  _bindEvents() {
-      // Use event delegation to handle adding/removing items form sidebar lists
-      this.$.sidebar_nav.addEventListener("click", function(e) {
-        e.preventDefault();
-        const link_box = /** @type {Element} */ (e.target).closest(".link-box");
-        if (!link_box) { return }
-        const get = link_box.getAttribute("hx-get");
-        if (!get) { return; }
-        // TODO: see how to do it with datastar
-        // might not need it
-        // htmx.ajax("get", get, {source: link_box});
-      });
   }
 
   /** @param {SidebarState} new_state */

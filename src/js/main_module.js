@@ -269,11 +269,10 @@ const plugin_twitch = {
         
         target_el.replaceWith(tmpl_el.content)
       } else if (req_type === "streams") {
-          fetch_twitch_streams(ctx, undefined)
+          fetch_twitch_streams(ctx)
       } else if (req_type === "users") {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
-          console.log(info)
 
           const path = location.pathname;
           const path_arr = path.split("/")
@@ -540,16 +539,13 @@ function video_type_count(video_type) {
 
 /**
 @param {RuntimeContext} ctx
-@param {string | undefined} game_id_opt
 */
-async function fetch_twitch_streams(ctx, game_id_opt) {
-  console.log(ctx.el)
+async function fetch_twitch_streams(ctx) {
     const info = el_to_info(ctx.el);
     if (!info?.tmpl) {
         return;
     }
-    console.log(info.tmpl)
-    let game_id = game_id_opt;
+    let game_id = undefined;
     let cursor_opt = undefined;
 
     const req_data_raw = ctx.el.dataset.reqData;

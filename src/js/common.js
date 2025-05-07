@@ -3,8 +3,6 @@ import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from
 import { Sidebar } from "./sidebar";
 import { settings_default } from './config.prod';
 
-/** @type {UserImages} */
-export var user_images;
 /** @type {Games} */
 export var games;
 // NOTE: StreamsStore also contains LiveStreamsStore
@@ -13,21 +11,19 @@ export var live;
 /** @type {Streams} */
 export var streams;
 
-/** @type {SearchGames} */
-export var game_search;
 /** @type {Sidebar} */
 export var sidebar;
 
 export function init_common() {
     const live_store = new LiveStreamsStore();
     const streams_store = new StreamsStore(live_store);
-    user_images = new UserImages(streams_store);
+    const user_images = new UserImages(streams_store);
 
     games = new Games();
     live = new LiveStreams(streams_store);
     streams = new Streams(streams_store, live, user_images);
 
-    game_search = new SearchGames(games);
+    new SearchGames(games);
     sidebar = new Sidebar();
 
     games.addEventListener("games:saved", function() {
@@ -54,7 +50,7 @@ export function init_common() {
         }
     });
 
-    streams_store.addEventListener("streams_store:saved", function() {
+    streams_store.addEventListener("streams:saved", function() {
         streams.render();
 
         // render /<user>/videos user follow stars
@@ -120,11 +116,8 @@ export function categoryUrl(cat, is_twitch = false) {
     return result; 
 }
 
-export class Settings extends EventTarget {
-    /**
-      @typedef {typeof Settings.data_default} SettingsGeneral
-    */
 
+export class Settings extends EventTarget {
     static data_default = {
         /** @type {{show_all: string|null, languages: string[]}} */
         category: { show_all: 'on', languages: [] },
@@ -137,229 +130,7 @@ export class Settings extends EventTarget {
           "show_highlights": false,
         }
     }
-
-    data = Settings.data_default;
-
-    /** @type {{
-            root: Element
-            lang?: {
-                list: Element
-                tmpl: HTMLTemplateElement
-            }
-        }} 
-    */
-    $ = {
-        root: document.body
-    }
-
-    constructor() {
-        super();
-        this.localStorageKey = "settings";
-        this._readStorage(null);
-        window.addEventListener("storage", this, false);
-    }
-
-    /**
-      @param {StorageEvent} ev
-    */
-    handleEvent(ev) {
-        if (ev.type === "storage") {
-            console.log("storage(Settings)", ev.key);
-            if (ev.key !== null && ev.key == this.localStorageKey) {
-                this._readStorage(ev.newValue);
-                this.dispatchEvent(new CustomEvent("settings:storage-saved"));
-            }
-        }
-    }
-    
-    /**
-      @param {string | null} new_val
-    */
-    _readStorage(new_val) {
-        const raw = new_val !== null ? new_val : window.localStorage.getItem(this.localStorageKey);
-        if (raw) {
-            this.data = JSON.parse(raw);
-        } else {
-            this.data = Settings.data_default;
-        } 
-    }
-    
-    _save() {
-        console.log("save(Settings)")
-        window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.data));
-    }
-
-    _initCache() {
-        this.$.root.querySelector(".js-cache-list")?.addEventListener("click", (e) => {
-            const t = /** @type {Element} root */ (e.target);
-            if (t.classList.contains("js-clear-games")) {
-                games.clear();
-            } else if (t.classList.contains("js-clear-streams")) {
-                streams.store.clear();
-            } else if (t.classList.contains("js-clear-profiles")) {
-                user_images.clear();
-            } else if (t.classList.contains("js-clear-all")) {
-                games.clear();
-                streams.store.clear();
-                user_images.clear();
-            }
-        })
-    }
-    
-    _initGeneral() {
-        const general = settings.data.general;
-        for (const key in general) {
-            // @ts-ignore
-            const value = general[key];
-            const input = /** @type {HTMLInputElement | undefined} */ (this.$.root.querySelector(`#${key}`));
-            if (input) {
-                if (input.type === "number") {
-                    input.value = value;
-                } else if (input.type === "checkbox") {
-                    input.checked = value;
-                }
-            }
-        }
-
-        // this.$.root.querySelector("#settings-general")?.addEventListener("submit", (e) => {
-        //     e.preventDefault();
-        //     const elem = /** @type {HTMLFormElement} */ (e.target);
-        //     let new_settings = /** @type {SettingsGeneral} */ ({});
-        //     // @ts-ignore
-        //     (new FormData(elem)).forEach(function(value, key){ new_settings[key] = value });
-        //     this.data["general"] = new_settings;
-        //     this._save()
-        // });
-    }
-
-    _updateElements() {
-        const list = /** @type {Element} */ (this.$.root.querySelector(".enabled-languages"));
-        this.$.lang = {
-            list: list,
-            tmpl: /** @type {HTMLTemplateElement} */ (list.querySelector("template")),
-        }
-    }
-
-    /** @param {Element | undefined} $root */
-    init($root) {
-        if ($root && $root !== this.$.root) {
-            this.$.root = $root
-        }
-        this._updateElements();
-        settings._initCategory();
-        settings._initGeneral();
-        settings._initCache();
-    }
-
-    _initCategory() {
-        // this.data.category.languages
-        // const input_all_langs = /** @type {HTMLInputElement} */ (document.querySelector("input[name=all-languages]"));
-        // input_all_langs.checked = this.data.category.show_all;
-
-        // for (const lang of this.data.category.languages) {
-        //     this._addLang(lang);
-        // }
-        // this._hasLanguages();
-
-        // add events
-        // const form_category = /** @type {Element} */ (this.$.root.querySelector("#form-category"));
-        // form_category.addEventListener("submit", (evt) => {
-        //     evt.preventDefault();
-        //     const f_data = new FormData(/** @type {HTMLFormElement} */ (evt.target));
-        //     this.data.category.languages = /** @type {string[]} */ (f_data.getAll("lang"));
-        //     this.data.category.show_all = /** @type {string|null} */ (f_data.get("all-languages"));
-        //     this._save();
-        // });
-
-        // form_category.addEventListener("click", (event) => {
-        //     const elem = /** @type {HTMLButtonElement} */ (event.target); 
-        //     if (elem.nodeName === "BUTTON") {
-        //       if (elem.classList.contains("add-lang")) {
-        //         this._addLangFromInput(/** @type {HTMLInputElement} */ (elem.previousElementSibling));
-        //       } else if (elem.classList.contains("remove-lang")) {
-        //           const li = /** @type {Element} */ (elem.closest("li"));
-        //           li.remove();
-        //       }
-        //     }
-        // });
-
-        // form_category.addEventListener("keydown", (event) => {
-        //     const elem = /** @type {HTMLInputElement} */ (event.target); 
-        //     if (elem.nodeName === "INPUT" && elem.id === "pick-lang") {
-        //         this._addLangFromInput(elem);
-        //     }
-        // });
-    }
-
-    /** @param {string} lang */
-    _addLang(lang) {
-      if (!this.$.lang) { return; }
-      if (this.$.root.querySelector(`[name=lang][value=${lang}]`)) { return; }
-      const opt = /** @type {HTMLInputElement} */ (this.$.root.querySelector(`[lang-code=${lang}]`));
-      if (!opt || !opt.value) { return; }
-
-      const new_elem = /** @type {Element} */ (this.$.lang.tmpl.content.firstElementChild?.cloneNode(true));
-      const input = /** @type {HTMLInputElement} */ (new_elem.querySelector("input"));
-      const p = /** @type {HTMLParagraphElement} */ (new_elem.querySelector("p"));
-
-      p.textContent = opt.value;
-      input.setAttribute("value", lang)
-      this.$.lang.list.append(new_elem);
-    }
-
-    _hasLanguages() {
-        if (!this.$.root || !this.$.lang) { return; }
-        const msg_elem = /** @type {Element} */ (this.$.root.querySelector(".js-languages-msg"));
-        if (this.$.lang.list.querySelectorAll(":scope > li").length > 0) {
-            msg_elem.classList.add("hidden")
-        } else {
-            msg_elem.classList.remove("hidden")
-        }
-    }
-
-    /** @param {HTMLInputElement} input */
-    _addLangFromInput(input) {
-        const lang_value = input.value;
-        if (lang_value) {
-            const opt = document.querySelector(`option[value=${lang_value}]`)
-            if (opt && !document.querySelector(`input[value=${lang_value}]`)) { 
-              this._addLang(/** @type {string} */ (opt.getAttribute("lang-code")));
-              input.value = "";
-              this._hasLanguages();
-            }
-        }
-    }
 }
-
-export let settings = new Settings();
-
-// TODO: only add event when on settings page. And remove event when leaving settings page
-settings.addEventListener("settings:storage-saved", function() {
-    // if (document.location.pathname === "/settings") {
-    //     const input_elems = /** @type {Array<HTMLInputElement>} */ (settings.$.root.querySelectorAll("#settings-general input"));
-    //     for (const elem of input_elems) {
-    //         if (elem.type === "number") {
-    //             elem.value = settings.data.general[elem.name];
-    //         } else if (elem.type === "checkbox") {
-    //             elem.checked = settings.data.general[elem.name];
-    //         }
-    //     }
-    //     const checkbox_languages = /** @type {HTMLInputElement} */ (settings.$.root.querySelector("[name=all-languages]"));
-    //     checkbox_languages.checked = settings.data.category.show_all;
-
-    //     for (const lang of settings.data.category.languages) {
-    //         settings._addLang(lang);
-    //     }
-
-    //     // remove languages
-    //     for (const input of settings.$.root.querySelectorAll("[name=lang]")) {
-    //         const lang_code = input.value;
-    //         if (!settings.data.category.languages.includes(lang_code)) {
-    //             input.closest("li")?.remove();
-    //         } 
-    //     }
-    // }
-});
 
 class FormFilter extends HTMLElement {
     constructor() {
@@ -411,47 +182,3 @@ class FormFilter extends HTMLElement {
 }
 
 customElements.define("form-filter", FormFilter)
-
-class VideoFilter extends HTMLElement {
-    constructor() {
-        super();
-        this.$ = {
-            output_list: /** @type {HTMLUListElement} */ (document.querySelector(".output-list")),
-        }
-    }
-
-    /** @param {Event} ev */
-    handleEvent(ev) {
-        const elem = /** @type {HTMLInputElement} */ (ev.target);
-        if (elem.nodeName === "INPUT") {
-            if (elem.checked) {
-                this.$.output_list.classList.remove(`no-${elem.value}s`);
-            } else {
-                this.$.output_list.classList.add(`no-${elem.value}s`);
-            }
-        }
-    }
-
-    connectedCallback() {
-        const inputs = this.querySelectorAll("input[type=checkbox][value]");
-        for (let i = 0; i < inputs.length; i++) {
-            const input = /** @type {HTMLInputElement} */ (inputs[i]);
-            const general = settings.data.general;
-            const key = /** @type {keyof typeof general} */ (`video-${input.value}s`);
-            const val = /** @type {boolean} */ (general[key]);
-            if (val) {
-                input.checked = val;
-            } else {
-                this.$.output_list.classList.add(`no-${input.value}s`);
-            }
-        }
-
-        this.addEventListener("click", this);
-    }
-
-    disconnectedCallback() {
-        this.removeEventListener("click", this);
-    }
-}
-
-// customElements.define("filter-video", VideoFilter)

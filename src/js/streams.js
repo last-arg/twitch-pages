@@ -45,10 +45,6 @@ export class Streams {
                 }
             }
         };
-        const that = this;
-        document.addEventListener("streams:save", function() {
-            that.render();
-        });
         this.render();
     }
 
