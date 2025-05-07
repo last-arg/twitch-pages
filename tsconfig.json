@@ -21,7 +21,7 @@
     },
     "typeRoots": [
       "node_modules/@types",
-      "src/index.d.ts"
+      "src/js/index.d.ts"
     ]
   },
   "include": ["./src"]
