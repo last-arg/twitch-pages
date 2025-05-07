@@ -1,7 +1,7 @@
 <div webc:root class="flex-grow">
   <a class="link-box"
     href="#"
-    data-on-click="@push_url()"
+    data-on-click__prevent="@push_url()"
     :data-card="name"
   >
     <img src="//:0" webc:if="name === 'user-videos'" alt=""
