@@ -45,18 +45,21 @@ export class Streams {
                 }
             }
         };
+        const that = this;
+        document.addEventListener("streams:save", function() {
+            that.render();
+        });
         this.render();
     }
 
     /**
         @param {StreamLocal} data
     */
-    async follow(data) {
+    follow(data) {
         if (this.store.add(data)) {
             this.user_images.add([data.user_id])
             this.$.addStream(data.user_id);
-            await this.live.addUser(data.user_id);
-            this.render();
+            this.live.addUser(data.user_id);
         }
     };
 
@@ -163,8 +166,8 @@ export class StreamsStore extends EventTarget {
     }
 
     _save() {
-        console.log("save(StreamsStore)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
+        document.dispatchEvent(new CustomEvent("streams:save"))
     }
 
     /**
