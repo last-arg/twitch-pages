@@ -50,7 +50,11 @@ export function init_common() {
         }
     });
 
-    streams_store.addEventListener("streams:saved", function() {
+    streams_store.addEventListener("streams_store:save", render_streams);
+    live_store.addEventListener("live_streams:save", render_streams);
+
+    function render_streams() {
+        console.log("render")
         streams.render();
 
         // render /<user>/videos user follow stars
@@ -72,7 +76,7 @@ export function init_common() {
                 button_follow.dataset.isFollowed = has_stream.toString();
             }
         }
-    });
+    }
 }
 
 /**

@@ -26,24 +26,6 @@ export class Streams {
             streams_list: streams_list,
             stream_tmpl:  /** @type {Element} */ (tmp_elem.content.firstElementChild),
             scroll_container:  /** @type {ScrollContainer} */ (streams_list.closest("scroll-container")),
-
-            /** @param {string} id */
-            removeStream(id) {
-                this.streams_list.querySelector("#stream-id-" + id)?.remove();
-                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-                for (let i = 0; i < btns.length; i++) {
-                    btns[i].setAttribute("data-is-followed", "false");
-                }
-                this.scroll_container.render();
-            },
-
-            /** @param {string} id */
-            addStream(id) {
-                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-                for (let i = 0; i < btns.length; i++) {
-                    btns[i].setAttribute("data-is-followed", "true");
-                }
-            }
         };
         this.render();
     }
@@ -54,7 +36,6 @@ export class Streams {
     follow(data) {
         if (this.store.add(data)) {
             this.user_images.add([data.user_id])
-            this.$.addStream(data.user_id);
             this.live.addUser(data.user_id);
         }
     };
@@ -65,7 +46,6 @@ export class Streams {
     unfollow(user_id) {
         const id = this.store.remove(user_id);
         if (id) {
-            this.$.removeStream(id);
             this.live.updateLiveCount();
         }
     };    
@@ -133,7 +113,7 @@ export class StreamsStore extends EventTarget {
     }
 
     dispatch_saved() {
-        this.dispatchEvent(new CustomEvent("streams_store:saved"));
+        this.dispatchEvent(new CustomEvent("streams_store:save"));
     }
 
     /**
@@ -163,7 +143,7 @@ export class StreamsStore extends EventTarget {
 
     _save() {
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.items));
-        document.dispatchEvent(new CustomEvent("streams:save"))
+        this.dispatch_saved();
     }
 
     /**
@@ -481,6 +461,7 @@ export class LiveStreamsStore extends EventTarget {
         console.log("save(LiveStreamsStore)")
         window.localStorage.setItem(this.localStorageKey, JSON.stringify(this.users));
         window.localStorage.setItem(this.localKeyLastUpdate, this.last_update.toString());
+        this.dispatchEvent(new CustomEvent("live_streams:save"))
     }
 
     /**

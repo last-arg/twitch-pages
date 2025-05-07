@@ -29,14 +29,6 @@ export class Games extends EventTarget {
                     btns[i].setAttribute("data-is-followed", "false");
                 }
             },
-
-            /** @param {string} id */
-            addGame(id) {
-                const btns = document.body.querySelectorAll(`[data-item-id='${id}']`);
-                for (let i = 0; i < btns.length; i++) {
-                    btns[i].setAttribute("data-is-followed", "true");
-                }
-            },
         }
         this.localStorageKey = "followed_games"
         this._readStorage(null);
@@ -121,7 +113,6 @@ export class Games extends EventTarget {
         this.items.push(game);
         this.items.sort(strCompareField("name"))
 
-        this.$.addGame(game.id)
         this._save();
     }
 
