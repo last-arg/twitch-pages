@@ -1,4 +1,4 @@
-import { strCompareField, categoryUrl } from "./common";
+import { strCompareField, categoryUrl } from "./util";
 import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
 import { Idiomorph } from "idiomorph";

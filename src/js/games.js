@@ -1,5 +1,5 @@
-import { strCompareField, sidebar, categoryUrl } from './common';
-import { twitchCatImageSrc } from './util';
+import { sidebar } from './common';
+import { strCompareField, twitchCatImageSrc, categoryUrl } from './util';
 import { twitch } from './twitch'
 import { config } from './config.prod';
 import { Idiomorph } from "idiomorph";

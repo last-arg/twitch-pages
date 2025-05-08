@@ -1,7 +1,6 @@
 import { Games, SearchGames } from "./games";
 import { LiveStreams, LiveStreamsStore, Streams, StreamsStore, UserImages } from "./streams";
 import { Sidebar } from "./sidebar";
-import { settings_default } from './config.prod';
 
 /** @type {Games} */
 export var games;
@@ -93,48 +92,6 @@ export function init_common() {
 @property {string} id
 @property {string} box_art_url
 */
-
-export const API_URL = "https://api.twitch.tv"
-
-/**
-@param {string} name
-@returns {(a: any, b: any) => number}
-*/
-export function strCompareField(name) {
-    return (a, b) => {
-        return a[name].localeCompare(b[name], undefined, {sensitivity: "base"});
-    }
-}
-
-/**
-@param {string} cat
-@param {boolean} is_twitch
-@return {string}
-*/
-export function categoryUrl(cat, is_twitch = false) {
-    let result = "";
-    if (is_twitch) {
-        result += "https://twitch.tv"
-    }
-    result += "/directory/category/" + encodeURIComponent(cat);
-    return result; 
-}
-
-
-export class Settings extends EventTarget {
-    static data_default = {
-        /** @type {{show_all: string|null, languages: string[]}} */
-        category: { show_all: 'on', languages: [] },
-        general: {
-          "top_games_count": settings_default.top_games_count,
-          "category_count": settings_default.streams_count,
-          "user_videos_count": settings_default.user_videos_count,
-          "show_archives": true,
-          "show_uploads": false,
-          "show_highlights": false,
-        }
-    }
-}
 
 class FormFilter extends HTMLElement {
     constructor() {

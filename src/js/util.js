@@ -126,3 +126,13 @@ export function twitchDateToString(d) {
 
   return result_str
 }
+
+/**
+@param {string} name
+@returns {(a: any, b: any) => number}
+*/
+export function strCompareField(name) {
+    return (a, b) => {
+        return a[name].localeCompare(b[name], undefined, {sensitivity: "base"});
+    }
+}

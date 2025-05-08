@@ -2,8 +2,6 @@ import * as ds from "@starfederation/datastar";
 import {
 // DOM
 Attr, Bind, Class, On, Ref, Show, Text, 
-// Backend
-Indicator, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
 // Browser
 Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
 // Logic
@@ -777,8 +775,6 @@ function gameAndStreamFollow(t) {
 ds.load(
   // DOM
   Attr, Bind, Class, On, Ref, Show, Text, 
-  // Backend
-  Indicator, MergeFragments, MergeSignals, RemoveFragments, RemoveSignals, ExecuteScript, 
   // Browser
   Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
   // Logic
