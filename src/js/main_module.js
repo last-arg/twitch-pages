@@ -13,7 +13,8 @@ import { PluginType } from "@starfederation/datastar/types";
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch, Twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
-import { games, init_common, live, Settings, streams } from "./common.js";
+import { games, init_common, live, streams } from "./common.js";
+import { settings_default } from './config.prod';
 
 /**
 @typedef {import("@starfederation/datastar/types").ActionPlugin} ActionPlugin
@@ -29,7 +30,18 @@ import { games, init_common, live, Settings, streams } from "./common.js";
 /** @ts-ignore */
 window.global_store = {
   /** @ts-ignore */
-  settings_default: Settings.data_default,
+  settings_default: {
+      /** @type {{show_all: string|null, languages: string[]}} */
+      category: { show_all: 'on', languages: [] },
+      general: {
+        "top_games_count": settings_default.top_games_count,
+        "category_count": settings_default.streams_count,
+        "user_videos_count": settings_default.user_videos_count,
+        "show_archives": true,
+        "show_uploads": false,
+        "show_highlights": false,
+      }
+  },
   addLanguage: function(ctx, evt) {
     if (evt.type === "keydown" && evt.key !== "Enter") {
         return;
