@@ -49,4 +49,55 @@
   background: var(--surface11);
 }
 </style>
+<script>
+class FormFilter extends HTMLElement {
+    constructor() {
+        super();
+        this.$ = {
+            form: /** @type {HTMLFormElement} */ (this.querySelector(".search-form")),
+        }
+        const style = document.createElement('style');
+        this.insertAdjacentElement('afterend', style);
+        this.css_sheet = /** @type {CSSStyleSheet} */ (style.sheet);
+    }
 
+    /** @param {Event} ev */
+    handleEvent(ev) {
+        switch (ev.type) {
+        case "submit": {
+            ev.preventDefault();
+            break;
+        }
+        case "reset": {
+            this.css_sheet.deleteRule(0)
+            break;
+        }
+        case "input": {
+            if (this.css_sheet.cssRules.length > 0) {
+                this.css_sheet.deleteRule(0)
+            }
+            // @ts-ignore
+            const value = /** @type {string} */ (ev.target.value).trim();
+            if (value.length > 0) {
+                this.css_sheet.insertRule(`.output-list > :not(li[data-title*='${encodeURIComponent(value)}' i]) { display: none !important }`, 0);
+            }
+            break;
+        }
+        }
+    }
+
+    connectedCallback() {
+        this.$.form.addEventListener("input", this);
+        this.$.form.addEventListener("submit", this);
+        this.$.form.addEventListener("reset", this);
+    }
+
+    disconnectedCallback() {
+        this.$.form.removeEventListener("input", this);
+        this.$.form.removeEventListener("submit", this);
+        this.$.form.removeEventListener("reset", this);
+    }
+}
+
+customElements.define("form-filter", FormFilter)
+</script>

@@ -85,7 +85,7 @@ window.global_store = {
     const frag = new DocumentFragment();
     for (const lang of langs) {
       const option = document.querySelector(`[lang-code=${lang}]`);
-      p.textContent = option.value || lang;
+      p.textContent = option?.value || lang;
       input.value = lang;
       frag.appendChild(li.cloneNode(true))
     }
