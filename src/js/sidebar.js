@@ -1,7 +1,5 @@
 import { games, streams } from "./common";
 
-/** @typedef {"closed" | "games" | "streams" | "search"} SidebarState */
-
 export class Sidebar {
   /** @type {SidebarState} */
   state = "closed"

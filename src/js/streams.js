@@ -3,10 +3,6 @@ import { ScrollContainer } from "./sidebar";
 import { twitch } from "./twitch"
 import { Idiomorph } from "idiomorph";
 
-/**
-@typedef {{user_id: string, user_login: string, user_name: string}} StreamLocal
-*/
-
 export class Streams {
     /**
       @param {StreamsStore} streams_store
@@ -493,14 +489,6 @@ export class LiveStreamsStore extends EventTarget {
     }
 }
 
-
-/** 
-@typedef {{url: string, last_access: number}} ProfileImage
-
-@typedef {Record<string, ProfileImage>} ProfileImages
-
-@typedef {{images: ProfileImages, last_update: number}} ProfileLocalStorage
-*/
 export class UserImages {
     /** @type {ProfileLocalStorage} */
     data = {images: {}, last_update: 0};
@@ -511,7 +499,7 @@ export class UserImages {
     
     constructor(streams_store) {
         this.$ = {
-            /** @param {import("./twitch").UserTwitch[]} profiles */
+            /** @param {UserTwitch[]} profiles */
             displayImages(profiles) {
                 for (const p of profiles) {
                     const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[data-user-id="${p.id}"]`));

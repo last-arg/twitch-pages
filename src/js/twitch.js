@@ -1,15 +1,5 @@
 import { TWITCH_CLIENT_ID } from './config.prod'
 
-/**
-@typedef {import("./common").StreamTwitch} StreamTwitch
-
-@typedef {{id: string, profile_image_url: string}} UserTwitch
-
-@typedef {{name: string, id: string}} Search
-
-@typedef {{access_token: string, expires_date: number}} TokenLocal
-*/
-
 const TWITCH_MAX_QUERY_COUNT = 100
 const SEARCH_COUNT = 10
 

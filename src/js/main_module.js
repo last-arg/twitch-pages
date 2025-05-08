@@ -17,12 +17,6 @@ import { settings_default } from './config.prod';
 /**
 @typedef {import("@starfederation/datastar/types").ActionPlugin} ActionPlugin
 @typedef {import("@starfederation/datastar/types").RuntimeContext} RuntimeContext
-
-@typedef {{
-  tmpl: HTMLTemplateElement,
-  target: HTMLElement,
-  merge_mode: "append" | "replace",
-}} Info
 */
 
 /** @ts-ignore */
@@ -40,6 +34,10 @@ window.global_store = {
         "show_highlights": false,
       }
   },
+  /**
+    @param {RuntimeContext} ctx
+    @param {KeyboardEvent} evt
+  */
   addLanguage: function(ctx, evt) {
     if (evt.type === "keydown" && evt.key !== "Enter") {
         return;
@@ -73,6 +71,9 @@ window.global_store = {
     s.value.push(lang_code);
     s.value = [...s.value];
   },
+  /**
+    @param {RuntimeContext} ctx
+  */
   renderLanguages(ctx) {
     const langs = ctx.signals.value("settings.category.languages")
     if (!langs) {
@@ -92,14 +93,19 @@ window.global_store = {
     const ul = document.querySelector(".enabled-languages");
     ul?.replaceChildren(frag)
   },
+
+  /**
+    @param {RuntimeContext} ctx
+    @param {Event} evt
+  */
   removeLanguage(ctx, evt) {
-    const btn = evt.target.closest(".remove-lang");
+    const btn = evt.target?.closest(".remove-lang");
     if (!btn) {
         return;
     }
     const li = btn.closest("li");
     const input = li.querySelector("input")
-    const s = ctx.signals.signal("settings.category.languages")
+    const s = ctx.signals.signal("settings.category.languages");
     const langs = [...s.value]
     const idx = langs.indexOf(input.value);
     if (idx === -1) {

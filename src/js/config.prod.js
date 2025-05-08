@@ -1,9 +1,3 @@
-/**
-@typedef {Object} UrlResolve
-@property {string} url
-@property {string} html
-*/
-
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
 
 const settings_base = {

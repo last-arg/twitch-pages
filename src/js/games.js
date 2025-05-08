@@ -5,7 +5,6 @@ import { config } from './config.prod';
 import { Idiomorph } from "idiomorph";
 
 /**
- * @typedef {import("./common").Game} Game
  * @typedef {import("./sidebar").ScrollContainer} ScrollContainer
  */
 
