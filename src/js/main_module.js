@@ -151,7 +151,7 @@ const plugin_twitch = {
 
         ctx.el.setAttribute("aria-disabled", "true");
 
-        const count = ctx.signals.value("settings.general.top_games_count") || Settings.data_default.general.top_games_count;
+        const count = ctx.signals.value("settings.general.top_games_count") || settings_default.top_games_count;
         let url = `${TWITCH_API_URL}/helix/games/top?first=${count}`;
         const req_data_raw = ctx.el.dataset.reqData;
         if (req_data_raw) {
@@ -443,7 +443,7 @@ async function fetch_twitch_videos(ctx) {
     ctx.removals.delete("check-upload")
     ctx.removals.delete("check-highlight")
    
-    const count = ctx.signals.value("settings.general.user_videos_count") || Settings.data_default.general.user_videos_count;
+    const count = ctx.signals.value("settings.general.user_videos_count") || settings_default.user_videos_count;
     var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${count}`;
     if (cursor_opt) {
         url += `&after=${cursor_opt}`;
@@ -575,7 +575,7 @@ async function fetch_twitch_streams(ctx) {
     const tmpl_el = info.tmpl;
     const target_el = info.target;
 
-    const count = ctx.signals.value("settings.general.category_count") || Settings.data_default.general.category_count;
+    const count = ctx.signals.value("settings.general.category_count") || settings_default.streams_count;
     var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=${count}`;
     if (cursor_opt) {
       url += `&after=${cursor_opt}`;
