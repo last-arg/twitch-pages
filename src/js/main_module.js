@@ -134,12 +134,39 @@ const plugin_push_url = {
           return;
         }
 
-        history.pushState({}, '', url)
+        const content = document.getElementById("main").innerHTML;
+        history.replaceState({content_main: content}, '')
+        history.pushState({is_head: true}, '', url)
+        current_head_main = undefined;
         dispatchEvent(new CustomEvent(push_url_event_name, {
           detail: {url: url, ctx: ctx}
         }));
     },
 }
+
+/** @type {string | undefined} */
+let current_head_main = undefined;
+
+const originalPopstate = window.onpopstate ? window.onpopstate.bind(window) : null
+/** @param {PopStateEvent} ev */
+window.addEventListener("popstate", function(ev) {
+    if (current_head_main === undefined) {
+      current_head_main = document.getElementById("main").innerHTML;
+    }
+
+    const state_content = ev.state.content_main;
+    if (!ev.state.is_head && state_content !== undefined && state_content !== null) {
+      const main = document.getElementById("main");
+      main.innerHTML = state_content;
+      // TODO: events not working
+    } else if (ev.state.is_head) {
+      main.innerHTML = current_head_main;
+    } else if (originalPopstate) {
+      originalPopstate(ev);
+      // TODO: or reload page instead?
+      // window.location.reload();
+    }
+});
 
 const TWITCH_API_URL = "https://api.twitch.tv"
 
