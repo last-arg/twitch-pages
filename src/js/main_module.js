@@ -116,12 +116,18 @@ window.global_store = {
   }
 };
 
+/** @type {RuntimeContext | undefined} */
+let datastar_ctx = undefined;
+
 const push_url_event_name = "datastar_plugin:push_url";
 /** @type {ActionPlugin} */
 const plugin_push_url = {
     type: PluginType.Action,
     name: 'push_url',
     fn: (ctx) => {
+        if (datastar_ctx === undefined) {
+          datastar_ctx = ctx;
+        }
         let url = undefined;
         /** @ts-ignore */
         const input = ctx.el.href;
@@ -157,9 +163,10 @@ window.addEventListener("popstate", function(ev) {
     const state_content = ev.state.content_main;
     if (!ev.state.is_head && state_content !== undefined && state_content !== null) {
       const main = document.getElementById("main");
+      datastar_ctx?.removals.clear()
       main.innerHTML = state_content;
-      // TODO: events not working
     } else if (ev.state.is_head) {
+      datastar_ctx?.removals.clear()
       main.innerHTML = current_head_main;
     } else if (originalPopstate) {
       originalPopstate(ev);
