@@ -182,6 +182,7 @@ const plugin_twitch = {
     type: PluginType.Action,
     name: 'twitch',
     fn: async (ctx, req_type) => {
+      let replace_url = false;
       if (req_type === "games/top") {
         const info = el_to_info(ctx.el);
         if (!info.tmpl) { return; }
@@ -261,6 +262,7 @@ const plugin_twitch = {
           btn.removeAttribute("data-req-data");
         }
 
+        replace_url = true;
       } else if (req_type === "games") {
         const path_arr = location.pathname.split("/");
         console.assert(path_arr.length > 1, "Array can't not be empty");
@@ -318,8 +320,10 @@ const plugin_twitch = {
         tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
         
         target_el.replaceWith(tmpl_el.content)
+        replace_url = true;
       } else if (req_type === "streams") {
-          fetch_twitch_streams(ctx)
+          await fetch_twitch_streams(ctx)
+          replace_url = true;
       } else if (req_type === "users") {
           const info = el_to_info(ctx.el);
           if (!info.tmpl) { return; }
@@ -391,8 +395,15 @@ const plugin_twitch = {
           tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
            
           info.target.replaceWith(tmpl.content);
+          replace_url = true;
       } else if (req_type === "videos") {
-        fetch_twitch_videos(ctx)
+          await fetch_twitch_videos(ctx)
+          replace_url = true;
+      }
+
+      if (replace_url) {
+          const content = document.getElementById("main").innerHTML;
+          history.replaceState({content_main: content}, '')
       }
     },
 }
