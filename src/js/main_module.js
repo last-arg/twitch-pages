@@ -202,7 +202,8 @@ const plugin_twitch = {
             url += `&after=${req_data.after}`;
           }
         }
-        const res = await fetch(url, { headers: Twitch.headers })
+
+        const res = await twitch.twitchFetch(url);
         const json = await res.json();
 
         const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
@@ -279,7 +280,7 @@ const plugin_twitch = {
         const target_el = info.target;
 
         var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
-        const res = await fetch(url, { headers: Twitch.headers })
+        const res = await twitch.twitchFetch(url)
         const json = await res.json();
 
         if (json.data.length == 0) {
@@ -338,7 +339,7 @@ const plugin_twitch = {
           const name = path_arr[1];
 
           const url = `${TWITCH_API_URL}/helix/users?login=${name}`;
-          const res = await fetch(url, { headers: Twitch.headers })
+          const res = await twitch.twitchFetch(url)
           const json = await res.json();
 
           if (json.data.length == 0) {
@@ -500,7 +501,7 @@ async function fetch_twitch_videos(ctx) {
     if (cursor_opt) {
         url += `&after=${cursor_opt}`;
     }
-    const res = await fetch(url, { headers: Twitch.headers })
+    const res = await twitch.twitchFetch(url)
     const json = await res.json();
 
     const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
@@ -632,7 +633,7 @@ async function fetch_twitch_streams(ctx) {
     if (cursor_opt) {
       url += `&after=${cursor_opt}`;
     }
-    const res = await fetch(url, { headers: Twitch.headers })
+    const res = await twitch.twitchFetch(url)
     const json = await res.json();
 
     const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));

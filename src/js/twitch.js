@@ -81,6 +81,7 @@ export class Twitch {
     const opts = /** @type {RequestInit} */ ({cache: "no-store", method: "GET", headers: Twitch.headers});
     let resp = await fetch(url, opts)
     if (resp.status === 401) {
+      console.warn("Get new twitch token. And make the request again")
       await this.fetchToken();
       resp = await fetch(url, opts);
     }
