@@ -679,7 +679,6 @@ async function fetch_twitch_streams(ctx) {
         const user_id = item.user_id;
         const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
         const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
-        const title = encodeHtml(item.title);
         const item_json = encodeURIComponent(JSON.stringify({
          user_id: user_id,
          user_login: item.user_login,
@@ -687,9 +686,9 @@ async function fetch_twitch_streams(ctx) {
         }));
         tmpl_list_item.setAttribute("data-title", encodeURIComponent(item.title));
         tmpl_user_link.href = "https://twitch.tv/" + item.user_login;
-        tmpl_user_link.title = title;
+        tmpl_user_link.title = encodeHtml(item.title);
         tmpl_user_img.src = img_url;
-        tmpl_user_title.textContent = title;
+        tmpl_user_title.textContent = item.title;
         tmpl_user_count.textContent = item.viewer_count + " viewers";
 
         tmpl_external.href = `https://www.twitch.tv/${item.user_login}/videos`;

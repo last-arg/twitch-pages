@@ -14,10 +14,6 @@ Pages:
 [ ] how to get css just for src/partials/*.webc
 [ ] look if I can use something from here https://github.com/Set-Creative-Studio/cube-boilerplate/tree/main
 [ ] Use cache API for partials
-- See what is going on with site responsiveness
-  - firefox vertical tabs: right side of the site is hidden
-  - seems like it hides the width of collapsed sidebar
-- make history back/forward page(s) work with datastar
 
 ## Resources
 
