@@ -1,5 +1,5 @@
-import {config, mainContent} from "../js/config.prod.js";
+import { config, mainContent } from "../js/config.prod.js";
 export default {
-  paths: mainContent,
-  config: config,
+    paths: mainContent,
+    config: config,
 }

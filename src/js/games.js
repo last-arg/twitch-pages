@@ -81,7 +81,7 @@ export class Games extends EventTarget {
         @returns {boolean}
     */
     isFollowed(input_id) {
-        return this.items.some(function({id}) {return id === input_id})
+        return this.items.some(function({ id }) { return id === input_id })
     }
 
     /**
@@ -117,10 +117,10 @@ export class Games extends EventTarget {
 
     render() {
         const frag = renderGameCards(this.$.game_tmpl, this.items, (id) => this.isFollowed(id));
-        Idiomorph.morph(this.$.games_list, frag, {morphStyle:'innerHTML'})
+        Idiomorph.morph(this.$.games_list, frag, { morphStyle: 'innerHTML' })
         this.$.scroll_container.render();
     }
-    
+
 }
 
 export class SearchGames {
@@ -167,25 +167,25 @@ export class SearchGames {
     /** @param {Event} ev */
     handleEvent(ev) {
         switch (ev.type) {
-        case "submit": {
-            ev.preventDefault();
-            break;
-        }
-        case "input": {
-            this.searchValue(/** @type {HTMLInputElement} */ (ev.target).value);
-            break;
-        }
-        case "focus": {
-            sidebar.setState("search")
-            this.searchValue(/** @type {HTMLInputElement} */ (ev.target).value);
-            break;
-        }
-        case "blur": {
-            if (/** @type {HTMLInputElement} */ (ev.target).value.length === 0) {
-                sidebar.setState("closed")
+            case "submit": {
+                ev.preventDefault();
+                break;
             }
-            break;
-        }
+            case "input": {
+                this.searchValue(/** @type {HTMLInputElement} */(ev.target).value);
+                break;
+            }
+            case "focus": {
+                sidebar.setState("search")
+                this.searchValue(/** @type {HTMLInputElement} */(ev.target).value);
+                break;
+            }
+            case "blur": {
+                if (/** @type {HTMLInputElement} */ (ev.target).value.length === 0) {
+                    sidebar.setState("closed")
+                }
+                break;
+            }
         }
     }
 
@@ -247,7 +247,7 @@ export class SearchGames {
 
     render() {
         const frag = renderGameCards(this.$.search_item_tmpl, this.items, (id) => this.games.isFollowed(id));
-        Idiomorph.morph(this.$.search_list, frag, {morphStyle:'innerHTML'})
+        Idiomorph.morph(this.$.search_list, frag, { morphStyle: 'innerHTML' })
         this.$.scroll_container.render();
     }
 }
@@ -265,7 +265,7 @@ function renderGameCards(base_elem, data, isGameFollowed = undefined) {
         const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
         p.textContent = decodeURIComponent(game.name);
         const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
-        const href = categoryUrl(game.name); 
+        const href = categoryUrl(game.name);
         link.setAttribute("href", href)
         const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
         img.src = twitchCatImageSrc(game.box_art_url, config.image.category.width, config.image.category.height);

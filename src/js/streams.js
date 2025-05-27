@@ -42,7 +42,7 @@ export class Streams {
         if (id) {
             this.live.updateLiveCount();
         }
-    };    
+    };
 
     renderCards() {
         const frag = document.createDocumentFragment();
@@ -52,10 +52,10 @@ export class Streams {
             const p = /** @type {HTMLParagraphElement} */ (new_item.querySelector("p"));
             p.textContent = decodeURIComponent(stream.user_name);
             const link = /** @type {Element} */ (new_item.querySelector(".link-box"));
-            const href = "/" + encodeURIComponent(stream.user_login) + "/videos"; 
+            const href = "/" + encodeURIComponent(stream.user_login) + "/videos";
             link.setAttribute("href", href)
             const img = /** @type {HTMLImageElement} */ (link.querySelector("img"));
-            const url  = this.user_images.getUrl(stream.user_id);
+            const url = this.user_images.getUrl(stream.user_id);
             // TODO: if no image add it?
             img.src = url ? url : "#" + stream.user_id;
             const btn = /** @type {Element} */ (new_item.querySelector(".button-follow"));
@@ -84,7 +84,7 @@ export class Streams {
 
     render() {
         const frag = this.renderCards();
-        Idiomorph.morph(this.$.streams_list, frag, {morphStyle:'innerHTML'})
+        Idiomorph.morph(this.$.streams_list, frag, { morphStyle: 'innerHTML' })
         this.$.scroll_container.render();
     }
 }
@@ -158,7 +158,7 @@ export class StreamsStore extends EventTarget {
       @returns {boolean}
     */
     hasId(look_id) {
-        return this.items.some(({user_id}) => look_id === user_id);
+        return this.items.some(({ user_id }) => look_id === user_id);
     }
 
     /**
@@ -198,7 +198,7 @@ export class StreamsStore extends EventTarget {
       @returns {string[]}
     */
     getIds() {
-        return this.items.map(({user_id}) => user_id);
+        return this.items.map(({ user_id }) => user_id);
     }
 }
 
@@ -342,7 +342,7 @@ export class LiveStreams {
         const updates = [];
         const adds = [];
         for (const stream of streams) {
-            if (this.store.users[stream.user_id])  {
+            if (this.store.users[stream.user_id]) {
                 updates.push(stream.user_id)
             } else {
                 adds.push(stream.user_id)
@@ -401,7 +401,7 @@ export class LiveStreamsStore extends EventTarget {
     /** @type {Record<string, string | undefined>} */
     users = {}
     last_update = 0;
-    
+
     constructor() {
         super();
         this.localStorageKey = "live_users";
@@ -428,7 +428,7 @@ export class LiveStreamsStore extends EventTarget {
             }
         }
     }
-    
+
     /**
         @param {string} key
         @param {string | null} new_val
@@ -491,12 +491,12 @@ export class LiveStreamsStore extends EventTarget {
 
 export class UserImages {
     /** @type {ProfileLocalStorage} */
-    data = {images: {}, last_update: 0};
+    data = { images: {}, last_update: 0 };
 
     /**
       @param {StreamsStore} streams_store
     */
-    
+
     constructor(streams_store) {
         this.$ = {
             /** @param {UserTwitch[]} profiles */
@@ -567,7 +567,7 @@ export class UserImages {
         this.$.displayImages(to_render);
         this.add(to_fetch);
     }
-    
+
     /**
         @param {string | null} new_val
     */
@@ -576,14 +576,14 @@ export class UserImages {
         if (raw) {
             this.data = JSON.parse(raw);
         } else {
-            this.data = {images: {}, last_update: 0};
+            this.data = { images: {}, last_update: 0 };
         }
     }
 
     /**
       @param {string[]} ids
     */
-    
+
     async add(ids) {
         if (ids.length === 0) {
             return;

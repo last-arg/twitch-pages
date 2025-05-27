@@ -7,7 +7,6 @@ Pages:
 * Settings (non-twitch api page)
 
 ## TODO
-[ ] format js
 [ ] use @layer to order css (during build process)
   [ ] can add/append to layers ('@layer components {}'). Do this inside webc files.
   Because I don't like the order webc uses for CSS.

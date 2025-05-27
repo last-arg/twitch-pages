@@ -1,15 +1,15 @@
 import * as ds from "@starfederation/datastar";
 import {
-// DOM
-Attr, Bind, Class, On, Ref, Show, Text, 
-// Browser
-Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
-// Logic
-Fit, SetAll, ToggleAll
+    // DOM
+    Attr, Bind, Class, On, Ref, Show, Text,
+    // Browser
+    Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition,
+    // Logic
+    Fit, SetAll, ToggleAll
 } from "@starfederation/datastar/plugins";
 import { PluginType } from "@starfederation/datastar/types";
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
-import { twitch, Twitch } from "./twitch.js";
+import { twitch } from "./twitch.js";
 import { config, mainContent } from './config.prod';
 import { games, init_common, live, streams } from "./common.js";
 import { settings_default } from './config.prod';
@@ -21,99 +21,99 @@ import { settings_default } from './config.prod';
 
 /** @ts-ignore */
 window.global_store = {
-  /** @ts-ignore */
-  settings_default: {
-      /** @type {{show_all: string|null, languages: string[]}} */
-      category: { show_all: 'on', languages: [] },
-      general: {
-        "top_games_count": settings_default.top_games_count,
-        "category_count": settings_default.streams_count,
-        "user_videos_count": settings_default.user_videos_count,
-        "show_archives": true,
-        "show_uploads": false,
-        "show_highlights": false,
-      }
-  },
-  /**
-    @param {RuntimeContext} ctx
-    @param {KeyboardEvent} evt
-  */
-  addLanguage: function(ctx, evt) {
-    if (evt.type === "keydown" && evt.key !== "Enter") {
-        return;
-    }
-    const el = /** @type {HTMLInputElement} */ (document.querySelector("#pick-lang"));
-    if (!el) {
-      return;
-    }
-    const value = el.value;
-    if (!value) {
-        return;
-    }
-    const opt = document.querySelector(`option[value=${value}]`)
-    if (!opt) {
-        return;
-    }
-    const lang_code = opt.getAttribute("lang-code")
-    if (!lang_code) {
-      return;
-    }
+    /** @ts-ignore */
+    settings_default: {
+        /** @type {{show_all: string|null, languages: string[]}} */
+        category: { show_all: 'on', languages: [] },
+        general: {
+            "top_games_count": settings_default.top_games_count,
+            "category_count": settings_default.streams_count,
+            "user_videos_count": settings_default.user_videos_count,
+            "show_archives": true,
+            "show_uploads": false,
+            "show_highlights": false,
+        }
+    },
+    /**
+      @param {RuntimeContext} ctx
+      @param {KeyboardEvent} evt
+    */
+    addLanguage: function(ctx, evt) {
+        if (evt.type === "keydown" && evt.key !== "Enter") {
+            return;
+        }
+        const el = /** @type {HTMLInputElement} */ (document.querySelector("#pick-lang"));
+        if (!el) {
+            return;
+        }
+        const value = el.value;
+        if (!value) {
+            return;
+        }
+        const opt = document.querySelector(`option[value=${value}]`)
+        if (!opt) {
+            return;
+        }
+        const lang_code = opt.getAttribute("lang-code")
+        if (!lang_code) {
+            return;
+        }
 
-    const s = ctx.signals.signal("settings.category.languages")
-    if (!s) {
-      return;
-    }
-    if (s.value.includes(lang_code)) {
-      evt.target.value = "";
-      console.warn("Enter valid language")
-      return;
-    }
-    s.value.push(lang_code);
-    s.value = [...s.value];
-  },
-  /**
-    @param {RuntimeContext} ctx
-  */
-  renderLanguages(ctx) {
-    const langs = ctx.signals.value("settings.category.languages")
-    if (!langs) {
-      return;
-    }
-    const tmpl = document.querySelector("#tmpl-lang");
-    const li = tmpl.content.querySelector("li");
-    const p = li.querySelector("p");
-    const input = li.querySelector("input");
-    const frag = new DocumentFragment();
-    for (const lang of langs) {
-      const option = document.querySelector(`[lang-code=${lang}]`);
-      p.textContent = option?.value || lang;
-      input.value = lang;
-      frag.appendChild(li.cloneNode(true))
-    }
-    const ul = document.querySelector(".enabled-languages");
-    ul?.replaceChildren(frag)
-  },
+        const s = ctx.signals.signal("settings.category.languages")
+        if (!s) {
+            return;
+        }
+        if (s.value.includes(lang_code)) {
+            evt.target.value = "";
+            console.warn("Enter valid language")
+            return;
+        }
+        s.value.push(lang_code);
+        s.value = [...s.value];
+    },
+    /**
+      @param {RuntimeContext} ctx
+    */
+    renderLanguages(ctx) {
+        const langs = ctx.signals.value("settings.category.languages")
+        if (!langs) {
+            return;
+        }
+        const tmpl = document.querySelector("#tmpl-lang");
+        const li = tmpl.content.querySelector("li");
+        const p = li.querySelector("p");
+        const input = li.querySelector("input");
+        const frag = new DocumentFragment();
+        for (const lang of langs) {
+            const option = document.querySelector(`[lang-code=${lang}]`);
+            p.textContent = option?.value || lang;
+            input.value = lang;
+            frag.appendChild(li.cloneNode(true))
+        }
+        const ul = document.querySelector(".enabled-languages");
+        ul?.replaceChildren(frag)
+    },
 
-  /**
-    @param {RuntimeContext} ctx
-    @param {Event} evt
-  */
-  removeLanguage(ctx, evt) {
-    const btn = evt.target?.closest(".remove-lang");
-    if (!btn) {
-        return;
+    /**
+      @param {RuntimeContext} ctx
+      @param {Event} evt
+    */
+    removeLanguage(ctx, evt) {
+        const btn = evt.target?.closest(".remove-lang");
+        if (!btn) {
+            return;
+        }
+        const li = btn.closest("li");
+        const input = li.querySelector("input")
+        const s = ctx.signals.signal("settings.category.languages");
+        const langs = [...s.value]
+        const idx = langs.indexOf(input.value);
+        if (idx === -1) {
+            return;
+        }
+        langs.splice(idx, 1)
+        s.value = langs;
     }
-    const li = btn.closest("li");
-    const input = li.querySelector("input")
-    const s = ctx.signals.signal("settings.category.languages");
-    const langs = [...s.value]
-    const idx = langs.indexOf(input.value);
-    if (idx === -1) {
-      return;
-    }
-    langs.splice(idx, 1)
-    s.value = langs;
-  }
 };
 
 /** @type {RuntimeContext | undefined} */
@@ -126,23 +126,23 @@ const plugin_push_url = {
     name: 'push_url',
     fn: (ctx) => {
         if (datastar_ctx === undefined) {
-          datastar_ctx = ctx;
+            datastar_ctx = ctx;
         }
         let url = undefined;
         /** @ts-ignore */
         const input = ctx.el.href;
         if (input) {
-          url = URL.parse(input, location.origin)
+            url = URL.parse(input, location.origin)
         }
 
         if (!url) {
-          console.error(`Failed to resolve url path value '${input}'`, ctx.el);
-          return;
+            console.error(`Failed to resolve url path value '${input}'`, ctx.el);
+            return;
         }
 
         history.pushState({}, '', url)
         dispatchEvent(new CustomEvent(push_url_event_name, {
-          detail: {url: url, ctx: ctx}
+            detail: { url: url, ctx: ctx }
         }));
     },
 }
@@ -150,35 +150,35 @@ const plugin_push_url = {
 
 document.addEventListener("profile_images:render", function() {
     const content = document.getElementById("main")?.innerHTML || "";
-    history.replaceState({content_main: content}, '')
+    history.replaceState({ content_main: content }, '')
 });
 
 /** @param {PopStateEvent} ev */
 window.addEventListener("popstate", function(ev) {
     const state_content = ev.state.content_main;
     if (state_content) {
-      const main = document.getElementById("main");
-      if (!main) {
-        return;
-      }
-      datastar_removals()
-      main.innerHTML = state_content;
-      const img_ids = Array.from(main.querySelectorAll("img[data-user-id]"))
-        .map((el) => el.dataset.userId);
-      streams.user_images.render_and_fetch_images(img_ids);
+        const main = document.getElementById("main");
+        if (!main) {
+            return;
+        }
+        datastar_removals()
+        main.innerHTML = state_content;
+        const img_ids = Array.from(main.querySelectorAll("img[data-user-id]"))
+            .map((el) => el.dataset.userId);
+        streams.user_images.render_and_fetch_images(img_ids);
     } else {
-      window.location.reload();
+        window.location.reload();
     }
 });
 
 function datastar_removals() {
-    if (datastar_ctx === undefined) {return;}
+    if (datastar_ctx === undefined) { return; }
 
     for (const [id] of datastar_ctx.removals.entries()) {
-      const selector = `header #${id}`;
-      if (!document.querySelector(selector)) {
-          datastar_ctx.removals.delete(id);
-      }
+        const selector = `header #${id}`;
+        if (!document.querySelector(selector)) {
+            datastar_ctx.removals.delete(id);
+        }
     }
 }
 
@@ -189,230 +189,230 @@ const plugin_twitch = {
     type: PluginType.Action,
     name: 'twitch',
     fn: async (ctx, req_type) => {
-      let replace_url = false;
-      if (req_type === "games/top") {
-        const info = el_to_info(ctx.el);
-        if (!info.tmpl) { return; }
-        const tmpl_el = info.tmpl;
-        const target = info.target;
-        const merge_mode = info.merge_mode;
+        let replace_url = false;
+        if (req_type === "games/top") {
+            const info = el_to_info(ctx.el);
+            if (!info.tmpl) { return; }
+            const tmpl_el = info.tmpl;
+            const target = info.target;
+            const merge_mode = info.merge_mode;
 
-        ctx.el.setAttribute("aria-disabled", "true");
+            ctx.el.setAttribute("aria-disabled", "true");
 
-        const count = ctx.signals.value("settings.general.top_games_count") || settings_default.top_games_count;
-        let url = `${TWITCH_API_URL}/helix/games/top?first=${count}`;
-        const req_data_raw = ctx.el.dataset.reqData;
-        if (req_data_raw) {
-          const req_data = JSON.parse(req_data_raw);
-          if (req_data.after) {
-            url += `&after=${req_data.after}`;
-          }
-        }
+            const count = ctx.signals.value("settings.general.top_games_count") || settings_default.top_games_count;
+            let url = `${TWITCH_API_URL}/helix/games/top?first=${count}`;
+            const req_data_raw = ctx.el.dataset.reqData;
+            if (req_data_raw) {
+                const req_data = JSON.parse(req_data_raw);
+                if (req_data.after) {
+                    url += `&after=${req_data.after}`;
+                }
+            }
 
-        const res = await twitch.twitchFetch(url);
-        const json = await res.json();
+            const res = await twitch.twitchFetch(url);
+            const json = await res.json();
 
-        const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
-        if (!btn) {
-            console.error("Failed to find <button> with selector '.btn-load-more'");
-            return;
-        }
+            const btn = /** @type {Element} */ (document.querySelector(".btn-load-more"));
+            if (!btn) {
+                console.error("Failed to find <button> with selector '.btn-load-more'");
+                return;
+            }
 
-        const cursor = json.pagination.cursor;
-        if (json.data.length == 0) {
-          btn.removeAttribute("data-req-data");
-          return;
-        }
-        
-        const frag = new DocumentFragment();
+            const cursor = json.pagination.cursor;
+            if (json.data.length == 0) {
+                btn.removeAttribute("data-req-data");
+                return;
+            }
 
-        const tmpl_item = /** @type {HTMLLIElement} */
-          (tmpl_el.content.querySelector("li"))
-        const tmpl_img_link = /** @type {HTMLLinkElement} */
-          (tmpl_item.querySelector(".game-img-link"));
-        const tmpl_img = /** @type {HTMLImageElement} */
-          (tmpl_item.querySelector(".game-img"));
-        const tmpl_link = /** @type {HTMLLinkElement} */
-          (tmpl_item.querySelector(".game-link"));
-        const tmpl_name = /** @type {HTMLParagraphElement} */
-          (tmpl_link.querySelector("p"));
-        const tmpl_external = /** @type {HTMLLinkElement} */
-          (tmpl_item.querySelector(".external-link"));
-        const tmpl_follow = /** @type {HTMLButtonElement} */
-          (tmpl_item.querySelector(".button-follow"));
+            const frag = new DocumentFragment();
 
-        for (const item of json.data) {
-            const game_url = categoryUrl(item.name)
-            tmpl_link.href = game_url;
-            tmpl_img_link.href = game_url;
-            tmpl_name.textContent = item.name;
-            tmpl_external.href = categoryUrl(item.name, true);
-            tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
-            tmpl_follow.setAttribute("data-item-id", item.id);
-            tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
-            tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
-             
-            frag.appendChild(tmpl_item.cloneNode(true));
-        }
+            const tmpl_item = /** @type {HTMLLIElement} */
+                (tmpl_el.content.querySelector("li"))
+            const tmpl_img_link = /** @type {HTMLLinkElement} */
+                (tmpl_item.querySelector(".game-img-link"));
+            const tmpl_img = /** @type {HTMLImageElement} */
+                (tmpl_item.querySelector(".game-img"));
+            const tmpl_link = /** @type {HTMLLinkElement} */
+                (tmpl_item.querySelector(".game-link"));
+            const tmpl_name = /** @type {HTMLParagraphElement} */
+                (tmpl_link.querySelector("p"));
+            const tmpl_external = /** @type {HTMLLinkElement} */
+                (tmpl_item.querySelector(".external-link"));
+            const tmpl_follow = /** @type {HTMLButtonElement} */
+                (tmpl_item.querySelector(".button-follow"));
 
-        if (merge_mode === "append") {
-          target.appendChild(frag);
-        } else if (merge_mode === "replace") {
-          target.replaceWith(frag);
-        } else {
-          console.error(`Invalid merge mode '${merge_mode}'`);
-        }
+            for (const item of json.data) {
+                const game_url = categoryUrl(item.name)
+                tmpl_link.href = game_url;
+                tmpl_img_link.href = game_url;
+                tmpl_name.textContent = item.name;
+                tmpl_external.href = categoryUrl(item.name, true);
+                tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width * 2, config.image.category.height * 2);
+                tmpl_follow.setAttribute("data-item-id", item.id);
+                tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
+                tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
 
-        if (cursor) {
-          btn.setAttribute("aria-disabled", "false");
-          btn.setAttribute("data-req-data", `{"after": "${cursor}"}`);
-        } else {
-          btn.removeAttribute("data-req-data");
-        }
+                frag.appendChild(tmpl_item.cloneNode(true));
+            }
 
-        replace_url = true;
-      } else if (req_type === "games") {
-        const path_arr = location.pathname.split("/");
-        console.assert(path_arr.length > 1, "Array can't not be empty");
-        const name = path_arr[path_arr.length - 1];
-        if (name.length === 0) {
-          console.warn(`There no Category/Game name. Current location pathname: ${location.pathname}`);
-          return;
-        }
+            if (merge_mode === "append") {
+                target.appendChild(frag);
+            } else if (merge_mode === "replace") {
+                target.replaceWith(frag);
+            } else {
+                console.error(`Invalid merge mode '${merge_mode}'`);
+            }
 
-        const info = el_to_info(ctx.el);
-        if (!info.tmpl) { return; }
-        const tmpl_el = info.tmpl;
-        const target_el = info.target;
+            if (cursor) {
+                btn.setAttribute("aria-disabled", "false");
+                btn.setAttribute("data-req-data", `{"after": "${cursor}"}`);
+            } else {
+                btn.removeAttribute("data-req-data");
+            }
 
-        var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
-        const res = await twitch.twitchFetch(url)
-        const json = await res.json();
+            replace_url = true;
+        } else if (req_type === "games") {
+            const path_arr = location.pathname.split("/");
+            console.assert(path_arr.length > 1, "Array can't not be empty");
+            const name = path_arr[path_arr.length - 1];
+            if (name.length === 0) {
+                console.warn(`There no Category/Game name. Current location pathname: ${location.pathname}`);
+                return;
+            }
 
-        if (json.data.length == 0) {
-            // @ts-ignore
-            document.getElementById("main").innerHTML = `
+            const info = el_to_info(ctx.el);
+            if (!info.tmpl) { return; }
+            const tmpl_el = info.tmpl;
+            const target_el = info.target;
+
+            var url = `${TWITCH_API_URL}/helix/games?name=${name}`;
+            const res = await twitch.twitchFetch(url)
+            const json = await res.json();
+
+            if (json.data.length == 0) {
+                // @ts-ignore
+                document.getElementById("main").innerHTML = `
               <h2>${decodeURIComponent(name)}</h2>
               <div id="feedback">Game/Category not found</div>
             `;
-            return;
-        }
+                return;
+            }
 
-        const item = json.data[0];
-        change_page_title(item.name);
+            const item = json.data[0];
+            change_page_title(item.name);
 
-        const btn = document.querySelector(".btn-load-more");
-        if (!btn) {
-          console.error("No '.btn-load-more' element")
-          return;
-        }
+            const btn = document.querySelector(".btn-load-more");
+            if (!btn) {
+                console.error("No '.btn-load-more' element")
+                return;
+            }
 
-        // Will start fetching live streams
-        btn.setAttribute("data-req-data", JSON.stringify({ game_id: item.id, }));
-        btn.click();
-        
-        const tmpl_heading = /** @type {HTMLHeadingElement} */
-          (tmpl_el.content.querySelector("h2"));
-        const tmpl_img = /** @type {HTMLImageElement} */
-          (tmpl_el.content.querySelector("img"));
-        const tmpl_external = /** @type {HTMLLinkElement} */
-          (tmpl_el.content.querySelector(".action-box > a"));
-        const tmpl_follow = /** @type {HTMLButtonElement} */
-          (tmpl_el.content.querySelector(".button-follow"));
+            // Will start fetching live streams
+            btn.setAttribute("data-req-data", JSON.stringify({ game_id: item.id, }));
+            btn.click();
 
-        tmpl_heading.textContent = item.name;
-        tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
-        tmpl_external.href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name);
-        tmpl_follow.setAttribute("data-item-id", item.id);
-        tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
-        tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
-        
-        target_el.replaceWith(tmpl_el.content)
-        replace_url = true;
-      } else if (req_type === "streams") {
-          await fetch_twitch_streams(ctx)
-          replace_url = true;
-      } else if (req_type === "users") {
-          const info = el_to_info(ctx.el);
-          if (!info.tmpl) { return; }
+            const tmpl_heading = /** @type {HTMLHeadingElement} */
+                (tmpl_el.content.querySelector("h2"));
+            const tmpl_img = /** @type {HTMLImageElement} */
+                (tmpl_el.content.querySelector("img"));
+            const tmpl_external = /** @type {HTMLLinkElement} */
+                (tmpl_el.content.querySelector(".action-box > a"));
+            const tmpl_follow = /** @type {HTMLButtonElement} */
+                (tmpl_el.content.querySelector(".button-follow"));
 
-          const path = location.pathname;
-          const path_arr = path.split("/")
-          if (path_arr.length === 0 && path_arr[1].length === 0) {
-            console.error(`User page has invalid url path '${path}'`);
-            return;
-          }
-          const name = path_arr[1];
+            tmpl_heading.textContent = item.name;
+            tmpl_img.src = twitchCatImageSrc(item.box_art_url, config.image.category.width, config.image.category.height);
+            tmpl_external.href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(item.name);
+            tmpl_follow.setAttribute("data-item-id", item.id);
+            tmpl_follow.setAttribute("data-item", encodeURIComponent(JSON.stringify(item)));
+            tmpl_follow.setAttribute("data-is-followed", games.isFollowed(item.id).toString());
 
-          const url = `${TWITCH_API_URL}/helix/users?login=${name}`;
-          const res = await twitch.twitchFetch(url)
-          const json = await res.json();
+            target_el.replaceWith(tmpl_el.content)
+            replace_url = true;
+        } else if (req_type === "streams") {
+            await fetch_twitch_streams(ctx)
+            replace_url = true;
+        } else if (req_type === "users") {
+            const info = el_to_info(ctx.el);
+            if (!info.tmpl) { return; }
 
-          if (json.data.length == 0) {
-              // @ts-ignore
-              document.getElementById("main").innerHTML = `
+            const path = location.pathname;
+            const path_arr = path.split("/")
+            if (path_arr.length === 0 && path_arr[1].length === 0) {
+                console.error(`User page has invalid url path '${path}'`);
+                return;
+            }
+            const name = path_arr[1];
+
+            const url = `${TWITCH_API_URL}/helix/users?login=${name}`;
+            const res = await twitch.twitchFetch(url)
+            const json = await res.json();
+
+            if (json.data.length == 0) {
+                // @ts-ignore
+                document.getElementById("main").innerHTML = `
                 <h2>${decodeURIComponent(name)}</h2>
                 <div id="feedback">User not found</div>
               `;
-              return;
-          }
+                return;
+            }
 
-          const item = json.data[0];
+            const item = json.data[0];
 
-          change_page_title(item.display_name);
+            change_page_title(item.display_name);
 
-          // Start fetching user videos
-          const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
-          btn.setAttribute("data-req-data", JSON.stringify({
-            user_id: item.id,
-          }));
-          btn.click();
+            // Start fetching user videos
+            const btn = /** @type {HTMLElement} */ (document.querySelector(".btn-load-more"));
+            btn.setAttribute("data-req-data", JSON.stringify({
+                user_id: item.id,
+            }));
+            btn.click();
 
-          const tmpl = info.tmpl;
-          const tmpl_live = /** @type {HTMLDivElement} */
-            (tmpl.content.querySelector(".js-card-live"));
-          const tmpl_external = /** @type {HTMLLinkElement} */
-            (tmpl.content.querySelector("a[rel=external]"));
-          const tmpl_follow = /** @type {HTMLButtonElement} */
-            (tmpl.content.querySelector(".button-follow"));
-          const tmpl_img = /** @type {HTMLImageElement} */
-            (tmpl.content.querySelector("img"));
-          const tmpl_heading = /** @type {HTMLHeadingElement} */
-            (tmpl.content.querySelector("h2"));
+            const tmpl = info.tmpl;
+            const tmpl_live = /** @type {HTMLDivElement} */
+                (tmpl.content.querySelector(".js-card-live"));
+            const tmpl_external = /** @type {HTMLLinkElement} */
+                (tmpl.content.querySelector("a[rel=external]"));
+            const tmpl_follow = /** @type {HTMLButtonElement} */
+                (tmpl.content.querySelector(".button-follow"));
+            const tmpl_img = /** @type {HTMLImageElement} */
+                (tmpl.content.querySelector("img"));
+            const tmpl_heading = /** @type {HTMLHeadingElement} */
+                (tmpl.content.querySelector("h2"));
 
-          tmpl_live.setAttribute("data-stream-id", item.id);
-          const game = live.store.users[item.id];
-          if (game) {
-            tmpl_live.classList.remove("hidden");
-            const tmpl_link = tmpl_live.querySelector("a");
-            tmpl_link.textContent = game;
-            tmpl_link.href = `/directory/category/${encodeURIComponent(game)}`;
-          }
+            tmpl_live.setAttribute("data-stream-id", item.id);
+            const game = live.store.users[item.id];
+            if (game) {
+                tmpl_live.classList.remove("hidden");
+                const tmpl_link = tmpl_live.querySelector("a");
+                tmpl_link.textContent = game;
+                tmpl_link.href = `/directory/category/${encodeURIComponent(game)}`;
+            }
 
-          tmpl_heading.textContent = item.display_name;
-          tmpl_img.src = item.profile_image_url;
-          tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
+            tmpl_heading.textContent = item.display_name;
+            tmpl_img.src = item.profile_image_url;
+            tmpl_external.href = `https://www.twitch.tv/${item.login}/videos`;
 
-          tmpl_follow.setAttribute("data-item-id", item.id);
-          const item_json = encodeURIComponent(JSON.stringify({
-             user_id: item.id,
-             user_login: item.login,
-             user_name: item.display_name,
-          }));
-          tmpl_follow.setAttribute("data-item", item_json);
-          tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
-           
-          info.target.replaceWith(tmpl.content);
-          replace_url = true;
-      } else if (req_type === "videos") {
-          await fetch_twitch_videos(ctx)
-          replace_url = true;
-      }
+            tmpl_follow.setAttribute("data-item-id", item.id);
+            const item_json = encodeURIComponent(JSON.stringify({
+                user_id: item.id,
+                user_login: item.login,
+                user_name: item.display_name,
+            }));
+            tmpl_follow.setAttribute("data-item", item_json);
+            tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(item.id).toString());
 
-      if (replace_url) {
-          const content = document.getElementById("main").innerHTML;
-          history.replaceState({content_main: content}, '')
-      }
+            info.target.replaceWith(tmpl.content);
+            replace_url = true;
+        } else if (req_type === "videos") {
+            await fetch_twitch_videos(ctx)
+            replace_url = true;
+        }
+
+        if (replace_url) {
+            const content = document.getElementById("main").innerHTML;
+            history.replaceState({ content_main: content }, '')
+        }
     },
 }
 
@@ -431,7 +431,7 @@ function el_to_info(el) {
             console.warn(`Failed to find <template> with selector ${tmpl_sel}`)
         }
     } else {
-      console.error(`Failed to find data-template in`, el);
+        console.error(`Failed to find data-template in`, el);
     }
 
     let target = el;
@@ -443,12 +443,12 @@ function el_to_info(el) {
         } else {
             console.warn(`Failed to find element with selector ${target_sel}`)
         }
-    } 
+    }
 
     return {
-      tmpl: tmpl,
-      target: target,
-      merge_mode: get_merge_mode(el.dataset.mergeMode),
+        tmpl: tmpl,
+        target: target,
+        merge_mode: get_merge_mode(el.dataset.mergeMode),
     }
 }
 
@@ -457,18 +457,18 @@ function el_to_info(el) {
 @returns {'append' | 'replace'}
 */
 function get_merge_mode(raw) {
-  /** @type {'append' | 'replace' } */
-  let result = "append";
-  if (raw && raw.length > 0) {
-    if (raw !== "append" && raw !== "replace") {
-      throw `Invalid merge mode value '${raw}'. Valid values: 'append', 'replace'`
+    /** @type {'append' | 'replace' } */
+    let result = "append";
+    if (raw && raw.length > 0) {
+        if (raw !== "append" && raw !== "replace") {
+            throw `Invalid merge mode value '${raw}'. Valid values: 'append', 'replace'`
+        }
+
+        result = /** @type {'append' | 'replace' } */(raw);
     }
 
-    result = /** @type {'append' | 'replace' } */(raw);
-  }
-
-  return result;
-} 
+    return result;
+}
 
 /**
 @param {RuntimeContext} ctx
@@ -479,14 +479,14 @@ async function fetch_twitch_videos(ctx) {
 
     const req_data_raw = ctx.el.dataset.reqData;
     if (req_data_raw) {
-      const req_data = JSON.parse(req_data_raw);
-      user_id = req_data.user_id;
-      cursor_opt = req_data.after;
+        const req_data = JSON.parse(req_data_raw);
+        user_id = req_data.user_id;
+        cursor_opt = req_data.after;
     }
 
     if (!user_id) {
-      console.error(`Failed to find 'user_id' value from 'data-req-data'.`, ctx.el);
-      return;
+        console.error(`Failed to find 'user_id' value from 'data-req-data'.`, ctx.el);
+        return;
     }
 
     const info = el_to_info(ctx.el);
@@ -501,7 +501,7 @@ async function fetch_twitch_videos(ctx) {
     ctx.removals.delete("check-archive")
     ctx.removals.delete("check-upload")
     ctx.removals.delete("check-highlight")
-   
+
     const count = ctx.signals.value("settings.general.user_videos_count") || settings_default.user_videos_count;
     var url = `${TWITCH_API_URL}/helix/videos?user_id=${user_id}&first=${count}`;
     if (cursor_opt) {
@@ -514,39 +514,39 @@ async function fetch_twitch_videos(ctx) {
     const cursor = json.pagination.cursor;
 
     if (json.data.length == 0) {
-      btn.removeAttribute("data-req-data")
-      return;
+        btn.removeAttribute("data-req-data")
+        return;
     }
 
     const tmpl_video = /** @type {HTMLLIElement} */
-      (info.tmpl.content.querySelector(".video"));
+        (info.tmpl.content.querySelector(".video"));
     const tmpl_link = /** @type {HTMLLinkElement} */
-      (tmpl_video.querySelector(".video-link"));
+        (tmpl_video.querySelector(".video-link"));
     const tmpl_img = /** @type {HTMLImageElement} */
-      (tmpl_link.querySelector("img"));
+        (tmpl_link.querySelector("img"));
     const tmpl_title = /** @type {HTMLDivElement} */
-      (tmpl_video.querySelector(".video-title"));
+        (tmpl_video.querySelector(".video-title"));
     const tmpl_title_p = /** @type {HTMLParagraphElement} */
-      (tmpl_title.querySelector("p"));
+        (tmpl_title.querySelector("p"));
     const tmpl_type = /** @type {HTMLSpanElement} */
-      (tmpl_video.querySelector(".video-type"));
+        (tmpl_video.querySelector(".video-type"));
     const tmpl_type_span = /** @type {HTMLSpanElement} */
-      (tmpl_type.querySelector("span"));
+        (tmpl_type.querySelector("span"));
     const tmpl_type_svg_use = /** @type {HTMLLinkElement} */
-      (tmpl_type.querySelector("svg use"));
+        (tmpl_type.querySelector("svg use"));
     const tmpl_duration = /** @type {HTMLDivElement} */
-      (tmpl_video.querySelector(".video-duration"));
+        (tmpl_video.querySelector(".video-duration"));
     const tmpl_duration_str = /** @type {HTMLSpanElement} */
-      (tmpl_duration.querySelector("span"));
+        (tmpl_duration.querySelector("span"));
     const tmpl_duration_date = /** @type {HTMLSpanElement} */
-      (tmpl_duration.querySelector("span[title]"));
+        (tmpl_duration.querySelector("span[title]"));
 
-    
+
     /** @type {Record<string, string>} */
     const VIDEO_ICONS = {
-      archive: "video-camera",
-      upload: "video-upload",
-      highlight: "video-reel",
+        archive: "video-camera",
+        upload: "video-upload",
+        highlight: "video-reel",
     }
 
     let frag = new DocumentFragment();
@@ -576,17 +576,17 @@ async function fetch_twitch_videos(ctx) {
         tmpl_duration_str.textContent = twitchDurationToString(item.duration);
         tmpl_duration_date.title = date.toString();
         tmpl_duration_date.textContent = twitchDateToString(date);
-          
+
         frag.appendChild(tmpl_video.cloneNode(true));
     }
-    
+
     info.target.appendChild(frag);
 
     if (cursor) {
         btn.setAttribute("aria-disabled", "false");
         btn.setAttribute("data-req-data", JSON.stringify({
-          user_id: user_id,
-          after: cursor,
+            user_id: user_id,
+            after: cursor,
         }));
     } else {
         btn.removeAttribute("data-req-data");
@@ -619,14 +619,14 @@ async function fetch_twitch_streams(ctx) {
 
     const req_data_raw = ctx.el.dataset.reqData;
     if (req_data_raw) {
-      const req_data = JSON.parse(req_data_raw);
-      game_id = req_data.game_id;
-      cursor_opt = req_data.after;
+        const req_data = JSON.parse(req_data_raw);
+        game_id = req_data.game_id;
+        cursor_opt = req_data.after;
     }
 
     if (!game_id) {
-      console.error(`Failed to find 'game_id' value from 'data-req-data'.`, ctx.el);
-      return;
+        console.error(`Failed to find 'game_id' value from 'data-req-data'.`, ctx.el);
+        return;
     }
 
     ctx.el.setAttribute("aria-disabled", "true");
@@ -637,7 +637,7 @@ async function fetch_twitch_streams(ctx) {
     const count = ctx.signals.value("settings.general.category_count") || settings_default.streams_count;
     var url = `${TWITCH_API_URL}/helix/streams?game_id=${game_id}&first=${count}`;
     if (cursor_opt) {
-      url += `&after=${cursor_opt}`;
+        url += `&after=${cursor_opt}`;
     }
     const res = await twitch.twitchFetch(url)
     const json = await res.json();
@@ -650,33 +650,33 @@ async function fetch_twitch_streams(ctx) {
 
     const cursor = json.pagination.cursor;
     if (json.data.length == 0) {
-      btn.removeAttribute("data-req-data")
-      return;
+        btn.removeAttribute("data-req-data")
+        return;
     }
-  
+
     const tmpl_list_item = /** @type {HTMLLIElement} */
-    (tmpl_el.content.querySelector("li"));
+        (tmpl_el.content.querySelector("li"));
     const tmpl_user_link = /** @type {HTMLLinkElement} */
-    (tmpl_list_item.querySelector(".user-link"));
+        (tmpl_list_item.querySelector(".user-link"));
     const tmpl_user_img = /** @type {HTMLImageElement} */
-    (tmpl_user_link.querySelector("img"));
+        (tmpl_user_link.querySelector("img"));
     const tmpl_user_count = /** @type {HTMLParagraphElement} */
-    (tmpl_user_link.querySelector(".user-count"));
+        (tmpl_user_link.querySelector(".user-count"));
     const tmpl_user_title = /** @type {HTMLParagraphElement} */
-    (tmpl_user_link.querySelector(".stream-title p"));
+        (tmpl_user_link.querySelector(".stream-title p"));
 
     const tmpl_user_info = /** @type {HTMLDivElement} */
-    (tmpl_el.content.querySelector(".user-info"));
+        (tmpl_el.content.querySelector(".user-info"));
     const tmpl_external = /** @type {HTMLLinkElement} */
-    (tmpl_user_info.querySelector(".external-video"));
+        (tmpl_user_info.querySelector(".external-video"));
     const tmpl_follow = /** @type {HTMLButtonElement} */
-    (tmpl_user_info.querySelector(".button-follow"));
+        (tmpl_user_info.querySelector(".button-follow"));
     const tmpl_info_link = /** @type {HTMLLinkElement} */
-    (tmpl_user_info.querySelector(".user-info-link"));
+        (tmpl_user_info.querySelector(".user-info-link"));
     const tmpl_info_img_link = /** @type {HTMLLinkElement} */
-    (tmpl_user_info.querySelector(".user-info-img-link"));
+        (tmpl_user_info.querySelector(".user-info-img-link"));
     const tmpl_info_img = /** @type {HTMLImageElement} */
-    (tmpl_info_img_link.querySelector("img"));
+        (tmpl_info_img_link.querySelector("img"));
 
     const frag = new DocumentFragment();
     let user_ids = [];
@@ -686,9 +686,9 @@ async function fetch_twitch_streams(ctx) {
         const video_url = mainContent['user-videos'].url.replace(":user-videos", item.user_login)
         const img_url = twitchCatImageSrc(item.thumbnail_url, config.image.video.width, config.image.video.height);
         const item_json = encodeURIComponent(JSON.stringify({
-         user_id: user_id,
-         user_login: item.user_login,
-         user_name: item.user_name,
+            user_id: user_id,
+            user_login: item.user_login,
+            user_name: item.user_name,
         }));
         tmpl_list_item.setAttribute("data-title", encodeURIComponent(item.title));
         tmpl_user_link.href = "https://twitch.tv/" + item.user_login;
@@ -709,23 +709,23 @@ async function fetch_twitch_streams(ctx) {
         tmpl_follow.setAttribute("data-item-id", item.user_id);
         tmpl_follow.setAttribute("data-item", item_json);
         tmpl_follow.setAttribute("data-is-followed", streams.store.hasId(user_id).toString());
-         
+
         frag.appendChild(tmpl_list_item.cloneNode(true));
     }
 
     target_el.appendChild(frag);
 
     if (user_ids.length > 0) {
-      dispatchEvent(new CustomEvent("user_image:render", {
-          detail: user_ids,
-      }))
+        dispatchEvent(new CustomEvent("user_image:render", {
+            detail: user_ids,
+        }))
     }
 
     if (cursor) {
         btn.setAttribute("aria-disabled", "false");
         btn.setAttribute("data-req-data", JSON.stringify({
-          game_id: game_id,
-          after: cursor,
+            game_id: game_id,
+            after: cursor,
         }));
     } else {
         btn.removeAttribute("data-req-data");
@@ -734,21 +734,21 @@ async function fetch_twitch_streams(ctx) {
 
 /** @param {CustomEvent<URL>} ev */
 async function handle_push_url(ev) {
-  /** @ts-ignore */
-  const pathname = ev.detail.url.pathname;
-  /** @ts-ignore */
-  const ctx = ev.detail.ctx;
+    /** @ts-ignore */
+    const pathname = ev.detail.url.pathname;
+    /** @ts-ignore */
+    const ctx = ev.detail.ctx;
 
-  if (pathname === "/settings") {
-    ctx.removals.delete("top-games-count")
-    ctx.removals.delete("category-count")
-    ctx.removals.delete("user-videos-count")
-    ctx.removals.delete("video-archives")
-    ctx.removals.delete("video-uploads")
-    ctx.removals.delete("video-highlights")
-  }
+    if (pathname === "/settings") {
+        ctx.removals.delete("top-games-count")
+        ctx.removals.delete("category-count")
+        ctx.removals.delete("user-videos-count")
+        ctx.removals.delete("video-archives")
+        ctx.removals.delete("video-uploads")
+        ctx.removals.delete("video-highlights")
+    }
 
-  change_main(pathname)
+    change_main(pathname)
 }
 
 /** @ts-ignore */
@@ -758,8 +758,8 @@ window.addEventListener(push_url_event_name, handle_push_url);
 async function change_main(pathname) {
     const main = document.querySelector("#main");
     if (!main) {
-      console.error("Missing element with id '#main'");
-      return;
+        console.error("Missing element with id '#main'");
+        return;
     }
 
     const url_obj = getUrlObject(pathname);
@@ -768,37 +768,37 @@ async function change_main(pathname) {
     main.innerHTML = html_raw;
     change_page_title(undefined);
     if (url_obj.url === "/settings") {
-        history.replaceState({content_main: html_raw}, '')
+        history.replaceState({ content_main: html_raw }, '')
     }
 }
 
 /** @param {string | undefined} str */
 function change_page_title(str) {
-  let title = "";
-  if (live.count > 0) {
-    title += `(${live.count}) `;
-  }
-   
-  if (location.pathname === "/") {
-    title += "Home";
-  } else if (location.pathname === "/settings") {
-    title += "Settings";
-  } else if (str === "not-found") {
-    title += "Not Found";
-  } else if (str) {
-    title += str;
-  } else {
-    return;
-  }
+    let title = "";
+    if (live.count > 0) {
+        title += `(${live.count}) `;
+    }
 
-  title += " | Twitch Pages"
-  document.title = title.trimStart();
+    if (location.pathname === "/") {
+        title += "Home";
+    } else if (location.pathname === "/settings") {
+        title += "Settings";
+    } else if (str === "not-found") {
+        title += "Not Found";
+    } else if (str) {
+        title += str;
+    } else {
+        return;
+    }
+
+    title += " | Twitch Pages"
+    document.title = title.trimStart();
 }
 
 window.addEventListener("DOMContentLoaded", async function() {
-  await twitch.fetchToken();
-  init_common();
-  change_main(location.pathname);
+    await twitch.fetchToken();
+    init_common();
+    change_main(location.pathname);
 })
 
 document.addEventListener("click", function(/** {Event} */e) {
@@ -834,14 +834,14 @@ function gameAndStreamFollow(t) {
 }
 
 ds.load(
-  // DOM
-  Attr, Bind, Class, On, Ref, Show, Text, 
-  // Browser
-  Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition, 
-  // Logic
-  Fit, SetAll, ToggleAll,
-  // Custom
-  plugin_push_url, plugin_twitch,
+    // DOM
+    Attr, Bind, Class, On, Ref, Show, Text,
+    // Browser
+    Clipboard, CustomValidity, OnIntersect, OnInterval, OnLoad, OnSignalChange, Persist, ReplaceUrl, ScrollIntoView, ViewTransition,
+    // Logic
+    Fit, SetAll, ToggleAll,
+    // Custom
+    plugin_push_url, plugin_twitch,
 );
 
 ds.apply();

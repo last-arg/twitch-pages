@@ -42,7 +42,7 @@ export function init_common() {
                 continue;
             }
             const is_followed = is_followed_raw === "true";
-            const has_game = games.items.some((val) => val.id === game_id );
+            const has_game = games.items.some((val) => val.id === game_id);
             if (is_followed !== has_game) {
                 button_follow.dataset.isFollowed = has_game.toString();
             }
@@ -70,7 +70,7 @@ export function init_common() {
                 continue;
             }
             const is_followed = is_followed_raw === "true";
-            const has_stream = streams_store.items.some((val) => val.user_id === user_id );
+            const has_stream = streams_store.items.some((val) => val.user_id === user_id);
             if (is_followed !== has_stream) {
                 button_follow.dataset.isFollowed = has_stream.toString();
             }

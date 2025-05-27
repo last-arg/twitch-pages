@@ -29,11 +29,11 @@ export default function(eleventyConfig) {
 	eleventyConfig.addJavaScriptFunction("isProd", function() { return is_prod });
 
 	// A cache buster if a file changes
-	const prefixLength ="./src".length
+	const prefixLength = "./src".length
 	eleventyConfig.on('eleventy.beforeWatch', async (changedFiles) => {
-		for(const file of changedFiles) {
-		  const relativePath = file.slice(prefixLength)
-		  delete hashCache[relativePath]
+		for (const file of changedFiles) {
+			const relativePath = file.slice(prefixLength)
+			delete hashCache[relativePath]
 		}
 	});
 
@@ -48,38 +48,38 @@ export default function(eleventyConfig) {
 			cleanUp();
 		})
 
-	    eleventyConfig.addTransform('html-minifier', function(content) {
-	      if (this.page?.outputFileExtension === "html") {
-	        return htmlMinifier.minify(content, {
-	          useShortDoctype: true,
-	          removeComments: true,
-	          collapseWhitespace: true,
-	        })
-	      }
-	      return content
-	    })
+		eleventyConfig.addTransform('html-minifier', function(content) {
+			if (this.page?.outputFileExtension === "html") {
+				return htmlMinifier.minify(content, {
+					useShortDoctype: true,
+					removeComments: true,
+					collapseWhitespace: true,
+				})
+			}
+			return content
+		})
 	} else {
 		eleventyConfig.on('eleventy.after', async function() {
 			// This reloads page when using 'wrangler pages dev'
-			const time = new Date(); 
-			fs.utimes("./functions/reload.js", time, time, function() {});
+			const time = new Date();
+			fs.utimes("./functions/reload.js", time, time, function() { });
 		})
 	}
 
 	eleventyConfig.on('eleventy.before', async function() {
-		await unocss_cli.build({ patterns: [ "src/**/*.webc" ], outFile: `${output_dir}/css/_utilities_generated.css` });
+		await unocss_cli.build({ patterns: ["src/**/*.webc"], outFile: `${output_dir}/css/_utilities_generated.css` });
 	})
 
 	eleventyConfig.addTemplateFormats("svg");
 	eleventyConfig.addExtension("svg", {
 		outputFileExtension: "svg",
-	    compile: function(inputContent) {
-	      if (is_prod) {
-			  const result = svgo.optimize(inputContent, svgo_config);
-			  inputContent = result.data;
-	      }
-	      return () => { return inputContent };
-	    },
+		compile: function(inputContent) {
+			if (is_prod) {
+				const result = svgo.optimize(inputContent, svgo_config);
+				inputContent = result.data;
+			}
+			return () => { return inputContent };
+		},
 		compileOptions: {
 			permalink: function(contents, inputPath) {
 				const index = inputPath.indexOf("/assets");
@@ -98,11 +98,11 @@ export default function(eleventyConfig) {
 	eleventyConfig.addTemplateFormats("css");
 	eleventyConfig.addExtension("css", {
 		outputFileExtension: "css",
-	    compile: function(inputContent) {
-	      return () => { return inputContent };
-	    }
+		compile: function(inputContent) {
+			return () => { return inputContent };
+		}
 	});
-	
+
 	eleventyConfig.addPlugin(bundlerPlugin, {
 		toFileDirectory: "assets",
 		transforms: [
@@ -110,22 +110,22 @@ export default function(eleventyConfig) {
 				if (this.type === "js") {
 					// TODO?: use esbuild.context instead? - https://github.com/woodcox/11ty-solid-base/blob/main/config/build/esbuild.js
 					const r = await esbuild.build({
-    				  stdin: {
-    				  	  contents: content,
-    				  	  resolveDir: './src/js',
-    				  	  sourcefile: this.page.url,
-    				  },
-					  minify: is_prod,
-					  bundle: true,
-					  sourcemap: !is_prod,
-					  write: false,
+						stdin: {
+							contents: content,
+							resolveDir: './src/js',
+							sourcefile: this.page.url,
+						},
+						minify: is_prod,
+						bundle: true,
+						sourcemap: !is_prod,
+						write: false,
 					})
 					const out = r.outputFiles[0];
 					if (out) {
 						return out.text
 					}
 				}
-			
+
 				return content;
 			}
 		]
@@ -179,14 +179,14 @@ export default function(eleventyConfig) {
 };
 
 function tmpDir() {
-	if (!fs.existsSync(tmp_dir)){
-	    fs.mkdirSync(tmp_dir);
+	if (!fs.existsSync(tmp_dir)) {
+		fs.mkdirSync(tmp_dir);
 	}
 	return tmp_dir;
 }
 
 function cleanUp() {
-	fs.rm(tmpDir(), {recursive: true}, function(err) { if (err) throw err; })
+	fs.rm(tmpDir(), { recursive: true }, function(err) { if (err) throw err; })
 }
 
 async function buildCssProd(is_prod) {
@@ -195,29 +195,29 @@ async function buildCssProd(is_prod) {
 	const input_file = `./${output_dir}${file_path}`;
 	// TODO: if css has changed
 	let { code } = bundle({
-	  filename: input_file,
-	  minify: is_prod,
-	  targets: browserslistToTargets([">= 0.25% and not dead"]),
+		filename: input_file,
+		minify: is_prod,
+		targets: browserslistToTargets([">= 0.25% and not dead"]),
 	});
 	const css_dir = `${output_dir}/css_prod/`;
-	if (!fs.existsSync(css_dir)){
-	    fs.mkdirSync(css_dir);
+	if (!fs.existsSync(css_dir)) {
+		fs.mkdirSync(css_dir);
 	}
 
 	const file = css_dir + path.basename(input_file);
 	const result = await new PurgeCSS().purge({
-	  // Content files referencing CSS classes
-	  content: [`./${output_dir}/**/*.html`],
-	  keyframes: true,
-	  variables: true,
-	  safelist: {
-	  	standard: [ /^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives" ],
-	  	greedy: [/\:(before|after)/ ],
-	  	keyframes: ["fade-in", "fade-out"],
-	  },
-	  // CSS files to be purged in-place
-	  // css: [`./${output_dir}/css/main.css`],
-	  css: [{ name: file, raw: code.toString() }],
+		// Content files referencing CSS classes
+		content: [`./${output_dir}/**/*.html`],
+		keyframes: true,
+		variables: true,
+		safelist: {
+			standard: [/^\:[-a-z]+$/, "no-uploads", "no-highlights", "no-archives"],
+			greedy: [/\:(before|after)/],
+			keyframes: ["fade-in", "fade-out"],
+		},
+		// CSS files to be purged in-place
+		// css: [`./${output_dir}/css/main.css`],
+		css: [{ name: file, raw: code.toString() }],
 	});
 
 	if (result.length > 0) {
@@ -227,8 +227,8 @@ async function buildCssProd(is_prod) {
 	fs.writeFileSync(file, code);
 	tmpDir();
 	const old_dir = `${output_dir}/css/`;
-    fs.rename(old_dir, `${output_dir}/tmp/css/`, function(err) { if (err) throw err; });
-    fs.rename(css_dir, old_dir, function(err) { if (err) throw err; });
+	fs.rename(old_dir, `${output_dir}/tmp/css/`, function(err) { if (err) throw err; });
+	fs.rename(css_dir, old_dir, function(err) { if (err) throw err; });
 }
 
 function hashFile(filePath) {
@@ -236,8 +236,8 @@ function hashFile(filePath) {
 		return filePath;
 	}
 	// If we've already hashed this file, return the hash
-	if(hashCache[filePath]) {
-	  return hashCache[filePath];
+	if (hashCache[filePath]) {
+		return hashCache[filePath];
 	}
 
 	// Get the absolute path to the file inside of src/site
@@ -252,11 +252,11 @@ function hashFile(filePath) {
 	// See if the digest file exists in the output folder _site
 	const digestFilePath = path.join(__dirname, output_dir, digestFileName);
 	hashCache[filePath] = digestFileName;
-	if(!fs.existsSync(digestFilePath)) {
-	  if(!fs.existsSync(path.dirname(digestFilePath))) {
-	    fs.mkdirSync(path.dirname(digestFilePath), { recursive: true });
-	  }
-	  fs.copyFileSync(absolutePath, digestFilePath);
+	if (!fs.existsSync(digestFilePath)) {
+		if (!fs.existsSync(path.dirname(digestFilePath))) {
+			fs.mkdirSync(path.dirname(digestFilePath), { recursive: true });
+		}
+		fs.copyFileSync(absolutePath, digestFilePath);
 	}
 	// Return the hashFile file name
 	return digestFileName;
