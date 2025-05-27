@@ -533,23 +533,34 @@ export class UserImages {
             }
         } else if (ev_any.type === "user_image:render") {
             const ids = /** @type {string[]} */ (ev_any.detail);
-            let to_fetch = [];
-            let to_render = [];
-            for (const id of ids) {
-                const p = this.data.images[id];
-                if (p) {
-                    to_render.push({
-                        id: id,
-                        profile_image_url: p.url,
-                    });
-                } else {
-                    to_fetch.push(id);
-                }
-            }
-
-            this.$.displayImages(to_render);
-            this.add(to_fetch);
+            this.render_and_fetch_images(ids);
         }
+    }
+
+    /**
+        @param {string[]} ids
+    */
+    render_and_fetch_images(ids) {
+        if (ids.length === 0) {
+            return;
+        }
+
+        let to_fetch = [];
+        let to_render = [];
+        for (const id of ids) {
+            const p = this.data.images[id];
+            if (p) {
+                to_render.push({
+                    id: id,
+                    profile_image_url: p.url,
+                });
+            } else {
+                to_fetch.push(id);
+            }
+        }
+
+        this.$.displayImages(to_render);
+        this.add(to_fetch);
     }
     
     /**

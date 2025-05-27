@@ -147,19 +147,19 @@ const plugin_push_url = {
     },
 }
 
-/** @type {string | undefined} */
-let current_head_main = undefined;
-
 /** @param {PopStateEvent} ev */
 window.addEventListener("popstate", function(ev) {
     const state_content = ev.state.content_main;
-    if (!ev.state.is_head && state_content !== undefined && state_content !== null) {
+    if (state_content) {
       const main = document.getElementById("main");
+      if (!main) {
+        return;
+      }
       datastar_removals()
       main.innerHTML = state_content;
-    } else if (ev.state.is_head) {
-      datastar_removals()
-      main.innerHTML = current_head_main;
+      const img_ids = Array.from(main.querySelectorAll("img[data-user-id]"))
+        .map((el) => el.dataset.userId);
+      streams.user_images.render_and_fetch_images(img_ids);
     } else {
       window.location.reload();
     }
