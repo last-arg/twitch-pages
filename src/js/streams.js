@@ -501,6 +501,10 @@ export class UserImages {
         this.$ = {
             /** @param {UserTwitch[]} profiles */
             displayImages(profiles) {
+                if (profiles.length === 0) {
+                    return;
+                }
+
                 for (const p of profiles) {
                     const img = /** @type {HTMLImageElement} */ (document.querySelector(`img[data-user-id="${p.id}"]`));
                     if (img) {
@@ -508,11 +512,12 @@ export class UserImages {
                         img.removeAttribute("data-user-id");
                     }
                 }
+                document.dispatchEvent(new CustomEvent("profile_images:render"));
             }
         }
         this.localStorageKey = "user_images";
-        this.add(streams_store.getIds());
         this._readStorage(null);
+        this.add(streams_store.getIds());
         this.streams_store = streams_store;
         this.clean();
 

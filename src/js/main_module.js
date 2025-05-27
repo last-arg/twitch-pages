@@ -147,6 +147,12 @@ const plugin_push_url = {
     },
 }
 
+
+document.addEventListener("profile_images:render", function() {
+    const content = document.getElementById("main")?.innerHTML || "";
+    history.replaceState({content_main: content}, '')
+});
+
 /** @param {PopStateEvent} ev */
 window.addEventListener("popstate", function(ev) {
     const state_content = ev.state.content_main;
