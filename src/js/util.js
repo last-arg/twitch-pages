@@ -2,7 +2,7 @@ import { mainContent } from './config.prod';
 
 /**
 @param {string} newPath
-@returns {import("./config.prod.js").UrlResolve}
+@returns {UrlResolve}
 */
 export function getUrlObject(newPath) {
   if (newPath === "/") return mainContent["top-games"]
