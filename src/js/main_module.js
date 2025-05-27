@@ -163,6 +163,8 @@ window.addEventListener("popstate", function(ev) {
         }
         datastar_removals()
         main.innerHTML = state_content;
+
+        // This is needed if user left page before images were fetched and rendered
         const img_ids = Array.from(main.querySelectorAll("img[data-user-id]"))
             .map((el) => el.dataset.userId);
         streams.user_images.render_and_fetch_images(img_ids);
