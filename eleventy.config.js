@@ -144,9 +144,6 @@ export default function(eleventyConfig) {
 		"./src/js/main_module.js": "./js/main_module.js",
 	});
 
-	// TODO: livereload does not seem to work well
-	// - probably eleventy bug
-	// - reload seems to work the first time only
 	eleventyConfig.setServerOptions({
 		domDiff: false,
 		// liveReload: true,
