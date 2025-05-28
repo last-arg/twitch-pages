@@ -10,9 +10,8 @@ import {
 import { PluginType } from "@starfederation/datastar/types";
 import { getUrlObject, twitchCatImageSrc, encodeHtml, categoryUrl, getVideoImageSrc, twitchDurationToString, twitchDateToString } from "./util";
 import { twitch } from "./twitch.js";
-import { config, mainContent } from './config.prod';
+import { config, mainContent, settings_default, partials_cache_version } from './config.prod';
 import { games, init_common, live, streams } from "./common.js";
-import { settings_default } from './config.prod';
 
 /**
 @typedef {import("@starfederation/datastar/types").ActionPlugin} ActionPlugin
@@ -774,7 +773,7 @@ async function change_main(pathname) {
     }
 
     const url_obj = getUrlObject(pathname);
-    const res = await fetch(url_obj.html);
+    const res = await fetch(url_obj.html + "?cache_version=" + partials_cache_version, { cache: "force-cache" });
     const html_raw = await res.text();
     main.innerHTML = html_raw;
     change_page_title(undefined);

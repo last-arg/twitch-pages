@@ -1,5 +1,7 @@
 export const TWITCH_CLIENT_ID = "7v5r973dmjp0nd1g43b8hcocj2airz";
 
+export const partials_cache_version = 1;
+
 const settings_base = {
     streams_count: 5,
     user_videos_count: 5,
