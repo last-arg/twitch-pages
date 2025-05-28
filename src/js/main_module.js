@@ -148,9 +148,18 @@ const plugin_push_url = {
 }
 
 
+/** @type {number} */
+let replace_state_timeout = 0;
+
 document.addEventListener("profile_images:render", function() {
-    const content = document.getElementById("main")?.innerHTML || "";
-    history.replaceState({ content_main: content }, '')
+    const content = document.getElementById("main")?.innerHTML;
+    if (!content) {
+        return;
+    }
+    clearTimeout(replace_state_timeout)
+    replace_state_timeout = window.setTimeout(function() {
+        history.replaceState({ content_main: content }, '')
+    }, 700)
 });
 
 /** @param {PopStateEvent} ev */
